@@ -14,6 +14,7 @@ class AgentSpec:
     harbor: str
     families: tuple[str, ...]
     effort_kwarg: bool = False
+    proxy: bool = False
 
 
 AGENTS = {
@@ -26,6 +27,8 @@ AGENTS = {
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("anthropic", "openai")),
         # kmet has no Anthropic OAuth transport, so it runs only on the GPT model.
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
+        # samizdat reaches both models through the host proxy (ctb.proxy).
+        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("anthropic", "openai"), proxy=True),
     )
 }
 

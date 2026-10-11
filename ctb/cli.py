@@ -1,6 +1,7 @@
 """Fetch agents, run the curated matrix in Harbor and summarize PASS rates."""
 
 import argparse
+import hashlib
 import json
 import os
 import statistics
@@ -9,12 +10,14 @@ import sys
 import tarfile
 import tempfile
 import time
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
+from ctb.proxy import Proxy
 
 ARTIFACTS = ROOT / "artifacts"
 # The full-suite Vis harness (moved out of the Vis repository) owns the shared artifacts.
@@ -24,6 +27,15 @@ COMPOSE = SUITE_ARTIFACTS / "docker-compose"
 # Pinned master commits. kmet gets one local patch: print mode honors --thinking.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/yogthos/dirge.git", "f36b2890"
 KMET_REPO, KMET_COMMIT = "https://github.com/kmetia/kmet-agent.git", "58f23e83"
+SAMIZDAT_REPO, SAMIZDAT_COMMIT = "https://github.com/yogthos/samizdat.git", "e7889d4a"
+# Jolt 0.8.21 moved runtime timer deadlines to the monotonic clock, but ebb (samizdat's task
+# library) still schedules on the wall clock, so on 0.8.21 no samizdat run ever starts.
+JOLT_VERSION = "v0.8.20"
+JOLT_URL = "https://github.com/jolt-lang/jolt/releases/download/{v}/jolt-{v}-x86_64-linux.tar.gz"
+# Task containers reach the host proxy here (Podman's name for the host).
+PROXY_HOST = "host.containers.internal"
+# The newest Vis release with a native Linux x64 bundle.
+VIS_RELEASE = "v0.2.37"
 BB_MIN = "1.13.225"
 SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
@@ -31,6 +43,19 @@ DIRGE_BUILD = (
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
     "cargo build --release --target x86_64-unknown-linux-musl"
 )
+# Paths inside the archive are absolute (jolt caches them), so build at /installed-agent.
+SAMIZDAT_BUILD = """set -e
+apt-get update -qq && apt-get install -y -qq git ca-certificates >/dev/null
+B=/installed-agent/samizdat
+mkdir -p $B/home $B/src
+tar -xzf /work/jolt.tar.gz -C $B && mv $B/jolt-*-x86_64-linux $B/jolt
+cp -r /src/. $B/src && rm -rf $B/src/.git
+mkdir -p $B/src/src/ctb && cp /work/drive.clj $B/src/src/ctb/drive.clj
+cd $B/src && export HOME=$B/home PATH=$B/jolt:$PATH
+jolt path >/dev/null
+JOLT_AOT_ASYNC=0 jolt -e "(require 'samizdat.core 'ctb.drive) (System/exit 0)"
+tar -czf /out/samizdat-linux-amd64.tar.gz -C /installed-agent samizdat
+"""
 
 
 def sh(command: list[str], cwd: Path | None = None, env: dict | None = None) -> None:
@@ -80,6 +105,80 @@ def fetch_dirge() -> Path:
     return archive
 
 
+def download(url: str, path: Path, sha256: str | None = None) -> Path:
+    """Download to `path`; check the SHA-256 from `url`.sha256 or the given digest."""
+    if not path.is_file():
+        with urllib.request.urlopen(url, timeout=300) as response:
+            path.write_bytes(response.read())
+    if sha256 is None:
+        with urllib.request.urlopen(url + ".sha256", timeout=60) as response:
+            sha256 = response.read().decode().split()[0]
+    actual = hashlib.sha256(path.read_bytes()).hexdigest()
+    if actual != sha256:
+        path.unlink()
+        raise RuntimeError(f"SHA-256 mismatch for {url}: {actual} != {sha256}")
+    return path
+
+
+def fetch_samizdat() -> Path:
+    archive = ARTIFACTS / "samizdat-linux-amd64.tar.gz"
+    if not archive.is_file():
+        path = checkout(SAMIZDAT_REPO, SAMIZDAT_COMMIT, "samizdat")
+        jolt = download(
+            JOLT_URL.format(v=JOLT_VERSION), ARTIFACTS / f"jolt-{JOLT_VERSION}-x86_64-linux.tar.gz"
+        )
+        with tempfile.TemporaryDirectory(prefix="ctb-sz-", dir=ARTIFACTS) as work:
+            work_path = Path(work)
+            (work_path / "jolt.tar.gz").write_bytes(jolt.read_bytes())
+            (work_path / "drive.clj").write_text(
+                (ROOT / "ctb/agents/samizdat_drive.clj").read_text()
+            )
+            sh(
+                [
+                    "podman",
+                    "run",
+                    "--rm",
+                    "--memory",
+                    "4g",
+                    "--platform",
+                    "linux/amd64",
+                    "-v",
+                    f"{path}:/src:ro",
+                    "-v",
+                    f"{work_path}:/work:ro",
+                    "-v",
+                    f"{ARTIFACTS}:/out",
+                    "docker.io/library/python:3.12-slim-bookworm",
+                    "bash",
+                    "-c",
+                    SAMIZDAT_BUILD,
+                ]
+            )
+    return archive
+
+
+def fetch_vis() -> Path:
+    """The native Linux x64 Vis bundle of VIS_RELEASE, checked against its SHA256SUMS."""
+    archive = ARTIFACTS / "vis-agent-linux-amd64.tar.gz"
+    if not archive.is_file():
+        name = "vis-agent-linux-x64.tar.gz"
+        with tempfile.TemporaryDirectory(prefix="ctb-vis-", dir=ARTIFACTS) as work:
+            sh(
+                ["gh", "release", "download", VIS_RELEASE, "-R", "Blockether/vis"]
+                + ["-p", name, "-p", "SHA256SUMS", "-D", work]
+            )
+            sums = dict(
+                reversed(line.split())
+                for line in (Path(work) / "SHA256SUMS").read_text().splitlines()
+            )
+            download_path = Path(work) / name
+            actual = hashlib.sha256(download_path.read_bytes()).hexdigest()
+            if actual != sums.get(name):
+                raise RuntimeError(f"SHA-256 mismatch for {name}")
+            download_path.rename(archive)
+    return archive
+
+
 def fetch_kmet() -> Path:
     archive = ARTIFACTS / "kmet-linux-amd64.tar.gz"
     if not archive.is_file():
@@ -92,17 +191,14 @@ def fetch_kmet() -> Path:
 
 
 def fetch() -> None:
-    """Build pinned dirge and kmet masters for linux-amd64; check the Vis bundle.
+    """Get every agent for linux-amd64: native Vis, dirge, kmet and samizdat.
 
-    kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools; dirge needs Podman.
+    Vis needs the gh CLI; kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools;
+    dirge and samizdat need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
-    for archive in (fetch_dirge(), fetch_kmet()):
+    for archive in (fetch_vis(), fetch_dirge(), fetch_kmet(), fetch_samizdat()):
         print(f"{archive.name}: {archive.stat().st_size} B")
-    vis = ARTIFACTS / "vis-agent-linux-amd64.tar.gz"
-    print(
-        f"vis bundle {'present' if vis.is_file() else 'MISSING: copy vis-agent-linux-amd64.tar.gz here'}"
-    )
 
 
 def podman_config() -> Path:
@@ -114,9 +210,14 @@ def podman_config() -> Path:
     return path
 
 
-def host_env(trial: Trial, secret_dir: Path) -> dict[str, str]:
+def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict[str, str]:
     """Process environment of one Harbor job; built-in agents read tokens from it."""
     env = dict(os.environ, PYTHONPATH=str(ROOT), CONTAINERS_CONF_OVERRIDE=str(podman_config()))
+    if trial.agent.proxy:
+        if proxy is None:
+            raise credentials.CredentialError(f"{trial.agent.name} needs the model proxy")
+        env["CTB_PROXY_URL"] = f"http://{PROXY_HOST}:{proxy.port}"
+        env["CTB_PROXY_KEY"] = proxy.key
     if "PODMAN_COMPOSE_PROVIDER" not in env and COMPOSE.is_file():
         env["PODMAN_COMPOSE_PROVIDER"] = str(COMPOSE)
     for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN"):
@@ -168,13 +269,15 @@ def trial_result(jobs: Path, trial: Trial) -> dict | None:
     return None
 
 
-def run_trial(trial: Trial, jobs: Path, logs: Path, multiplier: float) -> str:
+def run_trial(
+    trial: Trial, jobs: Path, logs: Path, multiplier: float, proxy: Proxy | None = None
+) -> str:
     if trial_result(jobs, trial) is not None:
         return f"skip {trial.job} (done)"
     with tempfile.TemporaryDirectory(prefix="ctb-") as secrets:
         os.chmod(secrets, 0o700)
         try:
-            env = host_env(trial, Path(secrets))
+            env = host_env(trial, Path(secrets), proxy)
         except credentials.CredentialError as error:
             return f"blocked {trial.job}: {error}"
         started = time.monotonic()
@@ -207,9 +310,17 @@ def run(args: argparse.Namespace) -> None:
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
-    with ThreadPoolExecutor(args.parallel) as pool:
-        for line in pool.map(lambda t: run_trial(t, jobs, logs, args.timeout_multiplier), selected):
-            print(line, flush=True)
+    # Only proxy agents need it; its log has token counts and errors, never content.
+    proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
+    try:
+        with ThreadPoolExecutor(args.parallel) as pool:
+            for line in pool.map(
+                lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), selected
+            ):
+                print(line, flush=True)
+    finally:
+        if proxy is not None:
+            proxy.stop()
 
 
 def rows(jobs: Path) -> list[dict]:
@@ -263,13 +374,13 @@ def summary(args: argparse.Namespace) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("fetch", help="download dirge and kmet; check the Vis bundle")
+    sub.add_parser("fetch", help="get native Vis, dirge, kmet and samizdat for linux-amd64")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
     run_parser.add_argument("--round", required=True)
     run_parser.add_argument("--agents", default=",".join(AGENTS))
     run_parser.add_argument("--models", default=",".join(MODELS))
     run_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
-    run_parser.add_argument("--parallel", type=int, default=2)
+    run_parser.add_argument("--parallel", type=int, default=1)
     run_parser.add_argument(
         "--timeout-multiplier", type=float, default=0.25, help="of the 8 h task timeout; 0.25 = 2 h"
     )
