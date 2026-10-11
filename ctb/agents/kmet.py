@@ -1,11 +1,16 @@
 """kmet (github.com/kmetia/kmet-agent) in one-shot print mode."""
 
+import json
 import shlex
+
+from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
 
 KMET = "/installed-agent/kmet"
+# patches/kmet-usage.patch writes the session token totals here.
+USAGE = "kmet-usage.json"
 
 
 class Kmet(CuratedAgent):
@@ -30,7 +35,17 @@ class Kmet(CuratedAgent):
         model = f"openai-codex/{self.model}"
         # A native Babashka binary takes user.home from passwd, not from $HOME.
         return (
-            "export KMET_CODING_AGENT_DIR=$HOME/.kmet/agent; "
+            f"export KMET_CODING_AGENT_DIR=$HOME/.kmet/agent KMET_USAGE_FILE=/logs/agent/{USAGE}; "
             f"{KMET} --print --model {model} --thinking {EFFORT} {shlex.quote(instruction)} "
             "> /logs/agent/kmet.log 2> /logs/agent/kmet-stderr.log"
         )
+
+    def populate_context_post_run(self, context: AgentContext) -> None:
+        path = self.logs_dir / USAGE
+        if not path.is_file():
+            return
+        usage = json.loads(path.read_text())
+        # kmet's input excludes cache reads and writes; Harbor counts the whole prompt.
+        context.n_input_tokens = usage["input"] + usage["cache_read"] + usage["cache_write"]
+        context.n_cache_tokens = usage["cache_read"]
+        context.n_output_tokens = usage["output"]

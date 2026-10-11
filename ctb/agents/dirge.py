@@ -3,10 +3,13 @@
 import json
 import shlex
 
+from harbor.models.agent.context import AgentContext
+
 from ctb import credentials
 from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
 
 DIRGE = "/installed-agent/dirge"
+STREAM = "dirge.jsonl"
 
 
 class Dirge(CuratedAgent):
@@ -43,5 +46,25 @@ class Dirge(CuratedAgent):
         return (
             "export DIRGE_DATA_DIR=$HOME/.local/share/dirge DIRGE_CONFIG_DIR=$HOME/.config/dirge; "
             f"{DIRGE} --yolo --no-session --verbose --output-format stream-json "
-            f"-p {shlex.quote(instruction)} > /logs/agent/dirge.jsonl 2> /logs/agent/dirge-stderr.log"
+            f"-p {shlex.quote(instruction)} > /logs/agent/{STREAM} 2> /logs/agent/dirge-stderr.log"
         )
+
+    def populate_context_post_run(self, context: AgentContext) -> None:
+        # patches/dirge-usage.patch adds the raw usage to the final result event.
+        usage = None
+        path = self.logs_dir / STREAM
+        for line in path.read_text().splitlines() if path.is_file() else []:
+            if line.startswith("{"):
+                event = json.loads(line)
+                if event.get("type") == "result":
+                    usage = event.get("usage")
+        if not usage:
+            return
+        cached = usage.get("cached_input_tokens", 0)
+        prompt = usage.get("input_tokens", 0)
+        if self.family == "anthropic":
+            # Anthropic counts cache reads and writes apart from input_tokens.
+            prompt += cached + usage.get("cache_creation_input_tokens", 0)
+        context.n_input_tokens = prompt
+        context.n_cache_tokens = cached
+        context.n_output_tokens = usage.get("output_tokens", 0)

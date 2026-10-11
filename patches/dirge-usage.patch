@@ -1,0 +1,27 @@
+diff --git a/src/provider/run.rs b/src/provider/run.rs
+index d21ab0cb..774f30c9 100644
+--- a/src/provider/run.rs
++++ b/src/provider/run.rs
+@@ -637,7 +637,7 @@ impl AnyAgent {
+         } else {
+             RunEnd::Completed
+         };
+-        let result_envelope = headless_result_json(
++        let mut result_envelope = headless_result_json(
+             end,
+             start_instant.elapsed().as_millis() as u64,
+             num_turns,
+@@ -647,6 +647,13 @@ impl AnyAgent {
+             &run_evidence(num_turns, &tool_calls, self.session_id.as_deref()),
+             run_cost,
+         );
++        // ctb: report the run's raw token usage, as the provider counted it.
++        result_envelope["usage"] = serde_json::json!({
++            "input_tokens": usage.input_tokens,
++            "cached_input_tokens": usage.cached_input_tokens,
++            "cache_creation_input_tokens": usage.cache_creation_input_tokens,
++            "output_tokens": usage.output_tokens,
++        });
+ 
+         match output_format {
+             crate::cli::OutputFormat::Text => {

@@ -20,8 +20,8 @@ Each trial is one agent, one model and one task in a separate Harbor job.
 | `vis-team` | Native Vis `v0.2.37` Linux bundle, Council on (subagents) | Opus 5.5, GPT-6.1 |
 | `claude-code` | Harbor built-in agent | Opus 5.5 |
 | `codex` | Harbor built-in agent | GPT-6.1 |
-| `dirge` | `yogthos/dirge` master, static musl build | Opus 5.5, GPT-6.1 |
-| `kmet` | `kmetia/kmet-agent` master, with `patches/kmet-print-thinking.patch` | GPT-6.1 |
+| `dirge` | `yogthos/dirge` master, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
+| `kmet` | `kmetia/kmet-agent` master, with `patches/kmet-print-thinking.patch` and `patches/kmet-usage.patch` | GPT-6.1 |
 | `samizdat` | `yogthos/samizdat` master on Jolt 0.8.20, one beam branch, through the model proxy | Opus 5.5, GPT-6.1 |
 
 The models are `anthropic/claude-opus-5-5` and `openai/gpt-6.1-sol`. All agents use medium
@@ -41,6 +41,9 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 - samizdat runs one beam branch (`CTB_BEAM_WIDTH`, default 1), so it costs as much as one agent.
 - samizdat runs on Jolt 0.8.20, not 0.8.21. Jolt 0.8.21 changed its timer clock, and on that
   version no samizdat run starts.
+- dirge and kmet print no token counts. Their usage patches add the totals that each agent
+  already keeps. Trials that ran before a patch have no token counts.
+- A trial without a reward counts as a fail, for example after a verifier timeout.
 - One trial per cell is a small sample. Treat a difference of one task as noise.
 
 ## Prerequisites

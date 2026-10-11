@@ -27,7 +27,8 @@ RESULTS = ROOT / "results"
 SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
 DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
 COMPOSE = SUITE_ARTIFACTS / "docker-compose"
-# Pinned master commits. kmet gets one local patch: print mode honors --thinking.
+# Pinned master commits. Local patches: kmet print mode honors --thinking, and dirge and
+# kmet report token usage.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/yogthos/dirge.git", "f36b2890"
 KMET_REPO, KMET_COMMIT = "https://github.com/kmetia/kmet-agent.git", "58f23e83"
 SAMIZDAT_REPO, SAMIZDAT_COMMIT = "https://github.com/yogthos/samizdat.git", "e7889d4a"
@@ -77,14 +78,23 @@ def checkout(repo: str, commit: str, name: str) -> Path:
 
 
 def pack(binary: Path, archive: Path, name: str) -> None:
-    with tarfile.open(archive, "w:gz") as out:
+    # A running round uploads the archive for each trial, so replace it in one step.
+    partial = archive.with_name(archive.name + ".partial")
+    with tarfile.open(partial, "w:gz") as out:
         out.add(binary, arcname=name)
+    partial.replace(archive)
+
+
+def apply_patches(path: Path, *names: str) -> None:
+    for name in names:
+        sh(["git", "apply", str(ROOT / "patches" / name)], cwd=path)
 
 
 def fetch_dirge() -> Path:
     archive = ARTIFACTS / "dirge-x86_64-unknown-linux-musl.tar.gz"
     if not archive.is_file():
         path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
+        apply_patches(path, "dirge-usage.patch")
         sh(
             [
                 "podman",
@@ -186,7 +196,7 @@ def fetch_kmet() -> Path:
     archive = ARTIFACTS / "kmet-linux-amd64.tar.gz"
     if not archive.is_file():
         path = checkout(KMET_REPO, KMET_COMMIT, "kmet-agent")
-        sh(["git", "apply", str(ROOT / "patches/kmet-print-thinking.patch")], cwd=path)
+        apply_patches(path, "kmet-print-thinking.patch", "kmet-usage.patch")
         env = dict(os.environ, PATH=f"{ARTIFACTS / 'tools'}:{os.environ['PATH']}")
         sh(["bb", "dist", "linux-amd64"], cwd=path, env=env)
         pack(path / "target/dist/linux-amd64/kmet", archive, "kmet")
