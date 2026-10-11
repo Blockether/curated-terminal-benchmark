@@ -136,6 +136,23 @@ runs it. Set `VIS_TERMINAL_BENCH` if this repository is not in `~/curated-termin
 cd terminal_bench && uv sync --locked && uv run pytest tests
 ```
 
+## Privacy
+
+Trials hold source code, prompts, command output and sometimes credentials. They stay on this
+machine:
+
+- Each Harbor process gets `HARBOR_TELEMETRY=off`. `sitecustomize.py` also sets it in each Python
+  process that has this repository on `PYTHONPATH`, so a running round stops telemetry at its next
+  trial.
+- `ctb` runs only `harbor run`. It refuses the Harbor Hub flags `--upload`, `--launch`, `--public`,
+  `--share-org`, `--share-user` and `--stream`.
+- The Harbor plugin `ctb.privacy:Redactor` replaces secret values with `[REDACTED]` in the text
+  files of each trial when the trial ends, and in the job directory when the job ends. The secrets
+  are the tokens in the credential files and the environment values whose names contain `KEY`,
+  `TOKEN`, `SECRET`, `PASSWORD`, `CREDENTIAL` or `AUTH`. Binary files stay as they are.
+- Each round directory under `jobs/` and `runs/` has mode `0700`. Git ignores both directories. A
+  sealed result in `results/` has no trajectory content.
+
 ## Checks
 
 ```bash

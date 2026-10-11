@@ -2,6 +2,7 @@
 
 import gzip
 import json
+import os
 import shutil
 import subprocess
 import threading
@@ -473,6 +474,23 @@ def test_queue_captures_harbor_logs_through_redaction(
     assert path == tmp_path / "runs/suite-001.log"
     assert cwd == tmp_path
     assert command[-4:] == ["--job-name", "suite-001", "-i", "sample"]
+
+
+def test_queue_keeps_harbor_offline_and_trials_private(
+    tmp_path, monkeypatch, one_task_queue
+):
+    telemetry = []
+
+    def capture(command, path, *, cwd):
+        telemetry.append(os.environ.get("HARBOR_TELEMETRY"))
+        return 7
+
+    monkeypatch.setattr(run_suite, "capture", capture)
+    with pytest.raises(RuntimeError, match="Harbor exited 7"):
+        run_suite.main()
+    assert telemetry == ["off"]
+    for directory in (tmp_path / "jobs", tmp_path / "runs"):
+        assert directory.stat().st_mode & 0o777 == 0o700
 
 
 def test_queue_continues_after_verified_agent_timeout(

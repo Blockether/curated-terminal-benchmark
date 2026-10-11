@@ -26,6 +26,8 @@ CONCURRENCY = 2
 MEMORY_BUDGET_MB = 16384
 # Provider or setup breakage fails fast; observed model failures took over 20 minutes.
 FAST_ERROR_MS = 600_000
+# Harbor sends job telemetry unless this is off; trials stay on this machine.
+os.environ["HARBOR_TELEMETRY"] = "off"
 
 
 def catalog(dataset: Path) -> tuple[list[dict], list[str]]:
@@ -423,7 +425,9 @@ def main() -> None:
         parser.error("--max-tasks must be positive")
     runs = jobs.parent / "runs"
     for directory in (jobs, runs):
+        # Trials hold code, prompts and command output: only this user may read them.
         directory.mkdir(parents=True, exist_ok=True)
+        directory.chmod(0o700)
     running: dict[Future, tuple[str, dict]] = {}
     failures = []
     started = 0

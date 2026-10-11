@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 from importlib import metadata
 from pathlib import Path
 
-from ctb import credentials
+from ctb import credentials, privacy
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.proxy import Proxy
@@ -226,6 +226,7 @@ def podman_config() -> Path:
 def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict[str, str]:
     """Process environment of one Harbor job; built-in agents read tokens from it."""
     env = dict(os.environ, PYTHONPATH=str(ROOT), CONTAINERS_CONF_OVERRIDE=str(podman_config()))
+    privacy.telemetry_off(env)
     if trial.agent.proxy:
         if proxy is None:
             raise credentials.CredentialError(f"{trial.agent.name} needs the model proxy")
@@ -273,10 +274,12 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
         trial.task,
         "--agent-timeout-multiplier",
         str(multiplier),
+        "--plugin",
+        privacy.REDACTOR,
     ]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
-    return command
+    return privacy.check_command(command)
 
 
 def trial_result(jobs: Path, trial: Trial) -> dict | None:
@@ -348,8 +351,8 @@ def reward_of(result: dict | None) -> float | None:
 def run(args: argparse.Namespace) -> None:
     jobs = ROOT / "jobs" / args.round
     logs = ROOT / "runs" / args.round
-    jobs.mkdir(parents=True, exist_ok=True)
-    logs.mkdir(parents=True, exist_ok=True)
+    privacy.private_dir(jobs)
+    privacy.private_dir(logs)
     selected = trials(
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
