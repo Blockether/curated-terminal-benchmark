@@ -12,6 +12,7 @@ import tempfile
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from importlib import metadata
 from pathlib import Path
 
 from ctb import credentials
@@ -20,6 +21,7 @@ from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, tr
 from ctb.proxy import Proxy
 
 ARTIFACTS = ROOT / "artifacts"
+RESULTS = ROOT / "results"
 # The full-suite Vis harness (moved out of the Vis repository) owns the shared artifacts.
 SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
 DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
@@ -222,6 +224,9 @@ def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict
         env["PODMAN_COMPOSE_PROVIDER"] = str(COMPOSE)
     for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN"):
         env.pop(key, None)
+    if trial.family == "anthropic" and not trial.agent.proxy:
+        # Agents read the token again inside Harbor: a short token defers the trial here.
+        credentials.anthropic(min_token_seconds())
     if trial.agent.name == "claude-code":
         env["CLAUDE_FORCE_OAUTH"] = "1"
         env["CLAUDE_CODE_OAUTH_TOKEN"] = credentials.anthropic(min_token_seconds()).token
@@ -278,6 +283,8 @@ def run_trial(
         os.chmod(secrets, 0o700)
         try:
             env = host_env(trial, Path(secrets), proxy)
+        except credentials.ExpiringToken as error:
+            return f"defer {trial.job}: {error}"
         except credentials.CredentialError as error:
             return f"blocked {trial.job}: {error}"
         started = time.monotonic()
@@ -310,17 +317,70 @@ def run(args: argparse.Namespace) -> None:
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
+    record_run(jobs, args)
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
     try:
-        with ThreadPoolExecutor(args.parallel) as pool:
-            for line in pool.map(
-                lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), selected
-            ):
-                print(line, flush=True)
+        pending = selected
+        while pending:
+            deferred = []
+            with ThreadPoolExecutor(args.parallel) as pool:
+                lines = pool.map(
+                    lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), pending
+                )
+                for trial, line in zip(pending, lines):
+                    print(line, flush=True)
+                    if line.startswith("defer "):
+                        deferred.append(trial)
+            if deferred:
+                print(f"{len(deferred)} trials wait for a Claude token refresh", flush=True)
+                credentials.refresh_anthropic(min_token_seconds())
+            pending = deferred
     finally:
         if proxy is not None:
             proxy.stop()
+
+
+def git_state() -> dict:
+    def git(*argv: str) -> str:
+        return subprocess.run(
+            ["git", *argv], cwd=ROOT, capture_output=True, text=True, check=False
+        ).stdout.strip()
+
+    return {"commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+
+
+def pins() -> dict:
+    return {
+        "vis": VIS_RELEASE,
+        "dirge": DIRGE_COMMIT,
+        "kmet": KMET_COMMIT,
+        "samizdat": SAMIZDAT_COMMIT,
+        "jolt": JOLT_VERSION,
+        "harbor": metadata.version("harbor"),
+        "models": MODELS,
+        "effort": EFFORT,
+    }
+
+
+def record_run(jobs: Path, args: argparse.Namespace) -> None:
+    """Append the harness state of one `run` call to the round; `seal` copies it."""
+    path = jobs / "ctb-runs.json"
+    runs = json.loads(path.read_text()) if path.is_file() else []
+    runs.append(
+        {
+            "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            **git_state(),
+            "pins": pins(),
+            "artifacts": {p.name: file_sha256(p) for p in sorted(ARTIFACTS.glob("*.tar.gz"))},
+            "agents": args.agents,
+            "models": args.models,
+            "tasks": args.tasks,
+            "parallel": args.parallel,
+            "timeout_multiplier": args.timeout_multiplier,
+        }
+    )
+    path.write_text(json.dumps(runs, indent=2) + "\n")
 
 
 def rows(jobs: Path) -> list[dict]:
@@ -371,6 +431,65 @@ def summary(args: argparse.Namespace) -> None:
         Path(args.json).write_text(json.dumps(table, indent=2))
 
 
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def seal(args: argparse.Namespace) -> None:
+    """Write results/<round>.json once: run records, one row per trial and result hashes."""
+    jobs = ROOT / "jobs" / args.round
+    out = RESULTS / f"{args.round}.json"
+    if out.exists():
+        raise SystemExit(f"{out} is already sealed; run a new round")
+    runs_path = jobs / "ctb-runs.json"
+    runs = json.loads(runs_path.read_text()) if runs_path.is_file() else []
+    if not runs or any(r["dirty"] for r in runs):
+        raise SystemExit(f"{args.round} has no run record from a clean harness commit")
+    expected = trials(
+        args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
+    )
+    missing = [t.job for t in expected if trial_result(jobs, t) is None]
+    if missing:
+        raise SystemExit(f"{len(missing)} trials have no result: {', '.join(missing)}")
+    table = []
+    for trial in expected:
+        path = min((jobs / trial.job).glob("*/result.json"))
+        result = json.loads(path.read_text())
+        agent_result = result.get("agent_result") or {}
+        table.append(
+            {
+                "agent": trial.agent.name,
+                "model": MODELS[trial.family],
+                "task": trial.task,
+                "reward": reward_of(result),
+                "error": (result.get("exception_info") or {}).get("exception_type"),
+                "input": agent_result.get("n_input_tokens"),
+                "cache": agent_result.get("n_cache_tokens"),
+                "output": agent_result.get("n_output_tokens"),
+                "agent_version": (result.get("agent_info") or {}).get("version"),
+                "task_checksum": result.get("task_checksum"),
+                "started_at": result.get("started_at"),
+                "finished_at": result.get("finished_at"),
+                "result": str(path.relative_to(ROOT)),
+                "result_sha256": file_sha256(path),
+            }
+        )
+    body = {
+        "round": args.round,
+        "sealed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "runs": runs,
+        "rows": table,
+    }
+    body["digest"] = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+    RESULTS.mkdir(exist_ok=True)
+    out.write_text(json.dumps(body, indent=2) + "\n")
+    print(f"sealed {len(table)} trials in {out.relative_to(ROOT)}, digest {body['digest']}")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -387,8 +506,14 @@ def main(argv: list[str] | None = None) -> None:
     summary_parser = sub.add_parser("summary", help="PASS table of one round")
     summary_parser.add_argument("--round", required=True)
     summary_parser.add_argument("--json")
+    seal_parser = sub.add_parser("seal", help="write results/<round>.json once, with hashes")
+    seal_parser.add_argument("--round", required=True)
+    seal_parser.add_argument("--agents", default=",".join(AGENTS))
+    seal_parser.add_argument("--models", default=",".join(MODELS))
+    seal_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
     args = parser.parse_args(argv)
-    {"fetch": lambda _: fetch(), "run": run, "summary": summary}[args.command](args)
+    commands = {"fetch": lambda _: fetch(), "run": run, "summary": summary, "seal": seal}
+    commands[args.command](args)
 
 
 if __name__ == "__main__":

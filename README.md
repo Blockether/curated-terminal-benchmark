@@ -53,6 +53,9 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 - Vis subscription logins: `~/.vis/anthropic-auth.json` and `~/.vis/openai-codex-auth.json`.
   The runner copies only the access token into the container, never the refresh token.
   A token must stay valid for the agent timeout (`CTB_MIN_TOKEN_S`, default 7500 seconds).
+  If the Claude token expires too soon, the runner defers its trials and runs the others.
+  Then it waits for the Vis refresh window and runs one short host Vis turn
+  (`vis-agent` on `PATH`), so Vis refreshes the token under its own lock.
 - The `gh` CLI. `fetch` downloads the native Vis Linux bundle of the pinned release
   (`VIS_RELEASE` in `ctb/cli.py`) and checks it against the release `SHA256SUMS`.
   To test another Vis build, put its native `vis-agent-linux-x64.tar.gz` at
@@ -105,6 +108,18 @@ The task containers and the amd64 emulation can use all the memory that the mach
    ```bash
    uv run python -m ctb.cli summary --round r2
    ```
+
+6. Seal the round when every trial has a result:
+
+   ```bash
+   uv run python -m ctb.cli seal --round r2
+   ```
+
+   `seal` writes `results/<round>.json` one time and never replaces it. The file has the
+   harness commit, pins and archive hashes of each `run` call, one row for each trial and
+   the SHA-256 of each `result.json`. Its `digest` is the SHA-256 of the other fields.
+   `seal` refuses a round with a missing trial or a run from an uncommitted harness.
+   Use the same `--agents`, `--models` and `--tasks` as for `run`. Commit the file.
 
 Harbor writes jobs to `jobs/<round>/` and the runner writes logs to `runs/<round>/`.
 

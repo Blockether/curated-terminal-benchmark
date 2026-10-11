@@ -168,7 +168,7 @@ def anthropic_reply(data: dict) -> tuple[dict, dict]:
 
 
 def call_anthropic(req: dict) -> tuple[dict, dict]:
-    token = credentials.anthropic(TOKEN_MIN_S).token
+    token = credentials.refresh_anthropic(TOKEN_MIN_S).token
     headers = {**ANTHROPIC_HEADERS, "Authorization": f"Bearer {token}"}
     data = _post_json(ANTHROPIC_URL, anthropic_body(req), headers)
     return anthropic_reply(data)

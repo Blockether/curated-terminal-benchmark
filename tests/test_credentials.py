@@ -47,3 +47,38 @@ def test_an_expired_codex_login_falls_back_to_the_vis_token(tmp_path):
 def test_jwt_expiry_is_read_and_opaque_tokens_give_none():
     assert credentials.jwt_exp_ms(jwt(100)) == 100_000
     assert credentials.jwt_exp_ms("opaque") is None
+
+
+def write_claude(path, left_s):
+    path.write_text(
+        json.dumps({"access_token": "A", "expires_at_ms": credentials.now_ms() + left_s * 1000})
+    )
+
+
+def test_refresh_anthropic_keeps_a_long_token(tmp_path):
+    path = tmp_path / "anthropic.json"
+    write_claude(path, 9000)
+    calls = []
+    credentials.refresh_anthropic(7500, path, sleep=calls.append, run=calls.append)
+    assert calls == []
+
+
+def test_refresh_anthropic_waits_for_the_vis_window_then_runs_one_turn(tmp_path):
+    path = tmp_path / "anthropic.json"
+    write_claude(path, 1000)
+    slept, turns = [], []
+
+    def turn(argv, **_):
+        turns.append(argv)
+        write_claude(path, 28000)
+
+    access = credentials.refresh_anthropic(7500, path, sleep=slept.append, run=turn)
+    assert access.token == "A" and len(turns) == 1 and turns[0][0] == "vis-agent"
+    assert 700 < slept[0] <= 1000 - credentials.VIS_REFRESH_AT_S + 30
+
+
+def test_refresh_anthropic_fails_when_vis_did_not_refresh(tmp_path):
+    path = tmp_path / "anthropic.json"
+    write_claude(path, 100)
+    with pytest.raises(credentials.ExpiringToken):
+        credentials.refresh_anthropic(7500, path, sleep=lambda _: None, run=lambda *a, **k: None)
