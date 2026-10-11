@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import statistics
 import subprocess
 import sys
@@ -274,11 +275,31 @@ def trial_result(jobs: Path, trial: Trial) -> dict | None:
     return None
 
 
+class PodmanDown(RuntimeError):
+    """The container VM is not reachable, so no trial can run."""
+
+
+def podman_ready(env: dict[str, str] | None = None) -> bool:
+    try:
+        probe = subprocess.run(
+            ["podman", "info", "--format", "{{.Host.Arch}}"],
+            env=env,
+            capture_output=True,
+            check=False,
+            timeout=60,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return probe.returncode == 0
+
+
 def run_trial(
     trial: Trial, jobs: Path, logs: Path, multiplier: float, proxy: Proxy | None = None
 ) -> str:
     if trial_result(jobs, trial) is not None:
         return f"skip {trial.job} (done)"
+    if not podman_ready():
+        raise PodmanDown("Podman is not reachable: start the VM, then run the round again")
     with tempfile.TemporaryDirectory(prefix="ctb-") as secrets:
         os.chmod(secrets, 0o700)
         try:
@@ -297,6 +318,12 @@ def run_trial(
                 stdout=log,
                 stderr=subprocess.STDOUT,
             ).returncode
+    if not podman_ready(env):
+        # A VM stop is not an agent result: remove the job, so the next run repeats it.
+        shutil.rmtree(jobs / trial.job, ignore_errors=True)
+        raise PodmanDown(
+            f"Podman stopped during {trial.job}: start the VM, then run the round again"
+        )
     reward = reward_of(trial_result(jobs, trial))
     return f"done {trial.job}: exit={code} reward={reward} {time.monotonic() - started:.0f}s"
 
@@ -336,6 +363,8 @@ def run(args: argparse.Namespace) -> None:
                 print(f"{len(deferred)} trials wait for a Claude token refresh", flush=True)
                 credentials.refresh_anthropic(min_token_seconds())
             pending = deferred
+    except PodmanDown as error:
+        raise SystemExit(str(error)) from error
     finally:
         if proxy is not None:
             proxy.stop()

@@ -94,3 +94,31 @@ def test_seal_refuses_missing_trials_and_dirty_runs(root):
     write_result(root, "dirge__anthropic__html-js-filter", 0.0)
     with pytest.raises(SystemExit, match="clean harness commit"):
         cli.seal(run_args())
+
+
+def test_run_trial_needs_podman(root, monkeypatch):
+    monkeypatch.setattr(cli, "podman_ready", lambda env=None: False)
+    trial = matrix.Trial(matrix.AGENTS["codex"], "openai", "t")
+    with pytest.raises(cli.PodmanDown, match="not reachable"):
+        cli.run_trial(trial, root / "jobs", root, 0.25)
+
+
+def test_run_trial_drops_a_job_when_podman_stops_during_it(root, monkeypatch):
+    probes = iter([True, False])
+    monkeypatch.setattr(cli, "podman_ready", lambda env=None: next(probes))
+    monkeypatch.setattr(cli, "host_env", lambda *a: {})
+    monkeypatch.setattr(cli, "harbor_command", lambda *a: ["true"])
+    trial = matrix.Trial(matrix.AGENTS["codex"], "openai", "t")
+    (root / "jobs" / trial.job / "t__1").mkdir(parents=True)
+    with pytest.raises(cli.PodmanDown, match="stopped during"):
+        cli.run_trial(trial, root / "jobs", root, 0.25)
+    assert not (root / "jobs" / trial.job).exists()
+
+
+def test_run_stops_with_a_message_when_podman_is_down(root, monkeypatch):
+    def down(*_):
+        raise cli.PodmanDown("Podman is not reachable")
+
+    monkeypatch.setattr(cli, "run_trial", down)
+    with pytest.raises(SystemExit, match="not reachable"):
+        cli.run(run_args())
