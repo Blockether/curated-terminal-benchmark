@@ -256,7 +256,10 @@ class VisSolo(CuratedAgent):
                 "model": self.model_name,
                 "profile": self.profile_name,
                 "build": {key: self.build[key] for key in ("run_id", "commit", "sha256")},
-                "status": result.get("status"),
+                "error_count": sum(
+                    isinstance(block, dict) and block.get("type") == "error"
+                    for block in result.get("content") or []
+                ),
                 "duration_ms": result.get("duration-ms", result.get("duration_ms")),
                 "iteration_count": result.get("iteration-count", result.get("iteration_count")),
                 "estimated_metered_api_cost_usd": estimate,

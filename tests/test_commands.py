@@ -156,7 +156,10 @@ def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
         {
             "event": "result",
             "payload": {
-                "status": "success",
+                "content": [
+                    {"type": "prose", "markdown": "Done."},
+                    {"type": "error", "message": "Provider quota exhausted"},
+                ],
                 "tokens": {"input": 100, "cached": 80, "output": 7},
                 "cost": {"total_cost": 0.5},
                 "duration-ms": 900,
@@ -175,6 +178,7 @@ def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
     assert metadata["build"] == {"run_id": 7, "commit": "a" * 40, "sha256": pinned[0]["sha256"]}
     assert (metadata["duration_ms"], metadata["iteration_count"]) == (900, 3)
     assert metadata["estimated_metered_api_cost_usd"] == 0.5
+    assert metadata["error_count"] == 1
 
 
 def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
