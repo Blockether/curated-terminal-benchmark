@@ -17,6 +17,7 @@ from importlib import metadata
 from pathlib import Path
 
 from ctb import credentials, privacy
+from ctb.agents import vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.proxy import Proxy
@@ -206,11 +207,11 @@ def fetch_kmet() -> Path:
 def fetch() -> None:
     """Get every agent for linux-amd64: native Vis, dirge, kmet and samizdat.
 
-    Vis needs the gh CLI; kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools;
-    dirge and samizdat need Podman.
+    Vis needs the gh CLI: it gets the release and the build of profiles.toml. kmet needs
+    Babashka >= BB_MIN on PATH or in artifacts/tools; dirge and samizdat need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
-    for archive in (fetch_vis(), fetch_dirge(), fetch_kmet(), fetch_samizdat()):
+    for archive in (fetch_vis(), vis.fetch(), fetch_dirge(), fetch_kmet(), fetch_samizdat()):
         print(f"{archive.name}: {archive.stat().st_size} B")
 
 
@@ -409,19 +410,22 @@ def record_run(jobs: Path, args: argparse.Namespace) -> None:
     """Append the harness state of one `run` call to the round; `seal` copies it."""
     path = jobs / "ctb-runs.json"
     runs = json.loads(path.read_text()) if path.is_file() else []
-    runs.append(
-        {
-            "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            **git_state(),
-            "pins": pins(),
-            "artifacts": {p.name: file_sha256(p) for p in sorted(ARTIFACTS.glob("*.tar.gz"))},
-            "agents": args.agents,
-            "models": args.models,
-            "tasks": args.tasks,
-            "parallel": args.parallel,
-            "timeout_multiplier": args.timeout_multiplier,
-        }
-    )
+    record = {
+        "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        **git_state(),
+        "pins": pins(),
+        "artifacts": {p.name: file_sha256(p) for p in sorted(ARTIFACTS.glob("*.tar.gz"))},
+        "agents": args.agents,
+        "models": args.models,
+        "tasks": args.tasks,
+        "parallel": args.parallel,
+        "timeout_multiplier": args.timeout_multiplier,
+    }
+    vis_agents = [name for name in args.agents.split(",") if name in vis.AGENT_PROFILES]
+    if vis_agents:
+        # The Vis agents run the build and the profiles of profiles.toml.
+        record["vis"] = vis.run_record(vis_agents)
+    runs.append(record)
     path.write_text(json.dumps(runs, indent=2) + "\n")
 
 

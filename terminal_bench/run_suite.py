@@ -28,6 +28,12 @@ MEMORY_BUDGET_MB = 16384
 FAST_ERROR_MS = 600_000
 # Harbor sends job telemetry unless this is off; trials stay on this machine.
 os.environ["HARBOR_TELEMETRY"] = "off"
+# Harbor imports the Vis adapter and the redaction plugin from the repository root.
+os.environ["PYTHONPATH"] = os.pathsep.join(
+    filter(None, [str(ROOT.parent), os.environ.get("PYTHONPATH")])
+)
+AGENT = "ctb.agents.vis:VisSolo"
+REDACTOR = "ctb.privacy:Redactor"
 
 
 def catalog(dataset: Path) -> tuple[list[dict], list[str]]:
@@ -271,8 +277,12 @@ def job_results(job: Path, task: dict) -> list[dict]:
 
 
 def archive_job_traces(job: Path) -> None:
-    """Archive finished gzip traces, preserving any incomplete streams."""
-    for source in sorted(job.glob("*/agent/vis-trace.jsonl.gz")):
+    """Archive finished JSONL and gzip traces, preserving incomplete gzip streams."""
+    traces = [
+        *job.glob("*/agent/vis-trace.jsonl"),
+        *job.glob("*/agent/vis-trace.jsonl.gz"),
+    ]
+    for source in sorted(traces):
         try:
             manifest = archive_trace(source)
         except (EOFError, gzip.BadGzipFile):
@@ -283,7 +293,7 @@ def archive_job_traces(job: Path) -> None:
             continue
         print(
             f"Archived {job.name}/{source.parent.parent.name}: "
-            f"{manifest['original_gzip_bytes']} -> {manifest['archived_zstd_bytes']} bytes",
+            f"{manifest['original_bytes']} -> {manifest['archived_zstd_bytes']} bytes",
             flush=True,
         )
 
@@ -296,7 +306,7 @@ def harbor_command(name: str, task: dict, jobs: Path) -> list[str]:
         "-p",
         str(DATASET),
         "-a",
-        "vis_agent:VisAgent",
+        AGENT,
         "-m",
         MODEL,
         "-e",
@@ -307,6 +317,8 @@ def harbor_command(name: str, task: dict, jobs: Path) -> list[str]:
         "1",
         "-o",
         str(jobs),
+        "--plugin",
+        REDACTOR,
         "--job-name",
         name,
         "-i",

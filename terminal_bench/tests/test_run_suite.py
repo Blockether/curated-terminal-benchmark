@@ -5,8 +5,10 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import threading
 from collections import Counter
+from pathlib import Path
 
 import pytest
 
@@ -694,4 +696,22 @@ def test_queue_says_why_it_stops_starting_tasks(monkeypatch, capsys, one_task_qu
     assert (
         "Not starting more tasks: Low disk space (host 5.0 GB, VM 50.0 GB)"
         in capsys.readouterr().out
+    )
+
+
+def test_harbor_runs_the_benchmark_adapter_with_redaction():
+    command = run_suite.harbor_command("suite-001", {"name": "t"}, Path("/j"))
+    assert command[command.index("-a") + 1] == "ctb.agents.vis:VisSolo"
+    assert command[command.index("-m") + 1] == run_suite.MODEL
+    assert command[command.index("--plugin") + 1] == "ctb.privacy:Redactor"
+
+
+def test_harbor_can_import_the_adapter_and_the_plugin():
+    # Harbor inherits this environment: the repository root must be on PYTHONPATH.
+    assert str(run_suite.ROOT.parent) in os.environ["PYTHONPATH"].split(os.pathsep)
+    subprocess.run(
+        [sys.executable, "-c", "import ctb.agents.vis, ctb.privacy"],
+        check=True,
+        cwd=run_suite.ROOT,
+        env=os.environ,
     )

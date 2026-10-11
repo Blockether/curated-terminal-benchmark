@@ -90,3 +90,25 @@ def test_mismatched_archive_preserves_original_gzip(tmp_path):
     assert source.is_file()
     assert target.is_file()
     assert not (source.parent / "trace-archive.json").exists()
+
+
+@pytest.mark.skipif(shutil.which("zstd") is None, reason="zstd executable required")
+def test_plain_jsonl_trace_is_archived_without_loss(tmp_path):
+    contents = b'{"event":"trace-chunk"}\n' * 5
+    folder = tmp_path / "agent"
+    folder.mkdir()
+    source = folder / "vis-trace.jsonl"
+    source.write_bytes(contents)
+    manifest = archive_trace(source)
+    target = folder / "vis-trace.jsonl.zst"
+    assert not source.exists()
+    assert manifest["trace"] == target.name
+    assert (manifest["original_format"], manifest["original_bytes"]) == (
+        "jsonl",
+        len(contents),
+    )
+    assert manifest["raw_sha256"] == hashlib.sha256(contents).hexdigest()
+    unpacked = subprocess.run(
+        ["zstd", "-dc", str(target)], capture_output=True, check=True
+    )
+    assert unpacked.stdout == contents

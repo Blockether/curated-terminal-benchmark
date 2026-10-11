@@ -1,0 +1,30 @@
+# The Vis build and the run profiles of ctb/agents/vis.py.
+# A round uses one build and one profile for each Vis agent.
+
+# The native Linux x64 bundle of one native-release.yml dry run on main.
+# Run `uv run python -m ctb.agents.vis fetch` to download it to artifacts/vis-builds/<run_id>/.
+# GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
+[build]
+repo = "Blockether/vis"
+run_id = 38180812406
+commit = "4141c3639b8e40ca67bf2d294561c04a01f71c2f"
+asset = "vis-agent-linux-x64.tar.gz"
+sha256 = "299bddecd7bd8a42e5c5e4a5b71684e967d5470169d62a3965c215e8478df858"
+
+# A profile sets each switch of one Vis agent:
+#   toggles     engine toggles for --toggles
+#   extensions  extension names for --extensions; leave it out for the default set
+#   effort      --reasoning-effort
+#   persist     true keeps a session database (Council needs it); false uses --db :memory
+#   config      keys that go into $HOME/.vis/config.yml over the provider settings
+# vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
+
+[profiles.solo]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+
+[profiles.team]
+toggles = { council = true, draft_backend = "off" }
+effort = "medium"
+persist = true

@@ -16,8 +16,8 @@ Each trial is one agent, one model and one task in a separate Harbor job.
 
 | Agent | Source | Models |
 |---|---|---|
-| `vis-solo` | Native Vis `v0.2.37` Linux bundle, Council off | Opus 5.5, GPT-6.1 |
-| `vis-team` | Native Vis `v0.2.37` Linux bundle, Council on (subagents) | Opus 5.5, GPT-6.1 |
+| `vis-solo` | Native Vis Linux build of `profiles.toml`, profile `solo`: Council off | Opus 5.5, GPT-6.1 |
+| `vis-team` | Native Vis Linux build of `profiles.toml`, profile `team`: Council on (subagents) | Opus 5.5, GPT-6.1 |
 | `claude-code` | Harbor built-in agent | Opus 5.5 |
 | `codex` | Harbor built-in agent | GPT-6.1 |
 | `dirge` | `yogthos/dirge` master, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
@@ -59,10 +59,16 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
   If the Claude token expires too soon, the runner defers its trials and runs the others.
   Then it waits for the Vis refresh window and runs one short host Vis turn
   (`vis-agent` on `PATH`), so Vis refreshes the token under its own lock.
-- The `gh` CLI. `fetch` downloads the native Vis Linux bundle of the pinned release
-  (`VIS_RELEASE` in `ctb/cli.py`) and checks it against the release `SHA256SUMS`.
-  To test another Vis build, put its native `vis-agent-linux-x64.tar.gz` at
-  `artifacts/vis-agent-linux-amd64.tar.gz`. The bundle has no JVM fallback.
+- The `gh` CLI. `fetch` downloads the native Vis Linux build that `profiles.toml` pins: the
+  workflow artifact of one `native-release.yml` dry run on Vis `main`. It checks the commit in
+  the build stamp and the sha256, and keeps the bundle in `artifacts/vis-builds/<run_id>/`.
+  `uv run python -m ctb.agents.vis fetch` gets only this build. To test another build, change
+  the `[build]` pin. The bundle has no JVM fallback. Until the baseline round is sealed,
+  `fetch` also gets the `v0.2.37` release (`VIS_RELEASE`), because that round records it.
+- `profiles.toml` names the Vis profiles: toggles, extensions, effort, the session database
+  and a configuration overlay. The Harbor kwarg `profile` (`--ak profile=<name>`) selects one.
+  Vis writes the profile into the ATIF `trajectory.json`, and `ctb run` adds the build and the
+  profiles to the run record.
 
 Each run uses your subscription quota. A full matrix is 132 trials and takes many hours.
 
@@ -129,8 +135,8 @@ Harbor writes jobs to `jobs/<round>/` and the runner writes logs to `runs/<round
 ## Full Vis suite
 
 `terminal_bench/` is the full 66-task Terminal-Bench harness for Vis alone. It came from the
-Vis repository and keeps its own `uv` project, README and tests. The Vis `evals` extension
-runs it. Set `VIS_TERMINAL_BENCH` if this repository is not in `~/curated-terminal-benchmark`.
+Vis repository and keeps its own `uv` project, README and tests. It runs the same adapter,
+`ctb/agents/vis.py`, with the `solo` profile. The Vis `evals` extension runs it. Set `VIS_TERMINAL_BENCH` if this repository is not in `~/curated-terminal-benchmark`.
 
 ```bash
 cd terminal_bench && uv sync --locked && uv run pytest tests

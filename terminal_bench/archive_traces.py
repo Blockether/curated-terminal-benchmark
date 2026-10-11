@@ -5,16 +5,25 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
+from typing import BinaryIO
 
 JOBS = Path(__file__).resolve().parent / "jobs"
 CHUNK = 1024 * 1024
 
 
-def gzip_digest(path: Path) -> tuple[str, int]:
-    """Read to the gzip checksum so incomplete streams cannot be archived."""
+def open_trace(path: Path) -> BinaryIO:
+    """The raw JSONL bytes of a gzip or a plain trace."""
+    return gzip.open(path, "rb") if path.suffix == ".gz" else path.open("rb")
+
+
+def trace_digest(path: Path) -> tuple[str, int]:
+    """Read a gzip trace to its checksum, so incomplete streams cannot be archived.
+
+    A plain JSONL trace has no checksum: its bytes are archived as they are.
+    """
     digest = hashlib.sha256()
     size = 0
-    with gzip.open(path, "rb") as stream:
+    with open_trace(path) as stream:
         for chunk in iter(lambda: stream.read(CHUNK), b""):
             digest.update(chunk)
             size += len(chunk)
@@ -31,12 +40,12 @@ def compress_trace(source: Path, target: Path) -> None:
             stderr=subprocess.DEVNULL,
         )
         try:
-            with gzip.open(source, "rb") as stream:
+            with open_trace(source) as stream:
                 for chunk in iter(lambda: stream.read(CHUNK), b""):
                     process.stdin.write(chunk)
             process.stdin.close()
             if process.wait() != 0:
-                raise RuntimeError("zstd compression failed; gzip is preserved")
+                raise RuntimeError("zstd compression failed; the trace is preserved")
         except BaseException:
             if process.poll() is None:
                 process.kill()
@@ -58,14 +67,14 @@ def zstd_digest(path: Path) -> tuple[str, int]:
             digest.update(chunk)
             size += len(chunk)
     if process.wait() != 0:
-        raise RuntimeError("zstd verification failed; gzip is preserved")
+        raise RuntimeError("zstd verification failed; the trace is preserved")
     return digest.hexdigest(), size
 
 
 def archive_trace(source: Path) -> dict:
-    """Delete gzip only after the complete raw stream matches the zstd archive."""
-    expected = gzip_digest(source)
-    target = source.with_suffix(".zst")
+    """Delete a trace only after its complete raw stream matches the zstd archive."""
+    expected = trace_digest(source)
+    target = source.with_name(source.name.removesuffix(".gz") + ".zst")
     temporary = target.with_name(target.name + ".tmp")
     if temporary.exists():
         raise FileExistsError(f"Remove or inspect the unfinished archive: {temporary}")
@@ -75,7 +84,7 @@ def archive_trace(source: Path) -> dict:
             compress_trace(source, temporary)
         candidate = temporary if created else target
         if zstd_digest(candidate) != expected:
-            raise RuntimeError("Trace digests differ; gzip is preserved")
+            raise RuntimeError("Trace digests differ; the trace is preserved")
         if created:
             temporary.replace(target)
     finally:
@@ -85,7 +94,8 @@ def archive_trace(source: Path) -> dict:
         "trace": target.name,
         "raw_sha256": expected[0],
         "raw_bytes": expected[1],
-        "original_gzip_bytes": source.stat().st_size,
+        "original_format": "gzip" if source.suffix == ".gz" else "jsonl",
+        "original_bytes": source.stat().st_size,
         "archived_zstd_bytes": target.stat().st_size,
         "compression": "zstd -T2 -19 --long=27",
     }
@@ -103,8 +113,11 @@ def main() -> None:
     for path in sorted(JOBS.glob("*/*/result.json")):
         if not json.loads(path.read_text(encoding="utf-8")).get("finished_at"):
             continue
-        source = path.parent / "agent/vis-trace.jsonl.gz"
-        if not source.is_file():
+        names = ("agent/vis-trace.jsonl.gz", "agent/vis-trace.jsonl")
+        source = next(
+            (path.parent / n for n in names if (path.parent / n).is_file()), None
+        )
+        if source is None:
             continue
         try:
             manifest = archive_trace(source)
@@ -117,7 +130,7 @@ def main() -> None:
         archived += 1
         print(
             f"Archived {path.parent.parent.name}/{path.parent.name}: "
-            f"{manifest['original_gzip_bytes']} -> {manifest['archived_zstd_bytes']} bytes"
+            f"{manifest['original_bytes']} -> {manifest['archived_zstd_bytes']} bytes"
         )
     print(f"Archived {archived}; preserved incomplete gzip: {incomplete}")
 
