@@ -1,0 +1,62 @@
+# Curated CPU-only Terminal-Bench 4.0 tasks (no GPU, at most 8 GB memory).
+# `hours` is the expert time estimate from each task.toml.
+
+[[task]]
+name = "html-js-filter"
+level = "easy"
+hours = 0.75
+
+[[task]]
+name = "photonic-waveguide-routing"
+level = "easy"
+hours = 0.75
+
+[[task]]
+name = "music-harmony"
+level = "easy"
+hours = 1.0
+
+[[task]]
+name = "bun-sourcemap-leak"
+level = "easy"
+hours = 1.5
+
+[[task]]
+name = "interleaved-vigenere"
+level = "easy"
+hours = 2.0
+
+[[task]]
+name = "payments-pipeline-fix"
+level = "easy"
+hours = 2.0
+
+[[task]]
+name = "mvcc-lsm-compaction"
+level = "hard"
+hours = 4.0
+
+[[task]]
+name = "kv-live-surgery"
+level = "hard"
+hours = 4.0
+
+[[task]]
+name = "vf2-speedup-networkx"
+level = "hard"
+hours = 4.0
+
+[[task]]
+name = "react-lead-form"
+level = "hard"
+hours = 5.0
+
+[[task]]
+name = "wal-recovery-ordering"
+level = "hard"
+hours = 6.0
+
+[[task]]
+name = "session-window-debug"
+level = "hard"
+hours = 8.0

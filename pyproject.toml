@@ -1,0 +1,19 @@
+[project]
+name = "curated-terminal-benchmark"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["harbor==0.23.0"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.13,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["artifacts", "terminal_bench"]
+
+[tool.uv]
+package = false
