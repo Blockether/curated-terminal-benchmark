@@ -108,6 +108,7 @@ def test_run_trial_drops_a_job_when_podman_stops_during_it(root, monkeypatch):
     monkeypatch.setattr(cli, "podman_ready", lambda env=None: next(probes))
     monkeypatch.setattr(cli, "host_env", lambda *a: {})
     monkeypatch.setattr(cli, "harbor_command", lambda *a: ["true"])
+    monkeypatch.setattr(cli, "hard_limit", lambda *a: 60)
     trial = matrix.Trial(matrix.AGENTS["codex"], "openai", "t")
     (root / "jobs" / trial.job / "t__1").mkdir(parents=True)
     with pytest.raises(cli.PodmanDown, match="stopped during"):
@@ -122,3 +123,45 @@ def test_run_stops_with_a_message_when_podman_is_down(root, monkeypatch):
     monkeypatch.setattr(cli, "run_trial", down)
     with pytest.raises(SystemExit, match="not reachable"):
         cli.run(run_args())
+
+
+def test_hard_limit_adds_every_task_timeout_and_a_margin(tmp_path, monkeypatch):
+    task = tmp_path / "t"
+    task.mkdir()
+    (task / "task.toml").write_text(
+        "[agent]\ntimeout_sec = 28800.0\n"
+        "[verifier]\ntimeout_sec = 300.0\n"
+        "[verifier.environment]\nbuild_timeout_sec = 600.0\n"
+        "[environment]\nbuild_timeout_sec = 600.0\n"
+    )
+    monkeypatch.setattr(cli, "DATASET", tmp_path)
+    assert cli.hard_limit("t", 0.25) == 7200 + 300 + 600 + 600 + cli.HARD_LIMIT_MARGIN_S
+
+
+def test_run_trial_stops_a_trial_that_harbor_does_not_stop(root, monkeypatch):
+    # The baseline round of 2026-10-11 ran samizdat 50 minutes past its 2 h agent timeout.
+    removed = []
+    monkeypatch.setattr(cli, "podman_ready", lambda env=None: True)
+    monkeypatch.setattr(cli, "host_env", lambda *a: {})
+    monkeypatch.setattr(cli, "harbor_command", lambda *a: ["sh", "-c", "sleep 30 & wait"])
+    monkeypatch.setattr(cli, "hard_limit", lambda *a: 0.5)
+    monkeypatch.setattr(cli, "remove_containers", lambda job, env: removed.append(job.name))
+    trial = matrix.Trial(matrix.AGENTS["samizdat"], "openai", "t")
+    line = cli.run_trial(trial, root / "jobs", root, 0.25)
+    assert line.startswith(f"done {trial.job}: exit=timeout reward=None")
+    assert removed == [trial.job]
+    error = cli.trial_result(root / "jobs", trial)["exception_info"]
+    assert error["exception_type"] == "HarnessTimeoutError"
+
+
+def test_run_trial_keeps_a_result_that_harbor_wrote_while_stopping(root, monkeypatch):
+    trial = matrix.Trial(matrix.AGENTS["samizdat"], "openai", "t")
+    own = root / "jobs" / trial.job / "t__1"
+    write = f"mkdir -p {own} && echo '{{\"verifier_result\": null}}' > {own}/result.json"
+    monkeypatch.setattr(cli, "podman_ready", lambda env=None: True)
+    monkeypatch.setattr(cli, "host_env", lambda *a: {})
+    monkeypatch.setattr(cli, "harbor_command", lambda *a: ["sh", "-c", f"{write}; sleep 30"])
+    monkeypatch.setattr(cli, "hard_limit", lambda *a: 1)
+    monkeypatch.setattr(cli, "remove_containers", lambda job, env: None)
+    cli.run_trial(trial, root / "jobs", root, 0.25)
+    assert not (root / "jobs" / trial.job / cli.TIMEOUT_DIR).exists()

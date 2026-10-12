@@ -5,12 +5,14 @@ import hashlib
 import json
 import os
 import shutil
+import signal
 import statistics
 import subprocess
 import sys
 import tarfile
 import tempfile
 import time
+import tomllib
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from importlib import metadata
@@ -283,6 +285,76 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
     return privacy.check_command(command)
 
 
+# Harbor's own timeouts can fail to stop a trial; this margin covers setup and teardown.
+HARD_LIMIT_MARGIN_S = 1800
+TIMEOUT_DIR = "ctb-timeout"
+
+
+def hard_limit(task: str, multiplier: float) -> float:
+    """Seconds after which ctb stops a Harbor trial that its own timeouts did not stop."""
+    info = tomllib.loads((DATASET / task / "task.toml").read_text())
+    environment, verifier = info.get("environment", {}), info.get("verifier", {})
+    return (
+        info["agent"]["timeout_sec"] * multiplier
+        + verifier.get("timeout_sec", 0)
+        + environment.get("build_timeout_sec", 0)
+        + verifier.get("environment", {}).get("build_timeout_sec", 0)
+        + HARD_LIMIT_MARGIN_S
+    )
+
+
+def stop_group(process: subprocess.Popen) -> None:
+    """Stop Harbor and its podman compose children."""
+    for sig, grace in ((signal.SIGTERM, 60), (signal.SIGKILL, None)):
+        try:
+            os.killpg(process.pid, sig)
+        except ProcessLookupError:
+            return
+        try:
+            process.wait(timeout=grace)
+            return
+        except subprocess.TimeoutExpired:
+            continue
+
+
+def remove_containers(job: Path, env: dict[str, str]) -> None:
+    """Remove the containers of a stopped trial; their names start with the trial name."""
+    for trial_dir in (p for p in job.iterdir() if p.is_dir()) if job.is_dir() else []:
+        found = subprocess.run(
+            ["podman", "ps", "-aq", "--filter", f"name={trial_dir.name.lower()}"],
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        ids = found.stdout.split()
+        if ids:
+            subprocess.run(["podman", "rm", "-f", *ids], env=env, capture_output=True, check=False)
+
+
+def record_timeout(jobs: Path, trial: Trial, limit: float) -> None:
+    """Give a trial that ctb stopped a result without reward, so it counts as a fail."""
+    path = jobs / trial.job / TIMEOUT_DIR / "result.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    message = f"Harbor did not stop the trial; ctb stopped it after {limit:.0f} seconds"
+    path.write_text(
+        json.dumps(
+            {
+                "trial_name": trial.job,
+                "source": "ctb",
+                "verifier_result": None,
+                "agent_result": None,
+                "exception_info": {
+                    "exception_type": "HarnessTimeoutError",
+                    "exception_message": message,
+                },
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+
 def trial_result(jobs: Path, trial: Trial) -> dict | None:
     for path in sorted((jobs / trial.job).glob("*/result.json")):
         return json.loads(path.read_text())
@@ -323,21 +395,31 @@ def run_trial(
         except credentials.CredentialError as error:
             return f"blocked {trial.job}: {error}"
         started = time.monotonic()
+        limit = hard_limit(trial.task, multiplier)
         with open(logs / f"{trial.job}.log", "w") as log:
-            code = subprocess.run(
+            harbor = subprocess.Popen(
                 harbor_command(trial, jobs, multiplier),
-                check=False,
                 cwd=ROOT,
                 env=env,
                 stdout=log,
                 stderr=subprocess.STDOUT,
-            ).returncode
+                start_new_session=True,
+            )
+            try:
+                code: int | str = harbor.wait(timeout=limit)
+            except subprocess.TimeoutExpired:
+                stop_group(harbor)
+                code = "timeout"
     if not podman_ready(env):
         # A VM stop is not an agent result: remove the job, so the next run repeats it.
         shutil.rmtree(jobs / trial.job, ignore_errors=True)
         raise PodmanDown(
             f"Podman stopped during {trial.job}: start the VM, then run the round again"
         )
+    if code == "timeout":
+        remove_containers(jobs / trial.job, env)
+        if trial_result(jobs, trial) is None:
+            record_timeout(jobs, trial, limit)
     reward = reward_of(trial_result(jobs, trial))
     return f"done {trial.job}: exit={code} reward={reward} {time.monotonic() - started:.0f}s"
 

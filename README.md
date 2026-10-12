@@ -44,6 +44,8 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 - dirge and kmet print no token counts. Their usage patches add the totals that each agent
   already keeps. Trials that ran before a patch have no token counts.
 - A trial without a reward counts as a fail, for example after a verifier timeout.
+- If Harbor does not stop a trial, `ctb` stops it after all task timeouts plus 30 minutes.
+  The trial then counts as a fail with `HarnessTimeoutError`.
 - One trial per cell is a small sample. Treat a difference of one task as noise.
 
 ## Prerequisites
