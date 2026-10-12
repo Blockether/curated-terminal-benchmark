@@ -72,14 +72,14 @@ The project extension `.vis/extensions/evals.py` drives this queue from a Vis se
 
 ```python
 evals.preflight()             # Podman machine and socket, Compose, pinned bundle, dataset, key, disk
-evals.run_bench(max_tasks=1)  # paid: starts run_suite.py in the background
+evals.run("terminal-bench", max_tasks=1)  # paid: starts run_suite.py in the background
 evals.status()                # progress and log tail of the newest run
 evals.bench()                 # rebuilds runs/summary.json, then reports the score
 evals.diagnose()              # where Vis loses tasks, largest lever first
 evals.leaderboard()           # Harbor Hub board and where Vis would stand
 ```
 
-`run_bench()` refuses to start when a preflight check fails or another queue runs. Before the first scored trial, it starts only a canary of one task. The extension keeps its run records in `~/.vis/evals/runs/`, or in `VIS_EVALS_HOME`. `uv run python run_suite.py --dry-run --json` prints the queue plan as one line of JSON for tools.
+`evals.run("terminal-bench", ...)` refuses to start when a preflight check fails or another queue runs. Before the first scored trial, it starts only a canary of one task. The extension keeps its run records in `~/.vis/evals/runs/`, or in `VIS_EVALS_HOME`. `uv run python run_suite.py --dry-run --json` prints the queue plan as one line of JSON for tools.
 
 ### Read a score with its uncertainty
 
@@ -90,8 +90,8 @@ A pass rate from a few dozen tasks is not exact. `bench()` gives each pass rate 
 One attempt for each task does not show if Vis solves the task every time. More than one attempt for each task needs a named round. A round keeps its jobs and results in the Git-ignored `rounds/<round>/`, apart from the main round in `jobs/` and `runs/`:
 
 ```python
-evals.run_bench(max_tasks=1, attempts=3, round_name="glm-k3")  # paid: canary of one task
-evals.run_bench(attempts=3, round_name="glm-k3")               # paid: every pending task
+evals.run("terminal-bench", max_tasks=1, attempts=3, round_name="glm-k3")  # paid: canary of one task
+evals.run("terminal-bench", attempts=3, round_name="glm-k3")               # paid: every pending task
 evals.bench(round_name="glm-k3")
 ```
 
