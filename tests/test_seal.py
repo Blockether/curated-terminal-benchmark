@@ -50,12 +50,18 @@ def test_run_retries_deferred_trials_after_a_token_refresh(root, monkeypatch, ca
 
 
 def write_result(root, job, reward):
+    agent, family, task = job.split("__")
     trial_dir = root / "jobs/r" / job / "t__1"
     trial_dir.mkdir(parents=True)
     result = {
+        "task_name": f"terminal-bench/{task}",
+        "trial_name": "t__1",
+        "started_at": "2026-10-11T10:00:00Z",
+        "finished_at": "2026-10-11T10:05:00Z",
+        "config": {"agent": {"name": agent, "model_name": cli.MODELS[family]}},
         "verifier_result": {"rewards": {"reward": reward}},
         "agent_result": {"n_input_tokens": 10, "n_cache_tokens": 4, "n_output_tokens": 2},
-        "agent_info": {"version": "1.0"},
+        "agent_info": {"name": agent, "version": "1.0"},
         "task_checksum": "abc",
     }
     (trial_dir / "result.json").write_text(json.dumps(result))
@@ -94,6 +100,31 @@ def test_seal_refuses_missing_trials_and_dirty_runs(root):
     write_result(root, "dirge__anthropic__html-js-filter", 0.0)
     with pytest.raises(SystemExit, match="clean harness commit"):
         cli.seal(run_args())
+
+
+def test_rows_read_the_trials_of_a_round_and_skip_job_results(root):
+    write_result(root, "dirge__anthropic__html-js-filter", 1.0)
+    (root / "jobs/r/dirge__anthropic__html-js-filter/result.json").write_text('{"stats": {}}')
+    assert cli.rows(root / "jobs/r") == [
+        {
+            "agent": "dirge",
+            "model": cli.MODELS["anthropic"],
+            "task": "terminal-bench/html-js-filter",
+            "reward": 1.0,
+            "error": None,
+            "input": 10,
+            "output": 2,
+        }
+    ]
+    assert cli.rows(root / "jobs/missing") == []
+
+
+def test_summary_counts_the_level_of_a_dataset_task_name(root, capsys):
+    write_result(root, "dirge__anthropic__html-js-filter", 1.0)
+    cli.summary(argparse.Namespace(round="r", json=None))
+    columns = capsys.readouterr().out.splitlines()[1].split()
+    assert columns[:3] == ["dirge", cli.MODELS["anthropic"], "1/1"]
+    assert sorted(columns[3:5]) == ["0/0", "1/1"]
 
 
 def test_run_trial_needs_podman(root, monkeypatch):
@@ -152,6 +183,13 @@ def test_run_trial_stops_a_trial_that_harbor_does_not_stop(root, monkeypatch):
     assert removed == [trial.job]
     error = cli.trial_result(root / "jobs", trial)["exception_info"]
     assert error["exception_type"] == "HarnessTimeoutError"
+    found = cli.harbor_trial(root / "jobs", trial)
+    assert (found.agent, found.model, found.reward, found.error) == (
+        "samizdat",
+        cli.MODELS["openai"],
+        None,
+        "HarnessTimeoutError",
+    )
 
 
 def test_run_trial_keeps_a_result_that_harbor_wrote_while_stopping(root, monkeypatch):

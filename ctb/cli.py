@@ -18,6 +18,8 @@ from concurrent.futures import ThreadPoolExecutor
 from importlib import metadata
 from pathlib import Path
 
+from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
+
 from ctb import credentials, privacy
 from ctb.agents import vis
 from ctb.agents.base import EFFORT, min_token_seconds
@@ -333,14 +335,20 @@ def remove_containers(job: Path, env: dict[str, str]) -> None:
 
 
 def record_timeout(jobs: Path, trial: Trial, limit: float) -> None:
-    """Give a trial that ctb stopped a result without reward, so it counts as a fail."""
+    """Give a trial that ctb stopped a Harbor result without reward, so it counts as a fail."""
     path = jobs / trial.job / TIMEOUT_DIR / "result.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     message = f"Harbor did not stop the trial; ctb stopped it after {limit:.0f} seconds"
+    agent = {"name": trial.agent.name, "model_name": MODELS[trial.family]}
     path.write_text(
         json.dumps(
             {
+                # read_trial needs the task, trial and finish keys of a Harbor result.
+                "task_name": trial.task,
                 "trial_name": trial.job,
+                "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "config": {"agent": agent},
+                "agent_info": {"name": trial.agent.name},
                 "source": "ctb",
                 "verifier_result": None,
                 "agent_result": None,
@@ -512,24 +520,20 @@ def record_run(jobs: Path, args: argparse.Namespace) -> None:
 
 
 def rows(jobs: Path) -> list[dict]:
-    out = []
-    for path in sorted(jobs.glob("*/*/result.json")):
-        agent, family, task = path.parent.parent.name.split("__")
-        result = json.loads(path.read_text())
-        agent_result = result.get("agent_result") or {}
-        error = (result.get("exception_info") or {}).get("exception_type")
-        out.append(
-            {
-                "agent": agent,
-                "model": MODELS[family],
-                "task": task,
-                "reward": reward_of(result),
-                "error": error,
-                "input": agent_result.get("n_input_tokens"),
-                "output": agent_result.get("n_output_tokens"),
-            }
-        )
-    return out
+    if not jobs.is_dir():
+        return []
+    return [
+        {
+            "agent": trial.agent,
+            "model": trial.model,
+            "task": trial.task,
+            "reward": trial.reward,
+            "error": trial.error,
+            "input": trial.input_tokens,
+            "output": trial.output_tokens,
+        }
+        for trial in read_trials(jobs)
+    ]
 
 
 def summary(args: argparse.Namespace) -> None:
@@ -546,8 +550,9 @@ def summary(args: argparse.Namespace) -> None:
         def passed(rows_):
             return sum(1 for r in rows_ if (r["reward"] or 0) >= 1)
 
-        easy = [r for r in items if levels.get(r["task"]) == "easy"]
-        hard = [r for r in items if levels.get(r["task"]) == "hard"]
+        # Harbor names a task with its dataset, for example terminal-bench/<task>.
+        easy = [r for r in items if levels.get(r["task"].rpartition("/")[2]) == "easy"]
+        hard = [r for r in items if levels.get(r["task"].rpartition("/")[2]) == "hard"]
         inputs = [r["input"] for r in items if isinstance(r["input"], int)]
         median = int(statistics.median(inputs)) if inputs else "-"
         print(
@@ -567,6 +572,14 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def harbor_trial(jobs: Path, trial: Trial) -> HarborTrial | None:
+    """Return the first finished trial of a ctb job, or None."""
+    for path in sorted((jobs / trial.job).glob("*/result.json")):
+        if (found := read_trial(path)) is not None:
+            return found
+    return None
+
+
 def seal(args: argparse.Namespace) -> None:
     """Write results/<round>.json once: run records, one row per trial and result hashes."""
     jobs = ROOT / "jobs" / args.round
@@ -580,42 +593,14 @@ def seal(args: argparse.Namespace) -> None:
     expected = trials(
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
-    missing = [t.job for t in expected if trial_result(jobs, t) is None]
+    found = {t.job: harbor_trial(jobs, t) for t in expected}
+    missing = [job for job, trial in found.items() if trial is None]
     if missing:
         raise SystemExit(f"{len(missing)} trials have no result: {', '.join(missing)}")
-    table = []
-    for trial in expected:
-        path = min((jobs / trial.job).glob("*/result.json"))
-        result = json.loads(path.read_text())
-        agent_result = result.get("agent_result") or {}
-        table.append(
-            {
-                "agent": trial.agent.name,
-                "model": MODELS[trial.family],
-                "task": trial.task,
-                "reward": reward_of(result),
-                "error": (result.get("exception_info") or {}).get("exception_type"),
-                "input": agent_result.get("n_input_tokens"),
-                "cache": agent_result.get("n_cache_tokens"),
-                "output": agent_result.get("n_output_tokens"),
-                "agent_version": (result.get("agent_info") or {}).get("version"),
-                "task_checksum": result.get("task_checksum"),
-                "started_at": result.get("started_at"),
-                "finished_at": result.get("finished_at"),
-                "result": str(path.relative_to(ROOT)),
-                "result_sha256": file_sha256(path),
-            }
-        )
-    body = {
-        "round": args.round,
-        "sealed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "runs": runs,
-        "rows": table,
-    }
-    body["digest"] = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+    body = seal_round(args.round, runs, found.values(), ROOT)
     RESULTS.mkdir(exist_ok=True)
     out.write_text(json.dumps(body, indent=2) + "\n")
-    print(f"sealed {len(table)} trials in {out.relative_to(ROOT)}, digest {body['digest']}")
+    print(f"sealed {len(body['rows'])} trials in {out.relative_to(ROOT)}, digest {body['digest']}")
 
 
 def main(argv: list[str] | None = None) -> None:

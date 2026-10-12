@@ -550,6 +550,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "harbor" },
+    { name = "vis-agent" },
 ]
 
 [package.dev-dependencies]
@@ -559,7 +560,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "harbor", specifier = "==0.24.0" }]
+requires-dist = [
+    { name = "harbor", specifier = "==0.24.0" },
+    { name = "vis-agent", specifier = "==0.2.38" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -2459,6 +2463,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/da/34/30e9280707135d2cfc589dfff3cb796bd07a3aeb1a3e415ba09dd89d7bb4/uvicorn-0.54.0.tar.gz", hash = "sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620", size = 112283, upload-time = "2026-09-25T06:52:37.601Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl", hash = "sha256:505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf", size = 87427, upload-time = "2026-09-25T06:52:35.829Z" },
+]
+
+[[package]]
+name = "vis-agent"
+version = "0.2.38"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jsonschema" },
+    { name = "packaging" },
+    { name = "pydantic" },
+    { name = "referencing" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c8/52/9723c58d791988d78d2379108e11d24682e3bb57feed7f39f7d478003515/vis_agent-0.2.38.tar.gz", hash = "sha256:d55e475881a9ba0f26a4d491f729379e63752d0ef722f461b6b8612ca04b2cf8", size = 319483, upload-time = "2026-10-12T12:27:38.773Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/66/0a/eb47f77354ebb25b2a6428491e80737d7668c5e0e590a8e7f564c92434fa/vis_agent-0.2.38-py3-none-any.whl", hash = "sha256:56d42916e05d63b3d176f7563b3e2f6d5a8ce511622376eb05374e1e3151bb7d", size = 207890, upload-time = "2026-10-12T12:27:37.16Z" },
 ]
 
 [[package]]
