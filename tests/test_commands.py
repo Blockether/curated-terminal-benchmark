@@ -4,16 +4,19 @@ import hashlib
 import io
 import json
 import tarfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pytest
 from harbor.models.agent.context import AgentContext
 
-from ctb import cli
+from ctb import cli, credentials
 from ctb.agents import vis
 from ctb.agents.dirge import Dirge
 from ctb.agents.kmet import Kmet
+from ctb.agents.opencode import OpenCode, opencode_auth_json
+from ctb.agents.pi import Pi, pi_auth_json
 from ctb.agents.vis import VisSolo, VisTeam
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
@@ -198,6 +201,19 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
     assert "vis" not in second
 
 
+def test_parallel_run_records_keep_every_record(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli, "git_state", lambda: {"commit": "c", "dirty": False})
+    monkeypatch.setattr(cli, "pins", dict)
+    monkeypatch.setattr(cli, "ARTIFACTS", tmp_path / "none")
+    args = argparse.Namespace(
+        agents="codex", models="m", tasks="all", parallel=1, timeout_multiplier=1.0
+    )
+    with ThreadPoolExecutor(8) as pool:
+        list(pool.map(lambda _: cli.record_run(tmp_path, args), range(16)))
+    assert len(json.loads((tmp_path / "ctb-runs.json").read_text())) == 16
+    assert not (tmp_path / "ctb-runs.json.tmp").exists()
+
+
 def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
     dirge = agent(Dirge, "openai/gpt-6.1-sol").config()
     assert dirge["providers"]["openai"] == {
@@ -217,6 +233,47 @@ def test_builtin_agents_get_effort_as_a_harbor_kwarg():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "codex"
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]
+
+
+def test_agent_setup_gets_more_time_than_the_harbor_default():
+    command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
+    assert command[command.index("--agent-setup-timeout-multiplier") + 1] == "5"
+
+
+def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
+    opencode = agent(OpenCode, "openai/gpt-6.1-sol")
+    assert opencode.options.variant == "medium"
+    assert opencode._version == "1.19.0"
+    pi = Pi(
+        logs_dir=Path("/tmp/ctb-test-logs"),
+        model_name="openai/gpt-6.1-sol",
+        reasoning_effort="medium",
+    )
+    assert pi.options.thinking == "medium"
+    assert pi._version == "1.2.0"
+    assert pi.model_connection.provider == "openai-codex"
+    command = harbor_command(Trial(AGENTS["pi"], "openai", "t"), Path("/j"), 0.25)
+    assert command[-2:] == ["--ak", "reasoning_effort=medium"]
+
+
+def test_opencode_and_pi_refuse_the_anthropic_model():
+    for cls in (OpenCode, Pi):
+        with pytest.raises(ValueError, match="extra usage"):
+            agent(cls, "anthropic/claude-opus-5-5")
+
+
+def test_opencode_and_pi_logins_cannot_rotate_the_host_login():
+    access = credentials.Access("A", 123, account_id="acc")
+    assert json.loads(opencode_auth_json(access)) == {
+        "openai": {
+            "type": "oauth",
+            "access": "A",
+            "refresh": "",
+            "expires": 123,
+            "accountId": "acc",
+        }
+    }
+    assert json.loads(pi_auth_json(access))["openai-codex"]["refresh"] == ""
 
 
 def tokens(context):

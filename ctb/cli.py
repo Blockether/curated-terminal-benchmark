@@ -1,6 +1,7 @@
 """Fetch agents, run the curated matrix in Harbor and summarize PASS rates."""
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -279,6 +280,8 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
         trial.task,
         "--agent-timeout-multiplier",
         str(multiplier),
+        "--agent-setup-timeout-multiplier",
+        str(SETUP_MULTIPLIER),
         "--plugin",
         privacy.REDACTOR,
     ]
@@ -289,6 +292,10 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
 
 # Harbor's own timeouts can fail to stop a trial; this margin covers setup and teardown.
 HARD_LIMIT_MARGIN_S = 1800
+# Harbor gives an agent install 360 s. npm and nvm installs under amd64 emulation can take longer,
+# and a setup timeout is a harness failure, not an agent failure.
+AGENT_SETUP_TIMEOUT_S = 360
+SETUP_MULTIPLIER = 5
 TIMEOUT_DIR = "ctb-timeout"
 
 
@@ -301,6 +308,7 @@ def hard_limit(task: str, multiplier: float) -> float:
         + verifier.get("timeout_sec", 0)
         + environment.get("build_timeout_sec", 0)
         + verifier.get("environment", {}).get("build_timeout_sec", 0)
+        + AGENT_SETUP_TIMEOUT_S * SETUP_MULTIPLIER
         + HARD_LIMIT_MARGIN_S
     )
 
@@ -499,7 +507,6 @@ def pins() -> dict:
 def record_run(jobs: Path, args: argparse.Namespace) -> None:
     """Append the harness state of one `run` call to the round; `seal` copies it."""
     path = jobs / "ctb-runs.json"
-    runs = json.loads(path.read_text()) if path.is_file() else []
     record = {
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         **git_state(),
@@ -515,8 +522,14 @@ def record_run(jobs: Path, args: argparse.Namespace) -> None:
     if vis_agents:
         # The Vis agents run the build and the profiles of profiles.toml.
         record["vis"] = vis.run_record(vis_agents)
-    runs.append(record)
-    path.write_text(json.dumps(runs, indent=2) + "\n")
+    # Several `run` calls can share one round, so read, append and replace under a lock.
+    with open(jobs / "ctb-runs.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        runs = json.loads(path.read_text()) if path.is_file() else []
+        runs.append(record)
+        temp = path.with_suffix(".json.tmp")
+        temp.write_text(json.dumps(runs, indent=2) + "\n")
+        os.replace(temp, path)
 
 
 def rows(jobs: Path) -> list[dict]:

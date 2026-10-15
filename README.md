@@ -23,6 +23,8 @@ Each trial is one agent, one model and one task in a separate Harbor job.
 | `dirge` | `yogthos/dirge` master, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
 | `kmet` | `kmetia/kmet-agent` master, with `patches/kmet-print-thinking.patch` and `patches/kmet-usage.patch` | GPT-6.1 |
 | `samizdat` | `yogthos/samizdat` master on Jolt 0.8.20, one beam branch, through the model proxy | Opus 5.5, GPT-6.1 |
+| `opencode` | Harbor built-in agent, `opencode-ai` 1.19.0, model variant `medium` | GPT-6.1 |
+| `pi` | Harbor built-in agent, pi 1.2.0, provider `openai-codex`, `--thinking medium` | GPT-6.1 |
 
 The models are `anthropic/claude-opus-5-5` and `openai/gpt-6.1-sol`. All agents use medium
 reasoning effort. `tasks.toml` lists the tasks: 6 easy tasks (expert estimate at most 2 hours)
@@ -31,6 +33,8 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 ### Limits of the comparison
 
 - kmet runs only on GPT. kmet has no Anthropic subscription (OAuth) transport.
+- OpenCode and pi run only on GPT. Anthropic bills a subscription token that a third-party app
+  uses as extra usage, not as plan usage. Each run gets a ChatGPT login without a refresh token.
 - kmet print mode ignores `--thinking`. The patch passes the thinking level, as interactive mode does.
 - samizdat speaks only OpenAI Chat Completions. `ctb run` starts a proxy on the host
   (`ctb/proxy.py`). The proxy sends Opus requests to the Anthropic Messages API and GPT
@@ -46,6 +50,10 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 - A trial without a reward counts as a fail, for example after a verifier timeout.
 - If Harbor does not stop a trial, `ctb` stops it after all task timeouts plus 30 minutes.
   The trial then counts as a fail with `HarnessTimeoutError`.
+- An agent install gets 5 times the Harbor setup timeout of 360 seconds. npm and nvm installs
+  under amd64 emulation can take longer than 360 seconds.
+- Agents can run in separate `ctb run` processes on the same round. Each `run` call adds its
+  record to `jobs/<round>/ctb-runs.json` under a file lock.
 - One trial per cell is a small sample. Treat a difference of one task as noise.
 
 ## Prerequisites

@@ -166,7 +166,8 @@ def test_hard_limit_adds_every_task_timeout_and_a_margin(tmp_path, monkeypatch):
         "[environment]\nbuild_timeout_sec = 600.0\n"
     )
     monkeypatch.setattr(cli, "DATASET", tmp_path)
-    assert cli.hard_limit("t", 0.25) == 7200 + 300 + 600 + 600 + cli.HARD_LIMIT_MARGIN_S
+    setup = cli.AGENT_SETUP_TIMEOUT_S * cli.SETUP_MULTIPLIER
+    assert cli.hard_limit("t", 0.25) == 7200 + 300 + 600 + 600 + setup + cli.HARD_LIMIT_MARGIN_S
 
 
 def test_run_trial_stops_a_trial_that_harbor_does_not_stop(root, monkeypatch):

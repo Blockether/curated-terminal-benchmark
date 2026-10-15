@@ -30,6 +30,38 @@ def split_model(model_name: str | None) -> tuple[str, str]:
     return family, model
 
 
+async def stage_files(
+    agent: BaseInstalledAgent, environment: BaseEnvironment, files: dict[str, str], root: str
+) -> None:
+    """Copy secret files to paths under root, readable only by the agent user."""
+    for index, (target, text) in enumerate(files.items()):
+        upload = f"/tmp/ctb-upload-{index}"
+        with tempfile.NamedTemporaryFile("w", delete=False) as handle:
+            handle.write(text)
+            local = Path(handle.name)
+        try:
+            os.chmod(local, 0o600)
+            await environment.upload_file(local, upload)
+        finally:
+            local.unlink(missing_ok=True)
+        await agent.exec_as_root(environment, command=f"chmod 644 {upload}")
+        path = shlex.quote(f"{root}/{target}")
+        await agent.exec_as_agent(
+            environment,
+            command=f"umask 077 && mkdir -p $(dirname {path}) && cp {upload} {path}",
+        )
+        await agent.exec_as_root(environment, command=f"rm -f {upload}")
+
+
+async def agent_home(agent: BaseInstalledAgent, environment: BaseEnvironment) -> str:
+    """The home directory of the agent user in the task container."""
+    result = await agent.exec_as_agent(environment, command='printf %s "$HOME"')
+    home = (result.stdout or "").strip()
+    if not home.startswith("/"):
+        raise RuntimeError(f"No home directory for the agent user: {home!r}")
+    return home
+
+
 class CuratedAgent(BaseInstalledAgent):
     """An installed agent that gets files and secrets only for one run."""
 
@@ -54,23 +86,7 @@ class CuratedAgent(BaseInstalledAgent):
 
     async def stage(self, environment: BaseEnvironment, files: dict[str, str]) -> None:
         """Copy secret files to paths under AGENT_HOME, readable only by the agent user."""
-        for index, (target, text) in enumerate(files.items()):
-            upload = f"/tmp/ctb-upload-{index}"
-            with tempfile.NamedTemporaryFile("w", delete=False) as handle:
-                handle.write(text)
-                local = Path(handle.name)
-            try:
-                os.chmod(local, 0o600)
-                await environment.upload_file(local, upload)
-            finally:
-                local.unlink(missing_ok=True)
-            await self.exec_as_root(environment, command=f"chmod 644 {upload}")
-            path = shlex.quote(f"{AGENT_HOME}/{target}")
-            await self.exec_as_agent(
-                environment,
-                command=f"umask 077 && mkdir -p $(dirname {path}) && cp {upload} {path}",
-            )
-            await self.exec_as_root(environment, command=f"rm -f {upload}")
+        await stage_files(self, environment, files, AGENT_HOME)
 
     async def clean(self, environment: BaseEnvironment) -> None:
         """Remove every staged token before the verifier runs."""
