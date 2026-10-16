@@ -56,7 +56,7 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
   mount. OpenCode also froze with this setting, so the mount was not the cause.
 - If OpenCode does not exit 2 minutes after its final answer, `ctb` stops it. If OpenCode writes
   nothing for `CTB_OPENCODE_IDLE_S` seconds (default 1800) before a final answer, `ctb` stops it
-  and the trial fails with `OpenCodeHangError`. The trial logs then keep the container processes
+  and the trial fails with `OpenCodeHangError`. The verifier still checks the work. The trial logs then keep the container processes
   in `agent/opencode/processes.txt`.
 - Agents can run in separate `ctb run` processes on the same round. Each `run` call adds its
   record to `jobs/<round>/ctb-runs.json` under a file lock.

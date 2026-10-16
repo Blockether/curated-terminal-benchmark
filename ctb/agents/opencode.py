@@ -43,8 +43,11 @@ def processes_command(path: str) -> str:
     )
 
 
-class OpenCodeHangError(RuntimeError):
-    """OpenCode wrote no output for CTB_OPENCODE_IDLE_S seconds before a final answer."""
+class OpenCodeHangError(NonZeroAgentExitCodeError):
+    """OpenCode wrote no output for CTB_OPENCODE_IDLE_S seconds before a final answer.
+
+    Harbor runs the verifier after this error type, as after an agent timeout.
+    """
 
 
 def stopped_error(stopped: list[str], error: BaseException | None) -> BaseException | None:

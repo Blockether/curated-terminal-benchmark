@@ -386,6 +386,13 @@ def test_opencode_stopped_after_a_final_answer_is_not_a_failure():
     assert stopped_error([], None) is None
 
 
+def test_opencode_hang_still_runs_the_verifier():
+    # Harbor verifies the task after NonZeroAgentExitCodeError, not after other errors.
+    from harbor.agents.installed.base import NonZeroAgentExitCodeError
+
+    assert issubclass(OpenCodeHangError, NonZeroAgentExitCodeError)
+
+
 def test_opencode_hang_keeps_a_process_list_in_the_trial_logs():
     command = processes_command("/logs/agent/opencode/processes.txt")
     assert "/proc/[0-9]*" in command and "wchan" in command
