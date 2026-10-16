@@ -25,6 +25,7 @@ from ctb import credentials, privacy
 from ctb.agents import vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
+from ctb.metrics import round_metrics
 from ctb.proxy import Proxy
 
 ARTIFACTS = ROOT / "artifacts"
@@ -616,6 +617,29 @@ def seal(args: argparse.Namespace) -> None:
     print(f"sealed {len(body['rows'])} trials in {out.relative_to(ROOT)}, digest {body['digest']}")
 
 
+def metrics(args: argparse.Namespace) -> None:
+    """Write results/<round>-metrics.json from a sealed round and print one row per agent."""
+    sealed = RESULTS / f"{args.round}.json"
+    if not sealed.is_file():
+        raise SystemExit(f"{sealed} does not exist; seal the round first")
+    body = round_metrics(ROOT, json.loads(sealed.read_text()))
+    out = RESULTS / f"{args.round}-metrics.json"
+    out.write_text(json.dumps(body, indent=2) + "\n")
+    print(
+        f"{'agent':12} {'pass':>6} {'agent_min':>9} {'median':>6} {'cost_usd':>8} {'usd/pass':>8} "
+        f"{'input':>10} {'output':>8} {'steps':>5} {'tools':>5} {'subagents':>9}"
+    )
+    for t in body["agents"]:
+        cost = "-" if t["cost_usd"] is None else f"{t['cost_usd']:.2f}"
+        per_pass = "-" if t["cost_per_pass_usd"] is None else f"{t['cost_per_pass_usd']:.2f}"
+        print(
+            f"{t['agent']:12} {t['passed']:>2}/{t['trials']:<3} {t['agent_minutes']:>9} "
+            f"{t['median_agent_minutes']:>6} {cost:>8} {per_pass:>8} {t['input']:>10} "
+            f"{t['output']:>8} {t['steps']:>5} {t['tool_calls']:>5} {t['subagents']:>9}"
+        )
+    print(f"wrote {out.relative_to(ROOT)}")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -637,8 +661,16 @@ def main(argv: list[str] | None = None) -> None:
     seal_parser.add_argument("--agents", default=",".join(AGENTS))
     seal_parser.add_argument("--models", default=",".join(MODELS))
     seal_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
+    metrics_parser = sub.add_parser("metrics", help="cost, time and token table of a sealed round")
+    metrics_parser.add_argument("--round", required=True)
     args = parser.parse_args(argv)
-    commands = {"fetch": lambda _: fetch(), "run": run, "summary": summary, "seal": seal}
+    commands = {
+        "fetch": lambda _: fetch(),
+        "run": run,
+        "summary": summary,
+        "seal": seal,
+        "metrics": metrics,
+    }
     commands[args.command](args)
 
 

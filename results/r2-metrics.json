@@ -1,0 +1,1460 @@
+{
+  "round": "r2",
+  "digest": "caab8e59a01a50c181bd3cba1d30b397a06aa662eec8305313845d305bc2ccc8",
+  "rows": [
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "bf19f1ab63df83bb3b26d88a6990ac5ae990f15b9efa47f57cf62f5d4a863b8c",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 134.9,
+        "agent_execution": 144.8,
+        "verifier": 32.1,
+        "total": 327.0
+      },
+      "input": 424021,
+      "cache": 400165,
+      "output": 12926,
+      "cost_usd": 0.5293,
+      "cost_source": "agent",
+      "steps": 15,
+      "llm_calls": 15,
+      "tool_calls": 14,
+      "tools": {
+        "Bash": 13,
+        "Write": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "4ca4c52c1e881f86ae93a46e4bd034aed4c2c688131493b807ed92ed4a56bbbe",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 168.9,
+        "agent_execution": 564.0,
+        "verifier": 350.7,
+        "total": 1098.2
+      },
+      "input": 1108797,
+      "cache": 1041422,
+      "output": 50403,
+      "cost_usd": 1.7552,
+      "cost_source": "agent",
+      "steps": 23,
+      "llm_calls": 23,
+      "tool_calls": 22,
+      "tools": {
+        "Bash": 18,
+        "Write": 3,
+        "Read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "52a6194133f9a262d69ce54df7f5f228e55a2cce1fa04ed29b2a04d6c74647b5",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 115.6,
+        "agent_execution": 683.9,
+        "verifier": 81.3,
+        "total": 897.0
+      },
+      "input": 1236052,
+      "cache": 1173736,
+      "output": 36140,
+      "cost_usd": 1.4558,
+      "cost_source": "agent",
+      "steps": 29,
+      "llm_calls": 29,
+      "tool_calls": 29,
+      "tools": {
+        "Bash": 28,
+        "Write": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "393f9b550478196bfc94d90292110179d876fbf6fdbe26f9d933fba74a51d0e7",
+      "seconds": {
+        "environment_setup": 3.3,
+        "agent_setup": 127.1,
+        "agent_execution": 491.9,
+        "verifier": 12.4,
+        "total": 678.0
+      },
+      "input": 1141320,
+      "cache": 1055360,
+      "output": 43481,
+      "cost_usd": 1.7682,
+      "cost_source": "agent",
+      "steps": 21,
+      "llm_calls": 21,
+      "tool_calls": 20,
+      "tools": {
+        "Bash": 19,
+        "Write": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "a02bf0fd9c58510b75b4465462992caf82c37c2456e68e2874dcedab34dfd1c6",
+      "seconds": {
+        "environment_setup": 6.2,
+        "agent_setup": 230.9,
+        "agent_execution": 205.3,
+        "verifier": 13.3,
+        "total": 471.5
+      },
+      "input": 295826,
+      "cache": 263814,
+      "output": 17122,
+      "cost_usd": 0.6512,
+      "cost_source": "agent",
+      "steps": 12,
+      "llm_calls": 12,
+      "tool_calls": 15,
+      "tools": {
+        "Bash": 10,
+        "Read": 5
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "c9ba577b7575d209a4961a34ff4443976c3a9e2d0be8a709ba2e65b3642deb80",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 123.1,
+        "agent_execution": 111.0,
+        "verifier": 236.5,
+        "total": 488.4
+      },
+      "input": 141497,
+      "cache": 124442,
+      "output": 4433,
+      "cost_usd": 0.2499,
+      "cost_source": "agent",
+      "steps": 6,
+      "llm_calls": 6,
+      "tool_calls": 5,
+      "tools": {
+        "Bash": 5
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "abea974cd606951a98e730ef7cb87b90cffe073209b98980035bdce72eba723d",
+      "seconds": {
+        "environment_setup": 19.2,
+        "agent_setup": 148.0,
+        "agent_execution": 2461.6,
+        "verifier": 108.2,
+        "total": 2766.8
+      },
+      "input": 8985742,
+      "cache": 8813684,
+      "output": 108506,
+      "cost_usd": 5.3087,
+      "cost_source": "agent",
+      "steps": 83,
+      "llm_calls": 83,
+      "tool_calls": 84,
+      "tools": {
+        "Bash": 81,
+        "Write": 2,
+        "Read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "a6eb4f9f2b3384df4119e2e219366bc55026fdb77f2e91d257292356d47f7203",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 119.2,
+        "agent_execution": 1856.8,
+        "verifier": 135.6,
+        "total": 2126.9
+      },
+      "input": 1885493,
+      "cache": 1743516,
+      "output": 120733,
+      "cost_usd": 3.899,
+      "cost_source": "agent",
+      "steps": 17,
+      "llm_calls": 17,
+      "tool_calls": 16,
+      "tools": {
+        "Bash": 16
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "7db86d884981091a3da6b73266a6062d1239fe200adac16d8be52bc07a5841eb",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 202.3,
+        "agent_execution": 453.3,
+        "verifier": 76.3,
+        "total": 747.6
+      },
+      "input": 935110,
+      "cache": 875038,
+      "output": 43959,
+      "cost_usd": 1.5346,
+      "cost_source": "agent",
+      "steps": 19,
+      "llm_calls": 19,
+      "tool_calls": 19,
+      "tools": {
+        "Bash": 19
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "a4cefb007ae4f547126ad95d6f12ffb97d42ea540c080c929cc3111e4b4f09df",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 130.4,
+        "agent_execution": 136.8,
+        "verifier": 13.4,
+        "total": 295.3
+      },
+      "input": 229275,
+      "cache": 208933,
+      "output": 10961,
+      "cost_usd": 0.4237,
+      "cost_source": "agent",
+      "steps": 9,
+      "llm_calls": 9,
+      "tool_calls": 8,
+      "tools": {
+        "Bash": 8
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "4ec78166a66bfff67e315af0ed4531a5d1d4cd37f9cc8168d2699a9031e1fd07",
+      "seconds": {
+        "environment_setup": 0.6,
+        "agent_setup": 98.0,
+        "agent_execution": 3596.0,
+        "verifier": 51.8,
+        "total": 3760.4
+      },
+      "input": 11221718,
+      "cache": 11014020,
+      "output": 158187,
+      "cost_usd": 7.0275,
+      "cost_source": "agent",
+      "steps": 78,
+      "llm_calls": 78,
+      "tool_calls": 79,
+      "tools": {
+        "Bash": 71,
+        "Write": 5,
+        "Edit": 3
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "f0ad91866928fa981ea0f7e206f4439111da603552b156e5b0c3a52adb601dc4",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 124.2,
+        "agent_execution": 143.9,
+        "verifier": 44.5,
+        "total": 327.2
+      },
+      "input": 305330,
+      "cache": 274876,
+      "output": 14876,
+      "cost_usd": 0.5961,
+      "cost_source": "agent",
+      "steps": 9,
+      "llm_calls": 9,
+      "tool_calls": 8,
+      "tools": {
+        "Bash": 8
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "b3fec2b752306ce253deea97b444f7de6dc3ddb99ab401e6c322d91f6d336e65",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 279.4,
+        "agent_execution": 182.5,
+        "verifier": 31.2,
+        "total": 509.3
+      },
+      "input": 346383,
+      "cache": 317184,
+      "output": 7335,
+      "cost_usd": 0.1635,
+      "cost_source": "agent",
+      "steps": 16,
+      "llm_calls": 16,
+      "tool_calls": 15,
+      "tools": {
+        "exec": 15
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "208e2235997b6286d881036c14ae76e9733f776e9e61ad7eb9d16f17ba7c2305",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 196.6,
+        "agent_execution": 598.8,
+        "verifier": 264.3,
+        "total": 1075.1
+      },
+      "input": 348327,
+      "cache": 306560,
+      "output": 22984,
+      "cost_usd": 0.344,
+      "cost_source": "agent",
+      "steps": 14,
+      "llm_calls": 14,
+      "tool_calls": 13,
+      "tools": {
+        "exec": 13
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "5fc7f88a7256ccb26592254b3b0fb19a6fdb4458d5899125ab24ddd56a263bfe",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 126.2,
+        "agent_execution": 370.9,
+        "verifier": 44.7,
+        "total": 556.8
+      },
+      "input": 869298,
+      "cache": 830464,
+      "output": 12622,
+      "cost_usd": 0.2869,
+      "cost_source": "agent",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 24,
+      "tools": {
+        "exec": 24
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "36d49d4af7ee49f254dc5d31a58e6a896ce3b189e7015f60ba75fac2e240ed8b",
+      "seconds": {
+        "environment_setup": 3.3,
+        "agent_setup": 138.3,
+        "agent_execution": 923.5,
+        "verifier": 13.1,
+        "total": 1123.1
+      },
+      "input": 6807073,
+      "cache": 6645376,
+      "output": 31656,
+      "cost_usd": 1.3045,
+      "cost_source": "agent",
+      "steps": 61,
+      "llm_calls": 61,
+      "tool_calls": 60,
+      "tools": {
+        "exec": 60
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "373d3b72bcd1bc285efef028f818833e9b79ac4657a461a8e1e8b595613944e4",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 168.4,
+        "agent_execution": 380.8,
+        "verifier": 13.6,
+        "total": 578.2
+      },
+      "input": 708015,
+      "cache": 673536,
+      "output": 12905,
+      "cost_usd": 0.2654,
+      "cost_source": "agent",
+      "steps": 24,
+      "llm_calls": 24,
+      "tool_calls": 23,
+      "tools": {
+        "exec": 23
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "274041658115578bf04e01d8b213caa61dea20a75bf78502cfc2277a56f4f2f4",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 110.2,
+        "agent_execution": 111.1,
+        "verifier": 242.6,
+        "total": 481.8
+      },
+      "input": 159005,
+      "cache": 145920,
+      "output": 2772,
+      "cost_usd": 0.0685,
+      "cost_source": "agent",
+      "steps": 8,
+      "llm_calls": 8,
+      "tool_calls": 7,
+      "tools": {
+        "exec": 7
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "7c700dcb54cf1071527def8635bc0d81cf6668ac3f2d170b631773524ab64dea",
+      "seconds": {
+        "environment_setup": 17.7,
+        "agent_setup": 134.5,
+        "agent_execution": 1331.4,
+        "verifier": 108.2,
+        "total": 1624.4
+      },
+      "input": 3860987,
+      "cache": 3752960,
+      "output": 46887,
+      "cost_usd": 1.0602,
+      "cost_source": "agent",
+      "steps": 70,
+      "llm_calls": 70,
+      "tool_calls": 69,
+      "tools": {
+        "exec": 69
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "5d195d11d53e4c650fdaabe196be4b94cf848a5b2ee423e26a21fbf2b7126d6e",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 366.8,
+        "agent_execution": 751.4,
+        "verifier": 111.9,
+        "total": 1244.8
+      },
+      "input": 1035451,
+      "cache": 940928,
+      "output": 23658,
+      "cost_usd": 0.5197,
+      "cost_source": "agent",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 24,
+      "tools": {
+        "exec": 23,
+        "sleep": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "734ce48aeb6865ac2d14b74d21cab04c1c39cbec6c9e9bd2b83cb377a3738ce1",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 285.3,
+        "agent_execution": 501.2,
+        "verifier": 81.0,
+        "total": 883.0
+      },
+      "input": 993074,
+      "cache": 932096,
+      "output": 21582,
+      "cost_usd": 0.431,
+      "cost_source": "agent",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 24,
+      "tools": {
+        "exec": 24
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "42a9c16603a85496372f9583c6d12b0ae7ee152d7dc4971629dc75918e965cae",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 603.7,
+        "agent_execution": 172.0,
+        "verifier": 13.3,
+        "total": 803.8
+      },
+      "input": 218649,
+      "cache": 181888,
+      "output": 7415,
+      "cost_usd": 0.1659,
+      "cost_source": "agent",
+      "steps": 11,
+      "llm_calls": 11,
+      "tool_calls": 10,
+      "tools": {
+        "exec": 9,
+        "request_user_input_async": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "a043331f41e2918fc67064ddaab391b92b66e0e1d9896c275026e07869946406",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 676.9,
+        "agent_execution": 774.6,
+        "verifier": 45.9,
+        "total": 1512.6
+      },
+      "input": 1199575,
+      "cache": 1128064,
+      "output": 32303,
+      "cost_usd": 0.5789,
+      "cost_source": "agent",
+      "steps": 31,
+      "llm_calls": 31,
+      "tool_calls": 30,
+      "tools": {
+        "exec": 30
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "5c89528bab99a98e65d426d2fcf113e5620cb5b8ad9bccac60161a5c2bb32271",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 543.1,
+        "agent_execution": 144.2,
+        "verifier": 221.7,
+        "total": 923.6
+      },
+      "input": 207485,
+      "cache": 174720,
+      "output": 7208,
+      "cost_usd": 0.1551,
+      "cost_source": "agent",
+      "steps": 9,
+      "llm_calls": 9,
+      "tool_calls": 8,
+      "tools": {
+        "exec": 8
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "ad1d35bd82e6373c6611e1a0ca39b75240a478da515779d5d6f170c28f09ce2d",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 167.5,
+        "agent_execution": 270.1,
+        "verifier": 30.3,
+        "total": 482.7
+      },
+      "input": 345749,
+      "cache": 294784,
+      "output": 6175,
+      "cost_usd": 0.1932,
+      "cost_source": "list price",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 40,
+      "tools": {
+        "read": 17,
+        "bash": 11,
+        "apply_patch": 6,
+        "todowrite": 4,
+        "glob": 2
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "1f0746ea87927dbc511912495a9c544692e543d78015d4e02624d0ff8730609b",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 284.7,
+        "agent_execution": 353.0,
+        "verifier": 259.2,
+        "total": 910.2
+      },
+      "input": 222240,
+      "cache": 200960,
+      "output": 6387,
+      "cost_usd": 0.1265,
+      "cost_source": "list price",
+      "steps": 18,
+      "llm_calls": 18,
+      "tool_calls": 17,
+      "tools": {
+        "bash": 8,
+        "apply_patch": 5,
+        "todowrite": 3,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "8d94a65732ec24a0d44184d76baf27f14e135012481a7147402579edbc881c3f",
+      "seconds": {
+        "environment_setup": 0.6,
+        "agent_setup": 120.6,
+        "agent_execution": 211.9,
+        "verifier": 23.5,
+        "total": 369.4
+      },
+      "input": 348242,
+      "cache": 319360,
+      "output": 4309,
+      "cost_usd": 0.1328,
+      "cost_source": "list price",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 24,
+      "tools": {
+        "bash": 9,
+        "apply_patch": 8,
+        "todowrite": 4,
+        "read": 3
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "1a239c90902611d3cd85dbcca62417ddf838d84db94418e0cdf6cb6ed1890df7",
+      "seconds": {
+        "environment_setup": 3.3,
+        "agent_setup": 670.6,
+        "agent_execution": 1086.6,
+        "verifier": 13.0,
+        "total": 1814.7
+      },
+      "input": 7584197,
+      "cache": 7294592,
+      "output": 16977,
+      "cost_usd": 1.4784,
+      "cost_source": "list price",
+      "steps": 82,
+      "llm_calls": 82,
+      "tool_calls": 81,
+      "tools": {
+        "bash": 47,
+        "apply_patch": 22,
+        "read": 8,
+        "todowrite": 4
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "25a8495eb7c7fe9b27eef13453d1945d512bc08e5464290e7ac2d841622eeda0",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 448.5,
+        "agent_execution": 288.4,
+        "verifier": 13.4,
+        "total": 763.5
+      },
+      "input": 263026,
+      "cache": 247680,
+      "output": 4820,
+      "cost_usd": 0.1037,
+      "cost_source": "list price",
+      "steps": 21,
+      "llm_calls": 21,
+      "tool_calls": 20,
+      "tools": {
+        "bash": 9,
+        "apply_patch": 6,
+        "todowrite": 4,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "7d69b378fe542d08245b85c12a135af9444234c8478460f39b0f6583338d0da9",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 136.4,
+        "agent_execution": 137.6,
+        "verifier": 277.7,
+        "total": 569.0
+      },
+      "input": 158689,
+      "cache": 140928,
+      "output": 3168,
+      "cost_usd": 0.0813,
+      "cost_source": "list price",
+      "steps": 13,
+      "llm_calls": 13,
+      "tool_calls": 31,
+      "tools": {
+        "read": 19,
+        "todowrite": 4,
+        "glob": 4,
+        "bash": 3,
+        "apply_patch": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "998705985500bfc078ab66ce9c8c24768fb8c0cbb066aa6db5819e21a81b580e",
+      "seconds": {
+        "environment_setup": 16.1,
+        "agent_setup": 309.2,
+        "agent_execution": 637.1,
+        "verifier": 125.0,
+        "total": 1115.4
+      },
+      "input": 1064053,
+      "cache": 1006848,
+      "output": 13203,
+      "cost_usd": 0.3471,
+      "cost_source": "list price",
+      "steps": 44,
+      "llm_calls": 44,
+      "tool_calls": 49,
+      "tools": {
+        "bash": 24,
+        "apply_patch": 12,
+        "read": 7,
+        "todowrite": 4,
+        "glob": 2
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "26cae928499adad9a7bc0eda9c44afbd02138b8b0a5d044091b7c338bd10cd94",
+      "seconds": {
+        "environment_setup": 0.6,
+        "agent_setup": 131.2,
+        "agent_execution": 1177.8,
+        "verifier": 96.4,
+        "total": 1419.2
+      },
+      "input": 1225915,
+      "cache": 1161088,
+      "output": 7533,
+      "cost_usd": 0.3211,
+      "cost_source": "list price",
+      "steps": 30,
+      "llm_calls": 30,
+      "tool_calls": 29,
+      "tools": {
+        "bash": 13,
+        "apply_patch": 8,
+        "read": 4,
+        "todowrite": 4
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "557eb6cc8cc77ce575443f3728dbe173504572bb8d6298fc0538ceb343e5b9b7",
+      "seconds": {
+        "environment_setup": 0.6,
+        "agent_setup": 204.2,
+        "agent_execution": 340.2,
+        "verifier": 75.9,
+        "total": 634.2
+      },
+      "input": 384887,
+      "cache": 337024,
+      "output": 12700,
+      "cost_usd": 0.2564,
+      "cost_source": "list price",
+      "steps": 21,
+      "llm_calls": 21,
+      "tool_calls": 38,
+      "tools": {
+        "read": 15,
+        "bash": 10,
+        "apply_patch": 7,
+        "todowrite": 4,
+        "glob": 2
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "35bcdd3fc81bc82510dd4b53f0b32db8f80a37f23439ea6db8f8619b4f30824f",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 190.8,
+        "agent_execution": 191.6,
+        "verifier": 13.2,
+        "total": 409.1
+      },
+      "input": 210332,
+      "cache": 177664,
+      "output": 5969,
+      "cost_usd": 0.1428,
+      "cost_source": "list price",
+      "steps": 17,
+      "llm_calls": 17,
+      "tool_calls": 27,
+      "tools": {
+        "read": 15,
+        "todowrite": 4,
+        "bash": 4,
+        "apply_patch": 3,
+        "glob": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "77288f23b97aaf7f66b7ff2e249068fdbe4fbbd937953ffb957c165e29ba6297",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 160.1,
+        "agent_execution": 1471.5,
+        "verifier": 43.5,
+        "total": 1688.6
+      },
+      "input": 292677,
+      "cache": 262272,
+      "output": 7323,
+      "cost_usd": 0.1603,
+      "cost_source": "list price",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 29,
+      "tools": {
+        "bash": 18,
+        "apply_patch": 7,
+        "todowrite": 3,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "e32158a00218ad3bf682d03a61e69f369f119844811b7a20453da14d02f2fc34",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 503.3,
+        "agent_execution": 185.5,
+        "verifier": 230.8,
+        "total": 932.8
+      },
+      "input": 200292,
+      "cache": 156416,
+      "output": 6869,
+      "cost_usd": 0.1721,
+      "cost_source": "list price",
+      "steps": 15,
+      "llm_calls": 15,
+      "tool_calls": 27,
+      "tools": {
+        "read": 16,
+        "todowrite": 4,
+        "bash": 3,
+        "apply_patch": 3,
+        "glob": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "c4940cfeb870540231a176633afc25c106127f7472cf08a45f42f37e2761818e",
+      "seconds": {
+        "environment_setup": 0.6,
+        "agent_setup": 68.9,
+        "agent_execution": 156.2,
+        "verifier": 35.2,
+        "total": 274.3
+      },
+      "input": 69042,
+      "cache": 50432,
+      "output": 5618,
+      "cost_usd": 0.0984,
+      "cost_source": "agent",
+      "steps": 13,
+      "llm_calls": 13,
+      "tool_calls": 23,
+      "tools": {
+        "read": 13,
+        "bash": 7,
+        "write": 2,
+        "edit": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "c863a302467e3d0917531de8b21519f47b41989096e0ffead9dce21f15f039a8",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 38.3,
+        "agent_execution": 222.2,
+        "verifier": 259.7,
+        "total": 533.4
+      },
+      "input": 68081,
+      "cache": 46336,
+      "output": 8145,
+      "cost_usd": 0.1296,
+      "cost_source": "agent",
+      "steps": 11,
+      "llm_calls": 11,
+      "tool_calls": 10,
+      "tools": {
+        "bash": 5,
+        "edit": 3,
+        "write": 1,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "e843f6190d98cd194b1dd14ce6f7282080107e0524c40ddeaad6882851351bec",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 71.7,
+        "agent_execution": 306.4,
+        "verifier": 14.6,
+        "total": 405.8
+      },
+      "input": 247363,
+      "cache": 213632,
+      "output": 9552,
+      "cost_usd": 0.1843,
+      "cost_source": "agent",
+      "steps": 23,
+      "llm_calls": 23,
+      "tool_calls": 25,
+      "tools": {
+        "bash": 17,
+        "read": 5,
+        "write": 2,
+        "edit": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "5478fd4ae6404075b91239c3f0df3c949c14755917fcded6e8599b3e7b212777",
+      "seconds": {
+        "environment_setup": 18.6,
+        "agent_setup": 67.5,
+        "agent_execution": 228.0,
+        "verifier": 17.9,
+        "total": 375.4
+      },
+      "input": 983236,
+      "cache": 920320,
+      "output": 5212,
+      "cost_usd": 0.27,
+      "cost_source": "agent",
+      "steps": 25,
+      "llm_calls": 25,
+      "tool_calls": 24,
+      "tools": {
+        "bash": 17,
+        "write": 3,
+        "edit": 3,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "1b599b422d70f48e0a061f184a953e0dceb8b6e8d63c1ddd9f0e7215af7193d2",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 58.9,
+        "agent_execution": 196.6,
+        "verifier": 13.4,
+        "total": 281.8
+      },
+      "input": 245336,
+      "cache": 201472,
+      "output": 6390,
+      "cost_usd": 0.1718,
+      "cost_source": "agent",
+      "steps": 20,
+      "llm_calls": 20,
+      "tool_calls": 19,
+      "tools": {
+        "bash": 11,
+        "edit": 5,
+        "write": 2,
+        "read": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "9c0605f2b06a4ca29a83888fc88580bbddaa6ae24fb145c10e286369730a0ea7",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 38.7,
+        "agent_execution": 111.4,
+        "verifier": 289.4,
+        "total": 456.3
+      },
+      "input": 59648,
+      "cache": 48512,
+      "output": 2551,
+      "cost_usd": 0.0526,
+      "cost_source": "agent",
+      "steps": 9,
+      "llm_calls": 9,
+      "tool_calls": 22,
+      "tools": {
+        "read": 14,
+        "bash": 4,
+        "edit": 4
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "09adae00c80d44942689b4b588d7c1b3e6aa63ca473506a766d229ac587ad2ab",
+      "seconds": {
+        "environment_setup": 15.9,
+        "agent_setup": 272.2,
+        "agent_execution": 887.3,
+        "verifier": 115.9,
+        "total": 1325.2
+      },
+      "input": 1111835,
+      "cache": 1020416,
+      "output": 25581,
+      "cost_usd": 0.5407,
+      "cost_source": "agent",
+      "steps": 45,
+      "llm_calls": 45,
+      "tool_calls": 51,
+      "tools": {
+        "bash": 25,
+        "read": 11,
+        "edit": 10,
+        "write": 5
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "28395340912aefc6d7d984c4fe069fc5b128a03a50601b6501184abf722eda83",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 73.3,
+        "agent_execution": 1123.9,
+        "verifier": 114.9,
+        "total": 1324.9
+      },
+      "input": 731828,
+      "cache": 693120,
+      "output": 18139,
+      "cost_usd": 0.3281,
+      "cost_source": "agent",
+      "steps": 35,
+      "llm_calls": 35,
+      "tool_calls": 34,
+      "tools": {
+        "bash": 16,
+        "edit": 12,
+        "read": 5,
+        "write": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "1b8e653ddc94397ff4d104dd553e61b66cf4c1bc9804488d70cd495d24c3e306",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 114.9,
+        "agent_execution": 312.0,
+        "verifier": 94.4,
+        "total": 536.0
+      },
+      "input": 324354,
+      "cache": 297344,
+      "output": 13830,
+      "cost_usd": 0.2221,
+      "cost_source": "agent",
+      "steps": 24,
+      "llm_calls": 24,
+      "tool_calls": 35,
+      "tools": {
+        "read": 13,
+        "write": 10,
+        "bash": 7,
+        "edit": 5
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "877186c516816d16608262d094e9715d9f703a2b041d44acfce659d55b7d710f",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 62.7,
+        "agent_execution": 250.3,
+        "verifier": 13.4,
+        "total": 339.4
+      },
+      "input": 182167,
+      "cache": 139520,
+      "output": 10543,
+      "cost_usd": 0.2047,
+      "cost_source": "agent",
+      "steps": 18,
+      "llm_calls": 18,
+      "tool_calls": 27,
+      "tools": {
+        "read": 12,
+        "edit": 9,
+        "bash": 5,
+        "write": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "9d9c5e4f245ef47b1c8c80f7254ccc49596500f8360353d8a271d2b7655d5a32",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 70.1,
+        "agent_execution": 888.2,
+        "verifier": 47.0,
+        "total": 1018.8
+      },
+      "input": 913534,
+      "cache": 853120,
+      "output": 24396,
+      "cost_usd": 0.4501,
+      "cost_source": "agent",
+      "steps": 46,
+      "llm_calls": 46,
+      "tool_calls": 45,
+      "tools": {
+        "bash": 26,
+        "edit": 12,
+        "write": 7
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "8f10ada02c66ebd1c7db607aab8c231a4b90a43aaa84634f3ddc0589bb63685d",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 93.8,
+        "agent_execution": 134.9,
+        "verifier": 183.0,
+        "total": 425.2
+      },
+      "input": 140512,
+      "cache": 115200,
+      "output": 5476,
+      "cost_usd": 0.1169,
+      "cost_source": "agent",
+      "steps": 16,
+      "llm_calls": 16,
+      "tool_calls": 28,
+      "tools": {
+        "read": 15,
+        "edit": 7,
+        "bash": 5,
+        "write": 1
+      },
+      "subagents": 0
+    }
+  ],
+  "agents": [
+    {
+      "agent": "claude-code",
+      "model": "anthropic/claude-opus-5-5",
+      "trials": 12,
+      "passed": 4,
+      "agent_minutes": 180.8,
+      "median_agent_minutes": 7.9,
+      "total_minutes": 233.1,
+      "cost_usd": 25.2,
+      "cost_per_pass_usd": 6.3,
+      "input": 27910181,
+      "cache": 26989006,
+      "output": 621727,
+      "steps": 321,
+      "tool_calls": 319,
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "trials": 12,
+      "passed": 6,
+      "agent_minutes": 104.0,
+      "median_agent_minutes": 7.3,
+      "total_minutes": 188.6,
+      "cost_usd": 5.34,
+      "cost_per_pass_usd": 0.89,
+      "input": 16753322,
+      "cache": 16029696,
+      "output": 229327,
+      "steps": 319,
+      "tool_calls": 307,
+      "subagents": 0
+    },
+    {
+      "agent": "opencode",
+      "model": "openai/gpt-6.1-sol",
+      "trials": 12,
+      "passed": 5,
+      "agent_minutes": 105.9,
+      "median_agent_minutes": 5.2,
+      "total_minutes": 185.1,
+      "cost_usd": 3.52,
+      "cost_per_pass_usd": 0.7,
+      "input": 12300299,
+      "cache": 11599616,
+      "output": 95433,
+      "steps": 336,
+      "tool_calls": 412,
+      "subagents": 0
+    },
+    {
+      "agent": "pi",
+      "model": "openai/gpt-6.1-sol",
+      "trials": 12,
+      "passed": 6,
+      "agent_minutes": 80.3,
+      "median_agent_minutes": 4.0,
+      "total_minutes": 121.6,
+      "cost_usd": 2.77,
+      "cost_per_pass_usd": 0.46,
+      "input": 5076936,
+      "cache": 4599424,
+      "output": 135433,
+      "steps": 285,
+      "tool_calls": 343,
+      "subagents": 0
+    }
+  ]
+}

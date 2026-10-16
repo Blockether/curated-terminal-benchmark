@@ -146,6 +146,19 @@ The task containers and the amd64 emulation can use all the memory that the mach
    `seal` refuses a round with a missing trial or a run from an uncommitted harness.
    Use the same `--agents`, `--models` and `--tasks` as for `run`. Commit the file.
 
+7. Write the metrics of the sealed round:
+
+   ```bash
+   uv run python -m ctb.cli metrics --round r2
+   ```
+
+   `metrics` writes `results/<round>-metrics.json` and prints one row for each agent. Each trial
+   row has the time of each Harbor phase, the input, cache and output tokens, the cost, the agent
+   steps, model calls, tool calls by name and subagent starts. Each row has the `result_sha256`
+   of its sealed row, and `metrics` refuses a `result.json` that changed after the seal.
+   If an agent reports no cost, `metrics` uses the API list price of the model. The trials run
+   on subscriptions, so each cost is an API equivalent, not a bill. Commit the file.
+
 Harbor writes jobs to `jobs/<round>/` and the runner writes logs to `runs/<round>/`.
 
 ## Full Vis suite
