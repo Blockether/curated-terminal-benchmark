@@ -5,6 +5,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/bun-sourcemap-leak",
       "reward": 0.0,
       "error": null,
@@ -33,6 +34,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/html-js-filter",
       "reward": 0.0,
       "error": null,
@@ -62,6 +64,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/interleaved-vigenere",
       "reward": 1.0,
       "error": null,
@@ -90,6 +93,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/kv-live-surgery",
       "reward": 0.0,
       "error": null,
@@ -118,6 +122,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/music-harmony",
       "reward": 0.0,
       "error": null,
@@ -146,6 +151,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/mvcc-lsm-compaction",
       "reward": 0.0,
       "error": null,
@@ -173,6 +179,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/payments-pipeline-fix",
       "reward": 1.0,
       "error": null,
@@ -202,6 +209,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/photonic-waveguide-routing",
       "reward": 1.0,
       "error": null,
@@ -229,6 +237,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/react-lead-form",
       "reward": 1.0,
       "error": null,
@@ -256,6 +265,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/session-window-debug",
       "reward": 0.0,
       "error": null,
@@ -283,6 +293,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/vf2-speedup-networkx",
       "reward": 0.0,
       "error": null,
@@ -312,6 +323,7 @@
     {
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
+      "agent_version": "2.1.301",
       "task": "terminal-bench/wal-recovery-ordering",
       "reward": 0.0,
       "error": null,
@@ -339,6 +351,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/bun-sourcemap-leak",
       "reward": 0.0,
       "error": null,
@@ -366,6 +379,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/html-js-filter",
       "reward": 0.0,
       "error": null,
@@ -393,6 +407,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/interleaved-vigenere",
       "reward": 1.0,
       "error": null,
@@ -420,6 +435,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/kv-live-surgery",
       "reward": 1.0,
       "error": null,
@@ -447,6 +463,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/music-harmony",
       "reward": 0.0,
       "error": null,
@@ -474,6 +491,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/mvcc-lsm-compaction",
       "reward": 0.0,
       "error": null,
@@ -501,6 +519,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/payments-pipeline-fix",
       "reward": 1.0,
       "error": null,
@@ -528,6 +547,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/photonic-waveguide-routing",
       "reward": 1.0,
       "error": null,
@@ -556,6 +576,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/react-lead-form",
       "reward": 0.0,
       "error": null,
@@ -583,6 +604,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/session-window-debug",
       "reward": 0.0,
       "error": null,
@@ -611,6 +633,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/vf2-speedup-networkx",
       "reward": 1.0,
       "error": null,
@@ -638,6 +661,7 @@
     {
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
       "task": "terminal-bench/wal-recovery-ordering",
       "reward": 1.0,
       "error": null,
@@ -665,6 +689,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/bun-sourcemap-leak",
       "reward": 0.0,
       "error": null,
@@ -696,6 +721,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/html-js-filter",
       "reward": 1.0,
       "error": null,
@@ -726,6 +752,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/interleaved-vigenere",
       "reward": 1.0,
       "error": null,
@@ -756,6 +783,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/kv-live-surgery",
       "reward": 1.0,
       "error": null,
@@ -786,6 +814,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/music-harmony",
       "reward": 0.0,
       "error": null,
@@ -816,6 +845,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/mvcc-lsm-compaction",
       "reward": 0.0,
       "error": null,
@@ -847,6 +877,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/payments-pipeline-fix",
       "reward": 0.0,
       "error": null,
@@ -878,6 +909,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/photonic-waveguide-routing",
       "reward": 1.0,
       "error": null,
@@ -908,6 +940,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/react-lead-form",
       "reward": 0.0,
       "error": null,
@@ -939,6 +972,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/session-window-debug",
       "reward": 0.0,
       "error": null,
@@ -970,6 +1004,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/vf2-speedup-networkx",
       "reward": 0.0,
       "error": null,
@@ -1000,6 +1035,7 @@
     {
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.19.0",
       "task": "terminal-bench/wal-recovery-ordering",
       "reward": 1.0,
       "error": null,
@@ -1031,6 +1067,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/bun-sourcemap-leak",
       "reward": 0.0,
       "error": null,
@@ -1061,6 +1098,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/html-js-filter",
       "reward": 1.0,
       "error": null,
@@ -1091,6 +1129,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/interleaved-vigenere",
       "reward": 0.0,
       "error": null,
@@ -1121,6 +1160,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/kv-live-surgery",
       "reward": 0.0,
       "error": null,
@@ -1151,6 +1191,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/music-harmony",
       "reward": 0.0,
       "error": null,
@@ -1181,6 +1222,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/mvcc-lsm-compaction",
       "reward": 0.0,
       "error": null,
@@ -1210,6 +1252,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/payments-pipeline-fix",
       "reward": 1.0,
       "error": null,
@@ -1240,6 +1283,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/photonic-waveguide-routing",
       "reward": 1.0,
       "error": null,
@@ -1270,6 +1314,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/react-lead-form",
       "reward": 0.0,
       "error": null,
@@ -1300,6 +1345,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/session-window-debug",
       "reward": 1.0,
       "error": null,
@@ -1330,6 +1376,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/vf2-speedup-networkx",
       "reward": 1.0,
       "error": null,
@@ -1359,6 +1406,7 @@
     {
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
+      "agent_version": "1.2.0",
       "task": "terminal-bench/wal-recovery-ordering",
       "reward": 1.0,
       "error": null,
@@ -1392,6 +1440,9 @@
       "agent": "claude-code",
       "model": "anthropic/claude-opus-5-5",
       "trials": 12,
+      "agent_versions": [
+        "2.1.301"
+      ],
       "passed": 4,
       "agent_minutes": 180.8,
       "median_agent_minutes": 7.9,
@@ -1409,6 +1460,9 @@
       "agent": "codex",
       "model": "openai/gpt-6.1-sol",
       "trials": 12,
+      "agent_versions": [
+        "0.163.0"
+      ],
       "passed": 6,
       "agent_minutes": 104.0,
       "median_agent_minutes": 7.3,
@@ -1426,6 +1480,9 @@
       "agent": "opencode",
       "model": "openai/gpt-6.1-sol",
       "trials": 12,
+      "agent_versions": [
+        "1.19.0"
+      ],
       "passed": 5,
       "agent_minutes": 105.9,
       "median_agent_minutes": 5.2,
@@ -1443,6 +1500,9 @@
       "agent": "pi",
       "model": "openai/gpt-6.1-sol",
       "trials": 12,
+      "agent_versions": [
+        "1.2.0"
+      ],
       "passed": 6,
       "agent_minutes": 80.3,
       "median_agent_minutes": 4.0,

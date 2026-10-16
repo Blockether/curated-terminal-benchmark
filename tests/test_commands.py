@@ -211,6 +211,15 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
     assert "vis" not in second
 
 
+def test_run_pins_hold_the_version_of_each_harness():
+    assert cli.pins()["harnesses"] == {
+        "claude-code": "2.1.302",
+        "codex": "0.163.0",
+        "opencode": "1.19.3",
+        "pi": "1.3.0",
+    }
+
+
 def test_parallel_run_records_keep_every_record(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "git_state", lambda: {"commit": "c", "dirty": False})
     monkeypatch.setattr(cli, "pins", dict)
@@ -239,10 +248,12 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
     )
 
 
-def test_builtin_agents_get_effort_as_a_harbor_kwarg():
+def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "codex"
-    assert command[-2:] == ["--ak", "reasoning_effort=medium"]
+    assert command[-4:] == ["--ak", "reasoning_effort=medium", "--ak", "version=0.163.0"]
+    claude = harbor_command(Trial(AGENTS["claude-code"], "anthropic", "t"), Path("/j"), 0.25)
+    assert claude[-2:] == ["--ak", "version=2.1.302"]
 
 
 def test_agent_setup_gets_more_time_than_the_harbor_default():
@@ -253,14 +264,14 @@ def test_agent_setup_gets_more_time_than_the_harbor_default():
 def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
     opencode = agent(OpenCode, "openai/gpt-6.1-sol")
     assert opencode.options.variant == "medium"
-    assert opencode._version == "1.19.0"
+    assert opencode._version == "1.19.3"
     pi = Pi(
         logs_dir=Path("/tmp/ctb-test-logs"),
         model_name="openai/gpt-6.1-sol",
         reasoning_effort="medium",
     )
     assert pi.options.thinking == "medium"
-    assert pi._version == "1.2.0"
+    assert pi._version == "1.3.0"
     assert pi.model_connection.provider == "openai-codex"
     command = harbor_command(Trial(AGENTS["pi"], "openai", "t"), Path("/j"), 0.25)
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]

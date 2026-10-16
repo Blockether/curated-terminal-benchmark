@@ -34,6 +34,7 @@ def write_trial(root, name, *, cost, tools, model="openai/gpt-6.1-sol", reward=1
         "agent": name.split("__")[0],
         "model": model,
         "task": "terminal-bench/x",
+        "agent_version": "1.0.0",
         "reward": reward,
         "error": None,
         "result": str(path.relative_to(root)),
@@ -66,7 +67,10 @@ def test_subagent_tools_of_each_agent_count_as_subagents(tmp_path):
 def test_round_metrics_refuses_a_result_that_changed_after_the_seal(tmp_path):
     row = write_trial(tmp_path, "pi__openai__x", cost=0.5, tools=["bash"])
     sealed = {"round": "r", "digest": "d", "rows": [row]}
-    assert round_metrics(tmp_path, sealed)["agents"][0]["cost_per_pass_usd"] == 0.5
+    metrics = round_metrics(tmp_path, sealed)
+    assert metrics["rows"][0]["agent_version"] == "1.0.0"
+    assert metrics["agents"][0]["agent_versions"] == ["1.0.0"]
+    assert metrics["agents"][0]["cost_per_pass_usd"] == 0.5
     (tmp_path / row["result"]).write_text("{}")
     with pytest.raises(ValueError, match="changed after the seal"):
         round_metrics(tmp_path, sealed)

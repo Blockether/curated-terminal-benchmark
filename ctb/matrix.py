@@ -15,6 +15,8 @@ class AgentSpec:
     families: tuple[str, ...]
     effort_kwarg: bool = False
     proxy: bool = False
+    #: The pinned version of a Harbor built-in agent; Harbor otherwise installs the latest one.
+    version: str | None = None
 
 
 AGENTS = {
@@ -22,8 +24,10 @@ AGENTS = {
     for spec in (
         AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("anthropic", "openai")),
         AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("anthropic", "openai")),
-        AgentSpec("claude-code", "claude-code", ("anthropic",), effort_kwarg=True),
-        AgentSpec("codex", "codex", ("openai",), effort_kwarg=True),
+        AgentSpec(
+            "claude-code", "claude-code", ("anthropic",), effort_kwarg=True, version="2.1.302"
+        ),
+        AgentSpec("codex", "codex", ("openai",), effort_kwarg=True, version="0.163.0"),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("anthropic", "openai")),
         # kmet has no Anthropic OAuth transport, so it runs only on the GPT model.
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),

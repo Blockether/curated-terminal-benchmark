@@ -91,6 +91,7 @@ def round_metrics(root: Path, sealed: dict) -> dict:
             {
                 "agent": row["agent"],
                 "model": row["model"],
+                "agent_version": row.get("agent_version"),
                 "task": row["task"],
                 "reward": row["reward"],
                 "error": row["error"],
@@ -122,6 +123,7 @@ def totals(rows: list[dict]) -> list[dict]:
                 "agent": agent,
                 "model": model,
                 "trials": len(items),
+                "agent_versions": sorted({str(r.get("agent_version")) for r in items}),
                 "passed": passed,
                 "agent_minutes": round(sum(agent_s) / 60, 1),
                 "median_agent_minutes": round(statistics.median(agent_s) / 60, 1),

@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy
-from ctb.agents import vis
+from ctb.agents import opencode, pi, vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.metrics import round_metrics
@@ -288,6 +288,8 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
     ]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
+    if trial.agent.version:
+        command += ["--ak", f"version={trial.agent.version}"]
     return privacy.check_command(command)
 
 
@@ -500,6 +502,12 @@ def pins() -> dict:
         "samizdat": SAMIZDAT_COMMIT,
         "jolt": JOLT_VERSION,
         "harbor": metadata.version("harbor"),
+        "harnesses": {
+            "claude-code": AGENTS["claude-code"].version,
+            "codex": AGENTS["codex"].version,
+            "opencode": opencode.OPENCODE_VERSION,
+            "pi": pi.PI_VERSION,
+        },
         "models": MODELS,
         "effort": EFFORT,
     }

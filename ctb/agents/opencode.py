@@ -14,7 +14,7 @@ from harbor.models.agent.context import AgentContext
 from ctb import credentials
 from ctb.agents.base import EFFORT, min_token_seconds, split_model, stage_files
 
-OPENCODE_VERSION = "1.19.0"
+OPENCODE_VERSION = "1.19.3"
 #: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Keep them off
 #: /logs, a host mount of the Podman VM, which gets only OpenCode's log.
 LOCAL_DATA = "/tmp/ctb-opencode"

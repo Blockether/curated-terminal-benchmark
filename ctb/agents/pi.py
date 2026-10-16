@@ -11,7 +11,7 @@ from harbor.models.agent.context import AgentContext
 from ctb import credentials
 from ctb.agents.base import agent_home, min_token_seconds, split_model, stage_files
 
-PI_VERSION = "1.2.0"
+PI_VERSION = "1.3.0"
 AUTH = ".pi/agent/auth.json"
 
 
