@@ -6,6 +6,7 @@ import os
 import time
 from pathlib import Path
 
+from harbor.agents.installed.base import NonZeroAgentExitCodeError
 from harbor.agents.installed.opencode import OpenCode as HarborOpenCode
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
@@ -14,8 +15,8 @@ from ctb import credentials
 from ctb.agents.base import EFFORT, min_token_seconds, split_model, stage_files
 
 OPENCODE_VERSION = "1.19.0"
-#: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Harbor puts it
-#: under /logs, a host mount of the Podman VM, where OpenCode froze in the baseline round.
+#: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Keep them off
+#: /logs, a host mount of the Podman VM, which gets only OpenCode's log.
 LOCAL_DATA = "/tmp/ctb-opencode"
 #: Seconds after a final answer before ctb stops an OpenCode process that does not exit.
 FINAL_GRACE_S = 120
@@ -32,8 +33,29 @@ def stop_command(signal: str) -> str:
     )
 
 
+def processes_command(path: str) -> str:
+    """Write pid, state, kernel wait channel and command of each container process to path."""
+    return (
+        f"mkdir -p $(dirname {path}); for p in /proc/[0-9]*; do "
+        "printf '%s %s %s %s\\n' ${p#/proc/} \"$(cut -d' ' -f3 $p/stat 2>/dev/null)\" "
+        "\"$(cat $p/wchan 2>/dev/null)\" \"$(tr '\\0' ' ' < $p/cmdline 2>/dev/null | cut -c1-300)\"; "
+        f"done > {path} 2>/dev/null; true"
+    )
+
+
 class OpenCodeHangError(RuntimeError):
     """OpenCode wrote no output for CTB_OPENCODE_IDLE_S seconds before a final answer."""
+
+
+def stopped_error(stopped: list[str], error: BaseException | None) -> BaseException | None:
+    """The error of a run after the watchdog: a hang fails, a stop after a final answer does not."""
+    if stopped == ["hang"]:
+        return OpenCodeHangError(
+            f"OpenCode wrote no output for {idle_limit_seconds()} s before a final answer"
+        )
+    if stopped == ["final"]:
+        return None
+    return error
 
 
 def idle_limit_seconds() -> int:
@@ -113,9 +135,13 @@ class OpenCode(HarborOpenCode):
                 stopped.append(verdict)
                 await self.exec_as_root(
                     environment,
-                    command=f"{stop_command('TERM')}; sleep 10; {stop_command('KILL')}",
+                    command=f"{processes_command(self._processes_path())}; "
+                    f"{stop_command('TERM')}; sleep 10; {stop_command('KILL')}",
                 )
                 return
+
+    def _processes_path(self) -> str:
+        return (self.environment_logs_dir / "opencode" / "processes.txt").as_posix()
 
     async def run(
         self, instruction: str, environment: BaseEnvironment, context: AgentContext
@@ -126,9 +152,13 @@ class OpenCode(HarborOpenCode):
             self, environment, {"opencode/auth.json": opencode_auth_json(access)}, data
         )
         stopped: list[str] = []
+        error: BaseException | None = None
         watch = asyncio.create_task(self._watch(environment, stopped))
         try:
             await super().run(instruction, environment, context)
+        except NonZeroAgentExitCodeError as exc:
+            # Harbor runs OpenCode with pipefail, so a stopped OpenCode exits with 143.
+            error = exc
         finally:
             watch.cancel()
             # Remove the token before the verifier runs, then keep OpenCode's own log.
@@ -138,7 +168,5 @@ class OpenCode(HarborOpenCode):
                 command=f"rm -f {data}/opencode/auth.json; mkdir -p {logs} && "
                 f"cp -r {data}/opencode/log {logs}/ 2>/dev/null; true",
             )
-        if stopped == ["hang"]:
-            raise OpenCodeHangError(
-                f"OpenCode wrote no output for {idle_limit_seconds()} s before a final answer"
-            )
+        if (result := stopped_error(stopped, error)) is not None:
+            raise result

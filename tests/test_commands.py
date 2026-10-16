@@ -18,9 +18,12 @@ from ctb.agents.kmet import Kmet
 from ctb.agents.opencode import (
     LOCAL_DATA,
     OpenCode,
+    OpenCodeHangError,
     has_final_answer,
     opencode_auth_json,
+    processes_command,
     stop_command,
+    stopped_error,
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
@@ -371,3 +374,19 @@ def test_opencode_stop_command_does_not_match_its_own_shell():
     command = stop_command("TERM")
     assert "opencode --model=" not in command
     assert "kill -TERM" in command and "pkill" not in command
+
+
+def test_opencode_stopped_after_a_final_answer_is_not_a_failure():
+    # Harbor runs OpenCode with pipefail, so the stopped run fails with exit 143.
+    exit_143 = RuntimeError("Command failed (exit 143)")
+    assert stopped_error(["final"], exit_143) is None
+    assert isinstance(stopped_error(["hang"], exit_143), OpenCodeHangError)
+    assert isinstance(stopped_error(["hang"], None), OpenCodeHangError)
+    assert stopped_error([], exit_143) is exit_143
+    assert stopped_error([], None) is None
+
+
+def test_opencode_hang_keeps_a_process_list_in_the_trial_logs():
+    command = processes_command("/logs/agent/opencode/processes.txt")
+    assert "/proc/[0-9]*" in command and "wchan" in command
+    assert command.endswith("> /logs/agent/opencode/processes.txt 2>/dev/null; true")
