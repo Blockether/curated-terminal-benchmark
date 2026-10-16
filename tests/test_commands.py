@@ -15,7 +15,14 @@ from ctb import cli, credentials
 from ctb.agents import vis
 from ctb.agents.dirge import Dirge
 from ctb.agents.kmet import Kmet
-from ctb.agents.opencode import OpenCode, opencode_auth_json
+from ctb.agents.opencode import (
+    LOCAL_DATA,
+    OpenCode,
+    has_final_answer,
+    opencode_auth_json,
+    stop_command,
+    watchdog_verdict,
+)
 from ctb.agents.pi import Pi, pi_auth_json
 from ctb.agents.vis import VisSolo, VisTeam
 from ctb.cli import harbor_command
@@ -310,3 +317,57 @@ def test_kmet_tokens_come_from_the_usage_file(tmp_path):
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (105, 80, 7)
+
+
+def opencode_text(phase):
+    part = {"type": "text", "text": "done", "metadata": {"openai": {"phase": phase}}}
+    return json.dumps({"type": "text", "part": part})
+
+
+def test_opencode_watchdog_stops_a_finished_run_that_does_not_exit():
+    # Baseline payments-pipeline-fix: a final answer after 11 minutes, then 109 idle minutes.
+    output = "\n".join(["not json", opencode_text("commentary"), opencode_text("final_answer")])
+    assert has_final_answer(output)
+    assert watchdog_verdict(output, idle_s=119, idle_limit_s=1800) is None
+    assert watchdog_verdict(output, idle_s=120, idle_limit_s=1800) == "final"
+
+
+def test_opencode_watchdog_reports_a_silent_run_without_a_final_answer_as_a_hang():
+    # Baseline interleaved-vigenere: OpenCode wrote nothing for 112 minutes after a tool call.
+    output = opencode_text("commentary")
+    assert not has_final_answer(output)
+    assert watchdog_verdict(output, idle_s=1799, idle_limit_s=1800) is None
+    assert watchdog_verdict(output, idle_s=1800, idle_limit_s=1800) == "hang"
+
+
+def test_opencode_data_stays_off_the_host_mounted_logs_directory():
+    opencode = agent(OpenCode, "openai/gpt-6.1-sol")
+    calls = []
+
+    async def fake_exec(self, environment, command, env=None, **kwargs):
+        calls.append(env)
+
+    original = OpenCode.__mro__[1].exec_as_agent
+    OpenCode.__mro__[1].exec_as_agent = fake_exec
+    try:
+        env = {
+            "XDG_DATA_HOME": "/logs/agent/opencode/xdg-data",
+            "XDG_STATE_HOME": "/logs/x",
+            "A": "1",
+        }
+        asyncio.run(opencode.exec_as_agent(None, command="opencode", env=env))
+        asyncio.run(opencode.exec_as_agent(None, command="true"))
+    finally:
+        OpenCode.__mro__[1].exec_as_agent = original
+    assert calls[0] == {
+        "XDG_DATA_HOME": f"{LOCAL_DATA}/xdg-data",
+        "XDG_STATE_HOME": f"{LOCAL_DATA}/xdg-state",
+        "A": "1",
+    }
+    assert calls[1] is None
+
+
+def test_opencode_stop_command_does_not_match_its_own_shell():
+    command = stop_command("TERM")
+    assert "opencode --model=" not in command
+    assert "kill -TERM" in command and "pkill" not in command

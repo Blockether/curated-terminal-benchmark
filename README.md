@@ -52,6 +52,11 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
   The trial then counts as a fail with `HarnessTimeoutError`.
 - An agent install gets 5 times the Harbor setup timeout of 360 seconds. npm and nvm installs
   under amd64 emulation can take longer than 360 seconds.
+- OpenCode keeps its database and git snapshots in `/tmp/ctb-opencode`, not in the `/logs` host
+  mount. On that mount, OpenCode froze or did not exit in two baseline trials.
+- If OpenCode does not exit 2 minutes after its final answer, `ctb` stops it. If OpenCode writes
+  nothing for `CTB_OPENCODE_IDLE_S` seconds (default 1800) before a final answer, `ctb` stops it
+  and the trial fails with `OpenCodeHangError`.
 - Agents can run in separate `ctb run` processes on the same round. Each `run` call adds its
   record to `jobs/<round>/ctb-runs.json` under a file lock.
 - One trial per cell is a small sample. Treat a difference of one task as noise.
