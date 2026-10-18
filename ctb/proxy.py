@@ -293,7 +293,15 @@ def call_codex(req: dict) -> tuple[dict, dict]:
         for raw in resp:
             line = raw.decode("utf-8", "replace").strip()
             if line.startswith("data:") and line[5:].strip() not in ("", "[DONE]"):
-                events.append(json.loads(line[5:]))
+                event = json.loads(line[5:])
+                events.append(event)
+                if event.get("type") in (
+                    "response.completed",
+                    "response.incomplete",
+                    "response.failed",
+                    "error",
+                ):
+                    break
     return codex_reply(events)
 
 

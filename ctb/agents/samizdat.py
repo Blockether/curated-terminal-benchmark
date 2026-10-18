@@ -4,7 +4,9 @@ import json
 import os
 import shlex
 from pathlib import Path
+from typing import ClassVar
 
+from harbor.agents.installed.base import PackageSpec
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
@@ -31,6 +33,19 @@ def proxy_env() -> tuple[str, str]:
 
 class Samizdat(CuratedAgent):
     ARCHIVE = ARTIFACTS / ARCHIVE_NAME
+    SYSTEM_PACKAGES: ClassVar[dict[str, PackageSpec]] = {
+        **CuratedAgent.SYSTEM_PACKAGES,
+        "samizdat_libraries": PackageSpec(
+            commands=(),
+            packages={
+                "apt-get": ("libsqlite3-0", "libssl3"),
+                "dnf": ("sqlite-libs", "openssl-libs"),
+                "yum": ("sqlite-libs", "openssl-libs"),
+                "apk": ("sqlite-libs", "libssl3"),
+            },
+            always_install=True,
+        ),
+    }
 
     @staticmethod
     def name() -> str:
@@ -41,7 +56,7 @@ class Samizdat(CuratedAgent):
 
     async def install(self, environment: BaseEnvironment) -> None:
         await super().install(environment)
-        await self.ensure_system_dependencies(environment, ("python3", "libsqlite3-0", "libssl3"))
+        await self.ensure_system_dependencies(environment, ("python3", "samizdat_libraries"))
         await environment.upload_file(
             Path(__file__).with_name("samizdat_drive.py"), "/installed-agent/samizdat_drive.py"
         )

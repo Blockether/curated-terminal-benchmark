@@ -113,3 +113,26 @@ def test_samizdat_uses_released_binary_and_model_limits(proxy_vars):
     assert instance.ARCHIVE.name == ARCHIVE_NAME
     assert ":context-window 1000000" in instance.config()
     assert ":max-tokens 128000" in instance.config()
+
+
+def test_samizdat_installs_runtime_libraries(tmp_path, monkeypatch):
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock
+
+    from ctb.agents.base import CuratedAgent
+
+    monkeypatch.setattr(CuratedAgent, "install", AsyncMock())
+    agent = samizdat("openai/gpt-6.1-sol", tmp_path)
+    monkeypatch.setattr(agent, "_get_system_package_manager", AsyncMock(return_value="apt-get"))
+    execute = AsyncMock()
+    monkeypatch.setattr(agent, "exec_as_root", execute)
+    environment = SimpleNamespace(
+        exec=AsyncMock(return_value=SimpleNamespace(return_code=0)),
+        upload_file=AsyncMock(),
+    )
+    asyncio.run(agent.install(environment))
+    command = execute.call_args.kwargs["command"]
+    assert "libsqlite3-0" in command
+    assert "libssl3" in command
+    environment.upload_file.assert_awaited_once()
