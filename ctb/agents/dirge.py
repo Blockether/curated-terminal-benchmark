@@ -10,10 +10,11 @@ from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
 
 DIRGE = "/installed-agent/dirge"
 STREAM = "dirge.jsonl"
+ARCHIVE_NAME = "dirge-f36b2890-usage-v2-x86_64-unknown-linux-musl.tar.gz"
 
 
 class Dirge(CuratedAgent):
-    ARCHIVE = ARTIFACTS / "dirge-x86_64-unknown-linux-musl.tar.gz"
+    ARCHIVE = ARTIFACTS / ARCHIVE_NAME
 
     @staticmethod
     def name() -> str:

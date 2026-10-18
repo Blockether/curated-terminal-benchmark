@@ -1,0 +1,103 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 8b3fdf57..41cf271f 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -478,4 +478,5 @@ debug = 0
+ #     janet_dyn("err-color") reads janet_vm.fiber->env.
+ [patch.crates-io]
+ evil-janet = { path = "vendor/evil-janet" }
++rig-core = { path = "vendor/rig-core-0.41.0" }
+
+diff --git a/src/provider/codex_http.rs b/src/provider/codex_http.rs
+index e03aea62..65be4e39 100644
+--- a/src/provider/codex_http.rs
++++ b/src/provider/codex_http.rs
+@@ -515,4 +515,54 @@ mod tests {
+             .expect("Content-Type must be injected on a /responses stream lacking one");
+         assert_eq!(ct, "text/event-stream");
+     }
++
++    // Arbitrary-precision floats must not hide the terminal usage event.
++    #[test]
++    fn codex_completed_response_keeps_usage() {
++        let value = serde_json::json!({
++            "type": "response.completed", "sequence_number": 4,
++            "response": {
++                "id": "resp_test", "object": "response", "created_at": 1,
++                "status": "completed", "model": "gpt-6.1-sol",
++                "instructions": "Reply OK", "max_output_tokens": null,
++                "error": null, "incomplete_details": null,
++                "output": [{"type":"message", "id":"msg_test", "role":"assistant",
++                    "status":"completed", "content":[{"type":"output_text", "text":"OK",
++                        "annotations":[], "logprobs":[]}], "phase":"final_answer"}],
++                "tools": [], "tool_choice":"auto", "parallel_tool_calls":false,
++                "text":{"format":{"type":"text"}, "verbosity":"medium"},
++                "reasoning":{"context":"all_turns", "effort":"medium", "summary":null, "mode":"standard"},
++                "usage":{"input_tokens":18, "input_tokens_details":{"cached_tokens":0},
++                    "output_tokens":5, "output_tokens_details":{"reasoning_tokens":0}, "total_tokens":23},
++                "metadata":{}, "store":false, "service_tier":"default", "truncation":"disabled",
++                "temperature": 1.0, "top_p": 0.98
++            }
++        });
++        let response: rig::providers::openai::responses_api::CompletionResponse =
++            serde_json::from_value(value["response"].clone()).expect("decode completed response");
++        assert_eq!(response.usage.unwrap().input_tokens, 18);
++        use rig::providers::openai::responses_api::streaming::StreamingCompletionChunk;
++        let chunk: StreamingCompletionChunk =
++            serde_json::from_str(&value.to_string()).expect("decode completed streaming chunk");
++        match chunk {
++            StreamingCompletionChunk::Response(chunk) => {
++                let usage = chunk.response.usage.unwrap();
++                assert_eq!(usage.input_tokens, 18);
++                assert_eq!(usage.output_tokens, 5);
++                assert_eq!(chunk.response.additional_parameters.top_p, Some(0.98));
++            }
++            _ => panic!("expected response chunk"),
++        }
++        let delta = r#"{"type":"response.output_text.delta","output_index":0,"content_index":0,"delta":"OK","sequence_number":1}"#;
++        assert!(matches!(
++            serde_json::from_str::<StreamingCompletionChunk>(delta).unwrap(),
++            StreamingCompletionChunk::Delta(_)
++        ));
++        assert!(
++            serde_json::from_str::<StreamingCompletionChunk>(
++                r#"{"type":"response.completed","sequence_number":4,"response":{}}"#
++            )
++            .is_err()
++        );
++    }
+ }
+--- a/vendor/rig-core-0.41.0/src/providers/openai/responses_api/streaming.rs
++++ b/vendor/rig-core-0.41.0/src/providers/openai/responses_api/streaming.rs
+@@ -27,11 +27,30 @@
+ /// Streaming chunks can come in one of two forms:
+ /// - A response chunk (where the completed response will have the total token usage)
+ /// - An item chunk commonly referred to as a delta. In the completions API this would be referred to as the message delta.
+-#[derive(Debug, Serialize, Deserialize, Clone)]
++#[derive(Debug, Serialize, Clone)]
+ #[serde(untagged)]
+ pub enum StreamingCompletionChunk {
+     Response(Box<ResponseChunk>),
+     Delta(ItemChunk),
++}
++
++impl<'de> Deserialize<'de> for StreamingCompletionChunk {
++    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
++    where
++        D: serde::Deserializer<'de>,
++    {
++        // Keep arbitrary-precision numbers out of Serde's untagged enum buffer.
++        let value = serde_json::Value::deserialize(deserializer)?;
++        if value.get("response").is_some() {
++            serde_json::from_value::<ResponseChunk>(value)
++                .map(|chunk| Self::Response(Box::new(chunk)))
++                .map_err(serde::de::Error::custom)
++        } else {
++            serde_json::from_value::<ItemChunk>(value)
++                .map(Self::Delta)
++                .map_err(serde::de::Error::custom)
++        }
++    }
+ }
+
+ /// The final streaming response from the OpenAI Responses API.

@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy
-from ctb.agents import opencode, pi, samizdat, vis
+from ctb.agents import dirge, opencode, pi, samizdat, vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.metrics import round_metrics
@@ -48,7 +48,9 @@ SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
     "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
-    "cargo build --release --target x86_64-unknown-linux-musl"
+    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge "
+    "codex_completed_response_keeps_usage && "
+    "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
 )
 
 
@@ -80,11 +82,28 @@ def apply_patches(path: Path, *names: str) -> None:
         sh(["git", "apply", str(ROOT / "patches" / name)], cwd=path)
 
 
+def prepare_dirge_rig(path: Path) -> None:
+    """Extract the locked Rig crate before applying the streaming parser patch."""
+    packages = tomllib.loads((path / "Cargo.lock").read_text())["package"]
+    package = next(p for p in packages if p["name"] == "rig-core")
+    if package["version"] != "0.41.0":
+        raise RuntimeError("The Dirge streaming patch requires rig-core 0.41.0")
+    name = "rig-core-0.41.0.crate"
+    archive = download(
+        f"https://static.crates.io/crates/rig-core/{name}",
+        ARTIFACTS / name,
+        package["checksum"],
+    )
+    with tarfile.open(archive) as source:
+        source.extractall(path / "vendor", filter="data")
+
+
 def fetch_dirge() -> Path:
-    archive = ARTIFACTS / "dirge-x86_64-unknown-linux-musl.tar.gz"
+    archive = ARTIFACTS / dirge.ARCHIVE_NAME
     if not archive.is_file():
         path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
-        apply_patches(path, "dirge-usage.patch")
+        prepare_dirge_rig(path)
+        apply_patches(path, "dirge-usage.patch", "dirge-rig-stream.patch")
         sh(
             [
                 "podman",
