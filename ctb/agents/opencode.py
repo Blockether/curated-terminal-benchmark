@@ -1,4 +1,4 @@
-"""OpenCode through Harbor's built-in OpenCode agent, on the ChatGPT subscription."""
+"""OpenCode through Harbor, with pinned subscription authentication plugins."""
 
 import asyncio
 import json
@@ -15,6 +15,7 @@ from ctb import credentials
 from ctb.agents.base import EFFORT, min_token_seconds, split_model, stage_files
 
 OPENCODE_VERSION = "1.19.3"
+ANTHROPIC_PLUGIN = "@ex-machina/opencode-anthropic-auth@1.8.6"
 #: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Keep them off
 #: /logs, a host mount of the Podman VM, which gets only OpenCode's log.
 LOCAL_DATA = "/tmp/ctb-opencode"
@@ -90,28 +91,34 @@ def watchdog_verdict(output: str, idle_s: float, idle_limit_s: float) -> str | N
     return None
 
 
-def opencode_auth_json(access: credentials.Access) -> str:
-    """An OpenCode `auth.json` with one ChatGPT OAuth entry and an empty refresh token."""
+def opencode_auth_json(access: credentials.Access, family: str = "openai") -> str:
+    """Create a subscription login without permission to rotate the host token."""
     entry = {"type": "oauth", "access": access.token, "refresh": "", "expires": access.expires_ms}
     if access.account_id:
         entry["accountId"] = access.account_id
-    return json.dumps({"openai": entry})
+    return json.dumps({family: entry})
 
 
 class OpenCode(HarborOpenCode):
-    """Harbor's OpenCode with a pinned version and the `medium` model variant.
-
-    Anthropic bills a subscription token from OpenCode as extra usage, so OpenCode runs only on GPT.
-    """
+    """Run both benchmark models with medium effort and pinned OAuth support."""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("variant", EFFORT)
         super().__init__(*args, version=version or OPENCODE_VERSION, **kwargs)
         family, _ = split_model(self.model_name)
-        if family != "openai":
-            raise ValueError(
-                "OpenCode runs only on openai/gpt-6.1-sol: Anthropic bills it as extra usage"
-            )
+        if family == "anthropic":
+            self._opencode_config = {
+                **self._opencode_config,
+                "plugin": [*self._opencode_config.get("plugin", []), ANTHROPIC_PLUGIN],
+                "provider": {
+                    **self._opencode_config.get("provider", {}),
+                    "anthropic": {
+                        "models": {
+                            "claude-opus-5-5": {"limit": {"context": 1000000, "output": 128000}}
+                        }
+                    },
+                },
+            }
 
     async def exec_as_agent(self, environment: BaseEnvironment, command: str, env=None, **kwargs):
         if env and "XDG_DATA_HOME" in env:
@@ -120,6 +127,8 @@ class OpenCode(HarborOpenCode):
                 "XDG_DATA_HOME": f"{LOCAL_DATA}/xdg-data",
                 "XDG_STATE_HOME": f"{LOCAL_DATA}/xdg-state",
             }
+        if split_model(self.model_name)[0] == "anthropic":
+            env = {**(env or {}), "OPENCODE_EXPERIMENTAL_OUTPUT_TOKEN_MAX": "128000"}
         return await super().exec_as_agent(environment, command=command, env=env, **kwargs)
 
     async def _watch(self, environment: BaseEnvironment, stopped: list[str]) -> None:
@@ -150,9 +159,14 @@ class OpenCode(HarborOpenCode):
         self, instruction: str, environment: BaseEnvironment, context: AgentContext
     ) -> None:
         data = f"{LOCAL_DATA}/xdg-data"
-        access = credentials.codex_vis(min_token_seconds())
+        family, _ = split_model(self.model_name)
+        access = (
+            credentials.refresh_anthropic(min_token_seconds())
+            if family == "anthropic"
+            else credentials.codex_vis(min_token_seconds())
+        )
         await stage_files(
-            self, environment, {"opencode/auth.json": opencode_auth_json(access)}, data
+            self, environment, {"opencode/auth.json": opencode_auth_json(access, family)}, data
         )
         stopped: list[str] = []
         error: BaseException | None = None

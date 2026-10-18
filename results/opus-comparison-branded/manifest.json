@@ -1,0 +1,18 @@
+{
+  "sha256": {
+    "ctb/report_pdf.py": "f341aed48bb5e9ed4324c641fd40f99dd376f82aec85b5afd688baff4c08b8be",
+    "results/opus-comparison-branded/blockether-benchmark.pdf": "5fd8c8d6ba4dc6a610d0ea4ea5cdfc9b881f24aa153930964bc75960a38f33b2",
+    "results/opus-comparison-branded/brand-lockup.svg": "7ef9b2158a6f771b96d7fa58a724a4bc634bab5a21a55f744056e024ac9dd55a",
+    "results/opus-comparison-branded/brand-source.json": "7b63b197f8aa19cc5d2989ae0b8285f9fc0a061206baf12908e0f8bda3436443",
+    "results/opus-comparison-branded/fonts/Inter-Black.ttf": "e3cdba76e7a88f12794a39ca90f1c88805a14eccf03a38924573464e142bb1af",
+    "results/opus-comparison-branded/fonts/Inter-Bold.ttf": "2dfd5043f2984aec2fcb66ae5580cbb65ed7c566033d6d2cfdcffa063183f5ac",
+    "results/opus-comparison-branded/fonts/Inter-Regular.ttf": "86261184496c4ca618f5f43d3cae93f57051d2e656aa3458fd83cc407ced32d6",
+    "results/opus-comparison-branded/fonts/Inter.ttf": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+    "results/opus-comparison-branded/fonts/JetBrainsMono.ttf": "e6fd0d7e91550b3ed2b735d4312474362c4716edc4fc0577a0f61ed782d5aed1",
+    "results/opus-comparison-branded/fonts/inter-latin-wght-normal-Dx4kXJAl.woff2": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+    "results/opus-comparison-branded/logo.svg": "3e155e7faa63fdaf2de682cf1f2eaa9d7ef22e98af8f8f4ee557d2809d6753d1",
+    "results/opus-comparison/data.json": "bb7627201a2522c6c24080a03872fc0b776a99cb79b2b8ff4d72a63cf810c28e",
+    "tests/test_report_pdf.py": "cfc2cb0aa0b14bb2c6ce7e9b0349665501fd8211efd80ebeda7784149b1a87b8"
+  },
+  "status": "revised presentation; original evidence lock unchanged"
+}

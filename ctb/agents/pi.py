@@ -1,4 +1,4 @@
-"""pi (pi.dev) through Harbor's built-in Pi agent, on the ChatGPT subscription."""
+"""pi through Harbor, with pinned subscription authentication plugins."""
 
 import dataclasses
 import json
@@ -9,45 +9,54 @@ from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
-from ctb.agents.base import agent_home, min_token_seconds, split_model, stage_files
+from ctb.agents.base import EFFORT, agent_home, min_token_seconds, split_model, stage_files
 
 PI_VERSION = "1.3.0"
+ANTHROPIC_PLUGIN = "@gotgenes/pi-anthropic-auth@3.4.3"
 AUTH = ".pi/agent/auth.json"
 
 
-def pi_auth_json(access: credentials.Access) -> str:
-    """A pi `auth.json` with one ChatGPT OAuth entry and an empty refresh token."""
+def pi_auth_json(access: credentials.Access, family: str = "openai") -> str:
+    """Create a subscription login without permission to rotate the host token."""
     entry = {"type": "oauth", "access": access.token, "refresh": "", "expires": access.expires_ms}
     if access.account_id:
         entry["accountId"] = access.account_id
-    return json.dumps({"openai-codex": entry})
+    return json.dumps({"openai-codex" if family == "openai" else "anthropic": entry})
 
 
 class Pi(HarborPi):
-    """Harbor's Pi on the `openai-codex` provider, with a pinned pi version.
-
-    Anthropic bills a subscription token from pi as extra usage, so pi runs only on GPT.
-    The effort comes from `--ak reasoning_effort=medium`, which Harbor maps to `--thinking`.
-    """
+    """Run both benchmark models with medium effort and pinned OAuth support."""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
+        kwargs.setdefault("reasoning_effort", EFFORT)
         super().__init__(*args, version=version or PI_VERSION, **kwargs)
-        family, _ = split_model(self.model_name)
-        if family != "openai":
-            raise ValueError(
-                "pi runs only on openai/gpt-6.1-sol: Anthropic bills it as extra usage"
-            )
+        split_model(self.model_name)
 
     @property
     def model_connection(self) -> ResolvedModelConnection:
-        return dataclasses.replace(super().model_connection, provider="openai-codex")
+        connection = super().model_connection
+        family, _ = split_model(self.model_name)
+        return dataclasses.replace(
+            connection, provider="openai-codex" if family == "openai" else "anthropic"
+        )
+
+    def build_cli_flags(self) -> str:
+        flags = super().build_cli_flags()
+        if split_model(self.model_name)[0] == "anthropic":
+            flags += f" --extension npm:{ANTHROPIC_PLUGIN}"
+        return flags
 
     async def run(
         self, instruction: str, environment: BaseEnvironment, context: AgentContext
     ) -> None:
         home = await agent_home(self, environment)
-        access = credentials.codex_vis(min_token_seconds())
-        await stage_files(self, environment, {AUTH: pi_auth_json(access)}, home)
+        family, _ = split_model(self.model_name)
+        access = (
+            credentials.refresh_anthropic(min_token_seconds())
+            if family == "anthropic"
+            else credentials.codex_vis(min_token_seconds())
+        )
+        await stage_files(self, environment, {AUTH: pi_auth_json(access, family)}, home)
         try:
             await super().run(instruction, environment, context)
         finally:

@@ -33,10 +33,9 @@ AGENTS = {
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
         # samizdat reaches both models through the host proxy (ctb.proxy).
         AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("anthropic", "openai"), proxy=True),
-        # Anthropic bills a subscription token from OpenCode or pi as extra usage, so both run
-        # only on the GPT model. OpenCode sets its effort with the `medium` variant.
-        AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("openai",)),
-        AgentSpec("pi", "ctb.agents.pi:Pi", ("openai",), effort_kwarg=True),
+        # Pinned OAuth plugins enable Claude; GPT uses each harness's native subscription login.
+        AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("anthropic", "openai")),
+        AgentSpec("pi", "ctb.agents.pi:Pi", ("anthropic", "openai"), effort_kwarg=True),
     )
 }
 

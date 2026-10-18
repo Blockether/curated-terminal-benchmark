@@ -508,6 +508,8 @@ def pins() -> dict:
             "opencode": opencode.OPENCODE_VERSION,
             "pi": pi.PI_VERSION,
         },
+        "auth_plugins": {"opencode": opencode.ANTHROPIC_PLUGIN, "pi": pi.ANTHROPIC_PLUGIN},
+        "opencode_anthropic_max_output_tokens": 128000,
         "models": MODELS,
         "effort": EFFORT,
     }

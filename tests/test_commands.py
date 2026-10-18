@@ -277,10 +277,44 @@ def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]
 
 
-def test_opencode_and_pi_refuse_the_anthropic_model():
-    for cls in (OpenCode, Pi):
-        with pytest.raises(ValueError, match="extra usage"):
-            agent(cls, "anthropic/claude-opus-5-5")
+def test_opencode_and_pi_use_pinned_anthropic_plugins_with_medium_effort():
+    opencode = agent(OpenCode, "anthropic/claude-opus-5-5")
+    pi = agent(Pi, "anthropic/claude-opus-5-5")
+    assert opencode.options.variant == "medium"
+    assert "@ex-machina/opencode-anthropic-auth@1.8.6" in opencode._build_register_config_command()
+    assert pi.options.thinking == "medium"
+    assert pi.model_connection.provider == "anthropic"
+    assert "--extension npm:@gotgenes/pi-anthropic-auth@3.4.3" in pi.build_cli_flags()
+    assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
+    access = credentials.Access("A", 123)
+    for auth in (pi_auth_json, opencode_auth_json):
+        assert json.loads(auth(access, "anthropic")) == {
+            "anthropic": {"type": "oauth", "access": "A", "refresh": "", "expires": 123}
+        }
+    for name in ("pi", "opencode"):
+        assert AGENTS[name].families == ("anthropic", "openai")
+
+
+def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):
+    calls = []
+
+    async def fake_exec(self, environment, command, env=None, **kwargs):
+        calls.append(env)
+
+    monkeypatch.setattr(OpenCode.__mro__[1], "exec_as_agent", fake_exec)
+    opus = agent(OpenCode, "anthropic/claude-opus-5-5")
+    gpt = agent(OpenCode, "openai/gpt-6.1-sol")
+    assert opus._opencode_config["provider"]["anthropic"]["models"]["claude-opus-5-5"]["limit"] == {
+        "context": 1000000,
+        "output": 128000,
+    }
+    assert "provider" not in gpt._opencode_config
+    asyncio.run(opus.exec_as_agent(None, command="opencode", env={"A": "1"}))
+    asyncio.run(gpt.exec_as_agent(None, command="opencode", env={"A": "1"}))
+    assert calls == [
+        {"A": "1", "OPENCODE_EXPERIMENTAL_OUTPUT_TOKEN_MAX": "128000"},
+        {"A": "1"},
+    ]
 
 
 def test_opencode_and_pi_logins_cannot_rotate_the_host_login():

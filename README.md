@@ -23,8 +23,8 @@ Each trial is one agent, one model and one task in a separate Harbor job.
 | `dirge` | `yogthos/dirge` master, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
 | `kmet` | `kmetia/kmet-agent` master, with `patches/kmet-print-thinking.patch` and `patches/kmet-usage.patch` | GPT-6.1 |
 | `samizdat` | `yogthos/samizdat` master on Jolt 0.8.20, one beam branch, through the model proxy | Opus 5.5, GPT-6.1 |
-| `opencode` | Harbor built-in agent, `opencode-ai` 1.19.0, model variant `medium` | GPT-6.1 |
-| `pi` | Harbor built-in agent, pi 1.2.0, provider `openai-codex`, `--thinking medium` | GPT-6.1 |
+| `opencode` | Harbor built-in agent, `opencode-ai` 1.19.3, model variant `medium` | Opus 5.5, GPT-6.1 |
+| `pi` | Harbor built-in agent, pi 1.3.0, `--thinking medium` | Opus 5.5, GPT-6.1 |
 
 The models are `anthropic/claude-opus-5-5` and `openai/gpt-6.1-sol`. All agents use medium
 reasoning effort. `tasks.toml` lists the tasks: 6 easy tasks (expert estimate at most 2 hours)
@@ -33,8 +33,10 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
 ### Limits of the comparison
 
 - kmet runs only on GPT. kmet has no Anthropic subscription (OAuth) transport.
-- OpenCode and pi run only on GPT. Anthropic bills a subscription token that a third-party app
-  uses as extra usage, not as plan usage. Each run gets a ChatGPT login without a refresh token.
+- OpenCode and pi use pinned OAuth plugins for Claude subscriptions:
+  `@ex-machina/opencode-anthropic-auth@1.8.6` and `@gotgenes/pi-anthropic-auth@3.4.3`.
+  GPT uses native ChatGPT authentication. Each run gets an access token without a refresh token.
+  Run records include the plugin versions. Earlier sealed rounds keep their original model coverage.
 - kmet print mode ignores `--thinking`. The patch passes the thinking level, as interactive mode does.
 - samizdat speaks only OpenAI Chat Completions. `ctb run` starts a proxy on the host
   (`ctb/proxy.py`). The proxy sends Opus requests to the Anthropic Messages API and GPT
