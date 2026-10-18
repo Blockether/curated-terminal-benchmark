@@ -20,9 +20,9 @@ Each trial is one agent, one model and one task in a separate Harbor job.
 | `vis-team` | Native Vis Linux build of `profiles.toml`, profile `team`: Council on (subagents) | Opus 5.5, GPT-6.1 |
 | `claude-code` | Harbor built-in agent | Opus 5.5 |
 | `codex` | Harbor built-in agent | GPT-6.1 |
-| `dirge` | `yogthos/dirge` master, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
+| `dirge` | `dirge-code/dirge` main, static musl build, with `patches/dirge-usage.patch` | Opus 5.5, GPT-6.1 |
 | `kmet` | `kmetia/kmet-agent` master, with `patches/kmet-print-thinking.patch` and `patches/kmet-usage.patch` | GPT-6.1 |
-| `samizdat` | `yogthos/samizdat` master on Jolt 0.8.20, one beam branch, through the model proxy | Opus 5.5, GPT-6.1 |
+| `samizdat` | Official `yogthos/samizdat` v0.1.0 Linux binary, one beam branch, through the model proxy | Opus 5.5, GPT-6.1 |
 | `opencode` | Harbor built-in agent, `opencode-ai` 1.19.3, model variant `medium` | Opus 5.5, GPT-6.1 |
 | `pi` | Harbor built-in agent, pi 1.3.0, `--thinking medium` | Opus 5.5, GPT-6.1 |
 
@@ -44,7 +44,8 @@ and 6 hard tasks (4 to 8 hours). No task needs a GPU or more than 8 GB of memory
   proxy key. `runs/<round>/proxy.jsonl` records token counts and errors, not content.
 - Opus 5.5 refuses a forced tool choice. For samizdat on Opus, the proxy asks for the tool
   in the prompt instead.
-- samizdat runs one beam branch (`CTB_BEAM_WIDTH`, default 1), so it costs as much as one agent.
+- Samizdat starts with one beam branch. The adapter saves full turn text in `agent/samizdat-transcript.json`.
+  It also retains the database and run details under `agent/`.
 - samizdat runs on Jolt 0.8.20, not 0.8.21. Jolt 0.8.21 changed its timer clock, and on that
   version no samizdat run starts.
 - dirge and kmet print no token counts. Their usage patches add the totals that each agent
@@ -109,16 +110,14 @@ The task containers and the amd64 emulation can use all the memory that the mach
    export DOCKER_HOST=unix:///path/to/podman/vis-amd64-api.sock
    ```
 
-3. Get the agents: native Vis, and dirge, kmet and samizdat from their pinned master commits:
+3. Get the pinned agent builds and releases:
 
    ```bash
    uv run python -m ctb.cli fetch
    ```
 
-   dirge builds in an amd64 `rust:1-bookworm` container. samizdat builds in an amd64
-   `python:3.12-slim-bookworm` container with a 4 GB memory limit. kmet needs Babashka
-   1.13.225 or later on `PATH` or in `artifacts/tools`. To build an agent again, delete its
-   archive in `artifacts/`.
+   Dirge builds in an amd64 `rust:1-bookworm` container. Samizdat uses its official release archive with a pinned SHA-256.
+   kmet needs Babashka 1.13.225 or later on `PATH` or in `artifacts/tools`.
 
 4. Run a round. A finished trial is skipped when you run the same round again:
 

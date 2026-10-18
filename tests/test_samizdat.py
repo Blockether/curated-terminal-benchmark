@@ -34,7 +34,9 @@ def test_samizdat_reaches_each_model_through_the_proxy(proxy_vars):
 
 def test_samizdat_command_runs_one_run_in_the_task_directory(proxy_vars):
     command = samizdat("openai/gpt-6.1-sol").command("say 'hi'")
-    assert "HARNESS_ROOT=$root" in command and "jolt -m ctb.drive" in command
+    assert "HARNESS_ROOT=$root" in command and "samizdat_drive.py" in command
+    assert "--headless" in command
+    assert "HARNESS_DB=/logs/agent/samizdat.sqlite3" in command
     assert "printf %s 'say '\"'\"'hi'\"'\"'' > $HOME/problem.txt" in command
     assert command.endswith('rm -rf "$root/.samizdat"; exit $code')
 
@@ -83,3 +85,31 @@ def test_codex_requests_of_one_conversation_share_a_prompt_cache_key():
     other = codex_body({"model": "gpt-6.1-sol", "messages": [{"role": "user", "content": "b"}]})
     assert body()["prompt_cache_key"] == body("more")["prompt_cache_key"]
     assert body()["prompt_cache_key"] != other["prompt_cache_key"]
+
+
+def test_samizdat_exports_full_turn_text(tmp_path):
+    from ctb.agents.samizdat_drive import export_transcript
+
+    calls = []
+
+    def get(path):
+        calls.append(path)
+        if path.endswith("/branches/b"):
+            return {"turns": [{"turn": 1}]}
+        return {"turn": 1, "assistant_text": "Complete reply", "reasoning_text": "Reasoning"}
+
+    output = tmp_path / "transcript.json"
+    export_transcript("r", {"branches": [{"id": "b"}], "run": {}}, output, get=get)
+    saved = json.loads(output.read_text())
+    assert saved["branches"][0]["turns"][0]["assistant_text"] == "Complete reply"
+    assert calls[-1] == "/v1/runs/r/branches/b/turns/1"
+
+
+def test_samizdat_uses_released_binary_and_model_limits(proxy_vars):
+    from ctb.agents.samizdat import ARCHIVE_NAME, VERSION
+
+    instance = samizdat("anthropic/claude-opus-5-5")
+    assert VERSION == "v0.1.0"
+    assert instance.ARCHIVE.name == ARCHIVE_NAME
+    assert ":context-window 1000000" in instance.config()
+    assert ":max-tokens 128000" in instance.config()

@@ -33,7 +33,7 @@ class Dirge(CuratedAgent):
     def secret_files(self) -> dict[str, str]:
         files = {".config/dirge/config.json": json.dumps(self.config())}
         if self.family == "openai":
-            access = credentials.codex_cli(min_token_seconds())
+            access = credentials.codex_vis(min_token_seconds())
             files[".codex/auth.json"] = credentials.codex_auth_json(access)
         return files
 

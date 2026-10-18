@@ -1,19 +1,19 @@
-"""samizdat (github.com/yogthos/samizdat) through its run API, with one beam branch.
-
-samizdat speaks only the OpenAI Chat Completions wire, so `ctb run` starts the model
-proxy (ctb.proxy) on the host and gives the agent its URL and a random proxy key.
-"""
+"""Released Samizdat through its HTTP API, with full transcript export."""
 
 import json
 import os
 import shlex
+from pathlib import Path
 
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
 from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent
 
-SAMIZDAT = "/installed-agent/samizdat"
+VERSION = "v0.1.0"
+ARCHIVE_NAME = f"samizdat-{VERSION}-x86_64-linux.tar.gz"
+ARCHIVE_SHA256 = "20b3f392489cd6f729194a220bf34f49ea29ca8154a75b9c860eea5de4950a80"
+SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
 RUN_LOG = "samizdat-run.json"
 # Opus 5.5 refuses a forced tool_choice, so the proxy asks for the tool in the prompt.
 FEATURES = {"anthropic": ":reasoning-effort", "openai": ":native-tool-choice :reasoning-effort"}
@@ -30,19 +30,21 @@ def proxy_env() -> tuple[str, str]:
 
 
 class Samizdat(CuratedAgent):
-    ARCHIVE = ARTIFACTS / "samizdat-linux-amd64.tar.gz"
+    ARCHIVE = ARTIFACTS / ARCHIVE_NAME
 
     @staticmethod
     def name() -> str:
         return "samizdat"
 
     def get_version_command(self) -> str:
-        return f"{SAMIZDAT}/jolt/jolt --version"
+        return f"printf %s {VERSION}"
 
     async def install(self, environment: BaseEnvironment) -> None:
         await super().install(environment)
-        # jolt writes its caches under the home that the archive brings.
-        await self.exec_as_root(environment, command=f"chmod -R a+rwX {SAMIZDAT}/home")
+        await self.ensure_system_dependencies(environment, ("python3", "libsqlite3-0", "libssl3"))
+        await environment.upload_file(
+            Path(__file__).with_name("samizdat_drive.py"), "/installed-agent/samizdat_drive.py"
+        )
 
     def config(self) -> str:
         url, _ = proxy_env()
@@ -53,8 +55,8 @@ class Samizdat(CuratedAgent):
             f'                    :model "{self.model}"\n'
             f"                    :features #{{{FEATURES[self.family]}}}\n"
             f'                    :reasoning-effort "{EFFORT}"\n'
-            "                    :context-window 200000\n"
-            "                    :max-tokens 32000}}\n"
+            "                    :context-window 1000000\n"
+            "                    :max-tokens 128000}}\n"
             " :roles {:default :ctb}\n"
             " :approval {:mode :yolo}}\n"
         )
@@ -66,16 +68,13 @@ class Samizdat(CuratedAgent):
         return {"CTB_PROXY_KEY": proxy_env()[1]}
 
     def command(self, instruction: str) -> str:
-        # The task directory is the project root; samizdat keeps its database in $HOME.
         return (
-            f"root=$PWD; S={SAMIZDAT}; "
-            "for d in .jolt .m2 .cache; do ln -sfn $S/home/$d $HOME/$d; done; "
+            "root=$PWD; "
             f"printf %s {shlex.quote(instruction)} > $HOME/problem.txt; "
             "export SAMIZDAT_CONFIG_FILE=$HOME/samizdat.edn HARNESS_ROOT=$root "
-            "HARNESS_DB=$HOME/samizdat.sqlite3 CTB_PROBLEM_FILE=$HOME/problem.txt PATH=$S/jolt:$PATH; "
-            "cd $S/src && { jolt serve > /logs/agent/samizdat-server.log 2>&1 & server=$!; }; "
-            "jolt -m ctb.drive > /logs/agent/samizdat-drive.log 2>&1; code=$?; "
-            # samizdat seeds its own userspace into the project; the verifier must not see it.
+            "HARNESS_DB=/logs/agent/samizdat.sqlite3 CTB_PROBLEM_FILE=$HOME/problem.txt; "
+            f"{SAMIZDAT} --headless > /logs/agent/samizdat-server.log 2>&1 & server=$!; "
+            "python3 /installed-agent/samizdat_drive.py > /logs/agent/samizdat-drive.log 2>&1; code=$?; "
             'kill $server 2>/dev/null; rm -rf "$root/.samizdat"; exit $code'
         )
 

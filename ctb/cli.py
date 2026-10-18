@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy
-from ctb.agents import opencode, pi, vis
+from ctb.agents import opencode, pi, samizdat, vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.metrics import round_metrics
@@ -36,13 +36,9 @@ DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "ter
 COMPOSE = SUITE_ARTIFACTS / "docker-compose"
 # Pinned master commits. Local patches: kmet print mode honors --thinking, and dirge and
 # kmet report token usage.
-DIRGE_REPO, DIRGE_COMMIT = "https://github.com/yogthos/dirge.git", "f36b2890"
+DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "f36b2890"
 KMET_REPO, KMET_COMMIT = "https://github.com/kmetia/kmet-agent.git", "58f23e83"
-SAMIZDAT_REPO, SAMIZDAT_COMMIT = "https://github.com/yogthos/samizdat.git", "e7889d4a"
-# Jolt 0.8.21 moved runtime timer deadlines to the monotonic clock, but ebb (samizdat's task
-# library) still schedules on the wall clock, so on 0.8.21 no samizdat run ever starts.
-JOLT_VERSION = "v0.8.20"
-JOLT_URL = "https://github.com/jolt-lang/jolt/releases/download/{v}/jolt-{v}-x86_64-linux.tar.gz"
+SAMIZDAT_COMMIT = "56d2be18f9b4c073e2fbf244d64ff5017595c305"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
 # The newest Vis release with a native Linux x64 bundle.
@@ -54,19 +50,6 @@ DIRGE_BUILD = (
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
     "cargo build --release --target x86_64-unknown-linux-musl"
 )
-# Paths inside the archive are absolute (jolt caches them), so build at /installed-agent.
-SAMIZDAT_BUILD = """set -e
-apt-get update -qq && apt-get install -y -qq git ca-certificates >/dev/null
-B=/installed-agent/samizdat
-mkdir -p $B/home $B/src
-tar -xzf /work/jolt.tar.gz -C $B && mv $B/jolt-*-x86_64-linux $B/jolt
-cp -r /src/. $B/src && rm -rf $B/src/.git
-mkdir -p $B/src/src/ctb && cp /work/drive.clj $B/src/src/ctb/drive.clj
-cd $B/src && export HOME=$B/home PATH=$B/jolt:$PATH
-jolt path >/dev/null
-JOLT_AOT_ASYNC=0 jolt -e "(require 'samizdat.core 'ctb.drive) (System/exit 0)"
-tar -czf /out/samizdat-linux-amd64.tar.gz -C /installed-agent samizdat
-"""
 
 
 def sh(command: list[str], cwd: Path | None = None, env: dict | None = None) -> None:
@@ -141,40 +124,8 @@ def download(url: str, path: Path, sha256: str | None = None) -> Path:
 
 
 def fetch_samizdat() -> Path:
-    archive = ARTIFACTS / "samizdat-linux-amd64.tar.gz"
-    if not archive.is_file():
-        path = checkout(SAMIZDAT_REPO, SAMIZDAT_COMMIT, "samizdat")
-        jolt = download(
-            JOLT_URL.format(v=JOLT_VERSION), ARTIFACTS / f"jolt-{JOLT_VERSION}-x86_64-linux.tar.gz"
-        )
-        with tempfile.TemporaryDirectory(prefix="ctb-sz-", dir=ARTIFACTS) as work:
-            work_path = Path(work)
-            (work_path / "jolt.tar.gz").write_bytes(jolt.read_bytes())
-            (work_path / "drive.clj").write_text(
-                (ROOT / "ctb/agents/samizdat_drive.clj").read_text()
-            )
-            sh(
-                [
-                    "podman",
-                    "run",
-                    "--rm",
-                    "--memory",
-                    "4g",
-                    "--platform",
-                    "linux/amd64",
-                    "-v",
-                    f"{path}:/src:ro",
-                    "-v",
-                    f"{work_path}:/work:ro",
-                    "-v",
-                    f"{ARTIFACTS}:/out",
-                    "docker.io/library/python:3.12-slim-bookworm",
-                    "bash",
-                    "-c",
-                    SAMIZDAT_BUILD,
-                ]
-            )
-    return archive
+    url = f"https://github.com/yogthos/samizdat/releases/download/{samizdat.VERSION}/{samizdat.ARCHIVE_NAME}"
+    return download(url, samizdat.Samizdat.ARCHIVE, samizdat.ARCHIVE_SHA256)
 
 
 def fetch_vis() -> Path:
@@ -500,7 +451,7 @@ def pins() -> dict:
         "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,
         "samizdat": SAMIZDAT_COMMIT,
-        "jolt": JOLT_VERSION,
+        "samizdat_release": samizdat.VERSION,
         "harbor": metadata.version("harbor"),
         "harnesses": {
             "claude-code": AGENTS["claude-code"].version,

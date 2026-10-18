@@ -442,3 +442,12 @@ def test_opencode_hang_keeps_a_process_list_in_the_trial_logs():
     command = processes_command("/logs/agent/opencode/processes.txt")
     assert "/proc/[0-9]*" in command and "wchan" in command
     assert command.endswith("> /logs/agent/opencode/processes.txt 2>/dev/null; true")
+
+
+def test_dirge_uses_the_same_chatgpt_account_as_other_harnesses(monkeypatch):
+    access = credentials.Access("vis-access", 9999999999999, "vis-account")
+    monkeypatch.setattr(credentials, "codex_vis", lambda minimum: access)
+    monkeypatch.setattr(credentials, "codex_cli", lambda minimum: credentials.Access("other", 1))
+    auth = json.loads(agent(Dirge, "openai/gpt-6.1-sol").secret_files()[".codex/auth.json"])
+    assert auth["tokens"]["access_token"] == "vis-access"
+    assert auth["tokens"]["account_id"] == "vis-account"
