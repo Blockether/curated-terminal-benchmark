@@ -128,6 +128,7 @@ def test_vis_installs_only_the_pinned_build(pinned):
     _, data = pinned
     solo = VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
     solo.exec_as_root = AsyncMock()
+    solo._get_system_package_manager = AsyncMock(return_value="apt-get")
     environment = AsyncMock()
     with pytest.raises(FileNotFoundError, match="ctb.agents.vis fetch"):
         asyncio.run(solo.install(environment))

@@ -4,8 +4,9 @@ import os
 import shlex
 import tempfile
 from pathlib import Path
+from typing import ClassVar
 
-from harbor.agents.installed.base import BaseInstalledAgent, with_prompt_template
+from harbor.agents.installed.base import BaseInstalledAgent, PackageSpec, with_prompt_template
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
@@ -65,6 +66,16 @@ async def agent_home(agent: BaseInstalledAgent, environment: BaseEnvironment) ->
 class CuratedAgent(BaseInstalledAgent):
     """An installed agent that gets files and secrets only for one run."""
 
+    SYSTEM_PACKAGES: ClassVar[dict[str, PackageSpec]] = {
+        **BaseInstalledAgent.SYSTEM_PACKAGES,
+        "ca_certificates": PackageSpec(
+            commands=(),
+            packages={
+                manager: ("ca-certificates",) for manager in ("apt-get", "dnf", "yum", "apk")
+            },
+            always_install=True,
+        ),
+    }
     #: Local archive to upload and unpack into /installed-agent.
     ARCHIVE: Path
 
@@ -77,6 +88,7 @@ class CuratedAgent(BaseInstalledAgent):
             raise FileNotFoundError(
                 f"Missing agent archive: {self.ARCHIVE}; run `uv run python -m ctb.cli fetch`."
             )
+        await self.ensure_system_dependencies(environment, ("ca_certificates",))
         await environment.upload_file(self.ARCHIVE, "/tmp/ctb-agent.tar.gz")
         await self.exec_as_root(
             environment,
