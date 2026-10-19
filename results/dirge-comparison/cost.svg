@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="436" role="img">
+<title>API-equivalent cost</title>
+<rect width="100%" height="100%" fill="white"/>
+<text x="20" y="30" font-family="sans-serif" font-size="20">API-equivalent cost</text>
+<text x="20" y="84" font-family="sans-serif" font-size="13">claude-code / claude-opus-5-5</text>
+<rect x="380" y="65" width="418.76" height="26" fill="#2563eb"/>
+<text x="845" y="84" font-family="sans-serif" font-size="13">27.21 USD</text>
+<text x="20" y="132" font-family="sans-serif" font-size="13">codex / gpt-6.1-sol</text>
+<rect x="380" y="113" width="84.03" height="26" fill="#2563eb"/>
+<text x="845" y="132" font-family="sans-serif" font-size="13">5.46 USD</text>
+<text x="20" y="180" font-family="sans-serif" font-size="13">dirge / gpt-6.1-sol</text>
+<rect x="380" y="161" width="295.02" height="26" fill="#2563eb"/>
+<text x="845" y="180" font-family="sans-serif" font-size="13">19.17 USD</text>
+<text x="20" y="228" font-family="sans-serif" font-size="13">opencode / claude-opus-5-5</text>
+<rect x="380" y="209" width="450.00" height="26" fill="#2563eb"/>
+<text x="845" y="228" font-family="sans-serif" font-size="13">29.24 USD</text>
+<text x="20" y="276" font-family="sans-serif" font-size="13">opencode / gpt-6.1-sol</text>
+<rect x="380" y="257" width="48.79" height="26" fill="#2563eb"/>
+<text x="845" y="276" font-family="sans-serif" font-size="13">3.17 USD</text>
+<text x="20" y="324" font-family="sans-serif" font-size="13">pi / claude-opus-5-5</text>
+<rect x="380" y="305" width="321.34" height="26" fill="#2563eb"/>
+<text x="845" y="324" font-family="sans-serif" font-size="13">20.88 USD</text>
+<text x="20" y="372" font-family="sans-serif" font-size="13">pi / gpt-6.1-sol</text>
+<rect x="380" y="353" width="43.40" height="26" fill="#2563eb"/>
+<text x="845" y="372" font-family="sans-serif" font-size="13">2.82 USD</text>
+</svg>

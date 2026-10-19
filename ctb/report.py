@@ -40,7 +40,7 @@ def chart(groups, key, title, unit):
     return "\n".join(parts + ["</svg>"]) + "\n"
 
 
-def build(root=ROOT):
+def build(root=ROOT, *, include_dirge=False):
     files = {}
 
     def evidence(path):
@@ -97,6 +97,31 @@ def build(root=ROOT):
                 }
             )
     assert len(rows) == 72
+    supplements = []
+    if include_dirge:
+        dirge_path = root / "results/dirge-gpt-usage-4e65f21.json"
+        evidence(dirge_path)
+        dirge_seal = json.loads(dirge_path.read_text())
+        dirge_rows = round_metrics(root, dirge_seal)["rows"]
+        assert len(dirge_rows) == 12
+        for row, original in zip(dirge_rows, dirge_seal["rows"]):
+            row["source"] = original["result"]
+            row["provenance"] = "sealed-dirge-gpt-usage-4e65f21"
+        rows.extend(dirge_rows)
+        retry_root = root / "jobs/dirge-gpt-ca-retry"
+        evidence(retry_root / "ctb-runs.json")
+        for result in sorted(retry_root.glob("*/*/result.json")):
+            evidence(result)
+            supplements.append(
+                {
+                    "source": str(result.relative_to(root)),
+                    "provenance": "dirty-run-evidence; excluded from primary scores",
+                    **trial_metrics(result),
+                }
+            )
+            for artifact in (result.parent / "agent").glob("dirge*"):
+                if artifact.is_file():
+                    evidence(artifact)
     rows.sort(key=lambda r: (r["agent"], r["model"], r["task"]))
     for row in rows:
         path = root / row["source"]
@@ -104,6 +129,8 @@ def build(root=ROOT):
         for rel in (
             "trial.log",
             "agent/trajectory.json",
+            "agent/dirge.jsonl",
+            "agent/dirge-stderr.log",
             "verifier/reward.txt",
             "verifier/test-stdout.txt",
         ):
@@ -115,23 +142,30 @@ def build(root=ROOT):
     for path in sorted((root / "ctb").rglob("*.py")):
         evidence(path)
     groups = totals(rows)
-    assert len(groups) == 6 and all(g["trials"] == 12 for g in groups)
+    assert len(groups) == (7 if include_dirge else 6) and all(g["trials"] == 12 for g in groups)
     data = {
         "schema_version": 1,
         "status": "evidence-locked; new Opus rounds are not canonically sealed",
-        "selection": "All r3 trials, plus 24 Opus trials. Replace only two pre-execution configuration failures.",
+        "selection": "All r3 trials, plus 24 Opus trials. Replace only two pre-execution configuration failures."
+        + (
+            " Add all 12 sealed Dirge trials; keep CA retries outside primary scores."
+            if include_dirge
+            else ""
+        ),
         "r3_digest": sealed["digest"],
         "rows": rows,
         "groups": groups,
         "excluded": excluded,
+        "supplements": supplements,
     }
     lines = [
         "# Coding harness comparison",
         "",
         "## Status and scope",
         "",
-        "This report contains 72 scored trials: six harness/model pairs across the same 12 tasks.",
+        f"This report contains {len(rows)} scored trials: {len(groups)} harness/model pairs across the same 12 tasks.",
         "The r3 results are sealed. The new Opus runs used a dirty checkout and cannot pass the standard seal check.",
+        "Dirge uses the sealed 12-trial series when included. CA retries are separate, unsealed evidence and do not replace primary scores.",
         "The SHA-256 manifest locks the available evidence and report bytes. It does not certify a clean historical checkout.",
         "The source hashes describe the current generator and adapters, not a reconstructed historical checkout.",
         "",

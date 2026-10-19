@@ -25,7 +25,7 @@ AMBER = colors.HexColor("#ffc420")
 RULE = colors.HexColor("#d6cbbd")
 
 
-def render():
+def render(data_path=None, output_path=None):
     for name, file in (
         ("Inter", "Inter-Regular.ttf"),
         ("InterBold", "Inter-Bold.ttf"),
@@ -33,9 +33,9 @@ def render():
         ("Mono", "JetBrainsMono.ttf"),
     ):
         pdfmetrics.registerFont(TTFont(name, str(OUT / "fonts" / file)))
-    data = json.loads((ROOT / "results/opus-comparison/data.json").read_text())
+    data = json.loads((data_path or ROOT / "results/opus-comparison/data.json").read_text())
     groups = sorted(data["groups"], key=lambda g: (-g["passed"], g["agent"], g["model"]))
-    path = OUT / "blockether-benchmark.pdf"
+    path = output_path or OUT / "blockether-benchmark.pdf"
     canvas = Canvas(str(path), pagesize=A4, invariant=1)
     canvas.setTitle("Blockether | Coding agent benchmark")
     canvas.setAuthor("Blockether")
@@ -109,7 +109,7 @@ def render():
             canvas.line(x, 145, x, top + 3)
             text(f"{tick}{suffix}", x - 3, 122, 10, "Mono")
         for i, group in enumerate(groups):
-            y = top - i * 76
+            y = top - i * (380 / max(len(groups) - 1, 1))
             value = group["passed"] / 12 * 100 if key == "rate" else group[key]
             text(pair(group), 48, y + 17, 12, "InterBold")
             canvas.setFillColor(AMBER if "anthropic" in group["model"] else GRAY)
@@ -127,18 +127,18 @@ def render():
     page(
         "01 / Objective",
         "Coding agent benchmark",
-        "Six harness/model pairs. Twelve curated tasks. Seventy-two scored attempts.",
+        f"{len(groups)} harness/model pairs. Twelve curated tasks. {len(data['rows'])} scored attempts.",
     )
     heading("Objective")
     paragraph(
-        "Measure task completion, execution time and cost across six coding agent configurations. Use the results to compare tools for the selected workload."
+        "Measure task completion, execution time and cost across the recorded coding agent configurations. Compare tools for the selected workload.",
     )
     heading("Task selection")
     paragraph(
         "The CPU-only subset contains six easier tasks with expert estimates of 0.75–2 hours and six harder tasks estimated at 4–8 hours. Every pair receives the same tasks."
     )
     paragraph(
-        "Twelve tasks keep the local study tractable across six configurations. The selection covers security, routing geometry, music constraints, build artifacts, cryptanalysis, payments, storage, live systems, graph performance and UI behavior."
+        "Twelve tasks cover security, routing geometry, music constraints, build artifacts, cryptanalysis, payments, storage, live systems, graph performance and UI behavior.",
     )
     heading("Study scope")
     paragraph(
@@ -189,7 +189,8 @@ def render():
         "Execution time",
         "Total agent execution time (minutes) across twelve scored attempts per pair.",
     )
-    bars("agent_minutes", 250, [0, 50, 100, 150, 200, 250])
+    time_max = max(250, int(max(g["agent_minutes"] for g in groups) / 50 + 1) * 50)
+    bars("agent_minutes", time_max, list(range(0, time_max + 1, 50)))
     paragraph("Totals exclude environment setup, verifier execution and excluded attempts.", 10)
 
     page(
@@ -234,10 +235,10 @@ def render():
     page(
         "02 / Results",
         "Results ledger",
-        "P1–P6 identify the same configurations in the charts and task matrix.",
+        f"P1–P{len(groups)} identify the same configurations in the charts and task matrix.",
     )
     for i, group in enumerate(groups, 1):
-        y = 580 - (i - 1) * 71
+        y = 580 - (i - 1) * (355 / max(len(groups) - 1, 1))
         text(f"P{i}  {pair(group)}", 48, y, 13, "InterBold")
         text(f"{group['passed']}/12 passed", 48, y - 25, 10, "Mono")
         text(f"{group['agent_minutes']:.1f} min", 180, y - 25, 10, "Mono")
@@ -256,8 +257,8 @@ def render():
         "Task-level outcomes",
         "1 = resolved. 0 = unresolved. * = runtime exception or provider refusal.",
     )
-    for i in range(6):
-        text(f"P{i + 1}", 330 + i * 35, 583, 10, "Mono")
+    for i in range(len(groups)):
+        text(f"P{i + 1}", 310 + i * 32, 583, 10, "Mono")
     for i, task in enumerate(sorted({row["task"] for row in data["rows"]})):
         y = 547 - i * 31
         text(task.split("/")[-1], 48, y, 10)
@@ -269,7 +270,7 @@ def render():
             )
             text(
                 ("1" if row["reward"] == 1 else "0") + ("*" if row["error"] else ""),
-                330 + j * 35,
+                310 + j * 32,
                 y,
                 10,
                 "Mono",
@@ -343,6 +344,30 @@ def render():
     paragraph(
         "Run all configurations from a clean, pinned checkout in one campaign. Use a common cost ledger and apply the standard evidence seal to every trial."
     )
+    if any(g["agent"] == "dirge" for g in groups):
+        page("06 / Dirge evidence", "Dirge: sealed results")
+        heading("Primary series: 3 of 12 resolved")
+        paragraph(
+            "Dirge 0.25.7 uses the pinned f36b2890 source with token accounting patches. "
+            "The GPT series uses clean harness commit 4e65f21 and its own immutable seal. "
+            "The original twelve attempts remain in all primary charts and totals."
+        )
+        heading("Failures and time limits")
+        paragraph(
+            "Five completed solutions failed verification. Payments and session-window tasks reached the two-hour limit. "
+            "The bun-sourcemap and React tasks failed at startup because system CA certificates were absent."
+        )
+        heading("CA retries: separate evidence")
+        paragraph(
+            "After certificate installation, both startup failures were retried. Both agents completed execution, "
+            "but both solutions scored zero. These retries have a dirty run record and are not canonically sealed. "
+            "Their evidence hashes are retained separately; they do not replace primary scores."
+        )
+        heading("Accounting limits")
+        paragraph(
+            "Dirge stores native JSONL transcripts rather than ATIF trajectories. Zero ATIF step counts do not mean no tool use. "
+            "Startup failures have no model usage. Timeout trials may lack final usage, so aggregate cost can undercount them."
+        )
     canvas.save()
     return path
 
