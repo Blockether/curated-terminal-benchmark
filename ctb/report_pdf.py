@@ -232,25 +232,23 @@ def render(data_path=None, output_path=None):
         10,
     )
 
-    page(
-        "02 / Results",
-        "Results ledger",
-        f"P1–P{len(groups)} identify the same configurations in the charts and task matrix.",
-    )
-    for i, group in enumerate(groups, 1):
-        y = 580 - (i - 1) * (355 / max(len(groups) - 1, 1))
-        text(f"P{i}  {pair(group)}", 48, y, 13, "InterBold")
-        text(f"{group['passed']}/12 passed", 48, y - 25, 10, "Mono")
-        text(f"{group['agent_minutes']:.1f} min", 180, y - 25, 10, "Mono")
-        text(f"${group['cost_usd']:.2f}", 320, y - 25, 10, "Mono")
-        text(f"${group['cost_per_pass_usd']:.2f}/pass", 420, y - 25, 10, "Mono")
-        canvas.setStrokeColor(RULE)
-        canvas.line(48, y - 40, WIDTH - 48, y - 40)
-    cursor = 125
-    paragraph(
-        "Harness versions: Codex 0.163.0; Claude Code 2.1.302; OpenCode 1.19.3; pi 1.3.0. Opus authentication plugins: OpenCode 1.8.6; pi 3.4.3.",
-        10,
-    )
+    for start in range(0, len(groups), 4):
+        page(
+            "02 / Results",
+            "Metrics by configuration",
+            "Totals across 12 tasks. Input includes cached tokens; time is agent execution.",
+        )
+        for index, group in enumerate(groups[start : start + 4], start + 1):
+            y = 580 - (index - start - 1) * 118
+            text(f"P{index}  Harness: {group['agent']}", 48, y, 14, "InterBold")
+            text(f"Model: {model(group)}", 48, y - 23, 11)
+            text(f"Input tokens: {group['input']:,}", 48, y - 48, 11, "Mono")
+            text(f"Output tokens: {group['output']:,}", 310, y - 48, 11, "Mono")
+            text(f"Time: {group['agent_minutes']:.1f} min", 48, y - 73, 11, "Mono")
+            text(f"Cost: ${group['cost_usd']:.2f}", 310, y - 73, 11, "Mono")
+            text(f"Resolved: {group['passed']}/12", 48, y - 96, 10, "Mono")
+            canvas.setStrokeColor(RULE)
+            canvas.line(48, y - 104, WIDTH - 48, y - 104)
 
     page(
         "02 / Results",
@@ -344,30 +342,6 @@ def render(data_path=None, output_path=None):
     paragraph(
         "Run all configurations from a clean, pinned checkout in one campaign. Use a common cost ledger and apply the standard evidence seal to every trial."
     )
-    if any(g["agent"] == "dirge" for g in groups):
-        page("06 / Dirge evidence", "Dirge: sealed results")
-        heading("Primary series: 3 of 12 resolved")
-        paragraph(
-            "Dirge 0.25.7 uses the pinned f36b2890 source with token accounting patches. "
-            "The GPT series uses clean harness commit 4e65f21 and its own immutable seal. "
-            "The original twelve attempts remain in all primary charts and totals."
-        )
-        heading("Failures and time limits")
-        paragraph(
-            "Five completed solutions failed verification. Payments and session-window tasks reached the two-hour limit. "
-            "The bun-sourcemap and React tasks failed at startup because system CA certificates were absent."
-        )
-        heading("CA retries: separate evidence")
-        paragraph(
-            "After certificate installation, both startup failures were retried. Both agents completed execution, "
-            "but both solutions scored zero. These retries have a dirty run record and are not canonically sealed. "
-            "Their evidence hashes are retained separately; they do not replace primary scores."
-        )
-        heading("Accounting limits")
-        paragraph(
-            "Dirge stores native JSONL transcripts rather than ATIF trajectories. Zero ATIF step counts do not mean no tool use. "
-            "Startup failures have no model usage. Timeout trials may lack final usage, so aggregate cost can undercount them."
-        )
     canvas.save()
     return path
 

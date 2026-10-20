@@ -1,20 +1,21 @@
 """kmet (github.com/kmetia/kmet-agent) in one-shot print mode."""
 
-import json
 import shlex
+from collections.abc import Mapping
 
+from edn_format import Keyword, loads
 from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
 
 KMET = "/installed-agent/kmet"
-# patches/kmet-usage.patch writes the session token totals here.
-USAGE = "kmet-usage.json"
+STREAM = "kmet.edn"
+ARCHIVE_NAME = "kmet-4ab740ff-linux-amd64.tar.gz"
 
 
 class Kmet(CuratedAgent):
-    ARCHIVE = ARTIFACTS / "kmet-linux-amd64.tar.gz"
+    ARCHIVE = ARTIFACTS / ARCHIVE_NAME
 
     @staticmethod
     def name() -> str:
@@ -35,17 +36,33 @@ class Kmet(CuratedAgent):
         model = f"openai-codex/{self.model}"
         # A native Babashka binary takes user.home from passwd, not from $HOME.
         return (
-            f"export KMET_CODING_AGENT_DIR=$HOME/.kmet/agent KMET_USAGE_FILE=/logs/agent/{USAGE}; "
-            f"{KMET} --print --model {model} --thinking {EFFORT} {shlex.quote(instruction)} "
-            "> /logs/agent/kmet.log 2> /logs/agent/kmet-stderr.log"
+            "export KMET_CODING_AGENT_DIR=$HOME/.kmet/agent; "
+            f"{KMET} --mode edn --session-dir /logs/agent/kmet-sessions "
+            f"--model {model} --thinking {EFFORT} {shlex.quote(instruction)} "
+            f"> /logs/agent/{STREAM} 2> /logs/agent/kmet-stderr.log"
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
-        path = self.logs_dir / USAGE
+        path = self.logs_dir / STREAM
         if not path.is_file():
             return
-        usage = json.loads(path.read_text())
-        # kmet's input excludes cache reads and writes; Harbor counts the whole prompt.
-        context.n_input_tokens = usage["input"] + usage["cache_read"] + usage["cache_write"]
-        context.n_cache_tokens = usage["cache_read"]
-        context.n_output_tokens = usage["output"]
+        totals = {key: 0 for key in ("input", "output", "cache-read", "cache-write")}
+        found = False
+        for line in path.read_text().splitlines():
+            event = loads(line)
+            if not isinstance(event, Mapping) or event.get(Keyword("type")) != Keyword(
+                "message-end"
+            ):
+                continue
+            message = event.get(Keyword("message")) or {}
+            if message.get(Keyword("role")) != Keyword("assistant"):
+                continue
+            usage = message.get(Keyword("usage"))
+            if usage:
+                found = True
+                for key in totals:
+                    totals[key] += usage.get(Keyword(key), 0) or 0
+        if found:
+            context.n_input_tokens = totals["input"] + totals["cache-read"] + totals["cache-write"]
+            context.n_cache_tokens = totals["cache-read"]
+            context.n_output_tokens = totals["output"]

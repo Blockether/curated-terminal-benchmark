@@ -1,0 +1,8 @@
+{
+  "sha256": {
+    "results/dirge-comparison/blockether-benchmark-metrics.pdf": "6377c5cc2fc364a81beeab4c0e69af2ecfb459758f6140ae1ccc56aaceea2c2e",
+    "ctb/report_pdf.py": "6ca0e13f5dfaa8204f3643f2a2a1cd438a679347c48fe93f995c5fcce0a149c8",
+    "results/dirge-comparison/data.json": "58a70b3516f92ab547940c163896cfa62f0df53563e474802b756fba538b5860"
+  },
+  "source_evidence": "manifest.json"
+}

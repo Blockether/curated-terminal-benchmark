@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy
-from ctb.agents import dirge, opencode, pi, samizdat, vis
+from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
 from ctb.metrics import round_metrics
@@ -34,10 +34,12 @@ RESULTS = ROOT / "results"
 SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
 DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
 COMPOSE = SUITE_ARTIFACTS / "docker-compose"
-# Pinned master commits. Local patches: kmet print mode honors --thinking, and dirge and
-# kmet report token usage.
+# Pinned master commits. Dirge patches preserve provider token accounting.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "f36b2890"
-KMET_REPO, KMET_COMMIT = "https://github.com/kmetia/kmet-agent.git", "58f23e83"
+KMET_REPO, KMET_COMMIT = (
+    "https://github.com/kmetia/kmet-agent.git",
+    "4ab740ff02aa3f92fc887c7644c124021a4aa519",
+)
 SAMIZDAT_COMMIT = "56d2be18f9b4c073e2fbf244d64ff5017595c305"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
@@ -170,10 +172,9 @@ def fetch_vis() -> Path:
 
 
 def fetch_kmet() -> Path:
-    archive = ARTIFACTS / "kmet-linux-amd64.tar.gz"
+    archive = ARTIFACTS / kmet.ARCHIVE_NAME
     if not archive.is_file():
         path = checkout(KMET_REPO, KMET_COMMIT, "kmet-agent")
-        apply_patches(path, "kmet-print-thinking.patch", "kmet-usage.patch")
         env = dict(os.environ, PATH=f"{ARTIFACTS / 'tools'}:{os.environ['PATH']}")
         sh(["bb", "dist", "linux-amd64"], cwd=path, env=env)
         pack(path / "target/dist/linux-amd64/kmet", archive, "kmet")

@@ -75,3 +75,21 @@ def test_portrait_report_has_fixed_sections_and_readable_text():
         assert "Task selection" in document[0].get_text()
         assert "Execution and verification" in document[1].get_text()
         assert "8/12" in document[8].get_text()
+
+
+def test_metrics_report_shows_all_requested_fields():
+    fitz = pytest.importorskip("fitz")
+    path = BRAND.parent / "dirge-comparison/blockether-benchmark-metrics.pdf"
+    with fitz.open(path) as document:
+        text = "\n".join(page.get_text() for page in document)
+        for label in ("Harness:", "Model:", "Input tokens:", "Output tokens:", "Time:", "Cost:"):
+            assert text.count(label) == 7
+        assert "Dirge: sealed results" not in text
+        assert "Input includes cached tokens" in text
+        for page in document:
+            for block in page.get_text("dict")["blocks"]:
+                for line in block.get("lines", []):
+                    for span in line["spans"]:
+                        x0, y0, x1, y1 = span["bbox"]
+                        assert 40 <= x0 < x1 <= page.rect.width - 40
+                        assert 0 <= y0 < y1 <= page.rect.height

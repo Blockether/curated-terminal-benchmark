@@ -243,10 +243,8 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
     }
     kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
     assert "--model openai-codex/gpt-6.1-sol --thinking medium" in kmet
-    assert (
-        "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent KMET_USAGE_FILE=/logs/agent/kmet-usage.json"
-        in kmet
-    )
+    assert "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent" in kmet
+    assert "--mode edn --session-dir /logs/agent/kmet-sessions" in kmet
 
 
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
@@ -360,9 +358,12 @@ def test_dirge_without_usage_leaves_tokens_unknown(tmp_path):
     assert tokens(context) == (None, None, None)
 
 
-def test_kmet_tokens_come_from_the_usage_file(tmp_path):
-    usage = {"input": 20, "output": 7, "cache_read": 80, "cache_write": 5}
-    (tmp_path / "kmet-usage.json").write_text(json.dumps(usage))
+def test_kmet_tokens_come_from_completed_native_messages(tmp_path):
+    (tmp_path / "kmet.edn").write_text(
+        "{:type :message-update :message {:usage {:input 999}}}\n"
+        "{:type :message-end :message {:role :assistant :usage "
+        "{:input 20 :output 7 :cache-read 80 :cache-write 5}}}\n"
+    )
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (105, 80, 7)
