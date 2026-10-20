@@ -453,3 +453,14 @@ def test_dirge_uses_the_same_chatgpt_account_as_other_harnesses(monkeypatch):
     auth = json.loads(agent(Dirge, "openai/gpt-6.1-sol").secret_files()[".codex/auth.json"])
     assert auth["tokens"]["access_token"] == "vis-access"
     assert auth["tokens"]["account_id"] == "vis-account"
+
+
+def test_kmet_ignores_interleaved_tool_events_for_usage(tmp_path):
+    (tmp_path / "kmet.edn").write_text(
+        '{:type :tool-execution-end :content "partial{:type :tool-execution-end :id "a|b"}\n'
+        "{:type :message-end :message {:role :assistant :usage "
+        "{:input_tokens 105 :output_tokens 7 :input_tokens_details {:cached_tokens 80}}}}\n"
+    )
+    context = AgentContext()
+    agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (105, 80, 7)

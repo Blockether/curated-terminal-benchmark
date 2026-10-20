@@ -49,6 +49,11 @@ class Kmet(CuratedAgent):
         totals = {key: 0 for key in ("input", "output", "cache-read")}
         found = False
         for line in path.read_text().splitlines():
+            # Parallel tool writes can interleave; only finalized messages carry usage.
+            if not line.startswith("{:type :message-end,") and not line.startswith(
+                "{:type :message-end "
+            ):
+                continue
             event = loads(line)
             if not isinstance(event, Mapping) or event.get(Keyword("type")) != Keyword(
                 "message-end"
