@@ -46,7 +46,7 @@ class Kmet(CuratedAgent):
         path = self.logs_dir / STREAM
         if not path.is_file():
             return
-        totals = {key: 0 for key in ("input", "output", "cache-read", "cache-write")}
+        totals = {key: 0 for key in ("input", "output", "cache-read")}
         found = False
         for line in path.read_text().splitlines():
             event = loads(line)
@@ -60,9 +60,11 @@ class Kmet(CuratedAgent):
             usage = message.get(Keyword("usage"))
             if usage:
                 found = True
-                for key in totals:
-                    totals[key] += usage.get(Keyword(key), 0) or 0
+                totals["input"] += usage.get(Keyword("input_tokens"), 0) or 0
+                totals["output"] += usage.get(Keyword("output_tokens"), 0) or 0
+                details = usage.get(Keyword("input_tokens_details")) or {}
+                totals["cache-read"] += details.get(Keyword("cached_tokens"), 0) or 0
         if found:
-            context.n_input_tokens = totals["input"] + totals["cache-read"] + totals["cache-write"]
+            context.n_input_tokens = totals["input"]
             context.n_cache_tokens = totals["cache-read"]
             context.n_output_tokens = totals["output"]

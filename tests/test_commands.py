@@ -362,7 +362,7 @@ def test_kmet_tokens_come_from_completed_native_messages(tmp_path):
     (tmp_path / "kmet.edn").write_text(
         "{:type :message-update :message {:usage {:input 999}}}\n"
         "{:type :message-end :message {:role :assistant :usage "
-        "{:input 20 :output 7 :cache-read 80 :cache-write 5}}}\n"
+        "{:input_tokens 105 :output_tokens 7 :input_tokens_details {:cached_tokens 80 :cache_write_tokens 5}}}}\n"
     )
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
