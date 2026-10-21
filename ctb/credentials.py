@@ -19,6 +19,8 @@ VIS_CODEX = HOME / ".vis" / "openai-codex-auth.json"
 CODEX_CLI = HOME / ".codex" / "auth.json"
 # Vis refreshes a stored Claude token only when less than this time is left.
 VIS_REFRESH_AT_S = 300
+AUTH_CLAIM = "https://api.openai.com/auth"
+PROFILE_CLAIM = "https://api.openai.com/profile"
 REFRESH_TURN = (
     "vis-agent",
     "--db",
@@ -53,17 +55,38 @@ def now_ms() -> int:
     return int(time.time() * 1000)
 
 
-def jwt_exp_ms(token: str) -> int | None:
-    """Read the `exp` claim of a JWT, or None for an opaque token."""
+def jwt_claims(token: str) -> dict:
+    """The payload of a JWT, or an empty dict for an opaque token."""
     parts = token.split(".")
     if len(parts) != 3:
-        return None
+        return {}
     try:
         payload = json.loads(base64.urlsafe_b64decode(parts[1] + "=" * (-len(parts[1]) % 4)))
     except (ValueError, json.JSONDecodeError):
-        return None
-    exp = payload.get("exp")
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def jwt_exp_ms(token: str) -> int | None:
+    """Read the `exp` claim of a JWT, or None for an opaque token."""
+    exp = jwt_claims(token).get("exp")
     return int(exp * 1000) if isinstance(exp, (int, float)) else None
+
+
+def _segment(data: dict) -> str:
+    return base64.urlsafe_b64encode(json.dumps(data).encode()).decode().rstrip("=")
+
+
+def account_id_token(access_token: str) -> str:
+    """An unsigned `id_token` with the account claims of a ChatGPT access token.
+
+    Codex CLI reads the plan and the account from these claims. It does not check a signature.
+    """
+    claims = jwt_claims(access_token)
+    body = {key: claims[key] for key in ("exp", "iat", "sub") if key in claims}
+    body["email"] = (claims.get(PROFILE_CLAIM) or {}).get("email")
+    body[AUTH_CLAIM] = claims.get(AUTH_CLAIM) or {}
+    return f"{_segment({'alg': 'none', 'typ': 'JWT'})}.{_segment(body)}.unsigned"
 
 
 def _require(access: Access, min_valid_s: int, source: Path, refresh_hint: str) -> Access:
@@ -128,18 +151,18 @@ def codex_vis(min_valid_s: int, path: Path = VIS_CODEX) -> Access:
 
 
 def codex_cli(min_valid_s: int, path: Path = CODEX_CLI, vis_path: Path = VIS_CODEX) -> Access:
-    """A ChatGPT access token in Codex CLI form.
+    """The Vis ChatGPT token in Codex CLI form.
 
-    Use the Codex CLI token while it is valid. Else use the Vis token with the
-    Codex CLI `id_token`, which carries only account claims.
+    Codex then uses the same account and plan as Vis. The host Codex CLI login can be
+    another account, and its plan can refuse the model. Keep its `id_token` only for
+    the same account. Else build the `id_token` from the claims of the Vis token.
     """
-    tokens = (_read(path).get("tokens") or {}) if path.is_file() else {}
-    token = tokens.get("access_token") or ""
-    access = Access(token, jwt_exp_ms(token) or 0, tokens.get("account_id"), tokens.get("id_token"))
-    if access.expires_ms - now_ms() >= min_valid_s * 1000:
-        return access
     vis = codex_vis(min_valid_s, vis_path)
-    return Access(vis.token, vis.expires_ms, vis.account_id or access.account_id, access.id_token)
+    tokens = (_read(path).get("tokens") or {}) if path.is_file() else {}
+    id_token = tokens.get("id_token")
+    if not id_token or tokens.get("account_id") != vis.account_id:
+        id_token = account_id_token(vis.token)
+    return Access(vis.token, vis.expires_ms, vis.account_id, id_token)
 
 
 def vis_anthropic_file(access: Access) -> str:
