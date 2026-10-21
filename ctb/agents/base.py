@@ -13,6 +13,9 @@ from harbor.models.agent.context import AgentContext
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ROOT / "artifacts"
 EFFORT = "medium"
+# GPT Responses settings of every agent: pi's defaults, and the Codex catalog verbosity.
+VERBOSITY = "low"
+REASONING_SUMMARY = "auto"
 AGENT_HOME = "/tmp/ctb-home"
 FAMILIES = {"anthropic": "claude-opus-5-5", "openai": "gpt-6.1-sol"}
 

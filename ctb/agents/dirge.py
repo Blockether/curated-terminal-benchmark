@@ -6,11 +6,18 @@ import shlex
 from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
-from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
+from ctb.agents.base import (
+    ARTIFACTS,
+    EFFORT,
+    REASONING_SUMMARY,
+    VERBOSITY,
+    CuratedAgent,
+    min_token_seconds,
+)
 
 DIRGE = "/installed-agent/dirge"
 STREAM = "dirge.jsonl"
-ARCHIVE_NAME = "dirge-f36b2890-usage-v2-x86_64-unknown-linux-musl.tar.gz"
+ARCHIVE_NAME = "dirge-f36b2890-usage-v3-x86_64-unknown-linux-musl.tar.gz"
 
 
 class Dirge(CuratedAgent):
@@ -45,7 +52,9 @@ class Dirge(CuratedAgent):
 
     def command(self, instruction: str) -> str:
         return (
-            "export DIRGE_DATA_DIR=$HOME/.local/share/dirge DIRGE_CONFIG_DIR=$HOME/.config/dirge; "
+            "export DIRGE_DATA_DIR=$HOME/.local/share/dirge DIRGE_CONFIG_DIR=$HOME/.config/dirge "
+            # patches/dirge-codex-settings.patch sends these GPT settings to Codex.
+            f"DIRGE_CODEX_TEXT_VERBOSITY={VERBOSITY} DIRGE_CODEX_REASONING_SUMMARY={REASONING_SUMMARY}; "
             f"{DIRGE} --yolo --no-session --verbose --output-format stream-json "
             f"-p {shlex.quote(instruction)} > /logs/agent/{STREAM} 2> /logs/agent/dirge-stderr.log"
         )

@@ -12,7 +12,7 @@ from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
-from ctb.agents.base import EFFORT, min_token_seconds, split_model, stage_files
+from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
 
 OPENCODE_VERSION = "1.19.3"
 ANTHROPIC_PLUGIN = "@ex-machina/opencode-anthropic-auth@1.8.6"
@@ -105,7 +105,7 @@ class OpenCode(HarborOpenCode):
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("variant", EFFORT)
         super().__init__(*args, version=version or OPENCODE_VERSION, **kwargs)
-        family, _ = split_model(self.model_name)
+        family, model = split_model(self.model_name)
         if family == "anthropic":
             self._opencode_config = {
                 **self._opencode_config,
@@ -117,6 +117,15 @@ class OpenCode(HarborOpenCode):
                             "claude-opus-5-5": {"limit": {"context": 1000000, "output": 128000}}
                         }
                     },
+                },
+            }
+        else:
+            # OpenCode sets GPT verbosity only for gpt-5.x ids; send pi's `low` for every GPT.
+            self._opencode_config = {
+                **self._opencode_config,
+                "provider": {
+                    **self._opencode_config.get("provider", {}),
+                    "openai": {"models": {model: {"options": {"textVerbosity": VERBOSITY}}}},
                 },
             }
 

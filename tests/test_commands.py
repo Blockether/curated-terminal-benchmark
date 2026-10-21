@@ -39,10 +39,10 @@ def agent(cls, model, logs=Path("/tmp/ctb-test-logs")):
 def test_vis_team_uses_the_gateway_path_with_council_on():
     team = agent(VisTeam, "anthropic/claude-opus-5-5").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
-    assert "--name team --persist --toggles council=true,draft_backend=off" in team
+    assert "--name team --persist --toggles verbosity=low,council=true,draft_backend=off" in team
     assert "--db :memory" not in team
     assert "anthropic-coding-plan/claude-opus-5-5 --reasoning-effort medium" in team
-    assert "--name solo --db :memory --toggles council=false" in solo
+    assert "--name solo --db :memory --toggles verbosity=low,council=false" in solo
     assert "openai-codex/gpt-6.1-sol" in solo
     assert "--trajectory /logs/agent/trajectory.json --full-trace-json-stream" in solo
     assert "'do '\"'\"'it'\"'\"''" in team
@@ -99,7 +99,9 @@ def pinned(tmp_path, monkeypatch):
 def test_vis_profile_kwarg_sets_every_switch(pinned):
     lean = VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="lean")
     command = lean.command("x")
-    assert "--name lean --db :memory --toggles council=false,fold_hints=off" in command
+    assert (
+        "--name lean --db :memory --toggles verbosity=low,council=false,fold_hints=off" in command
+    )
     assert "--extensions none --model openai-codex/gpt-6.1-sol --reasoning-effort high" in command
     config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
     # The overlay replaces a list; it merges only tables.
@@ -241,6 +243,8 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
         "model": "gpt-6.1-sol",
         "effort": "medium",
     }
+    command = agent(Dirge, "openai/gpt-6.1-sol").command("x")
+    assert "DIRGE_CODEX_TEXT_VERBOSITY=low DIRGE_CODEX_REASONING_SUMMARY=auto;" in command
     kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
     assert "--model openai-codex/gpt-6.1-sol --thinking medium" in kmet
     assert "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent" in kmet
@@ -250,7 +254,14 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "codex"
-    assert command[-4:] == ["--ak", "reasoning_effort=medium", "--ak", "version=0.163.0"]
+    assert command[-6:] == [
+        "--ak",
+        "reasoning_effort=medium",
+        "--ak",
+        "reasoning_summary=auto",
+        "--ak",
+        "version=0.163.0",
+    ]
     claude = harbor_command(Trial(AGENTS["claude-code"], "anthropic", "t"), Path("/j"), 0.25)
     assert claude[-2:] == ["--ak", "version=2.1.302"]
 
@@ -307,7 +318,10 @@ def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):
         "context": 1000000,
         "output": 128000,
     }
-    assert "provider" not in gpt._opencode_config
+    # OpenCode sets GPT verbosity only for gpt-5.x ids, so ctb sends pi's `low` itself.
+    assert gpt._opencode_config["provider"] == {
+        "openai": {"models": {"gpt-6.1-sol": {"options": {"textVerbosity": "low"}}}}
+    }
     asyncio.run(opus.exec_as_agent(None, command="opencode", env={"A": "1"}))
     asyncio.run(gpt.exec_as_agent(None, command="opencode", env={"A": "1"}))
     assert calls == [

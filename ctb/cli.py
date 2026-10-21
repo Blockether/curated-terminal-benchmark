@@ -50,8 +50,8 @@ SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
     "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
-    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge "
-    "codex_completed_response_keeps_usage && "
+    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge -- "
+    "codex_completed_response_keeps_usage codex_body_gets_gpt_settings && "
     "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
 )
 
@@ -105,7 +105,9 @@ def fetch_dirge() -> Path:
     if not archive.is_file():
         path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
         prepare_dirge_rig(path)
-        apply_patches(path, "dirge-usage.patch", "dirge-rig-stream.patch")
+        apply_patches(
+            path, "dirge-usage.patch", "dirge-rig-stream.patch", "dirge-codex-settings.patch"
+        )
         sh(
             [
                 "podman",
@@ -259,6 +261,8 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
     ]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
+    for kwarg in trial.agent.agent_kwargs:
+        command += ["--ak", kwarg]
     if trial.agent.version:
         command += ["--ak", f"version={trial.agent.version}"]
     return privacy.check_command(command)

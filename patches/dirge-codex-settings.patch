@@ -1,0 +1,64 @@
+diff --git a/src/provider/codex_http.rs b/src/provider/codex_http.rs
+index e03aea62..8f7a9cbf 100644
+--- a/src/provider/codex_http.rs
++++ b/src/provider/codex_http.rs
+@@ -244,10 +244,35 @@ fn normalize_codex_responses_body(body: Bytes) -> Bytes {
+     }
+     obj.insert("store".to_string(), serde_json::Value::Bool(false));
+     strip_system_input_items(obj);
++    apply_gpt_settings(
++        obj,
++        std::env::var("DIRGE_CODEX_TEXT_VERBOSITY").ok().as_deref(),
++        std::env::var("DIRGE_CODEX_REASONING_SUMMARY").ok().as_deref(),
++    );
+ 
+     serde_json::to_vec(&value).map(Bytes::from).unwrap_or(body)
+ }
+ 
++/// Set the GPT text verbosity and the reasoning summary that the benchmark gives
++/// every agent. Values that the request already has stay.
++fn apply_gpt_settings(
++    obj: &mut serde_json::Map<String, serde_json::Value>,
++    verbosity: Option<&str>,
++    summary: Option<&str>,
++) {
++    if let Some(verbosity) = verbosity.filter(|v| !v.is_empty()) {
++        let text = obj.entry("text").or_insert_with(|| serde_json::json!({}));
++        if let Some(text) = text.as_object_mut() {
++            text.entry("verbosity").or_insert_with(|| verbosity.into());
++        }
++    }
++    if let Some(summary) = summary.filter(|v| !v.is_empty()) {
++        if let Some(reasoning) = obj.get_mut("reasoning").and_then(|r| r.as_object_mut()) {
++            reasoning.entry("summary").or_insert_with(|| summary.into());
++        }
++    }
++}
++
+ fn strip_system_input_items(obj: &mut serde_json::Map<String, serde_json::Value>) {
+     let Some(input) = obj
+         .get_mut("input")
+@@ -452,6 +477,23 @@ mod tests {
+         assert!(value["input"].as_array().unwrap().is_empty());
+     }
+ 
++    #[test]
++    fn codex_body_gets_gpt_settings() {
++        let mut value = serde_json::json!({"reasoning": {"effort": "medium"}});
++        apply_gpt_settings(value.as_object_mut().unwrap(), Some("low"), Some("auto"));
++        assert_eq!(value["text"]["verbosity"], "low");
++        assert_eq!(value["reasoning"], serde_json::json!({"effort": "medium", "summary": "auto"}));
++
++        let mut kept = serde_json::json!({"text": {"verbosity": "high"}});
++        apply_gpt_settings(kept.as_object_mut().unwrap(), Some("low"), Some("auto"));
++        assert_eq!(kept["text"]["verbosity"], "high");
++        assert!(kept.get("reasoning").is_none());
++
++        let mut unset = serde_json::json!({});
++        apply_gpt_settings(unset.as_object_mut().unwrap(), None, None);
++        assert_eq!(unset, serde_json::json!({}));
++    }
++
+     #[tokio::test]
+     async fn overrides_true_store_for_codex_backend() {
+         let body = Bytes::from(

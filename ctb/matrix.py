@@ -4,6 +4,8 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
+from ctb.agents.base import REASONING_SUMMARY
+
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = {"anthropic": "anthropic/claude-opus-5-5", "openai": "openai/gpt-6.1-sol"}
 
@@ -14,6 +16,8 @@ class AgentSpec:
     harbor: str
     families: tuple[str, ...]
     effort_kwarg: bool = False
+    #: Further Harbor `--ak` kwargs, for example the reasoning summary of Codex.
+    agent_kwargs: tuple[str, ...] = ()
     proxy: bool = False
     #: The pinned version of a Harbor built-in agent; Harbor otherwise installs the latest one.
     version: str | None = None
@@ -27,7 +31,14 @@ AGENTS = {
         AgentSpec(
             "claude-code", "claude-code", ("anthropic",), effort_kwarg=True, version="2.1.302"
         ),
-        AgentSpec("codex", "codex", ("openai",), effort_kwarg=True, version="0.163.0"),
+        AgentSpec(
+            "codex",
+            "codex",
+            ("openai",),
+            effort_kwarg=True,
+            agent_kwargs=(f"reasoning_summary={REASONING_SUMMARY}",),
+            version="0.163.0",
+        ),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("anthropic", "openai")),
         # kmet has no Anthropic OAuth transport, so it runs only on the GPT model.
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),

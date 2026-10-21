@@ -21,6 +21,7 @@ from ctb.agents.base import (
     EFFORT,
     FAMILIES,
     ROOT,
+    VERBOSITY,
     CuratedAgent,
     min_token_seconds,
     split_model,
@@ -223,8 +224,9 @@ class VisSolo(CuratedAgent):
         )
         flags = [f"--name {shlex.quote(self.profile_name)}"]
         flags.append("--persist" if self.profile.get("persist") else "--db :memory")
-        if self.profile.get("toggles"):
-            flags.append(f"--toggles {shlex.quote(toggle_list(self.profile['toggles']))}")
+        # Vis sends `verbosity` only to models that take it, so it is safe for every family.
+        toggles = {"verbosity": VERBOSITY, **self.profile.get("toggles", {})}
+        flags.append(f"--toggles {shlex.quote(toggle_list(toggles))}")
         if "extensions" in self.profile:
             names = ",".join(self.profile["extensions"]) or "none"
             flags.append(f"--extensions {shlex.quote(names)}")
