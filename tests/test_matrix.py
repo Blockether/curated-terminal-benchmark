@@ -5,14 +5,9 @@ from ctb.agents.base import split_model
 
 
 def test_only_supported_model_pairs_become_trials():
-    jobs = [
-        t.job
-        for t in matrix.trials(["claude-code", "codex", "vis-team"], ["anthropic", "openai"], ["x"])
-    ]
+    jobs = [t.job for t in matrix.trials(["codex", "vis-team"], ["anthropic", "openai"], ["x"])]
     assert jobs == [
-        "claude-code__anthropic__x",
         "codex__openai__x",
-        "vis-team__anthropic__x",
         "vis-team__openai__x",
     ]
 
@@ -49,3 +44,9 @@ def test_only_the_two_benchmark_models_are_accepted():
     assert split_model("openai/gpt-6.1-sol") == ("openai", "gpt-6.1-sol")
     with pytest.raises(ValueError):
         split_model("anthropic/claude-sonnet-4-5")
+
+
+def test_active_matrix_is_gpt_only_without_claude_code():
+    assert matrix.MODELS == {"openai": "openai/gpt-6.1-sol"}
+    assert "claude-code" not in matrix.AGENTS
+    assert all(spec.families == ("openai",) for spec in matrix.AGENTS.values())

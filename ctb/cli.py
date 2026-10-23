@@ -217,9 +217,6 @@ def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict
     if trial.family == "anthropic" and not trial.agent.proxy:
         # Agents read the token again inside Harbor: a short token defers the trial here.
         credentials.anthropic(min_token_seconds())
-    if trial.agent.name == "claude-code":
-        env["CLAUDE_FORCE_OAUTH"] = "1"
-        env["CLAUDE_CODE_OAUTH_TOKEN"] = credentials.anthropic(min_token_seconds()).token
     if trial.agent.name == "codex":
         auth = secret_dir / "auth.json"
         auth.write_text(credentials.codex_auth_json(credentials.codex_cli(min_token_seconds())))
@@ -474,7 +471,6 @@ def pins() -> dict:
         "samizdat_release": samizdat.VERSION,
         "harbor": metadata.version("harbor"),
         "harnesses": {
-            "claude-code": AGENTS["claude-code"].version,
             "codex": AGENTS["codex"].version,
             "opencode": opencode.OPENCODE_VERSION,
             "pi": pi.PI_VERSION,

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = {"anthropic": "anthropic/claude-opus-5-5", "openai": "openai/gpt-6.1-sol"}
+MODELS = {"openai": "openai/gpt-6.1-sol"}
 
 
 @dataclass(frozen=True)
@@ -22,20 +22,17 @@ class AgentSpec:
 AGENTS = {
     spec.name: spec
     for spec in (
-        AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("anthropic", "openai")),
-        AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("anthropic", "openai")),
-        AgentSpec(
-            "claude-code", "claude-code", ("anthropic",), effort_kwarg=True, version="2.1.302"
-        ),
+        AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("openai",)),
+        AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("openai",)),
         AgentSpec("codex", "codex", ("openai",), effort_kwarg=True, version="0.163.0"),
-        AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("anthropic", "openai")),
+        AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",)),
         # kmet has no Anthropic OAuth transport, so it runs only on the GPT model.
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
-        # samizdat reaches both models through the host proxy (ctb.proxy).
-        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("anthropic", "openai"), proxy=True),
-        # Pinned OAuth plugins enable Claude; GPT uses each harness's native subscription login.
-        AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("anthropic", "openai")),
-        AgentSpec("pi", "ctb.agents.pi:Pi", ("anthropic", "openai"), effort_kwarg=True),
+        # Samizdat reaches GPT through the host proxy (ctb.proxy).
+        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True),
+        # GPT uses each harness's native subscription login.
+        AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("openai",)),
+        AgentSpec("pi", "ctb.agents.pi:Pi", ("openai",), effort_kwarg=True),
     )
 }
 

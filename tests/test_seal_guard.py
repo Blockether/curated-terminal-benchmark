@@ -189,3 +189,25 @@ def test_real_git_hook_uses_index_and_blocks_changed_evidence(evidence, monkeypa
     assert b"Seal audit FAILED" in blocked.stderr
     transcript.write_bytes(original)
     assert git("commit", "-qm", "verified seal").returncode == 0
+
+
+def test_explicit_link_metadata_is_checked_without_following(evidence):
+    root, seal, manifest = evidence
+    link = root / "jobs/r/a/t/agent/python"
+    link.symlink_to("/container-only/python")
+    target = b"/container-only/python"
+    manifest["files"].append(
+        {
+            "path": link.relative_to(root).as_posix(),
+            "type": "symlink",
+            "target": target.decode(),
+            "bytes": len(target),
+            "sha256": hashlib.sha256(target).hexdigest(),
+        }
+    )
+    signed(manifest)
+    assert guard.validate(root, stage(seal, manifest), set()) == 4
+    link.unlink()
+    link.symlink_to("/different/python")
+    with pytest.raises(guard.UnsafeSeal):
+        guard.validate(root, stage(seal, manifest), set())

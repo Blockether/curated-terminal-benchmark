@@ -214,7 +214,6 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
 
 def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
-        "claude-code": "2.1.302",
         "codex": "0.163.0",
         "opencode": "1.19.3",
         "pi": "1.3.0",
@@ -251,8 +250,6 @@ def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "codex"
     assert command[-4:] == ["--ak", "reasoning_effort=medium", "--ak", "version=0.163.0"]
-    claude = harbor_command(Trial(AGENTS["claude-code"], "anthropic", "t"), Path("/j"), 0.25)
-    assert claude[-2:] == ["--ak", "version=2.1.302"]
 
 
 def test_agent_setup_gets_more_time_than_the_harbor_default():
@@ -291,7 +288,7 @@ def test_opencode_and_pi_use_pinned_anthropic_plugins_with_medium_effort():
             "anthropic": {"type": "oauth", "access": "A", "refresh": "", "expires": 123}
         }
     for name in ("pi", "opencode"):
-        assert AGENTS[name].families == ("anthropic", "openai")
+        assert AGENTS[name].families == ("openai",)
 
 
 def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):

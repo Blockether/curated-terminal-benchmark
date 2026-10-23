@@ -19,7 +19,7 @@ def run_args(**extra):
     base = {
         "round": "r",
         "agents": "dirge",
-        "models": "anthropic",
+        "models": "openai",
         "tasks": "html-js-filter",
         "parallel": 1,
         "timeout_multiplier": 0.25,
@@ -74,7 +74,7 @@ def write_runs(root, dirty):
 
 def test_seal_writes_rows_hashes_and_a_digest_once(root):
     write_runs(root, dirty=False)
-    write_result(root, "dirge__anthropic__html-js-filter", 1.0)
+    write_result(root, "dirge__openai__html-js-filter", 1.0)
     cli.seal(run_args())
     sealed = json.loads((root / "results/r.json").read_text())
     row = sealed["rows"][0]
@@ -97,18 +97,18 @@ def test_seal_refuses_missing_trials_and_dirty_runs(root):
     with pytest.raises(SystemExit, match="1 trials have no result"):
         cli.seal(run_args())
     write_runs(root, dirty=True)
-    write_result(root, "dirge__anthropic__html-js-filter", 0.0)
+    write_result(root, "dirge__openai__html-js-filter", 0.0)
     with pytest.raises(SystemExit, match="clean harness commit"):
         cli.seal(run_args())
 
 
 def test_rows_read_the_trials_of_a_round_and_skip_job_results(root):
-    write_result(root, "dirge__anthropic__html-js-filter", 1.0)
-    (root / "jobs/r/dirge__anthropic__html-js-filter/result.json").write_text('{"stats": {}}')
+    write_result(root, "dirge__openai__html-js-filter", 1.0)
+    (root / "jobs/r/dirge__openai__html-js-filter/result.json").write_text('{"stats": {}}')
     assert cli.rows(root / "jobs/r") == [
         {
             "agent": "dirge",
-            "model": cli.MODELS["anthropic"],
+            "model": "openai/gpt-6.1-sol",
             "task": "terminal-bench/html-js-filter",
             "reward": 1.0,
             "error": None,
@@ -120,10 +120,10 @@ def test_rows_read_the_trials_of_a_round_and_skip_job_results(root):
 
 
 def test_summary_counts_the_level_of_a_dataset_task_name(root, capsys):
-    write_result(root, "dirge__anthropic__html-js-filter", 1.0)
+    write_result(root, "dirge__openai__html-js-filter", 1.0)
     cli.summary(argparse.Namespace(round="r", json=None))
     columns = capsys.readouterr().out.splitlines()[1].split()
-    assert columns[:3] == ["dirge", cli.MODELS["anthropic"], "1/1"]
+    assert columns[:3] == ["dirge", "openai/gpt-6.1-sol", "1/1"]
     assert sorted(columns[3:5]) == ["0/0", "1/1"]
 
 

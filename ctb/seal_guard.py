@@ -3,7 +3,9 @@
 import bz2
 import gzip
 import hashlib
+import io
 import json
+import os
 import re
 import subprocess
 import sys
@@ -124,6 +126,20 @@ def verify_files(root, manifest, known, budget):
         if name in names:
             raise UnsafeSeal("Duplicate evidence path")
         names.add(name)
+        if row.get("type") == "symlink":
+            relative = Path(name)
+            if relative.is_absolute() or ".." in relative.parts:
+                raise UnsafeSeal("Link path escapes the checkout")
+            path = root / relative
+            if not path.is_symlink() or any(p.is_symlink() for p in path.parents):
+                raise UnsafeSeal("Invalid link evidence")
+            target = os.readlink(path).encode()
+            if target.decode() != row["target"] or len(target) != row["bytes"]:
+                raise UnsafeSeal("Link target changed")
+            if hashlib.sha256(target).hexdigest() != row["sha256"]:
+                raise UnsafeSeal("Link hash changed")
+            scan_stream(io.BytesIO(target), known, budget)
+            continue
         path = safe_path(root, name)
         with path.open("rb") as stream:
             actual = hashlib.file_digest(stream, "sha256").hexdigest()
@@ -208,7 +224,9 @@ def validate(root, staged, known):
             raise UnsafeSeal("Trial has no agent evidence")
         for child in path.parent.rglob("*"):
             if child.is_symlink():
-                raise UnsafeSeal("Trial evidence contains a symbolic link")
+                if child.relative_to(root).as_posix() not in covered:
+                    raise UnsafeSeal("Trial evidence contains an unrecorded symbolic link")
+                continue
             if child.is_file() and child.relative_to(root).as_posix() not in covered:
                 raise UnsafeSeal("Transcript manifest omits a trial file")
     return len(covered)
