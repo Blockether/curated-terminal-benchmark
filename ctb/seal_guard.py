@@ -159,6 +159,7 @@ def validate(root, staged, known):
     """Validate staged JSON bodies, not unstaged versions of the seals."""
     seals = []
     manifests = []
+    metrics = []
     for name, raw in staged.items():
         if not name.endswith(".json"):
             continue
@@ -170,6 +171,9 @@ def validate(root, staged, known):
             continue
         if not isinstance(body, dict):
             continue
+        if "agents" in body and "rows" in body and "round" in body and "digest" in body:
+            metrics.append((name, body))
+            continue
         if "digest" in body or "rows" in body and "sealed_at" in body:
             verify_digest(body)
             if "files" in body:
@@ -178,9 +182,9 @@ def validate(root, staged, known):
                 seals.append(body)
             else:
                 raise UnsafeSeal("Unknown seal schema")
-    if not seals and not manifests:
+    if not seals and not manifests and not metrics:
         return 0
-    if seals and not manifests:
+    if (seals or metrics) and not manifests:
         raise UnsafeSeal("Stage a full transcript manifest together with the result seal")
     budget = [0]
     covered = set()
@@ -200,6 +204,13 @@ def validate(root, staged, known):
             if linked["digest"] != reference["digest"]:
                 raise UnsafeSeal("Referenced seal digest changed")
             seals.append(linked)
+    for name, metric in metrics:
+        if name not in covered or staged[name] != safe_path(root, name).read_bytes():
+            raise UnsafeSeal("Metrics must match the audited manifest")
+        if not any(
+            s["round"] == metric["round"] and s["digest"] == metric["digest"] for s in seals
+        ):
+            raise UnsafeSeal("Metrics reference an unknown seal")
     # A manifest must include every file under each trial, including hidden files.
     result_names = {name for name in covered if name.endswith("/result.json")}
     for seal in seals:

@@ -211,3 +211,21 @@ def test_explicit_link_metadata_is_checked_without_following(evidence):
     link.symlink_to("/different/python")
     with pytest.raises(guard.UnsafeSeal):
         guard.validate(root, stage(seal, manifest), set())
+
+
+def test_metrics_reference_the_result_digest_not_their_own(evidence):
+    root, seal, manifest = evidence
+    metric = {"round": "r", "digest": seal["digest"], "rows": [], "agents": []}
+    path = root / "results/r-metrics.json"
+    path.write_text(json.dumps(metric))
+    manifest["files"].append(
+        {
+            "path": "results/r-metrics.json",
+            "bytes": path.stat().st_size,
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+    )
+    signed(manifest)
+    staged = stage(seal, manifest)
+    staged["results/r-metrics.json"] = path.read_bytes()
+    assert guard.validate(root, staged, set()) == 4

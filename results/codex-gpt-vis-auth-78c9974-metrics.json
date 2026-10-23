@@ -1,0 +1,365 @@
+{
+  "round": "codex-gpt-vis-auth-78c9974",
+  "digest": "f0551f1701198a9ebe467184bb255d95f233cdb6f6adf393ab349dbe48a740c8",
+  "rows": [
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "73ea7841228c5f58a2a543881a65368373c974de8d60e94c9e82b96f91cbbf8f",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 127.5,
+        "agent_execution": 179.1,
+        "verifier": 28.3,
+        "total": 350.1
+      },
+      "input": 320526,
+      "cache": 303360,
+      "output": 6983,
+      "cost_usd": 0.1345,
+      "cost_source": "agent",
+      "steps": 15,
+      "llm_calls": 15,
+      "tool_calls": 14,
+      "tools": {
+        "exec": 14
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "657765cf343f6ace2e80c5a34345d46edb95a3125be7e1481d7bb65e2d02673f",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 116.4,
+        "agent_execution": 175.3,
+        "verifier": 234.5,
+        "total": 540.8
+      },
+      "input": 208736,
+      "cache": 185728,
+      "output": 7653,
+      "cost_usd": 0.1411,
+      "cost_source": "agent",
+      "steps": 11,
+      "llm_calls": 11,
+      "tool_calls": 10,
+      "tools": {
+        "exec": 10
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "1b83185de78ca091644cf1e4fec0a5660932b54269e505da6e9f35a7e137a4b6",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 107.6,
+        "agent_execution": 436.0,
+        "verifier": 14.4,
+        "total": 572.4
+      },
+      "input": 822424,
+      "cache": 759424,
+      "output": 14350,
+      "cost_usd": 0.3454,
+      "cost_source": "agent",
+      "steps": 28,
+      "llm_calls": 28,
+      "tool_calls": 27,
+      "tools": {
+        "exec": 27
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "a6f77cfff281c8ca85d99c8e0899da830dc423919d90664d9bb537750d0672bd",
+      "seconds": {
+        "environment_setup": 3.3,
+        "agent_setup": 120.5,
+        "agent_execution": 721.4,
+        "verifier": 13.1,
+        "total": 901.1
+      },
+      "input": 3577554,
+      "cache": 3496960,
+      "output": 23749,
+      "cost_usd": 0.7484,
+      "cost_source": "agent",
+      "steps": 43,
+      "llm_calls": 43,
+      "tool_calls": 42,
+      "tools": {
+        "exec": 42
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "ce63cf34cf3d480c0be7da875e2b06adb12032457142fa8ba43f77f1e5a5c11f",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 117.5,
+        "agent_execution": 340.8,
+        "verifier": 13.3,
+        "total": 486.0
+      },
+      "input": 592056,
+      "cache": 536832,
+      "output": 11345,
+      "cost_usd": 0.2776,
+      "cost_source": "agent",
+      "steps": 22,
+      "llm_calls": 22,
+      "tool_calls": 21,
+      "tools": {
+        "exec": 21
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "dd2f012d778396478af50b32e5c5aa96d43e27c96e784d1ec1a7751b80474281",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 94.9,
+        "agent_execution": 138.5,
+        "verifier": 204.8,
+        "total": 456.1
+      },
+      "input": 240823,
+      "cache": 225152,
+      "output": 4063,
+      "cost_usd": 0.0945,
+      "cost_source": "agent",
+      "steps": 11,
+      "llm_calls": 11,
+      "tool_calls": 10,
+      "tools": {
+        "exec": 10
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "93da289f3b97af24c67588fb70791fc3a868d70c7abdb518dbf175b3d1c7a961",
+      "seconds": {
+        "environment_setup": 16.0,
+        "agent_setup": 109.3,
+        "agent_execution": 801.7,
+        "verifier": 114.1,
+        "total": 1075.8
+      },
+      "input": 2204841,
+      "cache": 2130304,
+      "output": 29747,
+      "cost_usd": 0.6596,
+      "cost_source": "agent",
+      "steps": 50,
+      "llm_calls": 50,
+      "tool_calls": 49,
+      "tools": {
+        "exec": 48,
+        "request_user_input_async": 1
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "1eb37b6f28a0ab58aa208114dae72ddd563a0be1db6f6383f1b90056af3584d3",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 111.6,
+        "agent_execution": 1668.4,
+        "verifier": 85.5,
+        "total": 1879.9
+      },
+      "input": 844923,
+      "cache": 797184,
+      "output": 27039,
+      "cost_usd": 0.4456,
+      "cost_source": "agent",
+      "steps": 20,
+      "llm_calls": 20,
+      "tool_calls": 19,
+      "tools": {
+        "exec": 19
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "0f87c3b8e0b9c55dc3a7e72e6e4e338c9d696b33cd32563e4c6f1164dece580a",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 49.0,
+        "agent_execution": 403.4,
+        "verifier": 104.4,
+        "total": 574.8
+      },
+      "input": 620948,
+      "cache": 584576,
+      "output": 16126,
+      "cost_usd": 0.2925,
+      "cost_source": "agent",
+      "steps": 18,
+      "llm_calls": 18,
+      "tool_calls": 17,
+      "tools": {
+        "exec": 17
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "c9a057571561b8db861656b3e82bdc674b8c59e26dfdba6ead1d34708b6faa5f",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 130.2,
+        "agent_execution": 116.8,
+        "verifier": 19.4,
+        "total": 284.8
+      },
+      "input": 149695,
+      "cache": 120448,
+      "output": 5184,
+      "cost_usd": 0.1224,
+      "cost_source": "agent",
+      "steps": 7,
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tools": {
+        "exec": 6
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 0.0,
+      "error": null,
+      "result_sha256": "e6ea63ddb243c85f4f5f53743860b03f263df77ad8541aa6b2f011b58a6986a9",
+      "seconds": {
+        "environment_setup": 0.7,
+        "agent_setup": 82.1,
+        "agent_execution": 631.5,
+        "verifier": 38.1,
+        "total": 766.6
+      },
+      "input": 947934,
+      "cache": 893440,
+      "output": 26922,
+      "cost_usd": 0.4676,
+      "cost_source": "agent",
+      "steps": 30,
+      "llm_calls": 30,
+      "tool_calls": 29,
+      "tools": {
+        "exec": 29
+      },
+      "subagents": 0
+    },
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "agent_version": "0.163.0",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 1.0,
+      "error": null,
+      "result_sha256": "06fbf47a1a6230c7dd9ce390742886c3ae6d4246326a3d7e25f354de34ca9bbe",
+      "seconds": {
+        "environment_setup": 0.8,
+        "agent_setup": 149.3,
+        "agent_execution": 148.0,
+        "verifier": 232.1,
+        "total": 544.2
+      },
+      "input": 209664,
+      "cache": 188672,
+      "output": 6616,
+      "cost_usd": 0.127,
+      "cost_source": "agent",
+      "steps": 9,
+      "llm_calls": 9,
+      "tool_calls": 8,
+      "tools": {
+        "exec": 8
+      },
+      "subagents": 0
+    }
+  ],
+  "agents": [
+    {
+      "agent": "codex",
+      "model": "openai/gpt-6.1-sol",
+      "trials": 12,
+      "agent_versions": [
+        "0.163.0"
+      ],
+      "passed": 7,
+      "agent_minutes": 96.0,
+      "median_agent_minutes": 6.2,
+      "total_minutes": 140.5,
+      "cost_usd": 3.86,
+      "cost_per_pass_usd": 0.55,
+      "input": 10740124,
+      "cache": 10222080,
+      "output": 179777,
+      "steps": 264,
+      "tool_calls": 252,
+      "subagents": 0
+    }
+  ]
+}
