@@ -174,6 +174,7 @@ subagents.
 | `vis-team-wait` | `team-wait` | `council_orchestration = "wait"` |
 | `vis-team-active` | `team-active` | `council_orchestration = "active"` |
 | `vis-team-lead` | `team-lead` | `council_orchestration = "lead"`, with its own build pin |
+| `vis-team-lead3` | `team-lead3` | `lead` on a later build: a final check run gates the answer |
 
 1. Pin the build of one `native-release.yml` run. The run can be on any branch:
 

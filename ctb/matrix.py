@@ -38,6 +38,7 @@ AGENTS = {
                 ("vis-team-wait", "VisTeamWait"),
                 ("vis-team-active", "VisTeamActive"),
                 ("vis-team-lead", "VisTeamLead"),
+                ("vis-team-lead3", "VisTeamLead3"),
             )
         ),
         AgentSpec(

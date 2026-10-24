@@ -327,10 +327,28 @@ class VisTeamLead(VisTeam):
         return "vis-team-lead"
 
 
+class VisTeamLead3(VisTeam):
+    """Lead orchestration of a later build: a final check run gates the answer."""
+
+    PROFILE = "team-lead3"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-lead3"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
-    for cls in (VisSolo, VisTeam, VisTeamNote, VisTeamWait, VisTeamActive, VisTeamLead)
+    for cls in (
+        VisSolo,
+        VisTeam,
+        VisTeamNote,
+        VisTeamWait,
+        VisTeamActive,
+        VisTeamLead,
+        VisTeamLead3,
+    )
 }
 
 

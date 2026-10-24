@@ -68,3 +68,12 @@ config = { toggles = { council = true, subagents = true, council_orchestration =
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 # Lead mode exists only from commit ca48b6e of exp/council-orchestration.
 build = { run_id = 40112106678, commit = "ca48b6e8efaf41fd0bacacbafa810b0c1899ed3a", sha256 = "097aa318f8bad6090a0c9134ae28bb278b4bac0b35a618ef0666b2368710dc47" }
+
+[profiles.team-lead3]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "lead" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "lead" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+# Lead v3 of commit 7f7e0fc: a final check run gates the answer, and fewer child messages.
+build = { run_id = 40124896028, commit = "7f7e0fcaddbd09144094f82aa821afab44b9bc10", sha256 = "fbff9990d01bb174b0d6219f39d3066a70678fc67241784cf2f714492f67a575" }

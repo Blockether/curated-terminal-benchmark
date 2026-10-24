@@ -34,6 +34,7 @@ from ctb.agents.vis import (
     VisTeam,
     VisTeamActive,
     VisTeamLead,
+    VisTeamLead3,
     VisTeamNote,
     VisTeamWait,
 )
@@ -142,10 +143,16 @@ def test_vis_profile_build_pins_its_own_build(pinned):
 def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
     note = "Use Council subagents for this task: delegate independent parts with council.run."
     expected = shlex.quote(f"do 'it'\n\n{note}")
-    for cls, mode in ((VisTeamWait, "wait"), (VisTeamActive, "active"), (VisTeamLead, "lead")):
+    arms = (
+        (VisTeamWait, "team-wait", "wait"),
+        (VisTeamActive, "team-active", "active"),
+        (VisTeamLead, "team-lead", "lead"),
+        (VisTeamLead3, "team-lead3", "lead"),
+    )
+    for cls, profile, mode in arms:
         command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
         toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
-        assert f"--name team-{mode} --persist --toggles verbosity=low,{toggles}" in command
+        assert f"--name {profile} --persist --toggles verbosity=low,{toggles}" in command
         assert f"-- {expected} >" in command
         config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
         # Subagents resolve toggles from the configuration, not from --toggles.
@@ -164,11 +171,13 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
         "VisTeamWait",
         "VisTeamActive",
         "VisTeamLead",
+        "VisTeamLead3",
     ]
-    assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead)} == {
+    assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
         "vis-team-wait",
         "vis-team-active",
         "vis-team-lead",
+        "vis-team-lead3",
     }
 
 

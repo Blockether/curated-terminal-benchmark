@@ -30,7 +30,13 @@ def test_both_council_arms_run_in_one_round():
 def test_experiment_arms_stay_out_of_the_default_matrix():
     defaults = matrix.DEFAULT_AGENTS.split(",")
     assert "vis-team" in defaults
-    experiments = {"vis-team-note", "vis-team-wait", "vis-team-active", "vis-team-lead"}
+    experiments = {
+        "vis-team-note",
+        "vis-team-wait",
+        "vis-team-active",
+        "vis-team-lead",
+        "vis-team-lead3",
+    }
     assert not experiments & set(defaults)
 
 
