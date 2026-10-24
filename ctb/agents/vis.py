@@ -180,7 +180,8 @@ class VisSolo(CuratedAgent):
             names = ", ".join(sorted(found["profiles"]))
             raise ValueError(f"Unknown Vis profile {self.profile_name!r}; use one of {names}")
         self.profile = found["profiles"][self.profile_name]
-        self.build = found["build"]
+        # A profile can pin its own build over [build], so one arm can run a newer build.
+        self.build = {**found["build"], **self.profile.get("build", {})}
         self.ARCHIVE = archive(self.build)
 
     @staticmethod
@@ -316,10 +317,32 @@ class VisTeamActive(VisTeam):
         return "vis-team-active"
 
 
+class VisTeamLead(VisTeam):
+    """Council subagents with `council_orchestration = lead`: events and independent checks."""
+
+    PROFILE = "team-lead"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-lead"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
-    cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam, VisTeamNote, VisTeamWait, VisTeamActive)
+    cls.name(): cls.PROFILE
+    for cls in (VisSolo, VisTeam, VisTeamNote, VisTeamWait, VisTeamActive, VisTeamLead)
 }
+
+
+def builds() -> list[dict]:
+    """The [build] pin, then each other build that a profile pins over it."""
+    found = settings()
+    pins = [found["build"]]
+    for profile in found["profiles"].values():
+        build = {**found["build"], **profile.get("build", {})}
+        if build not in pins:
+            pins.append(build)
+    return pins
 
 
 def run_record(agents: list[str]) -> dict:
@@ -389,12 +412,13 @@ def write_pin(build: dict, path: Path | None = None) -> None:
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["fetch"]:
-        path = fetch()
+        paths = [fetch(build) for build in builds()]
     elif len(sys.argv) == 3 and sys.argv[1] == "pin":
         pinned = run_build(int(sys.argv[2]))
         write_pin(pinned)
         print(f"pinned run {pinned['run_id']}: commit {pinned['commit']}")
-        path = archive(pinned)
+        paths = [archive(pinned)]
     else:
         raise SystemExit("usage: python -m ctb.agents.vis fetch | pin <native-release.yml run id>")
-    print(f"{path.relative_to(ROOT)}: {path.stat().st_size} B")
+    for path in paths:
+        print(f"{path.relative_to(ROOT)}: {path.stat().st_size} B")

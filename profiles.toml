@@ -20,8 +20,10 @@ sha256 = "f99cb16906e70d18a7611a4ccf03eacf2cb652637a140ae17fd8b62456cedcee"
 #   persist     true keeps a session database (Council needs it); false uses --db :memory
 #   config      keys that go into $HOME/.vis/config.yml over the provider settings
 #   instruction_note  text that goes after the task instruction, after one blank line
+#   build       run_id, commit and sha256 of the build of this profile, over [build]
 # vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
-# vis-team-note, vis-team-wait and vis-team-active use the profile of the same suffix.
+# vis-team-note, vis-team-wait, vis-team-active and vis-team-lead use the profile of the same
+# suffix.
 
 [profiles.solo]
 toggles = { council = false, draft_backend = "off" }
@@ -57,3 +59,12 @@ effort = "medium"
 persist = true
 config = { toggles = { council = true, subagents = true, council_orchestration = "active" } }
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-lead]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "lead" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "lead" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+# Lead mode exists only from commit ca48b6e of exp/council-orchestration.
+build = { run_id = 40112106678, commit = "ca48b6e8efaf41fd0bacacbafa810b0c1899ed3a", sha256 = "097aa318f8bad6090a0c9134ae28bb278b4bac0b35a618ef0666b2368710dc47" }

@@ -29,7 +29,14 @@ from ctb.agents.opencode import (
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
-from ctb.agents.vis import VisSolo, VisTeam, VisTeamActive, VisTeamNote, VisTeamWait
+from ctb.agents.vis import (
+    VisSolo,
+    VisTeam,
+    VisTeamActive,
+    VisTeamLead,
+    VisTeamNote,
+    VisTeamWait,
+)
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -116,10 +123,26 @@ def test_vis_profile_kwarg_sets_every_switch(pinned):
         VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="nope")
 
 
+def test_vis_profile_build_pins_its_own_build(pinned):
+    build, _ = pinned
+    vis.SETTINGS.write_text(
+        vis.SETTINGS.read_text()
+        + "[profiles.next]\npersist = true\n"
+        + f'build = {{ run_id = 43, commit = "{"b" * 40}", sha256 = "c" }}\n'
+    )
+    model = "openai/gpt-6.1-sol"
+    later = VisSolo(logs_dir=Path("/tmp/l"), model_name=model, profile="next")
+    assert (later.build["run_id"], later.build["commit"]) == (43, "b" * 40)
+    assert later.build["asset"] == build["asset"]
+    assert later.ARCHIVE.parts[-2] == "43"
+    assert VisSolo(logs_dir=Path("/tmp/l"), model_name=model).build == build
+    assert [pin["run_id"] for pin in vis.builds()] == [build["run_id"], 43]
+
+
 def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
     note = "Use Council subagents for this task: delegate independent parts with council.run."
     expected = shlex.quote(f"do 'it'\n\n{note}")
-    for cls, mode in ((VisTeamWait, "wait"), (VisTeamActive, "active")):
+    for cls, mode in ((VisTeamWait, "wait"), (VisTeamActive, "active"), (VisTeamLead, "lead")):
         command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
         toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
         assert f"--name team-{mode} --persist --toggles verbosity=low,{toggles}" in command
@@ -134,10 +157,18 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
     # Profiles without a note keep the task text as it is.
     assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
     names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
-    assert names == ["VisSolo", "VisTeam", "VisTeamNote", "VisTeamWait", "VisTeamActive"]
-    assert {cls.name() for cls in (VisTeamWait, VisTeamActive)} == {
+    assert names == [
+        "VisSolo",
+        "VisTeam",
+        "VisTeamNote",
+        "VisTeamWait",
+        "VisTeamActive",
+        "VisTeamLead",
+    ]
+    assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead)} == {
         "vis-team-wait",
         "vis-team-active",
+        "vis-team-lead",
     }
 
 

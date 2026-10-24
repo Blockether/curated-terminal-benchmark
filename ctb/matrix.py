@@ -37,6 +37,7 @@ AGENTS = {
                 ("vis-team-note", "VisTeamNote"),
                 ("vis-team-wait", "VisTeamWait"),
                 ("vis-team-active", "VisTeamActive"),
+                ("vis-team-lead", "VisTeamLead"),
             )
         ),
         AgentSpec(

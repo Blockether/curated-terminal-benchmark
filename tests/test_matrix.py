@@ -30,7 +30,8 @@ def test_both_council_arms_run_in_one_round():
 def test_experiment_arms_stay_out_of_the_default_matrix():
     defaults = matrix.DEFAULT_AGENTS.split(",")
     assert "vis-team" in defaults
-    assert not {"vis-team-note", "vis-team-wait", "vis-team-active"} & set(defaults)
+    experiments = {"vis-team-note", "vis-team-wait", "vis-team-active", "vis-team-lead"}
+    assert not experiments & set(defaults)
 
 
 def test_kmet_runs_only_on_the_gpt_model():

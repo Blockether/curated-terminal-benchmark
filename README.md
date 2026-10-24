@@ -164,7 +164,7 @@ Harbor writes jobs to `jobs/<round>/` and the runner writes logs to `runs/<round
 
 ## Council orchestration experiment
 
-Branch `exp/council-orchestration` compares two Council modes on the same tasks. Each arm adds
+Branch `exp/council-orchestration` compares Council modes on the same tasks. Each arm adds
 the `instruction_note` of its profile after the task text, so the task tells the leader to use
 subagents.
 
@@ -173,12 +173,17 @@ subagents.
 | `vis-team-note` | `team-note` | Council on, no `council_orchestration` (works on older builds) |
 | `vis-team-wait` | `team-wait` | `council_orchestration = "wait"` |
 | `vis-team-active` | `team-active` | `council_orchestration = "active"` |
+| `vis-team-lead` | `team-lead` | `council_orchestration = "lead"`, with its own build pin |
 
 1. Pin the build of one `native-release.yml` run. The run can be on any branch:
 
    ```bash
    uv run python -m ctb.agents.vis pin <run_id>
    ```
+
+   A profile can also pin its own build with a `build` table of `run_id`, `commit` and
+   `sha256`. Then one arm runs a newer build, and the rounds that run keep their pin.
+   `uv run python -m ctb.agents.vis fetch` downloads every pinned build.
 
 2. Run both arms in one round. A round has one trial for each cell, so use one round for each
    repeat, for example `council-a1` to `council-a4`:
