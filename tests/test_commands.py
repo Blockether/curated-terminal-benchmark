@@ -124,6 +124,10 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
         toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
         assert f"--name team-{mode} --persist --toggles verbosity=low,{toggles}" in command
         assert f"-- {expected} >" in command
+        config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
+        # Subagents resolve toggles from the configuration, not from --toggles.
+        assert config["toggles"]["subagents"] is True
+        assert config["toggles"]["council_orchestration"] == mode
     command = agent(VisTeamNote, "openai/gpt-6.1-sol").command("do 'it'")
     assert "council=true,subagents=true,draft_backend=off --model" in command
     assert f"-- {expected} >" in command

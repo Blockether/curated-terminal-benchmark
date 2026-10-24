@@ -32,6 +32,8 @@ persist = false
 toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
+# Subagents of a one-shot run read the configuration, not --toggles: set both.
+config = { toggles = { council = true, subagents = true } }
 
 # The arms of exp/council-orchestration. team-note runs on a build without
 # council_orchestration; team-wait and team-active need a build that knows it.
@@ -39,16 +41,19 @@ persist = true
 toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
+config = { toggles = { council = true, subagents = true } }
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 
 [profiles.team-wait]
 toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "wait" }
 effort = "medium"
 persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "wait" } }
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 
 [profiles.team-active]
 toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "active" }
 effort = "medium"
 persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "active" } }
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
