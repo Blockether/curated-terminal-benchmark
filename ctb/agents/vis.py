@@ -212,6 +212,11 @@ class VisSolo(CuratedAgent):
             raise RuntimeError(f"{name} is required on the Harbor host")
         return {name: key}
 
+    def task_text(self, instruction: str) -> str:
+        """The task instruction with the `instruction_note` of the profile, if it has one."""
+        note = self.profile.get("instruction_note")
+        return f"{instruction}\n\n{note}" if note else instruction
+
     def command(self, instruction: str) -> str:
         provider = PROVIDERS.get(self.family, self.family)
         config = overlay(
@@ -237,7 +242,7 @@ class VisSolo(CuratedAgent):
             "> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && "
             f"{VIS} {' '.join(flags)} --model {provider}/{self.model} "
             f"--reasoning-effort {shlex.quote(effort)} --trajectory {TRAJECTORY} "
-            f"--full-trace-json-stream -- {shlex.quote(instruction)} "
+            f"--full-trace-json-stream -- {shlex.quote(self.task_text(instruction))} "
             f"> {TRACE} 2> {LOGS}/vis-stderr.log"
         )
 
@@ -257,6 +262,7 @@ class VisSolo(CuratedAgent):
             "vis": {
                 "model": self.model_name,
                 "profile": self.profile_name,
+                "instruction_note": self.profile.get("instruction_note"),
                 "build": {key: self.build[key] for key in ("run_id", "commit", "sha256")},
                 "error_count": sum(
                     isinstance(block, dict) and block.get("type") == "error"
@@ -280,8 +286,40 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
+class VisTeamNote(VisTeam):
+    """Council on, and the task tells the leader to use subagents."""
+
+    PROFILE = "team-note"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-note"
+
+
+class VisTeamWait(VisTeam):
+    """Council subagents with `council_orchestration = wait`: the leader waits for them."""
+
+    PROFILE = "team-wait"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-wait"
+
+
+class VisTeamActive(VisTeam):
+    """Council subagents with `council_orchestration = active`: the leader steers them."""
+
+    PROFILE = "team-active"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-active"
+
+
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {VisSolo.name(): VisSolo.PROFILE, VisTeam.name(): VisTeam.PROFILE}
+AGENT_PROFILES = {
+    cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam, VisTeamNote, VisTeamWait, VisTeamActive)
+}
 
 
 def run_record(agents: list[str]) -> dict:
@@ -298,8 +336,65 @@ def run_record(agents: list[str]) -> dict:
     }
 
 
+def run_build(run_id: int, repo: str = "Blockether/vis") -> dict:
+    """The build pin of one successful native-release.yml run on any branch.
+
+    The commit is the head commit of the run. The bundle stamp must name that commit.
+    The sha256 comes from the downloaded bundle, which stays in artifacts/vis-builds/<run_id>/.
+    """
+    view = subprocess.run(
+        ["gh", "run", "view", str(run_id), "-R", repo, "--json", "headSha,conclusion"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    info = json.loads(view.stdout)
+    if info.get("conclusion") != "success":
+        raise ValueError(f"Run {run_id} has conclusion {info.get('conclusion')!r}, not success")
+    build = {**settings()["build"], "repo": repo, "run_id": run_id, "commit": info["headSha"]}
+    target = archive(build)
+    if not target.is_file():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="ctb-vis-", dir=target.parent) as work:
+            subprocess.run(
+                ["gh", "run", "download", str(run_id), "-R", repo]
+                + ["-n", build["asset"], "-D", work],
+                check=True,
+            )
+            (Path(work) / build["asset"]).replace(target)
+    commit = stamp(target)[1]
+    if commit != build["commit"]:
+        target.unlink()
+        raise ValueError(f"Run {run_id} built {commit}, not its head commit {build['commit']}")
+    build["sha256"] = file_sha256(target)
+    return build
+
+
+def write_pin(build: dict, path: Path | None = None) -> None:
+    """Replace the run_id, commit and sha256 of the [build] table of profiles.toml."""
+    path = path or SETTINGS
+    text = path.read_text(encoding="utf-8")
+    head, sep, rest = text.partition("[build]\n")
+    if not sep:
+        raise ValueError(f"{path} has no [build] table")
+    lines = rest.split("\n")
+    for index, line in enumerate(lines):
+        if line.startswith("["):
+            break
+        key = line.partition("=")[0].strip()
+        if key in ("repo", "run_id", "commit", "sha256"):
+            lines[index] = f"{key} = {json.dumps(build[key])}"
+    path.write_text(head + sep + "\n".join(lines), encoding="utf-8")
+
+
 if __name__ == "__main__":
-    if sys.argv[1:] != ["fetch"]:
-        raise SystemExit("usage: python -m ctb.agents.vis fetch")
-    path = fetch()
+    if sys.argv[1:] == ["fetch"]:
+        path = fetch()
+    elif len(sys.argv) == 3 and sys.argv[1] == "pin":
+        pinned = run_build(int(sys.argv[2]))
+        write_pin(pinned)
+        print(f"pinned run {pinned['run_id']}: commit {pinned['commit']}")
+        path = archive(pinned)
+    else:
+        raise SystemExit("usage: python -m ctb.agents.vis fetch | pin <native-release.yml run id>")
     print(f"{path.relative_to(ROOT)}: {path.stat().st_size} B")

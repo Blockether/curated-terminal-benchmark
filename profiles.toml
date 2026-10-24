@@ -1,8 +1,10 @@
 # The Vis build and the run profiles of ctb/agents/vis.py.
 # A round uses one build and one profile for each Vis agent.
 
-# The native Linux x64 bundle of one native-release.yml dry run on main.
+# The native Linux x64 bundle of one native-release.yml dry run, on main or another branch.
 # Run `uv run python -m ctb.agents.vis fetch` to download it to artifacts/vis-builds/<run_id>/.
+# Run `uv run python -m ctb.agents.vis pin <run_id>` to pin another run: it downloads the
+# bundle, checks the stamp against the head commit of the run and writes this table.
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
 [build]
 repo = "Blockether/vis"
@@ -17,7 +19,9 @@ sha256 = "908fad15762ceebd5f08a20ba3bba79991d7ed228c092eb3a98bace318c9ee81"
 #   effort      --reasoning-effort
 #   persist     true keeps a session database (Council needs it); false uses --db :memory
 #   config      keys that go into $HOME/.vis/config.yml over the provider settings
+#   instruction_note  text that goes after the task instruction, after one blank line
 # vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
+# vis-team-note, vis-team-wait and vis-team-active use the profile of the same suffix.
 
 [profiles.solo]
 toggles = { council = false, draft_backend = "off" }
@@ -28,3 +32,23 @@ persist = false
 toggles = { council = true, draft_backend = "off" }
 effort = "medium"
 persist = true
+
+# The arms of exp/council-orchestration. team-note runs on a build without
+# council_orchestration; team-wait and team-active need a build that knows it.
+[profiles.team-note]
+toggles = { council = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-wait]
+toggles = { council = true, draft_backend = "off", council_orchestration = "wait" }
+effort = "medium"
+persist = true
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-active]
+toggles = { council = true, draft_backend = "off", council_orchestration = "active" }
+effort = "medium"
+persist = true
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."

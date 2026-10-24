@@ -21,6 +21,8 @@ class AgentSpec:
     proxy: bool = False
     #: The pinned version of a Harbor built-in agent; Harbor otherwise installs the latest one.
     version: str | None = None
+    #: An experiment arm runs only when --agents names it, never in the default matrix.
+    experiment: bool = False
 
 
 AGENTS = {
@@ -28,6 +30,15 @@ AGENTS = {
     for spec in (
         AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("anthropic", "openai")),
         AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("anthropic", "openai")),
+        # Council arms of exp/council-orchestration: each task text asks for subagents.
+        *(
+            AgentSpec(name, f"ctb.agents.vis:{cls}", ("anthropic", "openai"), experiment=True)
+            for name, cls in (
+                ("vis-team-note", "VisTeamNote"),
+                ("vis-team-wait", "VisTeamWait"),
+                ("vis-team-active", "VisTeamActive"),
+            )
+        ),
         AgentSpec(
             "claude-code", "claude-code", ("anthropic",), effort_kwarg=True, version="2.1.302"
         ),
@@ -49,6 +60,10 @@ AGENTS = {
         AgentSpec("pi", "ctb.agents.pi:Pi", ("anthropic", "openai"), effort_kwarg=True),
     )
 }
+
+
+#: The agents of a run or seal without --agents.
+DEFAULT_AGENTS = ",".join(name for name, spec in AGENTS.items() if not spec.experiment)
 
 
 @dataclass(frozen=True)

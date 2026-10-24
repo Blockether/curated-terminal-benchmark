@@ -162,6 +162,35 @@ The task containers and the amd64 emulation can use all the memory that the mach
 
 Harbor writes jobs to `jobs/<round>/` and the runner writes logs to `runs/<round>/`.
 
+## Council orchestration experiment
+
+Branch `exp/council-orchestration` compares two Council modes on the same tasks. Each arm adds
+the `instruction_note` of its profile after the task text, so the task tells the leader to use
+subagents.
+
+| Agent | Profile | Toggle |
+|---|---|---|
+| `vis-team-note` | `team-note` | Council on, no `council_orchestration` (works on older builds) |
+| `vis-team-wait` | `team-wait` | `council_orchestration = "wait"` |
+| `vis-team-active` | `team-active` | `council_orchestration = "active"` |
+
+1. Pin the build of one `native-release.yml` run. The run can be on any branch:
+
+   ```bash
+   uv run python -m ctb.agents.vis pin <run_id>
+   ```
+
+2. Run both arms in one round. A round has one trial for each cell, so use one round for each
+   repeat, for example `council-a1` to `council-a4`:
+
+   ```bash
+   uv run python -m ctb.cli run --round council-a1 --agents vis-team-wait,vis-team-active \
+     --models openai --tasks all --parallel 1
+   ```
+
+3. Print one row for each arm with `summary --round council-a1`. The experiment agents run
+   only when `--agents` names them.
+
 ## Full Vis suite
 
 `terminal_bench/` is the full 66-task Terminal-Bench harness for Vis alone. It came from the

@@ -3,6 +3,8 @@ import asyncio
 import hashlib
 import io
 import json
+import shlex
+import subprocess
 import tarfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -27,7 +29,7 @@ from ctb.agents.opencode import (
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
-from ctb.agents.vis import VisSolo, VisTeam
+from ctb.agents.vis import VisSolo, VisTeam, VisTeamActive, VisTeamNote, VisTeamWait
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -111,6 +113,50 @@ def test_vis_profile_kwarg_sets_every_switch(pinned):
         VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="nope")
 
 
+def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
+    note = "Use Council subagents for this task: delegate independent parts with council.run."
+    expected = shlex.quote(f"do 'it'\n\n{note}")
+    for cls, mode in ((VisTeamWait, "wait"), (VisTeamActive, "active")):
+        command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
+        toggles = f"council=true,draft_backend=off,council_orchestration={mode}"
+        assert f"--name team-{mode} --persist --toggles verbosity=low,{toggles}" in command
+        assert f"-- {expected} >" in command
+    command = agent(VisTeamNote, "openai/gpt-6.1-sol").command("do 'it'")
+    assert "council=true,draft_backend=off --model" in command
+    assert f"-- {expected} >" in command
+    # Profiles without a note keep the task text as it is.
+    assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
+    names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
+    assert names == ["VisSolo", "VisTeam", "VisTeamNote", "VisTeamWait", "VisTeamActive"]
+    assert {cls.name() for cls in (VisTeamWait, VisTeamActive)} == {
+        "vis-team-wait",
+        "vis-team-active",
+    }
+
+
+def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
+    build, data = pinned
+    calls = []
+
+    def gh(argv, check, **kwargs):
+        calls.append(argv)
+        if argv[:3] == ["gh", "run", "view"]:
+            head = json.dumps({"headSha": "a" * 40, "conclusion": "success"})
+            return subprocess.CompletedProcess(argv, 0, stdout=head)
+        (Path(argv[argv.index("-D") + 1]) / build["asset"]).write_bytes(data)
+        return subprocess.CompletedProcess(argv, 0)
+
+    monkeypatch.setattr(vis.subprocess, "run", gh)
+    found = vis.run_build(42)
+    assert (found["run_id"], found["commit"], found["sha256"]) == (42, "a" * 40, build["sha256"])
+    assert vis.archive(found).parts[-2] == "42"
+    vis.write_pin(found)
+    assert vis.settings()["build"]["run_id"] == 42
+    assert vis.settings()["profiles"]["solo"] == {"persist": False}
+    assert vis.fetch() == vis.archive(found)
+    assert len(calls) == 2
+
+
 def test_vis_api_key_provider_gets_the_key_only_in_the_environment(pinned, monkeypatch):
     monkeypatch.setenv("ZAI_CODING_API_KEY", "private-test-key")
     glm = VisSolo(logs_dir=Path("/tmp/l"), model_name="zai-coding-plan/glm-5.3-flash")
@@ -191,6 +237,7 @@ def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
     metadata = context.metadata["vis"]
     assert metadata["model"] == "openai/gpt-6.1-sol"
     assert metadata["profile"] == "solo"
+    assert metadata["instruction_note"] is None
     assert metadata["build"] == {"run_id": 7, "commit": "a" * 40, "sha256": pinned[0]["sha256"]}
     assert (metadata["duration_ms"], metadata["iteration_count"]) == (900, 3)
     assert metadata["estimated_metered_api_cost_usd"] == 0.5
