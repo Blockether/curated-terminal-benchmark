@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 import statistics
 from collections import Counter
 from datetime import datetime
@@ -36,10 +37,30 @@ def list_price(model: str, input_: int, cache: int, output: int) -> float | None
     return (input_ - cache) * fresh + cache * read + output * out
 
 
+#: A Vis code block that starts subagents, and the child ids in its printed records.
+COUNCIL_RUN = re.compile(r"\bcouncil\.run\(")
+CHILD_ID = re.compile(r"""['"]session_id['"]: ['"]([0-9a-f-]{36})['"]""")
+
+
+def council_children(step: dict) -> set[str]:
+    """The child session ids that one Vis step started with council.run."""
+    codes = [
+        str((call.get("arguments") or {}).get("code") or "")
+        for call in step.get("tool_calls") or []
+    ]
+    if not any(COUNCIL_RUN.search(code) for code in codes):
+        return set()
+    return set(CHILD_ID.findall(json.dumps(step.get("observation") or {})))
+
+
 def trajectory_counts(path: Path) -> dict:
-    """Agent steps, model calls, tool calls by name and subagent starts of an ATIF trajectory."""
+    """Agent steps, model calls, tool calls by name and subagent starts of an ATIF trajectory.
+
+    Vis starts subagents inside a code block, so its count is the distinct council.run children.
+    """
     steps = calls = 0
     tools: Counter[str] = Counter()
+    children: set[str] = set()
     if path.is_file():
         for step in json.loads(path.read_text()).get("steps", []):
             if step.get("source") == "agent":
@@ -47,12 +68,13 @@ def trajectory_counts(path: Path) -> dict:
                 calls += step.get("llm_call_count") or 0
             for call in step.get("tool_calls") or []:
                 tools[call.get("function_name") or "?"] += 1
+            children |= council_children(step)
     return {
         "steps": steps,
         "llm_calls": calls,
         "tool_calls": sum(tools.values()),
         "tools": dict(tools.most_common()),
-        "subagents": sum(n for name, n in tools.items() if name in SUBAGENT_TOOLS),
+        "subagents": sum(n for name, n in tools.items() if name in SUBAGENT_TOOLS) + len(children),
     }
 
 
