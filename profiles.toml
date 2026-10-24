@@ -8,10 +8,10 @@
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
 [build]
 repo = "Blockether/vis"
-run_id = 39696509406
-commit = "bfbc6736b456661f9eb98c913fe20f1bb0e7d5cf"
+run_id = 40096004551
+commit = "544e351f9a5959dc9019a213bc948c62371a79c1"
 asset = "vis-agent-linux-x64.tar.gz"
-sha256 = "908fad15762ceebd5f08a20ba3bba79991d7ed228c092eb3a98bace318c9ee81"
+sha256 = "f99cb16906e70d18a7611a4ccf03eacf2cb652637a140ae17fd8b62456cedcee"
 
 # A profile sets each switch of one Vis agent:
 #   toggles     engine toggles for --toggles; council.run needs subagents = true (default off)
