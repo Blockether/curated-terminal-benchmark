@@ -14,7 +14,7 @@ asset = "vis-agent-linux-x64.tar.gz"
 sha256 = "908fad15762ceebd5f08a20ba3bba79991d7ed228c092eb3a98bace318c9ee81"
 
 # A profile sets each switch of one Vis agent:
-#   toggles     engine toggles for --toggles
+#   toggles     engine toggles for --toggles; council.run needs subagents = true (default off)
 #   extensions  extension names for --extensions; leave it out for the default set
 #   effort      --reasoning-effort
 #   persist     true keeps a session database (Council needs it); false uses --db :memory
@@ -29,26 +29,26 @@ effort = "medium"
 persist = false
 
 [profiles.team]
-toggles = { council = true, draft_backend = "off" }
+toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
 
 # The arms of exp/council-orchestration. team-note runs on a build without
 # council_orchestration; team-wait and team-active need a build that knows it.
 [profiles.team-note]
-toggles = { council = true, draft_backend = "off" }
+toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 
 [profiles.team-wait]
-toggles = { council = true, draft_backend = "off", council_orchestration = "wait" }
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "wait" }
 effort = "medium"
 persist = true
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 
 [profiles.team-active]
-toggles = { council = true, draft_backend = "off", council_orchestration = "active" }
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "active" }
 effort = "medium"
 persist = true
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."

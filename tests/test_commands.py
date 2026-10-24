@@ -41,7 +41,10 @@ def agent(cls, model, logs=Path("/tmp/ctb-test-logs")):
 def test_vis_team_uses_the_gateway_path_with_council_on():
     team = agent(VisTeam, "anthropic/claude-opus-5-5").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
-    assert "--name team --persist --toggles verbosity=low,council=true,draft_backend=off" in team
+    assert (
+        "--name team --persist --toggles verbosity=low,council=true,subagents=true,draft_backend=off"
+        in team
+    )
     assert "--db :memory" not in team
     assert "anthropic-coding-plan/claude-opus-5-5 --reasoning-effort medium" in team
     assert "--name solo --db :memory --toggles verbosity=low,council=false" in solo
@@ -118,11 +121,11 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
     expected = shlex.quote(f"do 'it'\n\n{note}")
     for cls, mode in ((VisTeamWait, "wait"), (VisTeamActive, "active")):
         command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
-        toggles = f"council=true,draft_backend=off,council_orchestration={mode}"
+        toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
         assert f"--name team-{mode} --persist --toggles verbosity=low,{toggles}" in command
         assert f"-- {expected} >" in command
     command = agent(VisTeamNote, "openai/gpt-6.1-sol").command("do 'it'")
-    assert "council=true,draft_backend=off --model" in command
+    assert "council=true,subagents=true,draft_backend=off --model" in command
     assert f"-- {expected} >" in command
     # Profiles without a note keep the task text as it is.
     assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
