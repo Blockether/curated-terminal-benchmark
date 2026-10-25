@@ -130,15 +130,20 @@ def codex_vis(min_valid_s: int, path: Path = VIS_CODEX) -> Access:
 def codex_cli(min_valid_s: int, path: Path = CODEX_CLI, vis_path: Path = VIS_CODEX) -> Access:
     """A ChatGPT access token in Codex CLI form.
 
-    Use the Codex CLI token while it is valid. Else use the Vis token with the
-    Codex CLI `id_token`, which carries only account claims.
+    Use the Vis token with the Codex CLI `id_token`, which carries only account claims.
+    Codex then uses the same ChatGPT account as the Vis arms. Use the Codex CLI token
+    only when the Vis token is not valid.
     """
     tokens = (_read(path).get("tokens") or {}) if path.is_file() else {}
     token = tokens.get("access_token") or ""
     access = Access(token, jwt_exp_ms(token) or 0, tokens.get("account_id"), tokens.get("id_token"))
-    if access.expires_ms - now_ms() >= min_valid_s * 1000:
-        return access
-    vis = codex_vis(min_valid_s, vis_path)
+    try:
+        vis = codex_vis(min_valid_s, vis_path)
+    except (CredentialError, KeyError, ValueError) as error:
+        hint = (
+            f"The Vis token is not usable ({error}). Log in to Codex CLI or refresh the Vis token."
+        )
+        return _require(access, min_valid_s, path, hint)
     return Access(vis.token, vis.expires_ms, vis.account_id or access.account_id, access.id_token)
 
 
