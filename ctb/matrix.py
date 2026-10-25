@@ -39,6 +39,11 @@ AGENTS = {
                 ("vis-team-active", "VisTeamActive"),
                 ("vis-team-lead", "VisTeamLead"),
                 ("vis-team-lead3", "VisTeamLead3"),
+                ("vis-solo-x", "VisSoloX"),
+                ("vis-solo-main", "VisSoloMain"),
+                ("vis-lead", "VisLead"),
+                ("vis-solo-next", "VisSoloNext"),
+                ("vis-lead-auto", "VisLeadAuto"),
             )
         ),
         AgentSpec(

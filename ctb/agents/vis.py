@@ -337,6 +337,56 @@ class VisTeamLead3(VisTeam):
         return "vis-team-lead3"
 
 
+class VisSoloX(VisSolo):
+    """Solo with the experimental `solo-x` profile: a prompt screen through the task note."""
+
+    PROFILE = "solo-x"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-x"
+
+
+class VisSoloMain(VisSolo):
+    """Solo on the main build of the `solo-main` profile, without a task note."""
+
+    PROFILE = "solo-main"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-main"
+
+
+class VisLead(VisTeam):
+    """Lead mode of the main build: Council subagents, event waits and independent checks."""
+
+    PROFILE = "lead"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead"
+
+
+class VisSoloNext(VisSolo):
+    """Solo on the next main build of the `solo-next` profile, without a task note."""
+
+    PROFILE = "solo-next"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-next"
+
+
+class VisLeadAuto(VisTeam):
+    """Lead mode of the main build without a task note: the leader decides when to delegate."""
+
+    PROFILE = "lead-auto"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-auto"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -348,6 +398,11 @@ AGENT_PROFILES = {
         VisTeamActive,
         VisTeamLead,
         VisTeamLead3,
+        VisSoloX,
+        VisSoloMain,
+        VisLead,
+        VisSoloNext,
+        VisLeadAuto,
     )
 }
 

@@ -77,3 +77,47 @@ config = { toggles = { council = true, subagents = true, council_orchestration =
 instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
 # Lead v3 of commit 7f7e0fc: a final check run gates the answer, and fewer child messages.
 build = { run_id = 40124896028, commit = "7f7e0fcaddbd09144094f82aa821afab44b9bc10", sha256 = "fbff9990d01bb174b0d6219f39d3066a70678fc67241784cf2f714492f67a575" }
+
+# Prompt screen on the solo build: the rules go after the task instruction.
+[profiles.solo-x]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+instruction_note = """Work rules for this task:
+- Treat each reported symptom as one example of a class. Find every root cause and fix the whole class, not only the reported case.
+- Hidden checks call the existing interfaces under the stated conditions. Fix behavior through the existing entry points. If a symptom conflicts with your reading of a design document, remove the symptom.
+- Before you finish, test related cases: repeated, interleaved, partial, empty and boundary inputs. Compare against a simple reference model when you can.
+- Measure each stated target on the exact stated case in a fresh process. Vary input order and construction. Keep a wide margin over every threshold.
+- On a live system, rehearse each change on a copy first. Keep the running service healthy at every step.
+- Do every explicit completion step of the task, such as a signal or a wait, before your final answer."""
+
+# Lead mode of main: subagents on, and the task tells the leader to use them.
+[profiles.lead]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+build = { run_id = 40183951846, commit = "ba97dcf111c9445d5218ae9ca67ca23f34890ca6", sha256 = "0d849d2bd592f5cf174179d4d479c146e67857740f5cd28c313dff71f43b2831" }
+
+# Lead mode of main without a task note: the leader decides when to use subagents.
+[profiles.lead-auto]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40215398776, commit = "a8c63b6095b29df637d0d0b3a7216f8b7ebe435a", sha256 = "41a1689f160b477fadf52c25f033213c260f970dd7bfb8c0c7c4bb65d092b881" }
+
+# Solo on the main build of a8c63b6: checker-shaped measurement and per-symptom reproduction.
+[profiles.solo-next]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40215398776, commit = "a8c63b6095b29df637d0d0b3a7216f8b7ebe435a", sha256 = "41a1689f160b477fadf52c25f033213c260f970dd7bfb8c0c7c4bb65d092b881" }
+
+# Solo on the same main build as `lead`, with the prompt rules of dd94666 and no task note.
+[profiles.solo-main]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40183951846, commit = "ba97dcf111c9445d5218ae9ca67ca23f34890ca6", sha256 = "0d849d2bd592f5cf174179d4d479c146e67857740f5cd28c313dff71f43b2831" }
