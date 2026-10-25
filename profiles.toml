@@ -136,3 +136,11 @@ effort = "medium"
 persist = true
 config = { toggles = { council = true, subagents = true } }
 build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Prompt screen on solo-v4: one rule for named styles and standards, as a task note.
+[profiles.solo-v4n]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+instruction_note = "When a task names a style, standard or convention, list its usual rules first. Before you finish, check the result against each rule with code."
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }

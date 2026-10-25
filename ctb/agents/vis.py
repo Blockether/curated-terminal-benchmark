@@ -407,6 +407,16 @@ class VisLeadV4(VisTeam):
         return "vis-lead-v4"
 
 
+class VisSoloV4Note(VisSolo):
+    """Solo on main 16f031f with the `solo-v4n` screen note for named styles."""
+
+    PROFILE = "solo-v4n"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v4n"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -425,6 +435,7 @@ AGENT_PROFILES = {
         VisLeadAuto,
         VisSoloV4,
         VisLeadV4,
+        VisSoloV4Note,
     )
 }
 

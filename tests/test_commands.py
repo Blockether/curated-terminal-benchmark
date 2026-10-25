@@ -179,6 +179,7 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
         "VisLeadAuto",
         "VisSoloV4",
         "VisLeadV4",
+        "VisSoloV4Note",
     ]
     assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
         "vis-team-wait",
