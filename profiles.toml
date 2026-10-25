@@ -121,3 +121,18 @@ toggles = { council = false, draft_backend = "off" }
 effort = "medium"
 persist = false
 build = { run_id = 40183951846, commit = "ba97dcf111c9445d5218ae9ca67ca23f34890ca6", sha256 = "0d849d2bd592f5cf174179d4d479c146e67857740f5cd28c313dff71f43b2831" }
+
+# Solo on main 16f031f: per-symptom reproduction, design-doc rule and each measured reading.
+[profiles.solo-v4]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Lead mode on main 16f031f without a task note: the leader decides when to use subagents.
+[profiles.lead-v4]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }

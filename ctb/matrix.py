@@ -44,6 +44,8 @@ AGENTS = {
                 ("vis-lead", "VisLead"),
                 ("vis-solo-next", "VisSoloNext"),
                 ("vis-lead-auto", "VisLeadAuto"),
+                ("vis-solo-v4", "VisSoloV4"),
+                ("vis-lead-v4", "VisLeadV4"),
             )
         ),
         AgentSpec(
