@@ -176,3 +176,18 @@ effort = "medium"
 persist = true
 config = { toggles = { council = true, subagents = true } }
 build = { run_id = 40266557197, commit = "c428acf40f21470926388d77ec4b78cb8e5ffd2d", sha256 = "1fb4894e6275fa34ac62670a4bab9f5e8edf39191a9c2839d9b8a04547b09e73" }
+
+# Solo on main 9e8998d: named outputs work alone, without new packages.
+[profiles.solo-v7]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40275980910, commit = "9e8998d48b5efaaa4b87d3b29d18a3d66236586d", sha256 = "ef85ebe2c9373e8570b8364c91298828ebbb89ec08353e041353f51456d157a4" }
+
+# Lead mode on main 9e8998d: one program stays one coupled design.
+[profiles.lead-v7]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40275980910, commit = "9e8998d48b5efaaa4b87d3b29d18a3d66236586d", sha256 = "ef85ebe2c9373e8570b8364c91298828ebbb89ec08353e041353f51456d157a4" }

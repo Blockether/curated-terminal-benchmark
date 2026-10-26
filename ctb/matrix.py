@@ -51,6 +51,8 @@ AGENTS = {
                 ("vis-lead-v5", "VisLeadV5"),
                 ("vis-solo-v6", "VisSoloV6"),
                 ("vis-lead-v6", "VisLeadV6"),
+                ("vis-solo-v7", "VisSoloV7"),
+                ("vis-lead-v7", "VisLeadV7"),
             )
         ),
         AgentSpec(
