@@ -477,6 +477,26 @@ class VisLeadV7(VisTeam):
         return "vis-lead-v7"
 
 
+class VisSoloV8(VisSolo):
+    """Solo on main 656aaa4: minimal prompts and a call-only tool description."""
+
+    PROFILE = "solo-v8"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v8"
+
+
+class VisLeadV8(VisTeam):
+    """Lead mode on main 656aaa4: minimal prompts and a call-only tool description."""
+
+    PROFILE = "lead-v8"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v8"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -502,6 +522,8 @@ AGENT_PROFILES = {
         VisLeadV6,
         VisSoloV7,
         VisLeadV7,
+        VisSoloV8,
+        VisLeadV8,
     )
 }
 
