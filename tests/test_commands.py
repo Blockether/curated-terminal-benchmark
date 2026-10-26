@@ -188,6 +188,8 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
         "VisLeadV7",
         "VisSoloV8",
         "VisLeadV8",
+        "VisSoloV9",
+        "VisLeadV9",
     ]
     assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
         "vis-team-wait",
@@ -605,3 +607,64 @@ def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(
 def test_task_fixes_skip_a_task_that_the_dataset_does_not_have(tmp_path):
     assert cli.apply_task_fixes(tmp_path) == []
     assert not (tmp_path / "interleaved-vigenere").exists()
+
+
+def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
+    build, data = pinned
+    packages = b"packages"
+    home = b"extensions"
+    extras = [
+        {
+            "asset": "p.tgz",
+            "sha256": hashlib.sha256(packages).hexdigest(),
+            "into": "/installed-agent",
+        },
+        {"asset": "h.tgz", "sha256": hashlib.sha256(home).hexdigest(), "into": "vis-home"},
+    ]
+    profiles = {
+        "solo-v9": {
+            "persist": "false",
+            "extras": "["
+            + ", ".join(
+                "{ " + ", ".join(f"{k} = {json.dumps(v)}" for k, v in extra.items()) + " }"
+                for extra in extras
+            )
+            + "]",
+            "env": '{ VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }',
+        }
+    }
+    write_settings(vis.SETTINGS, build, profiles)
+    solo = vis.VisSoloV9(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
+    command = solo.command("x")
+    assert (
+        "export VIS_HOME=$HOME/.vis && tar -xzf /installed-agent/extras/h.tgz -C $HOME/.vis && "
+        "export VIS_PYTHON_PACKAGES=/installed-agent/python-packages && /installed-agent/vis-agent"
+    ) in command
+    solo.exec_as_root = AsyncMock()
+    solo._get_system_package_manager = AsyncMock(return_value="apt-get")
+    environment = AsyncMock()
+    solo.ARCHIVE.parent.mkdir(parents=True)
+    solo.ARCHIVE.write_bytes(data)
+    with pytest.raises(FileNotFoundError, match="vis-extras/build.sh"):
+        asyncio.run(solo.install(environment))
+    vis.extra_path(extras[0]).parent.mkdir(parents=True)
+    vis.extra_path(extras[0]).write_bytes(packages)
+    vis.extra_path(extras[1]).write_bytes(b"another")
+    with pytest.raises(ValueError, match="not the pinned"):
+        asyncio.run(solo.install(environment))
+    environment.upload_file.assert_not_awaited()
+    vis.extra_path(extras[1]).write_bytes(home)
+    asyncio.run(solo.install(environment))
+    uploads = [call.args for call in environment.upload_file.await_args_list]
+    assert uploads[1:] == [
+        (vis.extra_path(extras[0]), "/tmp/ctb-extra.tgz"),
+        (vis.extra_path(extras[1]), "/tmp/ctb-extra.tgz"),
+    ]
+    commands = [call.kwargs["command"] for call in solo.exec_as_root.await_args_list][-2:]
+    assert commands[0].startswith("mkdir -p /installed-agent && tar -xzf /tmp/ctb-extra.tgz")
+    assert "mv /tmp/ctb-extra.tgz /installed-agent/extras/h.tgz" in commands[1]
+
+
+def test_vis_extra_refuses_an_unknown_target(pinned):
+    with pytest.raises(ValueError, match="vis-home"):
+        vis.check_extra({"asset": "x.tgz", "sha256": "0", "into": "/tmp"})

@@ -206,3 +206,28 @@ effort = "medium"
 persist = true
 config = { toggles = { council = true, subagents = true } }
 build = { run_id = 40337553682, commit = "656aaa47ba2c3d94ed4b959d8067a429b5ba6631", sha256 = "b1728c356f75e69a7fd82f0f697adff501d3ab565f080cdbdea0c2eee2026caf" }
+
+# Solo with the ub-mode rules, analysis packages (vis-extras/) and the py extension.
+[profiles.solo-v9]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead mode with the ub-mode rules, analysis packages (vis-extras/) and the py extension.
+[profiles.lead-v9]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }

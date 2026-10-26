@@ -37,6 +37,10 @@ LOGS = "/logs/agent"
 TRACE = f"{LOGS}/vis-trace.jsonl"
 TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
+#: Extras that unpack into the Vis home wait here until the agent command runs.
+EXTRAS = "/installed-agent/extras"
+#: The `into` value of an extra that unpacks into $HOME/.vis when the agent starts.
+VIS_HOME_TARGET = "vis-home"
 CHUNK = 1 << 20
 
 
@@ -78,6 +82,29 @@ def check(path: Path, build: dict) -> None:
     digest = file_sha256(path)
     if digest != build["sha256"]:
         raise ValueError(f"{path} has sha256 {digest}, not the pinned {build['sha256']}")
+
+
+def extra_path(extra: dict) -> Path:
+    """The local copy of a profile extra. `vis-extras/build.sh` makes it."""
+    return ARTIFACTS / "vis-extras" / extra["asset"]
+
+
+def check_extra(extra: dict) -> None:
+    """Refuse an extra that is missing, has another sha256 or has no known target."""
+    into = extra["into"]
+    if into != VIS_HOME_TARGET and Path("/installed-agent") not in (
+        Path(into),
+        *Path(into).parents,
+    ):
+        raise ValueError(
+            f"Extra {extra['asset']} unpacks into {into!r}; use vis-home or /installed-agent/..."
+        )
+    path = extra_path(extra)
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing Vis extra {path}; run vis-extras/build.sh.")
+    digest = file_sha256(path)
+    if digest != extra["sha256"]:
+        raise ValueError(f"{path} has sha256 {digest}, not the pinned {extra['sha256']}")
 
 
 def fetch(build: dict | None = None) -> Path:
@@ -193,7 +220,26 @@ class VisSolo(CuratedAgent):
 
     async def install(self, environment: BaseEnvironment) -> None:
         check(self.ARCHIVE, self.build)
+        extras = self.profile.get("extras", [])
+        for extra in extras:
+            check_extra(extra)
         await super().install(environment)
+        for extra in extras:
+            await environment.upload_file(extra_path(extra), "/tmp/ctb-extra.tgz")
+            await self.exec_as_root(environment, command=self.extra_command(extra))
+
+    @staticmethod
+    def extra_command(extra: dict) -> str:
+        """The root command that puts an uploaded extra in place."""
+        if extra["into"] == VIS_HOME_TARGET:
+            # clean() removes the agent home before the verifier, so the agent command unpacks it.
+            target = shlex.quote(f"{EXTRAS}/{extra['asset']}")
+            return f"mkdir -p {EXTRAS} && mv /tmp/ctb-extra.tgz {target} && chmod a+r {target}"
+        into = shlex.quote(extra["into"])
+        return (
+            f"mkdir -p {into} && tar -xzf /tmp/ctb-extra.tgz -C {into}"
+            f" && chmod -R a+rX {into} && rm /tmp/ctb-extra.tgz"
+        )
 
     def secret_files(self) -> dict[str, str]:
         if self.family == "anthropic":
@@ -237,10 +283,19 @@ class VisSolo(CuratedAgent):
             names = ",".join(self.profile["extensions"]) or "none"
             flags.append(f"--extensions {shlex.quote(names)}")
         effort = self.profile.get("effort", EFFORT)
+        setup = "".join(
+            f"tar -xzf {shlex.quote(EXTRAS + '/' + extra['asset'])} -C $HOME/.vis && "
+            for extra in self.profile.get("extras", [])
+            if extra["into"] == VIS_HOME_TARGET
+        )
+        setup += "".join(
+            f"export {name}={shlex.quote(str(value))} && "
+            for name, value in self.profile.get("env", {}).items()
+        )
         # JSON is valid YAML, so the overlay needs no YAML writer.
         return (
             f"mkdir -p $HOME/.vis && printf %s {shlex.quote(json.dumps(config))} "
-            "> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && "
+            f"> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && {setup}"
             f"{VIS} {' '.join(flags)} --model {provider}/{self.model} "
             f"--reasoning-effort {shlex.quote(effort)} --trajectory {TRAJECTORY} "
             f"--full-trace-json-stream -- {shlex.quote(self.task_text(instruction))} "
@@ -497,6 +552,26 @@ class VisLeadV8(VisTeam):
         return "vis-lead-v8"
 
 
+class VisSoloV9(VisSolo):
+    """Solo with the ub-mode rules, analysis packages and the py extension."""
+
+    PROFILE = "solo-v9"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v9"
+
+
+class VisLeadV9(VisTeam):
+    """Lead mode with the ub-mode rules, analysis packages and the py extension."""
+
+    PROFILE = "lead-v9"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v9"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -524,6 +599,8 @@ AGENT_PROFILES = {
         VisLeadV7,
         VisSoloV8,
         VisLeadV8,
+        VisSoloV9,
+        VisLeadV9,
     )
 }
 
