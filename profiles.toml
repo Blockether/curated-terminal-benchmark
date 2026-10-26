@@ -146,3 +146,18 @@ instruction_note = """
 - When a task names a style, standard or convention, list its usual rules first. Before you finish, check the result against each rule with code.
 - To test a restart or a fresh container, copy the durable state while the old process still runs, then start from that copy."""
 build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Solo on main 8093e94, without a task note.
+[profiles.solo-v5]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40256821560, commit = "8093e94358918bfcdd4fd3aa6a6c30a50f120871", sha256 = "0026462b892986d65f84ebcdafbcd8d5e723bac30d7588912b483ada2f3171d1" }
+
+# Lead mode on main 8093e94: one coupled design keeps one owner.
+[profiles.lead-v5]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40256821560, commit = "8093e94358918bfcdd4fd3aa6a6c30a50f120871", sha256 = "0026462b892986d65f84ebcdafbcd8d5e723bac30d7588912b483ada2f3171d1" }
