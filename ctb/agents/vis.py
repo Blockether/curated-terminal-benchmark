@@ -292,6 +292,11 @@ class VisSolo(CuratedAgent):
             f"export {name}={shlex.quote(str(value))} && "
             for name, value in self.profile.get("env", {}).items()
         )
+        if self.profile.get("path"):
+            # Extensions find `vis-agent` on PATH, for example for `vis-agent python --shared`.
+            prefix = ":".join(shlex.quote(directory) for directory in self.profile["path"])
+            setup += f'export PATH={prefix}:"$PATH" && '
+
         # JSON is valid YAML, so the overlay needs no YAML writer.
         return (
             f"mkdir -p $HOME/.vis && printf %s {shlex.quote(json.dumps(config))} "
@@ -572,6 +577,26 @@ class VisLeadV9(VisTeam):
         return "vis-lead-v9"
 
 
+class VisSoloV10(VisSolo):
+    """Solo v9 with `python.environment: shared`, so py.run_tests has pytest."""
+
+    PROFILE = "solo-v10"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v10"
+
+
+class VisLeadV10(VisTeam):
+    """Lead v9 with `python.environment: shared`, so py.run_tests has pytest."""
+
+    PROFILE = "lead-v10"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v10"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -601,6 +626,8 @@ AGENT_PROFILES = {
         VisLeadV8,
         VisSoloV9,
         VisLeadV9,
+        VisSoloV10,
+        VisLeadV10,
     )
 }
 

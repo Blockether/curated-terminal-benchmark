@@ -231,3 +231,31 @@ extras = [
 ]
 env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
 build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Solo v9 with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
+[profiles.solo-v10]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead v9 with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
+[profiles.lead-v10]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }

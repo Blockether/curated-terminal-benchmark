@@ -190,6 +190,8 @@ def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
         "VisLeadV8",
         "VisSoloV9",
         "VisLeadV9",
+        "VisSoloV10",
+        "VisLeadV10",
     ]
     assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
         "vis-team-wait",
@@ -631,6 +633,7 @@ def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
             )
             + "]",
             "env": '{ VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }',
+            "path": '["/installed-agent"]',
         }
     }
     write_settings(vis.SETTINGS, build, profiles)
@@ -638,7 +641,8 @@ def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
     command = solo.command("x")
     assert (
         "export VIS_HOME=$HOME/.vis && tar -xzf /installed-agent/extras/h.tgz -C $HOME/.vis && "
-        "export VIS_PYTHON_PACKAGES=/installed-agent/python-packages && /installed-agent/vis-agent"
+        "export VIS_PYTHON_PACKAGES=/installed-agent/python-packages && "
+        'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent'
     ) in command
     solo.exec_as_root = AsyncMock()
     solo._get_system_package_manager = AsyncMock(return_value="apt-get")
