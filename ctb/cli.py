@@ -43,6 +43,8 @@ RESULTS = ROOT / "results"
 SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
 DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
 COMPOSE = SUITE_ARTIFACTS / "docker-compose"
+# Tracked verifier fixes, copied over the downloaded dataset before each run.
+TASK_FIXES = ROOT / "task-fixes"
 # Pinned master commits. Dirge patches preserve provider token accounting.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "f36b2890"
 KMET_REPO, KMET_COMMIT = (
@@ -434,6 +436,21 @@ def reward_of(result: dict | None) -> float | None:
     return rewards.get("reward")
 
 
+def apply_task_fixes(dataset: Path | None = None) -> list[str]:
+    """Copy each tracked fix over the task that the dataset has, and name the copied files."""
+    dataset = dataset or DATASET
+    fixed = []
+    for source in sorted(p for p in TASK_FIXES.rglob("*") if p.is_file()):
+        relative = source.relative_to(TASK_FIXES)
+        if not (dataset / relative.parts[0]).is_dir():
+            continue
+        target = dataset / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        fixed.append(str(relative))
+    return fixed
+
+
 def run(args: argparse.Namespace) -> None:
     jobs = ROOT / "jobs" / args.round
     logs = ROOT / "runs" / args.round
@@ -443,6 +460,8 @@ def run(args: argparse.Namespace) -> None:
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
+    for fixed in apply_task_fixes():
+        print(f"task fix {fixed}", flush=True)
     record_run(jobs, args)
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
@@ -496,6 +515,9 @@ def pins() -> dict:
         "opencode_anthropic_max_output_tokens": 128000,
         "models": MODELS,
         "effort": EFFORT,
+        "task_fixes": sorted(
+            str(p.relative_to(TASK_FIXES)) for p in TASK_FIXES.rglob("*") if p.is_file()
+        ),
     }
 
 

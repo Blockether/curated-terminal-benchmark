@@ -586,3 +586,20 @@ def test_kmet_ignores_interleaved_tool_events_for_usage(tmp_path):
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (105, 80, 7)
+
+
+def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(tmp_path):
+    (tmp_path / "interleaved-vigenere" / "tests").mkdir(parents=True)
+    (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").write_text("pytest\n")
+
+    fixed = cli.apply_task_fixes(tmp_path)
+
+    assert fixed == ["interleaved-vigenere/tests/test.sh"]
+    script = (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").read_text()
+    assert "pip install" in script and "/app/requirements.txt" in script
+    assert script.index("pip install") < script.index("pytest --ctrf")
+
+
+def test_task_fixes_skip_a_task_that_the_dataset_does_not_have(tmp_path):
+    assert cli.apply_task_fixes(tmp_path) == []
+    assert not (tmp_path / "interleaved-vigenere").exists()
