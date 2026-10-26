@@ -437,6 +437,26 @@ class VisLeadV5(VisTeam):
         return "vis-lead-v5"
 
 
+class VisSoloV6(VisSolo):
+    """Solo on main c428acf: each named output file works alone."""
+
+    PROFILE = "solo-v6"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v6"
+
+
+class VisLeadV6(VisTeam):
+    """Lead mode on main c428acf: each named output file works alone."""
+
+    PROFILE = "lead-v6"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v6"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -458,6 +478,8 @@ AGENT_PROFILES = {
         VisSoloV4Note,
         VisSoloV5,
         VisLeadV5,
+        VisSoloV6,
+        VisLeadV6,
     )
 }
 

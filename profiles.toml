@@ -161,3 +161,18 @@ effort = "medium"
 persist = true
 config = { toggles = { council = true, subagents = true } }
 build = { run_id = 40256821560, commit = "8093e94358918bfcdd4fd3aa6a6c30a50f120871", sha256 = "0026462b892986d65f84ebcdafbcd8d5e723bac30d7588912b483ada2f3171d1" }
+
+# Solo on main c428acf: each named output file works alone.
+[profiles.solo-v6]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40266557197, commit = "c428acf40f21470926388d77ec4b78cb8e5ffd2d", sha256 = "1fb4894e6275fa34ac62670a4bab9f5e8edf39191a9c2839d9b8a04547b09e73" }
+
+# Lead mode on main c428acf: each named output file works alone.
+[profiles.lead-v6]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40266557197, commit = "c428acf40f21470926388d77ec4b78cb8e5ffd2d", sha256 = "1fb4894e6275fa34ac62670a4bab9f5e8edf39191a9c2839d9b8a04547b09e73" }
