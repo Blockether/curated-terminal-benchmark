@@ -4,3 +4,4 @@ artifacts/
 jobs/
 runs/
 *.pyc
+datasets/

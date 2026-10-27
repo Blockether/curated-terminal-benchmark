@@ -1,0 +1,101 @@
+# The vis-edits tasks. `ctb.edits build` writes this file.
+
+[[task]]
+name = "batched-edits"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "big-file"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "clj-add-docstring"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "clj-add-fn"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "clj-ns-rename"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "clj-rename"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "go-add-func"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "grep-paging-rename"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "iterative-fix"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "js-rename-var"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "ls-tree"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "multifile-rename"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "py-add-func"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "py-add-param"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "py-delete-func"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "py-fix-body"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "repeated-blocks"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "rs-fix-return"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "seq-edits"
+level = "edit"
+hours = 0.1
+
+[[task]]
+name = "thread-timeout"
+level = "edit"
+hours = 0.1
