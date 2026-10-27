@@ -1,4 +1,4 @@
-"""Released Samizdat through its HTTP API, with full transcript export."""
+"""Samizdat built from a pinned commit, through its HTTP API, with full transcript export."""
 
 import json
 import os
@@ -12,9 +12,12 @@ from harbor.models.agent.context import AgentContext
 
 from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent
 
-VERSION = "v0.1.0"
+# The newest main commit; v0.1.0 is the only release and is 100 commits older.
+COMMIT = "97727796fc245f918f10b0db52537562aacb80dc"
+VERSION = COMMIT[:8]
+# The jolt release that builds it; samizdat CI also builds with the latest jolt release.
+JOLT_VERSION = "v0.8.23"
 ARCHIVE_NAME = f"samizdat-{VERSION}-x86_64-linux.tar.gz"
-ARCHIVE_SHA256 = "20b3f392489cd6f729194a220bf34f49ea29ca8154a75b9c860eea5de4950a80"
 SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
 RUN_LOG = "samizdat-run.json"
 # Opus 5.5 refuses a forced tool_choice, so the proxy asks for the tool in the prompt.

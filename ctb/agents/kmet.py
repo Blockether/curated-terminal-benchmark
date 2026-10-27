@@ -11,7 +11,7 @@ from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = "kmet-4ab740ff-linux-amd64.tar.gz"
+ARCHIVE_NAME = "kmet-f249f0bf-linux-amd64.tar.gz"
 
 
 class Kmet(CuratedAgent):

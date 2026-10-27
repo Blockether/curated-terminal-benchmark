@@ -17,7 +17,7 @@ from ctb.agents.base import (
 
 DIRGE = "/installed-agent/dirge"
 STREAM = "dirge.jsonl"
-ARCHIVE_NAME = "dirge-f36b2890-usage-v3-x86_64-unknown-linux-musl.tar.gz"
+ARCHIVE_NAME = "dirge-45377633-usage-v3-x86_64-unknown-linux-musl.tar.gz"
 
 
 class Dirge(CuratedAgent):

@@ -117,12 +117,13 @@ def test_samizdat_exports_full_turn_text(tmp_path):
     assert calls[-1] == "/v1/runs/r/branches/b/turns/1"
 
 
-def test_samizdat_uses_released_binary_and_model_limits(proxy_vars):
-    from ctb.agents.samizdat import ARCHIVE_NAME, VERSION
+def test_samizdat_uses_the_pinned_build_and_model_limits(proxy_vars):
+    from ctb.agents.samizdat import ARCHIVE_NAME, COMMIT, SAMIZDAT, VERSION
 
-    instance = samizdat("anthropic/claude-opus-5-5")
-    assert VERSION == "v0.1.0"
-    assert instance.ARCHIVE.name == ARCHIVE_NAME
+    instance = samizdat("openai/gpt-6.1-sol")
+    assert VERSION == COMMIT[:8]
+    assert instance.ARCHIVE.name == ARCHIVE_NAME == f"samizdat-{VERSION}-x86_64-linux.tar.gz"
+    assert SAMIZDAT == f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
     assert ":context-window 1000000" in instance.config()
     assert ":max-tokens 128000" in instance.config()
 

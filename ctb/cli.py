@@ -46,12 +46,12 @@ COMPOSE = SUITE_ARTIFACTS / "docker-compose"
 # Tracked verifier fixes, copied over the downloaded dataset before each run.
 TASK_FIXES = ROOT / "task-fixes"
 # Pinned master commits. Dirge patches preserve provider token accounting.
-DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "f36b2890"
+DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
 KMET_REPO, KMET_COMMIT = (
     "https://github.com/kmetia/kmet-agent.git",
-    "4ab740ff02aa3f92fc887c7644c124021a4aa519",
+    "f249f0bf5ffc0937c91245084d359695fc0dcdf3",
 )
-SAMIZDAT_COMMIT = "56d2be18f9b4c073e2fbf244d64ff5017595c305"
+SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
 # The newest Vis release with a native Linux x64 bundle.
@@ -64,6 +64,18 @@ DIRGE_BUILD = (
     "cargo test --release --target x86_64-unknown-linux-musl --bin dirge -- "
     "codex_completed_response_keeps_usage codex_body_gets_gpt_settings && "
     "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
+)
+# The steps of samizdat's release.yml on ubuntu-22.04, without its test and smoke steps.
+SAMIZDAT_BUILD = (
+    "apt-get update -qq && apt-get install -y -qq curl git ca-certificates cmake g++ "
+    "libsqlite3-dev libssl-dev zlib1g-dev >/dev/null && "
+    'curl -fsSL -o /tmp/jolt.tar.gz "https://github.com/jolt-lang/jolt/releases/download/'
+    '$JOLT_VERSION/jolt-$JOLT_VERSION-x86_64-linux.tar.gz" && '
+    "mkdir -p /opt/jolt && tar xzf /tmp/jolt.tar.gz -C /opt/jolt && "
+    'export PATH="$(dirname "$(find /opt/jolt -name jolt -type f -perm -u+x | head -1)"):$PATH" && '
+    "jolt tui-native && "
+    'LD_PRELOAD="$(g++ -print-file-name=libstdc++.so)" '
+    "jolt -A:tui build -m samizdat.main -o samizdat"
 )
 
 
@@ -158,8 +170,24 @@ def download(url: str, path: Path, sha256: str | None = None) -> Path:
 
 
 def fetch_samizdat() -> Path:
-    url = f"https://github.com/yogthos/samizdat/releases/download/{samizdat.VERSION}/{samizdat.ARCHIVE_NAME}"
-    return download(url, samizdat.Samizdat.ARCHIVE, samizdat.ARCHIVE_SHA256)
+    """Build samizdat at samizdat.COMMIT in an amd64 Ubuntu 22.04 container, as its CI does."""
+    archive = samizdat.Samizdat.ARCHIVE
+    if not archive.is_file():
+        path = checkout(SAMIZDAT_REPO, samizdat.COMMIT, "samizdat")
+        cache = SRC / "samizdat-jolt-cache"
+        cache.mkdir(parents=True, exist_ok=True)
+        sh(
+            ["podman", "run", "--rm", "--platform", "linux/amd64"]
+            + ["-v", f"{path}:/src", "-v", f"{cache}:/root/.jolt", "-w", "/src"]
+            + ["-e", f"JOLT_VERSION={samizdat.JOLT_VERSION}"]
+            + ["docker.io/library/ubuntu:22.04", "bash", "-c", SAMIZDAT_BUILD]
+        )
+        name = f"samizdat-{samizdat.VERSION}-x86_64-linux"
+        partial = archive.with_name(archive.name + ".partial")
+        with tarfile.open(partial, "w:gz") as out:
+            out.add(path / "samizdat", arcname=f"{name}/samizdat")
+        partial.replace(archive)
+    return archive
 
 
 def fetch_vis() -> Path:
@@ -499,8 +527,8 @@ def pins() -> dict:
         "vis": VIS_RELEASE,
         "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,
-        "samizdat": SAMIZDAT_COMMIT,
-        "samizdat_release": samizdat.VERSION,
+        "samizdat": samizdat.COMMIT,
+        "jolt": samizdat.JOLT_VERSION,
         "harbor": metadata.version("harbor"),
         "harnesses": {
             "codex": AGENTS["codex"].version,
