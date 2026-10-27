@@ -304,7 +304,9 @@ class VisSolo(CuratedAgent):
             f"{VIS} {' '.join(flags)} --model {provider}/{self.model} "
             f"--reasoning-effort {shlex.quote(effort)} --trajectory {TRAJECTORY} "
             f"--full-trace-json-stream -- {shlex.quote(self.task_text(instruction))} "
-            f"> {TRACE} 2> {LOGS}/vis-stderr.log"
+            f"> {TRACE} 2> {LOGS}/vis-stderr.log; status=$?; "
+            # clean() removes the Vis home, so keep its logs and stall reports for diagnosis.
+            f"cp -R $HOME/.vis/logs {LOGS}/vis-logs 2>/dev/null; exit $status"
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:

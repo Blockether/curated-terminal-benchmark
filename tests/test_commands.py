@@ -669,6 +669,14 @@ def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
     assert "mv /tmp/ctb-extra.tgz /installed-agent/extras/h.tgz" in commands[1]
 
 
+def test_vis_keeps_its_logs_and_exit_status(pinned):
+    command = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
+    assert command.endswith(
+        "2> /logs/agent/vis-stderr.log; status=$?; "
+        "cp -R $HOME/.vis/logs /logs/agent/vis-logs 2>/dev/null; exit $status"
+    )
+
+
 def test_vis_extra_refuses_an_unknown_target(pinned):
     with pytest.raises(ValueError, match="vis-home"):
         vis.check_extra({"asset": "x.tgz", "sha256": "0", "into": "/tmp"})
