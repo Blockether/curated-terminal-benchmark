@@ -1,6 +1,5 @@
 """Agents, models and tasks of the curated comparison."""
 
-import os
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,8 +7,6 @@ from pathlib import Path
 from ctb.agents.base import REASONING_SUMMARY
 
 ROOT = Path(__file__).resolve().parents[1]
-# `CTB_TASKS` selects another task list, for example tasks-vis-edits.toml with CTB_DATASET.
-TASKS = Path(os.environ.get("CTB_TASKS", ROOT / "tasks.toml"))
 MODELS = {"openai": "openai/gpt-6.1-sol"}
 
 
@@ -81,7 +78,7 @@ class Trial:
         return f"{self.agent.name}__{self.family}__{self.task}"
 
 
-def load_tasks(path: Path = TASKS) -> list[dict]:
+def load_tasks(path: Path = ROOT / "tasks.toml") -> list[dict]:
     return tomllib.loads(path.read_text())["task"]
 
 

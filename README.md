@@ -27,19 +27,6 @@ uv run python -m ctb.cli metrics --round my-round
 
 Start from a clean commit. Use a new round name for each repeat.
 
-## Edit suite
-
-The `vis-edits` dataset puts the Vis edit tasks into containers, so every agent gets the same
-workspace and the same file checks. The checks grade only the files, not the final answer.
-
-```sh
-uv run python -m ctb.edits build --source ~/vis/target/evals/edit-tools
-CTB_DATASET=datasets/vis-edits CTB_TASKS=tasks-vis-edits.toml \
-  uv run python -m ctb.cli run --round edits1 --agents codex,opencode,pi,vis-solo \
-  --models openai --tasks all --parallel 1 --timeout-multiplier 1
-uv run python -m ctb.edits stats --round edits1
-```
-
 ## Privacy and seals
 
 Transcripts, credentials and task artifacts stay local; do not commit `jobs/` or `runs/`.
