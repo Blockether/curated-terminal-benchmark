@@ -599,6 +599,16 @@ class VisLeadV10(VisTeam):
         return "vis-lead-v10"
 
 
+class VisLeadV11(VisTeam):
+    """Lead v10 on a build that reports text-free model progress (svar 0.7.215)."""
+
+    PROFILE = "lead-v11"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v11"
+
+
 #: The default profile of each Vis agent of the matrix.
 AGENT_PROFILES = {
     cls.name(): cls.PROFILE
@@ -630,6 +640,7 @@ AGENT_PROFILES = {
         VisLeadV9,
         VisSoloV10,
         VisLeadV10,
+        VisLeadV11,
     )
 }
 

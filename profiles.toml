@@ -259,3 +259,17 @@ extras = [
 ]
 env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
 build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead v10 on svar 0.7.215: text-free model progress moves the Vis stall clock.
+[profiles.lead-v11]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40489327253, commit = "3350d4f6c7bb5a6ba7ede26e70188bdae1204e49", sha256 = "68bb677d17874f56070eb2d451160dd422bdbd05ae6011375d2c47959de32a6b" }
