@@ -4,13 +4,7 @@ Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
 Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Vis solo and Vis team.
-Claude Code is not part of the active configuration. Older results remain historical evidence.
-
-## Results
-
-Latest completed runs: **Codex 7/12**, **Kmet 4/12**, **Samizdat 1/12**.
-Sealed JSON and metrics are in [`results/`](results/). Costs are estimates, not subscription charges.
-Do not mix the best trials from different rounds.
+Claude Code is not part of the active configuration.
 
 ## Run
 
@@ -26,6 +20,7 @@ uv run python -m ctb.cli metrics --round my-round
 ```
 
 Start from a clean commit. Use a new round name for each repeat.
+`seal` and `metrics` write `results/<round>.json` and `results/<round>-metrics.json`.
 
 ## Privacy and seals
 
