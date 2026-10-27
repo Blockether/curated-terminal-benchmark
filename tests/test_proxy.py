@@ -53,3 +53,16 @@ def test_codex_stops_and_reports_terminal_errors(monkeypatch, terminal):
     monkeypatch.setattr(proxy, "_open", lambda *args: nullcontext(events()))
     with pytest.raises(proxy.UpstreamError, match="Failed"):
         proxy.call_codex({"model": "gpt-6.1-sol", "messages": []})
+
+
+def test_codex_reports_a_stream_that_ends_without_a_response(monkeypatch):
+    def events():
+        yield b'data: {"type":"response.output_item.done","item":{"type":"message","content":[{"text":"OK"}]}}\n'
+
+    monkeypatch.setattr(
+        proxy.credentials, "codex_vis", lambda _: SimpleNamespace(token="test", account_id="test")
+    )
+    monkeypatch.setattr(proxy, "_open", lambda *args: nullcontext(events()))
+    with pytest.raises(proxy.UpstreamError, match="without a response") as error:
+        proxy.call_codex({"model": "gpt-6.1-sol", "messages": []})
+    assert error.value.status == 502

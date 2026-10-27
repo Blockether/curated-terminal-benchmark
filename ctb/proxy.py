@@ -271,6 +271,9 @@ def codex_reply(events: list[dict]) -> tuple[dict, dict]:
             usage, model, status = resp.get("usage") or {}, resp.get("model"), kind
         elif kind in ("response.failed", "error"):
             raise UpstreamError(502, json.dumps(ev)[:2000])
+    if status is None:
+        # A stream that closes before its terminal event is a failed call, not an empty answer.
+        raise UpstreamError(502, f"stream ended after {len(events)} events without a response")
     cached = (usage.get("input_tokens_details") or {}).get("cached_tokens") or 0
     message = {"role": "assistant", "content": "".join(text)}
     if calls:
