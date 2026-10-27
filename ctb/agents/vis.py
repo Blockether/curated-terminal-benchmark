@@ -21,6 +21,7 @@ from ctb.agents.base import (
     EFFORT,
     FAMILIES,
     ROOT,
+    VERBOSITY,
     CuratedAgent,
     min_token_seconds,
     split_model,
@@ -36,6 +37,10 @@ LOGS = "/logs/agent"
 TRACE = f"{LOGS}/vis-trace.jsonl"
 TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
+#: Extras that unpack into the Vis home wait here until the agent command runs.
+EXTRAS = "/installed-agent/extras"
+#: The `into` value of an extra that unpacks into $HOME/.vis when the agent starts.
+VIS_HOME_TARGET = "vis-home"
 CHUNK = 1 << 20
 
 
@@ -77,6 +82,29 @@ def check(path: Path, build: dict) -> None:
     digest = file_sha256(path)
     if digest != build["sha256"]:
         raise ValueError(f"{path} has sha256 {digest}, not the pinned {build['sha256']}")
+
+
+def extra_path(extra: dict) -> Path:
+    """The local copy of a profile extra. `vis-extras/build.sh` makes it."""
+    return ARTIFACTS / "vis-extras" / extra["asset"]
+
+
+def check_extra(extra: dict) -> None:
+    """Refuse an extra that is missing, has another sha256 or has no known target."""
+    into = extra["into"]
+    if into != VIS_HOME_TARGET and Path("/installed-agent") not in (
+        Path(into),
+        *Path(into).parents,
+    ):
+        raise ValueError(
+            f"Extra {extra['asset']} unpacks into {into!r}; use vis-home or /installed-agent/..."
+        )
+    path = extra_path(extra)
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing Vis extra {path}; run vis-extras/build.sh.")
+    digest = file_sha256(path)
+    if digest != extra["sha256"]:
+        raise ValueError(f"{path} has sha256 {digest}, not the pinned {extra['sha256']}")
 
 
 def fetch(build: dict | None = None) -> Path:
@@ -179,7 +207,8 @@ class VisSolo(CuratedAgent):
             names = ", ".join(sorted(found["profiles"]))
             raise ValueError(f"Unknown Vis profile {self.profile_name!r}; use one of {names}")
         self.profile = found["profiles"][self.profile_name]
-        self.build = found["build"]
+        # A profile can pin its own build over [build], so one arm can run a newer build.
+        self.build = {**found["build"], **self.profile.get("build", {})}
         self.ARCHIVE = archive(self.build)
 
     @staticmethod
@@ -191,7 +220,26 @@ class VisSolo(CuratedAgent):
 
     async def install(self, environment: BaseEnvironment) -> None:
         check(self.ARCHIVE, self.build)
+        extras = self.profile.get("extras", [])
+        for extra in extras:
+            check_extra(extra)
         await super().install(environment)
+        for extra in extras:
+            await environment.upload_file(extra_path(extra), "/tmp/ctb-extra.tgz")
+            await self.exec_as_root(environment, command=self.extra_command(extra))
+
+    @staticmethod
+    def extra_command(extra: dict) -> str:
+        """The root command that puts an uploaded extra in place."""
+        if extra["into"] == VIS_HOME_TARGET:
+            # clean() removes the agent home before the verifier, so the agent command unpacks it.
+            target = shlex.quote(f"{EXTRAS}/{extra['asset']}")
+            return f"mkdir -p {EXTRAS} && mv /tmp/ctb-extra.tgz {target} && chmod a+r {target}"
+        into = shlex.quote(extra["into"])
+        return (
+            f"mkdir -p {into} && tar -xzf /tmp/ctb-extra.tgz -C {into}"
+            f" && chmod -R a+rX {into} && rm /tmp/ctb-extra.tgz"
+        )
 
     def secret_files(self) -> dict[str, str]:
         if self.family == "anthropic":
@@ -211,6 +259,11 @@ class VisSolo(CuratedAgent):
             raise RuntimeError(f"{name} is required on the Harbor host")
         return {name: key}
 
+    def task_text(self, instruction: str) -> str:
+        """The task instruction with the `instruction_note` of the profile, if it has one."""
+        note = self.profile.get("instruction_note")
+        return f"{instruction}\n\n{note}" if note else instruction
+
     def command(self, instruction: str) -> str:
         provider = PROVIDERS.get(self.family, self.family)
         config = overlay(
@@ -223,20 +276,37 @@ class VisSolo(CuratedAgent):
         )
         flags = [f"--name {shlex.quote(self.profile_name)}"]
         flags.append("--persist" if self.profile.get("persist") else "--db :memory")
-        if self.profile.get("toggles"):
-            flags.append(f"--toggles {shlex.quote(toggle_list(self.profile['toggles']))}")
+        # Vis sends `verbosity` only to models that take it, so it is safe for every family.
+        toggles = {"verbosity": VERBOSITY, **self.profile.get("toggles", {})}
+        flags.append(f"--toggles {shlex.quote(toggle_list(toggles))}")
         if "extensions" in self.profile:
             names = ",".join(self.profile["extensions"]) or "none"
             flags.append(f"--extensions {shlex.quote(names)}")
         effort = self.profile.get("effort", EFFORT)
+        setup = "".join(
+            f"tar -xzf {shlex.quote(EXTRAS + '/' + extra['asset'])} -C $HOME/.vis && "
+            for extra in self.profile.get("extras", [])
+            if extra["into"] == VIS_HOME_TARGET
+        )
+        setup += "".join(
+            f"export {name}={shlex.quote(str(value))} && "
+            for name, value in self.profile.get("env", {}).items()
+        )
+        if self.profile.get("path"):
+            # Extensions find `vis-agent` on PATH, for example for `vis-agent python --shared`.
+            prefix = ":".join(shlex.quote(directory) for directory in self.profile["path"])
+            setup += f'export PATH={prefix}:"$PATH" && '
+
         # JSON is valid YAML, so the overlay needs no YAML writer.
         return (
             f"mkdir -p $HOME/.vis && printf %s {shlex.quote(json.dumps(config))} "
-            "> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && "
+            f"> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && {setup}"
             f"{VIS} {' '.join(flags)} --model {provider}/{self.model} "
             f"--reasoning-effort {shlex.quote(effort)} --trajectory {TRAJECTORY} "
-            f"--full-trace-json-stream -- {shlex.quote(instruction)} "
-            f"> {TRACE} 2> {LOGS}/vis-stderr.log"
+            f"--full-trace-json-stream -- {shlex.quote(self.task_text(instruction))} "
+            f"> {TRACE} 2> {LOGS}/vis-stderr.log; status=$?; "
+            # clean() removes the Vis home, so keep its logs and stall reports for diagnosis.
+            f"cp -R $HOME/.vis/logs {LOGS}/vis-logs 2>/dev/null; exit $status"
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
@@ -255,6 +325,7 @@ class VisSolo(CuratedAgent):
             "vis": {
                 "model": self.model_name,
                 "profile": self.profile_name,
+                "instruction_note": self.profile.get("instruction_note"),
                 "build": {key: self.build[key] for key in ("run_id", "commit", "sha256")},
                 "error_count": sum(
                     isinstance(block, dict) and block.get("type") == "error"
@@ -278,8 +349,311 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
+class VisTeamNote(VisTeam):
+    """Council on, and the task tells the leader to use subagents."""
+
+    PROFILE = "team-note"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-note"
+
+
+class VisTeamWait(VisTeam):
+    """Council subagents with `council_orchestration = wait`: the leader waits for them."""
+
+    PROFILE = "team-wait"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-wait"
+
+
+class VisTeamActive(VisTeam):
+    """Council subagents with `council_orchestration = active`: the leader steers them."""
+
+    PROFILE = "team-active"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-active"
+
+
+class VisTeamLead(VisTeam):
+    """Council subagents with `council_orchestration = lead`: events and independent checks."""
+
+    PROFILE = "team-lead"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-lead"
+
+
+class VisTeamLead3(VisTeam):
+    """Lead orchestration of a later build: a final check run gates the answer."""
+
+    PROFILE = "team-lead3"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-team-lead3"
+
+
+class VisSoloX(VisSolo):
+    """Solo with the experimental `solo-x` profile: a prompt screen through the task note."""
+
+    PROFILE = "solo-x"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-x"
+
+
+class VisSoloMain(VisSolo):
+    """Solo on the main build of the `solo-main` profile, without a task note."""
+
+    PROFILE = "solo-main"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-main"
+
+
+class VisLead(VisTeam):
+    """Lead mode of the main build: Council subagents, event waits and independent checks."""
+
+    PROFILE = "lead"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead"
+
+
+class VisSoloNext(VisSolo):
+    """Solo on the next main build of the `solo-next` profile, without a task note."""
+
+    PROFILE = "solo-next"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-next"
+
+
+class VisLeadAuto(VisTeam):
+    """Lead mode of the main build without a task note: the leader decides when to delegate."""
+
+    PROFILE = "lead-auto"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-auto"
+
+
+class VisSoloV4(VisSolo):
+    """Solo on main 16f031f, without a task note."""
+
+    PROFILE = "solo-v4"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v4"
+
+
+class VisLeadV4(VisTeam):
+    """Lead mode on main 16f031f, without a task note."""
+
+    PROFILE = "lead-v4"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v4"
+
+
+class VisSoloV4Note(VisSolo):
+    """Solo on main 16f031f with the `solo-v4n` screen note for named styles."""
+
+    PROFILE = "solo-v4n"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v4n"
+
+
+class VisSoloV5(VisSolo):
+    """Solo on main 8093e94, without a task note."""
+
+    PROFILE = "solo-v5"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v5"
+
+
+class VisLeadV5(VisTeam):
+    """Lead mode on main 8093e94, without a task note."""
+
+    PROFILE = "lead-v5"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v5"
+
+
+class VisSoloV6(VisSolo):
+    """Solo on main c428acf: each named output file works alone."""
+
+    PROFILE = "solo-v6"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v6"
+
+
+class VisLeadV6(VisTeam):
+    """Lead mode on main c428acf: each named output file works alone."""
+
+    PROFILE = "lead-v6"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v6"
+
+
+class VisSoloV7(VisSolo):
+    """Solo on main 9e8998d: named outputs work alone, without new packages."""
+
+    PROFILE = "solo-v7"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v7"
+
+
+class VisLeadV7(VisTeam):
+    """Lead mode on main 9e8998d: one program stays one coupled design."""
+
+    PROFILE = "lead-v7"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v7"
+
+
+class VisSoloV8(VisSolo):
+    """Solo on main 656aaa4: minimal prompts and a call-only tool description."""
+
+    PROFILE = "solo-v8"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v8"
+
+
+class VisLeadV8(VisTeam):
+    """Lead mode on main 656aaa4: minimal prompts and a call-only tool description."""
+
+    PROFILE = "lead-v8"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v8"
+
+
+class VisSoloV9(VisSolo):
+    """Solo with the ub-mode rules, analysis packages and the py extension."""
+
+    PROFILE = "solo-v9"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v9"
+
+
+class VisLeadV9(VisTeam):
+    """Lead mode with the ub-mode rules, analysis packages and the py extension."""
+
+    PROFILE = "lead-v9"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v9"
+
+
+class VisSoloV10(VisSolo):
+    """Solo v9 with `python.environment: shared`, so py.run_tests has pytest."""
+
+    PROFILE = "solo-v10"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-solo-v10"
+
+
+class VisLeadV10(VisTeam):
+    """Lead v9 with `python.environment: shared`, so py.run_tests has pytest."""
+
+    PROFILE = "lead-v10"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v10"
+
+
+class VisLeadV11(VisTeam):
+    """Lead v10 on a build that reports text-free model progress (svar 0.7.215)."""
+
+    PROFILE = "lead-v11"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-lead-v11"
+
+
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {VisSolo.name(): VisSolo.PROFILE, VisTeam.name(): VisTeam.PROFILE}
+AGENT_PROFILES = {
+    cls.name(): cls.PROFILE
+    for cls in (
+        VisSolo,
+        VisTeam,
+        VisTeamNote,
+        VisTeamWait,
+        VisTeamActive,
+        VisTeamLead,
+        VisTeamLead3,
+        VisSoloX,
+        VisSoloMain,
+        VisLead,
+        VisSoloNext,
+        VisLeadAuto,
+        VisSoloV4,
+        VisLeadV4,
+        VisSoloV4Note,
+        VisSoloV5,
+        VisLeadV5,
+        VisSoloV6,
+        VisLeadV6,
+        VisSoloV7,
+        VisLeadV7,
+        VisSoloV8,
+        VisLeadV8,
+        VisSoloV9,
+        VisLeadV9,
+        VisSoloV10,
+        VisLeadV10,
+        VisLeadV11,
+    )
+}
+
+
+def builds() -> list[dict]:
+    """The [build] pin, then each other build that a profile pins over it."""
+    found = settings()
+    pins = [found["build"]]
+    for profile in found["profiles"].values():
+        build = {**found["build"], **profile.get("build", {})}
+        if build not in pins:
+            pins.append(build)
+    return pins
 
 
 def run_record(agents: list[str]) -> dict:
@@ -296,8 +670,66 @@ def run_record(agents: list[str]) -> dict:
     }
 
 
+def run_build(run_id: int, repo: str = "Blockether/vis") -> dict:
+    """The build pin of one successful native-release.yml run on any branch.
+
+    The commit is the head commit of the run. The bundle stamp must name that commit.
+    The sha256 comes from the downloaded bundle, which stays in artifacts/vis-builds/<run_id>/.
+    """
+    view = subprocess.run(
+        ["gh", "run", "view", str(run_id), "-R", repo, "--json", "headSha,conclusion"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    info = json.loads(view.stdout)
+    if info.get("conclusion") != "success":
+        raise ValueError(f"Run {run_id} has conclusion {info.get('conclusion')!r}, not success")
+    build = {**settings()["build"], "repo": repo, "run_id": run_id, "commit": info["headSha"]}
+    target = archive(build)
+    if not target.is_file():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="ctb-vis-", dir=target.parent) as work:
+            subprocess.run(
+                ["gh", "run", "download", str(run_id), "-R", repo]
+                + ["-n", build["asset"], "-D", work],
+                check=True,
+            )
+            (Path(work) / build["asset"]).replace(target)
+    commit = stamp(target)[1]
+    if commit != build["commit"]:
+        target.unlink()
+        raise ValueError(f"Run {run_id} built {commit}, not its head commit {build['commit']}")
+    build["sha256"] = file_sha256(target)
+    return build
+
+
+def write_pin(build: dict, path: Path | None = None) -> None:
+    """Replace the run_id, commit and sha256 of the [build] table of profiles.toml."""
+    path = path or SETTINGS
+    text = path.read_text(encoding="utf-8")
+    head, sep, rest = text.partition("[build]\n")
+    if not sep:
+        raise ValueError(f"{path} has no [build] table")
+    lines = rest.split("\n")
+    for index, line in enumerate(lines):
+        if line.startswith("["):
+            break
+        key = line.partition("=")[0].strip()
+        if key in ("repo", "run_id", "commit", "sha256"):
+            lines[index] = f"{key} = {json.dumps(build[key])}"
+    path.write_text(head + sep + "\n".join(lines), encoding="utf-8")
+
+
 if __name__ == "__main__":
-    if sys.argv[1:] != ["fetch"]:
-        raise SystemExit("usage: python -m ctb.agents.vis fetch")
-    path = fetch()
-    print(f"{path.relative_to(ROOT)}: {path.stat().st_size} B")
+    if sys.argv[1:] == ["fetch"]:
+        paths = [fetch(build) for build in builds()]
+    elif len(sys.argv) == 3 and sys.argv[1] == "pin":
+        pinned = run_build(int(sys.argv[2]))
+        write_pin(pinned)
+        print(f"pinned run {pinned['run_id']}: commit {pinned['commit']}")
+        paths = [archive(pinned)]
+    else:
+        raise SystemExit("usage: python -m ctb.agents.vis fetch | pin <native-release.yml run id>")
+    for path in paths:
+        print(f"{path.relative_to(ROOT)}: {path.stat().st_size} B")

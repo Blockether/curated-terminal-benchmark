@@ -1,23 +1,29 @@
 # The Vis build and the run profiles of ctb/agents/vis.py.
 # A round uses one build and one profile for each Vis agent.
 
-# The native Linux x64 bundle of one native-release.yml dry run on main.
+# The native Linux x64 bundle of one native-release.yml dry run, on main or another branch.
 # Run `uv run python -m ctb.agents.vis fetch` to download it to artifacts/vis-builds/<run_id>/.
+# Run `uv run python -m ctb.agents.vis pin <run_id>` to pin another run: it downloads the
+# bundle, checks the stamp against the head commit of the run and writes this table.
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
 [build]
 repo = "Blockether/vis"
-run_id = 38185257847
-commit = "a93089b626b23b636ba2ab44aa6615c2e10969cd"
+run_id = 40096004551
+commit = "544e351f9a5959dc9019a213bc948c62371a79c1"
 asset = "vis-agent-linux-x64.tar.gz"
-sha256 = "b18e84da25eb52f2826c142b0f4a18b1477cf26029423ea08304667649363084"
+sha256 = "f99cb16906e70d18a7611a4ccf03eacf2cb652637a140ae17fd8b62456cedcee"
 
 # A profile sets each switch of one Vis agent:
-#   toggles     engine toggles for --toggles
+#   toggles     engine toggles for --toggles; council.run needs subagents = true (default off)
 #   extensions  extension names for --extensions; leave it out for the default set
 #   effort      --reasoning-effort
 #   persist     true keeps a session database (Council needs it); false uses --db :memory
 #   config      keys that go into $HOME/.vis/config.yml over the provider settings
+#   instruction_note  text that goes after the task instruction, after one blank line
+#   build       run_id, commit and sha256 of the build of this profile, over [build]
 # vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
+# vis-team-note, vis-team-wait, vis-team-active and vis-team-lead use the profile of the same
+# suffix.
 
 [profiles.solo]
 toggles = { council = false, draft_backend = "off" }
@@ -25,6 +31,245 @@ effort = "medium"
 persist = false
 
 [profiles.team]
-toggles = { council = true, draft_backend = "off" }
+toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
+# Subagents of a one-shot run read the configuration, not --toggles: set both.
+config = { toggles = { council = true, subagents = true } }
+
+# The arms of exp/council-orchestration. team-note runs on a build without
+# council_orchestration; team-wait and team-active need a build that knows it.
+[profiles.team-note]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-wait]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "wait" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "wait" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-active]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "active" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "active" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+
+[profiles.team-lead]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "lead" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "lead" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+# Lead mode exists only from commit ca48b6e of exp/council-orchestration.
+build = { run_id = 40112106678, commit = "ca48b6e8efaf41fd0bacacbafa810b0c1899ed3a", sha256 = "097aa318f8bad6090a0c9134ae28bb278b4bac0b35a618ef0666b2368710dc47" }
+
+[profiles.team-lead3]
+toggles = { council = true, subagents = true, draft_backend = "off", council_orchestration = "lead" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true, council_orchestration = "lead" } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+# Lead v3 of commit 7f7e0fc: a final check run gates the answer, and fewer child messages.
+build = { run_id = 40124896028, commit = "7f7e0fcaddbd09144094f82aa821afab44b9bc10", sha256 = "fbff9990d01bb174b0d6219f39d3066a70678fc67241784cf2f714492f67a575" }
+
+# Prompt screen on the solo build: the rules go after the task instruction.
+[profiles.solo-x]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+instruction_note = """Work rules for this task:
+- Treat each reported symptom as one example of a class. Find every root cause and fix the whole class, not only the reported case.
+- Hidden checks call the existing interfaces under the stated conditions. Fix behavior through the existing entry points. If a symptom conflicts with your reading of a design document, remove the symptom.
+- Before you finish, test related cases: repeated, interleaved, partial, empty and boundary inputs. Compare against a simple reference model when you can.
+- Measure each stated target on the exact stated case in a fresh process. Vary input order and construction. Keep a wide margin over every threshold.
+- On a live system, rehearse each change on a copy first. Keep the running service healthy at every step.
+- Do every explicit completion step of the task, such as a signal or a wait, before your final answer."""
+
+# Lead mode of main: subagents on, and the task tells the leader to use them.
+[profiles.lead]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+instruction_note = "Use Council subagents for this task: delegate independent parts with council.run."
+build = { run_id = 40183951846, commit = "ba97dcf111c9445d5218ae9ca67ca23f34890ca6", sha256 = "0d849d2bd592f5cf174179d4d479c146e67857740f5cd28c313dff71f43b2831" }
+
+# Lead mode of main without a task note: the leader decides when to use subagents.
+[profiles.lead-auto]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40215398776, commit = "a8c63b6095b29df637d0d0b3a7216f8b7ebe435a", sha256 = "41a1689f160b477fadf52c25f033213c260f970dd7bfb8c0c7c4bb65d092b881" }
+
+# Solo on the main build of a8c63b6: checker-shaped measurement and per-symptom reproduction.
+[profiles.solo-next]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40215398776, commit = "a8c63b6095b29df637d0d0b3a7216f8b7ebe435a", sha256 = "41a1689f160b477fadf52c25f033213c260f970dd7bfb8c0c7c4bb65d092b881" }
+
+# Solo on the same main build as `lead`, with the prompt rules of dd94666 and no task note.
+[profiles.solo-main]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40183951846, commit = "ba97dcf111c9445d5218ae9ca67ca23f34890ca6", sha256 = "0d849d2bd592f5cf174179d4d479c146e67857740f5cd28c313dff71f43b2831" }
+
+# Solo on main 16f031f: per-symptom reproduction, design-doc rule and each measured reading.
+[profiles.solo-v4]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Lead mode on main 16f031f without a task note: the leader decides when to use subagents.
+[profiles.lead-v4]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Prompt screen on solo-v4: rules for named styles and crash-consistent restarts, as a task note.
+[profiles.solo-v4n]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+instruction_note = """
+- When a task names a style, standard or convention, list its usual rules first. Before you finish, check the result against each rule with code.
+- To test a restart or a fresh container, copy the durable state while the old process still runs, then start from that copy."""
+build = { run_id = 40230417870, commit = "16f031fca2b555bdeaf98b6cfb13b0f26f95f816", sha256 = "9281e392b7a515db639ee32a96d8f47565e49a45c81252e4827103638a393f4d" }
+
+# Solo on main 8093e94, without a task note.
+[profiles.solo-v5]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40256821560, commit = "8093e94358918bfcdd4fd3aa6a6c30a50f120871", sha256 = "0026462b892986d65f84ebcdafbcd8d5e723bac30d7588912b483ada2f3171d1" }
+
+# Lead mode on main 8093e94: one coupled design keeps one owner.
+[profiles.lead-v5]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40256821560, commit = "8093e94358918bfcdd4fd3aa6a6c30a50f120871", sha256 = "0026462b892986d65f84ebcdafbcd8d5e723bac30d7588912b483ada2f3171d1" }
+
+# Solo on main c428acf: each named output file works alone.
+[profiles.solo-v6]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40266557197, commit = "c428acf40f21470926388d77ec4b78cb8e5ffd2d", sha256 = "1fb4894e6275fa34ac62670a4bab9f5e8edf39191a9c2839d9b8a04547b09e73" }
+
+# Lead mode on main c428acf: each named output file works alone.
+[profiles.lead-v6]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40266557197, commit = "c428acf40f21470926388d77ec4b78cb8e5ffd2d", sha256 = "1fb4894e6275fa34ac62670a4bab9f5e8edf39191a9c2839d9b8a04547b09e73" }
+
+# Solo on main 9e8998d: named outputs work alone, without new packages.
+[profiles.solo-v7]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40275980910, commit = "9e8998d48b5efaaa4b87d3b29d18a3d66236586d", sha256 = "ef85ebe2c9373e8570b8364c91298828ebbb89ec08353e041353f51456d157a4" }
+
+# Lead mode on main 9e8998d: one program stays one coupled design.
+[profiles.lead-v7]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40275980910, commit = "9e8998d48b5efaaa4b87d3b29d18a3d66236586d", sha256 = "ef85ebe2c9373e8570b8364c91298828ebbb89ec08353e041353f51456d157a4" }
+
+# Solo on main 656aaa4: minimal prompts and a call-only tool description.
+[profiles.solo-v8]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+build = { run_id = 40337553682, commit = "656aaa47ba2c3d94ed4b959d8067a429b5ba6631", sha256 = "b1728c356f75e69a7fd82f0f697adff501d3ab565f080cdbdea0c2eee2026caf" }
+
+# Lead mode on main 656aaa4: minimal prompts and a call-only tool description.
+[profiles.lead-v8]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+build = { run_id = 40337553682, commit = "656aaa47ba2c3d94ed4b959d8067a429b5ba6631", sha256 = "b1728c356f75e69a7fd82f0f697adff501d3ab565f080cdbdea0c2eee2026caf" }
+
+# Solo with the ub-mode rules, analysis packages (vis-extras/) and the py extension.
+[profiles.solo-v9]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead mode with the ub-mode rules, analysis packages (vis-extras/) and the py extension.
+[profiles.lead-v9]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true } }
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Solo v9 with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
+[profiles.solo-v10]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead v9 with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
+[profiles.lead-v10]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
+
+# Lead v10 on svar 0.7.215: text-free model progress moves the Vis stall clock.
+[profiles.lead-v11]
+toggles = { council = true, subagents = true, draft_backend = "off" }
+effort = "medium"
+persist = true
+config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
+path = ["/installed-agent"]
+extras = [
+  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
+  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
+]
+env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
+build = { run_id = 40489327253, commit = "3350d4f6c7bb5a6ba7ede26e70188bdae1204e49", sha256 = "68bb677d17874f56070eb2d451160dd422bdbd05ae6011375d2c47959de32a6b" }

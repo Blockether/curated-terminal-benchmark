@@ -3,6 +3,8 @@ import asyncio
 import hashlib
 import io
 import json
+import shlex
+import subprocess
 import tarfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -27,7 +29,15 @@ from ctb.agents.opencode import (
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
-from ctb.agents.vis import VisSolo, VisTeam
+from ctb.agents.vis import (
+    VisSolo,
+    VisTeam,
+    VisTeamActive,
+    VisTeamLead,
+    VisTeamLead3,
+    VisTeamNote,
+    VisTeamWait,
+)
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -39,10 +49,13 @@ def agent(cls, model, logs=Path("/tmp/ctb-test-logs")):
 def test_vis_team_uses_the_gateway_path_with_council_on():
     team = agent(VisTeam, "anthropic/claude-opus-5-5").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
-    assert "--name team --persist --toggles council=true,draft_backend=off" in team
+    assert (
+        "--name team --persist --toggles verbosity=low,council=true,subagents=true,draft_backend=off"
+        in team
+    )
     assert "--db :memory" not in team
     assert "anthropic-coding-plan/claude-opus-5-5 --reasoning-effort medium" in team
-    assert "--name solo --db :memory --toggles council=false" in solo
+    assert "--name solo --db :memory --toggles verbosity=low,council=false" in solo
     assert "openai-codex/gpt-6.1-sol" in solo
     assert "--trajectory /logs/agent/trajectory.json --full-trace-json-stream" in solo
     assert "'do '\"'\"'it'\"'\"''" in team
@@ -99,7 +112,9 @@ def pinned(tmp_path, monkeypatch):
 def test_vis_profile_kwarg_sets_every_switch(pinned):
     lean = VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="lean")
     command = lean.command("x")
-    assert "--name lean --db :memory --toggles council=false,fold_hints=off" in command
+    assert (
+        "--name lean --db :memory --toggles verbosity=low,council=false,fold_hints=off" in command
+    )
     assert "--extensions none --model openai-codex/gpt-6.1-sol --reasoning-effort high" in command
     config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
     # The overlay replaces a list; it merges only tables.
@@ -107,6 +122,107 @@ def test_vis_profile_kwarg_sets_every_switch(pinned):
     assert config["default_model"] == "gpt-6.1-sol"
     with pytest.raises(ValueError, match="Unknown Vis profile 'nope'; use one of lean, solo"):
         VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="nope")
+
+
+def test_vis_profile_build_pins_its_own_build(pinned):
+    build, _ = pinned
+    vis.SETTINGS.write_text(
+        vis.SETTINGS.read_text()
+        + "[profiles.next]\npersist = true\n"
+        + f'build = {{ run_id = 43, commit = "{"b" * 40}", sha256 = "c" }}\n'
+    )
+    model = "openai/gpt-6.1-sol"
+    later = VisSolo(logs_dir=Path("/tmp/l"), model_name=model, profile="next")
+    assert (later.build["run_id"], later.build["commit"]) == (43, "b" * 40)
+    assert later.build["asset"] == build["asset"]
+    assert later.ARCHIVE.parts[-2] == "43"
+    assert VisSolo(logs_dir=Path("/tmp/l"), model_name=model).build == build
+    assert [pin["run_id"] for pin in vis.builds()] == [build["run_id"], 43]
+
+
+def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
+    note = "Use Council subagents for this task: delegate independent parts with council.run."
+    expected = shlex.quote(f"do 'it'\n\n{note}")
+    arms = (
+        (VisTeamWait, "team-wait", "wait"),
+        (VisTeamActive, "team-active", "active"),
+        (VisTeamLead, "team-lead", "lead"),
+        (VisTeamLead3, "team-lead3", "lead"),
+    )
+    for cls, profile, mode in arms:
+        command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
+        toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
+        assert f"--name {profile} --persist --toggles verbosity=low,{toggles}" in command
+        assert f"-- {expected} >" in command
+        config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
+        # Subagents resolve toggles from the configuration, not from --toggles.
+        assert config["toggles"]["subagents"] is True
+        assert config["toggles"]["council_orchestration"] == mode
+    command = agent(VisTeamNote, "openai/gpt-6.1-sol").command("do 'it'")
+    assert "council=true,subagents=true,draft_backend=off --model" in command
+    assert f"-- {expected} >" in command
+    # Profiles without a note keep the task text as it is.
+    assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
+    names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
+    assert names == [
+        "VisSolo",
+        "VisTeam",
+        "VisTeamNote",
+        "VisTeamWait",
+        "VisTeamActive",
+        "VisTeamLead",
+        "VisTeamLead3",
+        "VisSoloX",
+        "VisSoloMain",
+        "VisLead",
+        "VisSoloNext",
+        "VisLeadAuto",
+        "VisSoloV4",
+        "VisLeadV4",
+        "VisSoloV4Note",
+        "VisSoloV5",
+        "VisLeadV5",
+        "VisSoloV6",
+        "VisLeadV6",
+        "VisSoloV7",
+        "VisLeadV7",
+        "VisSoloV8",
+        "VisLeadV8",
+        "VisSoloV9",
+        "VisLeadV9",
+        "VisSoloV10",
+        "VisLeadV10",
+        "VisLeadV11",
+    ]
+    assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
+        "vis-team-wait",
+        "vis-team-active",
+        "vis-team-lead",
+        "vis-team-lead3",
+    }
+
+
+def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
+    build, data = pinned
+    calls = []
+
+    def gh(argv, check, **kwargs):
+        calls.append(argv)
+        if argv[:3] == ["gh", "run", "view"]:
+            head = json.dumps({"headSha": "a" * 40, "conclusion": "success"})
+            return subprocess.CompletedProcess(argv, 0, stdout=head)
+        (Path(argv[argv.index("-D") + 1]) / build["asset"]).write_bytes(data)
+        return subprocess.CompletedProcess(argv, 0)
+
+    monkeypatch.setattr(vis.subprocess, "run", gh)
+    found = vis.run_build(42)
+    assert (found["run_id"], found["commit"], found["sha256"]) == (42, "a" * 40, build["sha256"])
+    assert vis.archive(found).parts[-2] == "42"
+    vis.write_pin(found)
+    assert vis.settings()["build"]["run_id"] == 42
+    assert vis.settings()["profiles"]["solo"] == {"persist": False}
+    assert vis.fetch() == vis.archive(found)
+    assert len(calls) == 2
 
 
 def test_vis_api_key_provider_gets_the_key_only_in_the_environment(pinned, monkeypatch):
@@ -189,6 +305,7 @@ def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
     metadata = context.metadata["vis"]
     assert metadata["model"] == "openai/gpt-6.1-sol"
     assert metadata["profile"] == "solo"
+    assert metadata["instruction_note"] is None
     assert metadata["build"] == {"run_id": 7, "commit": "a" * 40, "sha256": pinned[0]["sha256"]}
     assert (metadata["duration_ms"], metadata["iteration_count"]) == (900, 3)
     assert metadata["estimated_metered_api_cost_usd"] == 0.5
@@ -240,6 +357,8 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
         "model": "gpt-6.1-sol",
         "effort": "medium",
     }
+    command = agent(Dirge, "openai/gpt-6.1-sol").command("x")
+    assert "DIRGE_CODEX_TEXT_VERBOSITY=low DIRGE_CODEX_REASONING_SUMMARY=auto;" in command
     kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
     assert "--model openai-codex/gpt-6.1-sol --thinking medium" in kmet
     assert "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent" in kmet
@@ -249,7 +368,14 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "codex"
-    assert command[-4:] == ["--ak", "reasoning_effort=medium", "--ak", "version=0.163.0"]
+    assert command[-6:] == [
+        "--ak",
+        "reasoning_effort=medium",
+        "--ak",
+        "reasoning_summary=auto",
+        "--ak",
+        "version=0.163.0",
+    ]
 
 
 def test_agent_setup_gets_more_time_than_the_harbor_default():
@@ -304,7 +430,10 @@ def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):
         "context": 1000000,
         "output": 128000,
     }
-    assert "provider" not in gpt._opencode_config
+    # OpenCode sets GPT verbosity only for gpt-5.x ids, so ctb sends pi's `low` itself.
+    assert gpt._opencode_config["provider"] == {
+        "openai": {"models": {"gpt-6.1-sol": {"options": {"textVerbosity": "low"}}}}
+    }
     asyncio.run(opus.exec_as_agent(None, command="opencode", env={"A": "1"}))
     asyncio.run(gpt.exec_as_agent(None, command="opencode", env={"A": "1"}))
     assert calls == [
@@ -461,3 +590,91 @@ def test_kmet_ignores_interleaved_tool_events_for_usage(tmp_path):
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (105, 80, 7)
+
+
+def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(tmp_path):
+    (tmp_path / "interleaved-vigenere" / "tests").mkdir(parents=True)
+    (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").write_text("pytest\n")
+
+    fixed = cli.apply_task_fixes(tmp_path)
+
+    assert fixed == ["interleaved-vigenere/tests/test.sh"]
+    script = (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").read_text()
+    assert "pip install" in script and "/app/requirements.txt" in script
+    assert script.index("pip install") < script.index("pytest --ctrf")
+
+
+def test_task_fixes_skip_a_task_that_the_dataset_does_not_have(tmp_path):
+    assert cli.apply_task_fixes(tmp_path) == []
+    assert not (tmp_path / "interleaved-vigenere").exists()
+
+
+def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
+    build, data = pinned
+    packages = b"packages"
+    home = b"extensions"
+    extras = [
+        {
+            "asset": "p.tgz",
+            "sha256": hashlib.sha256(packages).hexdigest(),
+            "into": "/installed-agent",
+        },
+        {"asset": "h.tgz", "sha256": hashlib.sha256(home).hexdigest(), "into": "vis-home"},
+    ]
+    profiles = {
+        "solo-v9": {
+            "persist": "false",
+            "extras": "["
+            + ", ".join(
+                "{ " + ", ".join(f"{k} = {json.dumps(v)}" for k, v in extra.items()) + " }"
+                for extra in extras
+            )
+            + "]",
+            "env": '{ VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }',
+            "path": '["/installed-agent"]',
+        }
+    }
+    write_settings(vis.SETTINGS, build, profiles)
+    solo = vis.VisSoloV9(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
+    command = solo.command("x")
+    assert (
+        "export VIS_HOME=$HOME/.vis && tar -xzf /installed-agent/extras/h.tgz -C $HOME/.vis && "
+        "export VIS_PYTHON_PACKAGES=/installed-agent/python-packages && "
+        'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent'
+    ) in command
+    solo.exec_as_root = AsyncMock()
+    solo._get_system_package_manager = AsyncMock(return_value="apt-get")
+    environment = AsyncMock()
+    solo.ARCHIVE.parent.mkdir(parents=True)
+    solo.ARCHIVE.write_bytes(data)
+    with pytest.raises(FileNotFoundError, match="vis-extras/build.sh"):
+        asyncio.run(solo.install(environment))
+    vis.extra_path(extras[0]).parent.mkdir(parents=True)
+    vis.extra_path(extras[0]).write_bytes(packages)
+    vis.extra_path(extras[1]).write_bytes(b"another")
+    with pytest.raises(ValueError, match="not the pinned"):
+        asyncio.run(solo.install(environment))
+    environment.upload_file.assert_not_awaited()
+    vis.extra_path(extras[1]).write_bytes(home)
+    asyncio.run(solo.install(environment))
+    uploads = [call.args for call in environment.upload_file.await_args_list]
+    assert uploads[1:] == [
+        (vis.extra_path(extras[0]), "/tmp/ctb-extra.tgz"),
+        (vis.extra_path(extras[1]), "/tmp/ctb-extra.tgz"),
+    ]
+    commands = [call.kwargs["command"] for call in solo.exec_as_root.await_args_list][-2:]
+    assert commands[0].startswith("mkdir -p /installed-agent && tar -xzf /tmp/ctb-extra.tgz")
+    assert "mv /tmp/ctb-extra.tgz /installed-agent/extras/h.tgz" in commands[1]
+
+
+def test_vis_keeps_its_logs_and_exit_status(pinned):
+    command = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
+    assert command.endswith(
+        "2> /logs/agent/vis-stderr.log; status=$?; "
+        "cp -R $HOME/.vis/logs /logs/agent/vis-logs 2>/dev/null; exit $status"
+    )
+
+
+def test_vis_extra_refuses_an_unknown_target(pinned):
+    with pytest.raises(ValueError, match="vis-home"):
+        vis.check_extra({"asset": "x.tgz", "sha256": "0", "into": "/tmp"})

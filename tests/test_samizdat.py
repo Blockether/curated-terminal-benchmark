@@ -87,6 +87,18 @@ def test_codex_requests_of_one_conversation_share_a_prompt_cache_key():
     assert body()["prompt_cache_key"] != other["prompt_cache_key"]
 
 
+def test_codex_requests_get_the_gpt_settings_of_every_agent():
+    body = codex_body(
+        {
+            "model": "gpt-6.1-sol",
+            "messages": [{"role": "user", "content": "a"}],
+            "reasoning_effort": "medium",
+        }
+    )
+    assert body["text"] == {"verbosity": "low"}
+    assert body["reasoning"] == {"effort": "medium", "summary": "auto"}
+
+
 def test_samizdat_exports_full_turn_text(tmp_path):
     from ctb.agents.samizdat_drive import export_transcript
 

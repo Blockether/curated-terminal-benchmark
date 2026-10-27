@@ -24,7 +24,16 @@ from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_roun
 from ctb import credentials, privacy
 from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis
 from ctb.agents.base import EFFORT, min_token_seconds
-from ctb.matrix import AGENTS, MODELS, ROOT, Trial, load_tasks, select_tasks, trials
+from ctb.matrix import (
+    AGENTS,
+    DEFAULT_AGENTS,
+    MODELS,
+    ROOT,
+    Trial,
+    load_tasks,
+    select_tasks,
+    trials,
+)
 from ctb.metrics import round_metrics
 from ctb.proxy import Proxy
 
@@ -34,6 +43,8 @@ RESULTS = ROOT / "results"
 SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
 DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
 COMPOSE = SUITE_ARTIFACTS / "docker-compose"
+# Tracked verifier fixes, copied over the downloaded dataset before each run.
+TASK_FIXES = ROOT / "task-fixes"
 # Pinned master commits. Dirge patches preserve provider token accounting.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "f36b2890"
 KMET_REPO, KMET_COMMIT = (
@@ -50,8 +61,8 @@ SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
     "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
-    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge "
-    "codex_completed_response_keeps_usage && "
+    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge -- "
+    "codex_completed_response_keeps_usage codex_body_gets_gpt_settings && "
     "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
 )
 
@@ -105,7 +116,9 @@ def fetch_dirge() -> Path:
     if not archive.is_file():
         path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
         prepare_dirge_rig(path)
-        apply_patches(path, "dirge-usage.patch", "dirge-rig-stream.patch")
+        apply_patches(
+            path, "dirge-usage.patch", "dirge-rig-stream.patch", "dirge-codex-settings.patch"
+        )
         sh(
             [
                 "podman",
@@ -256,6 +269,8 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
     ]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
+    for kwarg in trial.agent.agent_kwargs:
+        command += ["--ak", kwarg]
     if trial.agent.version:
         command += ["--ak", f"version={trial.agent.version}"]
     return privacy.check_command(command)
@@ -418,6 +433,21 @@ def reward_of(result: dict | None) -> float | None:
     return rewards.get("reward")
 
 
+def apply_task_fixes(dataset: Path | None = None) -> list[str]:
+    """Copy each tracked fix over the task that the dataset has, and name the copied files."""
+    dataset = dataset or DATASET
+    fixed = []
+    for source in sorted(p for p in TASK_FIXES.rglob("*") if p.is_file()):
+        relative = source.relative_to(TASK_FIXES)
+        if not (dataset / relative.parts[0]).is_dir():
+            continue
+        target = dataset / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        fixed.append(str(relative))
+    return fixed
+
+
 def run(args: argparse.Namespace) -> None:
     jobs = ROOT / "jobs" / args.round
     logs = ROOT / "runs" / args.round
@@ -427,6 +457,8 @@ def run(args: argparse.Namespace) -> None:
         args.agents.split(","), args.models.split(","), select_tasks(args.tasks, load_tasks())
     )
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
+    for fixed in apply_task_fixes():
+        print(f"task fix {fixed}", flush=True)
     record_run(jobs, args)
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
@@ -479,6 +511,9 @@ def pins() -> dict:
         "opencode_anthropic_max_output_tokens": 128000,
         "models": MODELS,
         "effort": EFFORT,
+        "task_fixes": sorted(
+            str(p.relative_to(TASK_FIXES)) for p in TASK_FIXES.rglob("*") if p.is_file()
+        ),
     }
 
 
@@ -534,7 +569,7 @@ def summary(args: argparse.Namespace) -> None:
     for row in table:
         groups.setdefault((row["agent"], row["model"]), []).append(row)
     print(
-        f"{'agent':12} {'model':28} {'pass':>7} {'easy':>6} {'hard':>6} {'errors':>6} {'in_med':>9}"
+        f"{'agent':15} {'model':28} {'pass':>7} {'easy':>6} {'hard':>6} {'errors':>6} {'in_med':>9}"
     )
     for (agent, model), items in sorted(groups.items()):
 
@@ -547,7 +582,7 @@ def summary(args: argparse.Namespace) -> None:
         inputs = [r["input"] for r in items if isinstance(r["input"], int)]
         median = int(statistics.median(inputs)) if inputs else "-"
         print(
-            f"{agent:12} {model:28} {passed(items):>3}/{len(items):<3} "
+            f"{agent:15} {model:28} {passed(items):>3}/{len(items):<3} "
             f"{passed(easy):>2}/{len(easy):<3} {passed(hard):>2}/{len(hard):<3} "
             f"{sum(1 for r in items if r['error']):>6} {median:>9}"
         )
@@ -603,14 +638,14 @@ def metrics(args: argparse.Namespace) -> None:
     out = RESULTS / f"{args.round}-metrics.json"
     out.write_text(json.dumps(body, indent=2) + "\n")
     print(
-        f"{'agent':12} {'pass':>6} {'agent_min':>9} {'median':>6} {'cost_usd':>8} {'usd/pass':>8} "
+        f"{'agent':15} {'pass':>6} {'agent_min':>9} {'median':>6} {'cost_usd':>8} {'usd/pass':>8} "
         f"{'input':>10} {'output':>8} {'steps':>5} {'tools':>5} {'subagents':>9}"
     )
     for t in body["agents"]:
         cost = "-" if t["cost_usd"] is None else f"{t['cost_usd']:.2f}"
         per_pass = "-" if t["cost_per_pass_usd"] is None else f"{t['cost_per_pass_usd']:.2f}"
         print(
-            f"{t['agent']:12} {t['passed']:>2}/{t['trials']:<3} {t['agent_minutes']:>9} "
+            f"{t['agent']:15} {t['passed']:>2}/{t['trials']:<3} {t['agent_minutes']:>9} "
             f"{t['median_agent_minutes']:>6} {cost:>8} {per_pass:>8} {t['input']:>10} "
             f"{t['output']:>8} {t['steps']:>5} {t['tool_calls']:>5} {t['subagents']:>9}"
         )
@@ -623,7 +658,7 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("fetch", help="get native Vis, dirge, kmet and samizdat for linux-amd64")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
     run_parser.add_argument("--round", required=True)
-    run_parser.add_argument("--agents", default=",".join(AGENTS))
+    run_parser.add_argument("--agents", default=DEFAULT_AGENTS)
     run_parser.add_argument("--models", default=",".join(MODELS))
     run_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
     run_parser.add_argument("--parallel", type=int, default=1)
@@ -635,7 +670,7 @@ def main(argv: list[str] | None = None) -> None:
     summary_parser.add_argument("--json")
     seal_parser = sub.add_parser("seal", help="write results/<round>.json once, with hashes")
     seal_parser.add_argument("--round", required=True)
-    seal_parser.add_argument("--agents", default=",".join(AGENTS))
+    seal_parser.add_argument("--agents", default=DEFAULT_AGENTS)
     seal_parser.add_argument("--models", default=",".join(MODELS))
     seal_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
     metrics_parser = sub.add_parser("metrics", help="cost, time and token table of a sealed round")

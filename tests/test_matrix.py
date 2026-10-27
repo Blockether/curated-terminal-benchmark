@@ -12,6 +12,29 @@ def test_only_supported_model_pairs_become_trials():
     ]
 
 
+def test_both_council_arms_run_in_one_round():
+    agents = ["vis-team-wait", "vis-team-active"]
+    assert [t.job for t in matrix.trials(agents, ["openai"], ["x", "y"])] == [
+        "vis-team-wait__openai__x",
+        "vis-team-active__openai__x",
+        "vis-team-wait__openai__y",
+        "vis-team-active__openai__y",
+    ]
+
+
+def test_experiment_arms_stay_out_of_the_default_matrix():
+    defaults = matrix.DEFAULT_AGENTS.split(",")
+    assert "vis-team" in defaults
+    experiments = {
+        "vis-team-note",
+        "vis-team-wait",
+        "vis-team-active",
+        "vis-team-lead",
+        "vis-team-lead3",
+    }
+    assert not experiments & set(defaults)
+
+
 def test_kmet_runs_only_on_the_gpt_model():
     assert [t.job for t in matrix.trials(["kmet"], ["anthropic", "openai"], ["x"])] == [
         "kmet__openai__x"

@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from ctb.metrics import list_price, round_metrics, totals, trial_metrics
+from ctb.metrics import list_price, round_metrics, totals, trajectory_counts, trial_metrics
 
 
 def write_trial(root, name, *, cost, tools, model="openai/gpt-6.1-sol", reward=1.0):
@@ -62,6 +62,24 @@ def test_subagent_tools_of_each_agent_count_as_subagents(tmp_path):
     row = trial_metrics(tmp_path / "jobs/r/claude-code__anthropic__x/t1/result.json")
     assert row["subagents"] == 2
     assert row["cost_usd"] == 1.5 and row["cost_source"] == "agent"
+
+
+def test_vis_subagents_are_the_distinct_children_of_council_run(tmp_path):
+    a, b = "1" * 8 + "-0000-0000-0000-" + "0" * 12, "2" * 8 + "-0000-0000-0000-" + "0" * 12
+
+    def step(code, records):
+        call = {"function_name": "python_execution", "arguments": {"code": code}}
+        observation = {"results": [{"content": repr(records)}]}
+        return {"source": "agent", "tool_calls": [call], "observation": observation}
+
+    steps = [
+        step("rs = await council.run([t1, t2])", [{"session_id": a}, {"session_id": b}]),
+        step("await council.wait(session_ids=ids)", [{"session_id": a}]),
+        step("await council.resume(ids[0], t)", [{"session_id": a}]),
+    ]
+    path = tmp_path / "trajectory.json"
+    path.write_text(json.dumps({"steps": steps}))
+    assert trajectory_counts(path)["subagents"] == 2
 
 
 def test_round_metrics_refuses_a_result_that_changed_after_the_seal(tmp_path):

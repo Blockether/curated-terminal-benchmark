@@ -18,6 +18,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from ctb import credentials
+from ctb.agents.base import REASONING_SUMMARY, VERBOSITY
 
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 CODEX_URL = "https://chatgpt.com/backend-api/codex/responses"
@@ -227,10 +228,12 @@ def codex_body(req: dict) -> dict:
         "stream": True,
         "parallel_tool_calls": False,
         "prompt_cache_key": cache_key,
+        # The GPT settings of every agent; without them the backend uses `medium` verbosity.
+        "text": {"verbosity": VERBOSITY},
     }
     effort = req.get("reasoning_effort")
     if effort:
-        body["reasoning"] = {"effort": effort}
+        body["reasoning"] = {"effort": effort, "summary": REASONING_SUMMARY}
     tools = _tool_specs(req.get("tools"))
     if tools:
         body["tools"] = [
