@@ -29,15 +29,7 @@ from ctb.agents.opencode import (
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
-from ctb.agents.vis import (
-    VisSolo,
-    VisTeam,
-    VisTeamActive,
-    VisTeamLead,
-    VisTeamLead3,
-    VisTeamNote,
-    VisTeamWait,
-)
+from ctb.agents.vis import VisLeadV10, VisLeadV11, VisSolo, VisSoloV10, VisTeam
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -140,66 +132,34 @@ def test_vis_profile_build_pins_its_own_build(pinned):
     assert [pin["run_id"] for pin in vis.builds()] == [build["run_id"], 43]
 
 
-def test_vis_council_arms_add_the_note_and_their_orchestration_toggle():
-    note = "Use Council subagents for this task: delegate independent parts with council.run."
-    expected = shlex.quote(f"do 'it'\n\n{note}")
-    arms = (
-        (VisTeamWait, "team-wait", "wait"),
-        (VisTeamActive, "team-active", "active"),
-        (VisTeamLead, "team-lead", "lead"),
-        (VisTeamLead3, "team-lead3", "lead"),
-    )
-    for cls, profile, mode in arms:
+def test_vis_experiment_arms_keep_their_toggles_and_the_task_text():
+    for cls, profile in ((VisLeadV10, "lead-v10"), (VisLeadV11, "lead-v11")):
         command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
-        toggles = f"council=true,subagents=true,draft_backend=off,council_orchestration={mode}"
-        assert f"--name {profile} --persist --toggles verbosity=low,{toggles}" in command
-        assert f"-- {expected} >" in command
+        toggles = "council=true,subagents=true,draft_backend=off"
+        assert f"--name {profile} --persist --toggles verbosity=low,{toggles} --model" in command
         config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
         # Subagents resolve toggles from the configuration, not from --toggles.
         assert config["toggles"]["subagents"] is True
-        assert config["toggles"]["council_orchestration"] == mode
-    command = agent(VisTeamNote, "openai/gpt-6.1-sol").command("do 'it'")
-    assert "council=true,subagents=true,draft_backend=off --model" in command
-    assert f"-- {expected} >" in command
+        assert config["python"]["environment"] == "shared"
+    solo = agent(VisSoloV10, "openai/gpt-6.1-sol").command("x")
+    assert "--name solo-v10 --db :memory --toggles verbosity=low,council=false" in solo
     # Profiles without a note keep the task text as it is.
+    assert "-- x >" in solo
     assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
     names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
-    assert names == [
-        "VisSolo",
-        "VisTeam",
-        "VisTeamNote",
-        "VisTeamWait",
-        "VisTeamActive",
-        "VisTeamLead",
-        "VisTeamLead3",
-        "VisSoloX",
-        "VisSoloMain",
-        "VisLead",
-        "VisSoloNext",
-        "VisLeadAuto",
-        "VisSoloV4",
-        "VisLeadV4",
-        "VisSoloV4Note",
-        "VisSoloV5",
-        "VisLeadV5",
-        "VisSoloV6",
-        "VisLeadV6",
-        "VisSoloV7",
-        "VisLeadV7",
-        "VisSoloV8",
-        "VisLeadV8",
-        "VisSoloV9",
-        "VisLeadV9",
-        "VisSoloV10",
-        "VisLeadV10",
-        "VisLeadV11",
-    ]
-    assert {cls.name() for cls in (VisTeamWait, VisTeamActive, VisTeamLead, VisTeamLead3)} == {
-        "vis-team-wait",
-        "vis-team-active",
-        "vis-team-lead",
-        "vis-team-lead3",
-    }
+    assert names == ["VisSolo", "VisTeam", "VisSoloV10", "VisLeadV10", "VisLeadV11"]
+    assert set(vis.AGENT_PROFILES.values()) <= set(vis.settings()["profiles"])
+
+
+def test_vis_instruction_note_goes_after_the_task(pinned):
+    note = "Use Council subagents for this task: delegate independent parts with council.run."
+    vis.SETTINGS.write_text(
+        vis.SETTINGS.read_text()
+        + f"[profiles.noted]\npersist = true\ninstruction_note = {json.dumps(note)}\n"
+    )
+    noted = VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol", profile="noted")
+    expected = shlex.quote(f"do 'it'\n\n{note}")
+    assert f"-- {expected} >" in noted.command("do 'it'")
 
 
 def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
@@ -609,7 +569,7 @@ def test_task_fixes_skip_a_task_that_the_dataset_does_not_have(tmp_path):
     assert not (tmp_path / "interleaved-vigenere").exists()
 
 
-def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
+def test_vis_v10_unpacks_its_pinned_extras(pinned, tmp_path):
     build, data = pinned
     packages = b"packages"
     home = b"extensions"
@@ -622,7 +582,7 @@ def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
         {"asset": "h.tgz", "sha256": hashlib.sha256(home).hexdigest(), "into": "vis-home"},
     ]
     profiles = {
-        "solo-v9": {
+        "solo-v10": {
             "persist": "false",
             "extras": "["
             + ", ".join(
@@ -635,7 +595,7 @@ def test_vis_v9_unpacks_its_pinned_extras(pinned, tmp_path):
         }
     }
     write_settings(vis.SETTINGS, build, profiles)
-    solo = vis.VisSoloV9(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
+    solo = vis.VisSoloV10(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
     command = solo.command("x")
     assert (
         "export VIS_HOME=$HOME/.vis && tar -xzf /installed-agent/extras/h.tgz -C $HOME/.vis && "

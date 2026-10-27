@@ -30,33 +30,10 @@ AGENTS = {
     for spec in (
         AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("openai",)),
         AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("openai",)),
-        # Council arms of exp/council-orchestration: each task text asks for subagents.
+        # Experiment arms: each pins its own Vis build in profiles.toml.
         *(
             AgentSpec(name, f"ctb.agents.vis:{cls}", ("openai",), experiment=True)
             for name, cls in (
-                ("vis-team-note", "VisTeamNote"),
-                ("vis-team-wait", "VisTeamWait"),
-                ("vis-team-active", "VisTeamActive"),
-                ("vis-team-lead", "VisTeamLead"),
-                ("vis-team-lead3", "VisTeamLead3"),
-                ("vis-solo-x", "VisSoloX"),
-                ("vis-solo-main", "VisSoloMain"),
-                ("vis-lead", "VisLead"),
-                ("vis-solo-next", "VisSoloNext"),
-                ("vis-lead-auto", "VisLeadAuto"),
-                ("vis-solo-v4", "VisSoloV4"),
-                ("vis-lead-v4", "VisLeadV4"),
-                ("vis-solo-v4n", "VisSoloV4Note"),
-                ("vis-solo-v5", "VisSoloV5"),
-                ("vis-lead-v5", "VisLeadV5"),
-                ("vis-solo-v6", "VisSoloV6"),
-                ("vis-lead-v6", "VisLeadV6"),
-                ("vis-solo-v7", "VisSoloV7"),
-                ("vis-lead-v7", "VisLeadV7"),
-                ("vis-solo-v8", "VisSoloV8"),
-                ("vis-lead-v8", "VisLeadV8"),
-                ("vis-solo-v9", "VisSoloV9"),
-                ("vis-lead-v9", "VisLeadV9"),
                 ("vis-solo-v10", "VisSoloV10"),
                 ("vis-lead-v10", "VisLeadV10"),
                 ("vis-lead-v11", "VisLeadV11"),
