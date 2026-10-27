@@ -437,6 +437,21 @@ def test_dirge_tokens_come_from_the_result_event(tmp_path):
     assert tokens(gpt) == (100, 80, 7)
 
 
+def test_dirge_reads_a_tool_result_with_unicode_line_separators(tmp_path):
+    # A raw PDF in a dirge tool result split one JSON line at \x85 and crashed the trial.
+    usage = {"input_tokens": 100, "cached_input_tokens": 80, "output_tokens": 7}
+    lines = [
+        {"type": "user", "message": {"content": "%PDF-1.3\x85\u2028\x1c stream"}},
+        {"type": "result", "usage": usage},
+    ]
+    text = "\n".join(json.dumps(line, ensure_ascii=False) for line in lines) + "\n"
+    assert len(text.splitlines()) > len(lines)
+    (tmp_path / "dirge.jsonl").write_text(text)
+    context = AgentContext()
+    agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (100, 80, 7)
+
+
 def test_dirge_without_usage_leaves_tokens_unknown(tmp_path):
     (tmp_path / "dirge.jsonl").write_text(json.dumps({"type": "result"}) + "\n")
     context = AgentContext()
@@ -550,6 +565,21 @@ def test_kmet_ignores_interleaved_tool_events_for_usage(tmp_path):
     context = AgentContext()
     agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (105, 80, 7)
+
+
+def test_kmet_reads_a_message_with_unicode_line_separators(tmp_path):
+    (tmp_path / "kmet.edn").write_text(
+        '{:type :message-end :message {:role :assistant :content "a\u2028b\x85c" :usage '
+        "{:input_tokens 105 :output_tokens 7 :input_tokens_details {:cached_tokens 80}}}}\n"
+    )
+    context = AgentContext()
+    agent(Kmet, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (105, 80, 7)
+
+
+def test_opencode_final_answer_may_hold_a_unicode_line_separator():
+    part = {"type": "text", "text": "a\u2028b", "metadata": {"openai": {"phase": "final_answer"}}}
+    assert has_final_answer(json.dumps({"type": "text", "part": part}, ensure_ascii=False))
 
 
 def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(tmp_path):

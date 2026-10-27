@@ -69,7 +69,8 @@ def idle_limit_seconds() -> int:
 
 def has_final_answer(output: str) -> bool:
     """Whether OpenCode's JSON lines contain the model's final answer."""
-    for line in output.splitlines():
+    # JSON Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
+    for line in output.split("\n"):
         try:
             event = json.loads(line)
         except ValueError:

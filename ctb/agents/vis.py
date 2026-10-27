@@ -169,7 +169,8 @@ def result_frame(path: Path) -> dict | None:
     if not path.is_file():
         return None
     result = None
-    for line in path.read_text(errors="replace").splitlines():
+    # JSON Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
+    for line in path.read_text(errors="replace").split("\n"):
         try:
             frame = json.loads(line)
         except json.JSONDecodeError:

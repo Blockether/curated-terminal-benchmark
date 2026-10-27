@@ -63,7 +63,8 @@ class Dirge(CuratedAgent):
         # patches/dirge-usage.patch adds the raw usage to the final result event.
         usage = None
         path = self.logs_dir / STREAM
-        for line in path.read_text().splitlines() if path.is_file() else []:
+        # JSON Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
+        for line in path.read_text().split("\n") if path.is_file() else []:
             if line.startswith("{"):
                 event = json.loads(line)
                 if event.get("type") == "result":

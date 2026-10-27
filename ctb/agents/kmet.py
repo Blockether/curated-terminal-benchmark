@@ -48,7 +48,8 @@ class Kmet(CuratedAgent):
             return
         totals = {key: 0 for key in ("input", "output", "cache-read")}
         found = False
-        for line in path.read_text().splitlines():
+        # Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
+        for line in path.read_text().split("\n"):
             # Parallel tool writes can interleave; only finalized messages carry usage.
             if not line.startswith("{:type :message-end,") and not line.startswith(
                 "{:type :message-end "
