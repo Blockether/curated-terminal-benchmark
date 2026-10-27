@@ -60,9 +60,9 @@ def test_host_env_gives_samizdat_the_proxy_url_and_key(tmp_path):
     assert env["CTB_PROXY_KEY"] == "secret"
 
 
-def test_samizdat_runs_on_both_models():
+def test_samizdat_runs_only_on_the_gpt_model():
     jobs = [t.job for t in matrix.trials(["samizdat"], ["anthropic", "openai"], ["x"])]
-    assert jobs == ["samizdat__anthropic__x", "samizdat__openai__x"]
+    assert jobs == ["samizdat__openai__x"]
 
 
 def test_samizdat_tokens_come_from_the_saved_run(tmp_path, proxy_vars):
