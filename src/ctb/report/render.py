@@ -47,8 +47,8 @@ PHASE_NAMES = {
 SHOW = (
     ("all", "All"),
     ("messages", "Messages"),
-    ("tools", "Tools and commands"),
-    ("calls", "Provider calls"),
+    ("tools", "Tools"),
+    ("calls", "Calls"),
     ("errors", "Errors"),
 )
 NONE = '<span class="none">not recorded</span>'
@@ -422,7 +422,7 @@ def index(trials: list[dict], generated: str) -> str:
         [
             ("Trials", number(len(trials)), f"{passed} passed"),
             ("Pass rate", percent(passed, len(trials)), None),
-            ("Provider calls", number(calls), f"{duration(sum(timed)) or 'no time'} recorded"),
+            ("Calls", number(calls), f"{duration(sum(timed)) or 'no time'} recorded"),
             ("Cost", money(sum(costs)) if costs else None, f"{len(costs)} of {len(trials)} trials"),
             ("Tool calls", number(tool_calls), None),
             (
@@ -439,7 +439,7 @@ def index(trials: list[dict], generated: str) -> str:
         th("Pass rate"),
         th("Run time"),
         th("Median run"),
-        th("Provider calls"),
+        th("Calls"),
         th("Provider time"),
         th("Cost"),
         th("Tool calls"),
@@ -460,7 +460,7 @@ def index(trials: list[dict], generated: str) -> str:
         th("Outcome", "text"),
         th("Run time"),
         th("Cost"),
-        th("Provider calls"),
+        th("Calls"),
         th("Provider time"),
         th("Tool calls"),
         th("Tool errors"),
@@ -585,7 +585,7 @@ def run_timeline(trial: dict) -> str:
             rows["tool"][column] += 1
         if e["error"]:
             rows["error"][column] += 1
-    labels = {"call": "Provider calls", "tool": "Tools and commands", "error": "Errors"}
+    labels = {"call": "Calls", "tool": "Tools", "error": "Errors"}
     lines = []
     for key, counts in rows.items():
         peak = max(counts) or 1
@@ -790,7 +790,7 @@ def trial_page(trial: dict) -> str:
             ("Run time", duration(f["run_ms"]), None),
             ("Agent time", duration(f["agent_ms"]), None),
             (
-                "Provider calls",
+                "Calls",
                 number(s["provider_calls"]),
                 f"{duration(s['provider_ms'])} in calls" if s["provider_ms"] is not None else None,
             ),
@@ -834,7 +834,7 @@ def trial_page(trial: dict) -> str:
 {run_timeline(trial)}
 </section>
 <section id="provider" class="block">
-<h2>Provider calls</h2>
+<h2>Calls</h2>
 {provider_list(trial)}
 </section>
 <section id="tools" class="block">
