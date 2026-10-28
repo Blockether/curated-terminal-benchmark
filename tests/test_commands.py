@@ -24,6 +24,7 @@ from ctb.agents.opencode import (
     has_final_answer,
     opencode_auth_json,
     processes_command,
+    session_id,
     stop_command,
     stopped_error,
     watchdog_verdict,
@@ -313,7 +314,7 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
 def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
         "codex": "0.163.0",
-        "opencode": "1.19.3",
+        "opencode": "2.2.0",
         "pi": "1.3.0",
     }
 
@@ -367,7 +368,9 @@ def test_agent_setup_gets_more_time_than_the_harbor_default():
 def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
     opencode = agent(OpenCode, "openai/gpt-6.1-sol")
     assert opencode.options.variant == "medium"
-    assert opencode._version == "1.19.3"
+    assert opencode._version == "2.2.0"
+    # OpenCode 2 has no --variant flag; the variant follows the model after `#`.
+    assert "--model='openai/gpt-6.1-sol#medium'" in opencode.run_command("x")
     pi = Pi(
         logs_dir=Path("/tmp/ctb-test-logs"),
         model_name="openai/gpt-6.1-sol",
@@ -390,21 +393,24 @@ def test_opencode_and_pi_use_pinned_anthropic_plugins_with_medium_effort():
     assert "--extension npm:@gotgenes/pi-anthropic-auth@3.4.3" in pi.build_cli_flags()
     assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
     access = credentials.Access("A", 123)
-    for auth in (pi_auth_json, opencode_auth_json):
-        assert json.loads(auth(access, "anthropic")) == {
-            "anthropic": {"type": "oauth", "access": "A", "refresh": "", "expires": 123}
-        }
+    assert json.loads(pi_auth_json(access, "anthropic")) == {
+        "anthropic": {"type": "oauth", "access": "A", "refresh": "", "expires": 123}
+    }
+    (login,) = json.loads(opencode_auth_json(access, "anthropic"))
+    assert login["integrationID"] == "anthropic"
+    assert login["value"] == {
+        "type": "oauth",
+        "methodID": "oauth",
+        "refresh": "",
+        "access": "A",
+        "expires": 123,
+    }
     for name in ("pi", "opencode"):
         assert AGENTS[name].families == ("openai",)
 
 
-def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):
-    calls = []
-
-    async def fake_exec(self, environment, command, env=None, **kwargs):
-        calls.append(env)
-
-    monkeypatch.setattr(OpenCode.__mro__[1], "exec_as_agent", fake_exec)
+def test_opencode_opus_output_limit_is_128k_without_changing_gpt():
+    # OpenCode 2 takes the output limit from the model limit, not from an environment variable.
     opus = agent(OpenCode, "anthropic/claude-opus-5-5")
     gpt = agent(OpenCode, "openai/gpt-6.1-sol")
     assert opus._opencode_config["provider"]["anthropic"]["models"]["claude-opus-5-5"]["limit"] == {
@@ -415,25 +421,26 @@ def test_opencode_opus_output_limit_is_128k_without_changing_gpt(monkeypatch):
     assert gpt._opencode_config["provider"] == {
         "openai": {"models": {"gpt-6.1-sol": {"options": {"textVerbosity": "low"}}}}
     }
-    asyncio.run(opus.exec_as_agent(None, command="opencode", env={"A": "1"}))
-    asyncio.run(gpt.exec_as_agent(None, command="opencode", env={"A": "1"}))
-    assert calls == [
-        {"A": "1", "OPENCODE_EXPERIMENTAL_OUTPUT_TOKEN_MAX": "128000"},
-        {"A": "1"},
-    ]
 
 
 def test_opencode_and_pi_logins_cannot_rotate_the_host_login():
     access = credentials.Access("A", 123, account_id="acc")
-    assert json.loads(opencode_auth_json(access)) == {
-        "openai": {
-            "type": "oauth",
-            "access": "A",
-            "refresh": "",
-            "expires": 123,
-            "accountId": "acc",
+    assert json.loads(opencode_auth_json(access)) == [
+        {
+            "id": "cred_ctb",
+            "integrationID": "openai",
+            "label": "OAuth",
+            "active": True,
+            "value": {
+                "type": "oauth",
+                "methodID": "chatgpt-browser",
+                "refresh": "",
+                "access": "A",
+                "expires": 123,
+                "metadata": {"accountID": "acc"},
+            },
         }
-    }
+    ]
     assert json.loads(pi_auth_json(access))["openai-codex"]["refresh"] == ""
 
 
@@ -491,14 +498,21 @@ def test_kmet_tokens_come_from_completed_native_messages(tmp_path):
     assert tokens(context) == (105, 80, 7)
 
 
-def opencode_text(phase):
-    part = {"type": "text", "text": "done", "metadata": {"openai": {"phase": phase}}}
-    return json.dumps({"type": "text", "part": part})
+def opencode_text(text="done"):
+    part = {"type": "text", "text": text}
+    return json.dumps({"type": "text", "sessionID": "ses_1", "part": part}, ensure_ascii=False)
+
+
+def opencode_finish(reason, tokens=None):
+    part = {"type": "step-finish", "reason": reason, "cost": 0, "tokens": tokens or {}}
+    return json.dumps({"type": "step_finish", "part": part})
 
 
 def test_opencode_watchdog_stops_a_finished_run_that_does_not_exit():
     # Baseline payments-pipeline-fix: a final answer after 11 minutes, then 109 idle minutes.
-    output = "\n".join(["not json", opencode_text("commentary"), opencode_text("final_answer")])
+    output = "\n".join(
+        ["not json", opencode_finish("tool-calls"), opencode_text(), opencode_finish("stop")]
+    )
     assert has_final_answer(output)
     assert watchdog_verdict(output, idle_s=119, idle_limit_s=1800) is None
     assert watchdog_verdict(output, idle_s=120, idle_limit_s=1800) == "final"
@@ -506,42 +520,52 @@ def test_opencode_watchdog_stops_a_finished_run_that_does_not_exit():
 
 def test_opencode_watchdog_reports_a_silent_run_without_a_final_answer_as_a_hang():
     # Baseline interleaved-vigenere: OpenCode wrote nothing for 112 minutes after a tool call.
-    output = opencode_text("commentary")
+    output = "\n".join([opencode_text(), opencode_finish("tool-calls")])
     assert not has_final_answer(output)
     assert watchdog_verdict(output, idle_s=1799, idle_limit_s=1800) is None
     assert watchdog_verdict(output, idle_s=1800, idle_limit_s=1800) == "hang"
 
 
 def test_opencode_data_stays_off_the_host_mounted_logs_directory():
+    env = agent(OpenCode, "openai/gpt-6.1-sol").opencode_env()
+    assert env["XDG_DATA_HOME"] == f"{LOCAL_DATA}/xdg-data"
+    assert env["XDG_STATE_HOME"] == f"{LOCAL_DATA}/xdg-state"
+    # The pinned OpenCode must not update itself during a run.
+    assert env["OPENCODE_DISABLE_AUTOUPDATE"] == "1"
+
+
+def test_opencode_installs_the_pinned_opencode_2_package():
     opencode = agent(OpenCode, "openai/gpt-6.1-sol")
-    calls = []
+    commands = []
 
-    async def fake_exec(self, environment, command, env=None, **kwargs):
-        calls.append(env)
+    async def fake_exec(environment, command, env=None, **kwargs):
+        commands.append(command)
 
-    original = OpenCode.__mro__[1].exec_as_agent
-    OpenCode.__mro__[1].exec_as_agent = fake_exec
-    try:
-        env = {
-            "XDG_DATA_HOME": "/logs/agent/opencode/xdg-data",
-            "XDG_STATE_HOME": "/logs/x",
-            "A": "1",
-        }
-        asyncio.run(opencode.exec_as_agent(None, command="opencode", env=env))
-        asyncio.run(opencode.exec_as_agent(None, command="true"))
-    finally:
-        OpenCode.__mro__[1].exec_as_agent = original
-    assert calls[0] == {
-        "XDG_DATA_HOME": f"{LOCAL_DATA}/xdg-data",
-        "XDG_STATE_HOME": f"{LOCAL_DATA}/xdg-state",
-        "A": "1",
-    }
-    assert calls[1] is None
+    opencode.ensure_system_dependencies = AsyncMock()
+    opencode.exec_as_agent = fake_exec
+    asyncio.run(opencode.install(None))
+    assert "npm i -g @opencode/cli@2.2.0 && opencode --version" in commands[0]
+    assert "opencode-ai" not in commands[0]
+
+
+def test_opencode_gets_the_instruction_verbatim_on_stdin():
+    # OpenCode 2.2.0 reads the words after `--` twice and quotes each one that has a space.
+    instruction = '--start\nSay "it\'s" and C:\\x'
+    command = agent(OpenCode, "openai/gpt-6.1-sol").run_command(instruction)
+    pipe = command.split("; ", 1)[1]
+    assert pipe.startswith(f"printf '%s' {shlex.quote(instruction)} | opencode run --standalone ")
+    assert " -- " not in pipe and "--variant" not in pipe
+    assert "--format=json --thinking --auto 2>&1 | stdbuf -oL tee /logs/agent/opencode.txt" in pipe
+    printed = subprocess.run(
+        ["bash", "-c", pipe.split(" | ", 1)[0]], capture_output=True, text=True, check=True
+    )
+    assert printed.stdout == instruction
 
 
 def test_opencode_stop_command_does_not_match_its_own_shell():
     command = stop_command("TERM")
-    assert "opencode --model=" not in command
+    # Only argv[0] is matched; OpenCode 2 also runs a private `opencode.exe serve` child.
+    assert 'case "${a##*/}" in opencode|opencode.exe)' in command
     assert "kill -TERM" in command and "pkill" not in command
 
 
@@ -599,8 +623,51 @@ def test_kmet_reads_a_message_with_unicode_line_separators(tmp_path):
 
 
 def test_opencode_final_answer_may_hold_a_unicode_line_separator():
-    part = {"type": "text", "text": "a\u2028b", "metadata": {"openai": {"phase": "final_answer"}}}
-    assert has_final_answer(json.dumps({"type": "text", "part": part}, ensure_ascii=False))
+    output = "\n".join([opencode_text("a\u2028b"), opencode_finish("stop")])
+    assert has_final_answer(output)
+    assert session_id(output) == "ses_1"
+
+
+def test_opencode_tokens_come_from_the_session_export(tmp_path):
+    # OpenCode 2 writes no step_finish for the last step, so its JSON lines miss that usage.
+    first = {"input": 100, "output": 20, "reasoning": 5, "cache": {"read": 50, "write": 0}}
+    (tmp_path / "opencode.txt").write_text(
+        "\n".join(
+            [
+                json.dumps({"type": "step_start", "timestamp": 1, "part": {}}),
+                opencode_finish("tool-calls", first),
+                json.dumps({"type": "step_start", "timestamp": 2, "part": {}}),
+                opencode_text(),
+            ]
+        )
+    )
+    last = {"input": 10, "output": 3, "reasoning": 0, "cache": {"read": 150, "write": 0}}
+    exported = {
+        "messages": [
+            {"type": "user", "text": "x"},
+            {"type": "assistant", "finish": "tool-calls", "cost": 0, "tokens": first},
+            {"type": "assistant", "finish": "stop", "cost": 0, "tokens": last},
+            {"type": "idle"},
+        ]
+    }
+    (tmp_path / "opencode").mkdir()
+    (tmp_path / "opencode" / "session.json").write_text(json.dumps(exported))
+    context = AgentContext()
+    agent(OpenCode, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (310, 200, 23)
+    assert context.cost_usd is None
+
+
+def test_opencode_without_a_session_export_keeps_the_json_line_totals(tmp_path):
+    used = {"input": 100, "output": 20, "cache": {"read": 50}}
+    (tmp_path / "opencode.txt").write_text(
+        json.dumps({"type": "step_start", "timestamp": 1, "part": {}})
+        + "\n"
+        + opencode_finish("stop", used)
+    )
+    context = AgentContext()
+    agent(OpenCode, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (150, 50, 20)
 
 
 def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(tmp_path):
@@ -639,3 +706,27 @@ def test_vis_keeps_its_logs_and_exit_status(pinned):
         "2> /logs/agent/vis-stderr.log; status=$?; "
         "cp -R $HOME/.vis/logs /logs/agent/vis-logs 2>/dev/null; exit $status"
     )
+
+
+def test_opencode_deletes_its_login_when_a_setup_command_fails(monkeypatch, tmp_path):
+    from harbor.agents.installed.base import NonZeroAgentExitCodeError
+
+    from ctb.agents import opencode as module
+
+    monkeypatch.setattr(credentials, "codex_vis", lambda minimum: credentials.Access("A", 1))
+    monkeypatch.setattr(module, "stage_files", AsyncMock())
+    opencode = agent(OpenCode, "openai/gpt-6.1-sol", tmp_path)
+    root = []
+
+    async def fake_exec(environment, command, env=None, **kwargs):
+        if "opencode.json" in command:
+            raise NonZeroAgentExitCodeError("config failed")
+
+    async def fake_root(environment, command, **kwargs):
+        root.append(command)
+
+    opencode.exec_as_agent = fake_exec
+    opencode.exec_as_root = fake_root
+    with pytest.raises(NonZeroAgentExitCodeError):
+        asyncio.run(opencode.run("x", None, AgentContext()))
+    assert root and root[-1].endswith(f"rm -f {LOCAL_DATA}/xdg-data/opencode/opencode.db*; true")

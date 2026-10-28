@@ -216,33 +216,62 @@ def read_pi(agent: Path, model: str) -> list[dict]:
     return events
 
 
+def opencode_messages(agent: Path) -> dict[str, dict]:
+    """The assistant messages of OpenCode's session export, by message id."""
+    try:
+        exported = json.loads((agent / "opencode" / "session.json").read_text())
+    except (OSError, ValueError):
+        return {}
+    messages = exported.get("messages") if isinstance(exported, dict) else None
+    return {
+        m["id"]: m
+        for m in messages or []
+        if isinstance(m, dict) and m.get("type") == "assistant" and isinstance(m.get("id"), str)
+    }
+
+
+def opencode_step(
+    model: str, start: float, end: float | None, tools_ms: float, used: dict, cost
+) -> dict:
+    """A finished OpenCode step as a call, without the time of its tools."""
+    cache = (used.get("cache") or {}).get("read") or 0
+    return call(
+        model,
+        start,
+        max(0.0, (end or start) - start - tools_ms),
+        "derived",
+        tokens(
+            (used.get("input") or 0) + cache,
+            cache,
+            (used.get("output") or 0) + (used.get("reasoning") or 0),
+        ),
+        cost,
+    )
+
+
 def read_opencode(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     step: dict | None = None
     step_start = 0.0
     step_tools = 0.0
+    step_message: str | None = None
+    # OpenCode 2 omits the step_finish of the last step; its session export still has the usage.
+    unfinished: list[tuple[dict, str | None, float, float]] = []
     path = agent / "opencode.txt"
     for record in jsonl(path) if path.is_file() else []:
         kind, part, at = record.get("type"), record.get("part") or {}, record.get("timestamp")
         if kind == "step_start":
+            if step is not None:
+                unfinished.append((step, step_message, step_start, step_tools))
             step, step_start, step_tools = call(model, at, None, None, None), at or 0, 0.0
+            step_message = part.get("messageID")
             events.append(step)
         elif kind == "step_finish" and step is not None:
-            used = part.get("tokens") or {}
-            cache = (used.get("cache") or {}).get("read") or 0
-            done = call(
-                model,
-                step_start,
-                max(0.0, (at or step_start) - step_start - step_tools),
-                "derived",
-                tokens(
-                    (used.get("input") or 0) + cache,
-                    cache,
-                    (used.get("output") or 0) + (used.get("reasoning") or 0),
-                ),
-                part.get("cost"),
+            step.update(
+                opencode_step(
+                    model, step_start, at, step_tools, part.get("tokens") or {}, part.get("cost")
+                )
             )
-            step.update(done)
             step = None
         elif kind in ("text", "reasoning") and part.get("text"):
             label = "assistant" if kind == "text" else "reasoning"
@@ -265,6 +294,14 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
                     ms_source="recorded" if ms is not None else None,
                 )
             )
+    if step is not None:
+        unfinished.append((step, step_message, step_start, step_tools))
+    messages = opencode_messages(agent) if unfinished else {}
+    for open_step, message_id, start, tools_ms in unfinished:
+        if message := messages.get(message_id or ""):
+            end = (message.get("time") or {}).get("completed")
+            used = message.get("tokens") or {}
+            open_step.update(opencode_step(model, start, end, tools_ms, used, message.get("cost")))
     return events
 
 

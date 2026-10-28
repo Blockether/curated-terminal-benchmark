@@ -2,7 +2,7 @@ import json
 import re
 
 from ctb.report import render
-from ctb.report.transcripts import event, read_dirge
+from ctb.report.transcripts import event, read_dirge, read_opencode
 from ctb.report.trials import clean_version, summarize
 
 
@@ -224,3 +224,37 @@ def test_tokens_come_from_the_run_totals_or_harbor_when_no_call_records_them(tmp
     assert render.usage(trial) == (None, None, None)
     trial["harbor"] = {"input": 30, "cache": 10, "output": 5}
     assert render.usage(trial) == (30, 10, 5)
+
+
+def test_opencode_2_last_step_takes_its_usage_from_the_session_export(tmp_path):
+    # OpenCode 2 ends a run without the step_finish of its last step.
+    lines = [
+        {"type": "step_start", "timestamp": 1000, "part": {"messageID": "msg_1"}},
+        {
+            "type": "step_finish",
+            "timestamp": 3000,
+            "part": {"reason": "tool-calls", "cost": 0, "tokens": {"input": 10, "output": 2}},
+        },
+        {"type": "step_start", "timestamp": 4000, "part": {"messageID": "msg_2"}},
+        {"type": "text", "timestamp": 4500, "part": {"text": "done"}},
+    ]
+    (tmp_path / "opencode.txt").write_text("\n".join(json.dumps(line) for line in lines))
+    used = {"input": 7, "output": 3, "reasoning": 1, "cache": {"read": 90}}
+    exported = {
+        "messages": [
+            {"type": "assistant", "id": "msg_1", "tokens": {"input": 10, "output": 2}},
+            {"type": "assistant", "id": "msg_2", "time": {"completed": 5000}, "tokens": used},
+        ]
+    }
+    (tmp_path / "opencode").mkdir()
+    (tmp_path / "opencode" / "session.json").write_text(json.dumps(exported))
+    calls = [e for e in read_opencode(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]
+    assert [c["tokens"] for c in calls] == [
+        {"input": 10, "cache": 0, "output": 2},
+        {"input": 97, "cache": 90, "output": 4},
+    ]
+    assert [c["ms"] for c in calls] == [2000, 1000]
+    # Without the export, the last call keeps no usage.
+    (tmp_path / "opencode" / "session.json").unlink()
+    last = [e for e in read_opencode(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"][-1]
+    assert last["tokens"] is None
