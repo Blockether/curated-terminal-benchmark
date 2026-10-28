@@ -159,3 +159,20 @@ def test_trial_page_opens_error_output_and_links_each_error():
     assert page.count("<details open") == 3
     assert "<details><summary>Output" in page
     assert "Harbor recorded no phase times" in page
+
+
+def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):
+    jobs, out = tmp_path / "jobs", tmp_path / "report"
+    write_vis_trial(jobs, name="t1")
+    write_vis_trial(jobs, name="t2", task="terminal-bench/other")
+    trials = render.build(jobs, out, workers=1)
+    index = (out / "index.html").read_text()
+    page = (out / "trial" / f"{trials[0]['id']}.html").read_text()
+    assert index.count('<pre class="mermaid"') == 2
+    assert 'x-axis ["vis-native"]' in index and "bar [100]" in index
+    assert "pele.global.js" in index and (out / "pele.global.js").is_file()
+    # Phase times are absolute UTC dates, so the chart does not move with the reader's zone.
+    assert "dateFormat YYYY-MM-DD HH:mm:ss" in page
+    assert "Agent execution :p1, 2026-10-16 10:00:00, 2026-10-16 10:02:00" in page
+    assert "Verifier :p2, 2026-10-16 10:02:00, 2026-10-16 10:03:00" in page
+    assert render.mermaid_text('a "b": c#d;') == "a  b   c d"

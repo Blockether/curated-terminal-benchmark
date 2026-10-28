@@ -1,11 +1,14 @@
 """Write the report trials as a static HTML site: index.html and one page for each trial.
 
-The pages work without JavaScript. report.js adds filters, sorting and the URL state.
+The pages work without JavaScript. report.js adds filters, sorting, the URL state and the
+Mermaid diagrams, which Pele draws.
 A value that a harness does not record shows as "not recorded", never as zero.
 """
 
 import html
+import math
 import os
+import re
 import shutil
 import statistics
 from collections import defaultdict
@@ -17,7 +20,7 @@ from pathlib import Path
 from ctb.report.trials import find, load
 
 STATIC = Path(__file__).parent / "static"
-ASSETS = ("tokens.css", "base.css", "report.css", "report.js", "logo.svg")
+ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
 FONTS = (
     "https://fonts.googleapis.com/css2?family=Inter:wght@400..900"
     "&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -187,6 +190,8 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="{FONTS}">
 <link rel="stylesheet" href="{up}report.css">
+<noscript><style>.diagram {{ display: none; }}</style></noscript>
+<script src="{up}pele.global.js" defer></script>
 <script src="{up}report.js" defer></script>
 </head>
 <body>
@@ -217,6 +222,55 @@ def readings(items: list[tuple[str, str | None, str | None]]) -> str:
             f'<p class="reading">{shown(value)}</p>{under}</div>'
         )
     return f'<div class="panels readings">{"".join(cells)}</div>'
+
+
+def mermaid_text(value: object) -> str:
+    """A label that a quoted Mermaid string can hold."""
+    return re.sub(r'["#;:]', " ", str(value)).strip()
+
+
+def diagram(source: str, caption: str) -> str:
+    """A Mermaid diagram that report.js draws with Pele. Without JavaScript the tables carry the data."""
+    return (
+        f'<figure class="diagram"><figcaption>{esc(caption)}</figcaption>'
+        f'<pre class="mermaid" role="img" aria-label="{esc(caption)}">{esc_text(source)}</pre>'
+        "</figure>"
+    )
+
+
+def agent_charts(trials: list[dict]) -> str:
+    """Pass rate and cost of each agent as two bar charts."""
+    by_agent: dict[str, list[dict]] = defaultdict(list)
+    for trial in trials:
+        by_agent[trial["agent"]].append(trial)
+    if not by_agent:
+        return ""
+    names = ", ".join(f'"{mermaid_text(agent)}"' for agent in sorted(by_agent))
+    rates = [
+        round(100 * sum(t["passed"] for t in group) / len(group))
+        for _, group in sorted(by_agent.items())
+    ]
+    costs = [
+        round(sum(t["facts"]["cost"] or 0 for t in group), 2)
+        for _, group in sorted(by_agent.items())
+    ]
+    top = max(costs) or 1
+    scale = 10 ** max(0, math.floor(math.log10(top)))
+    head = "---\nconfig:\n  xyChart:\n    showDataLabel: true\n---\nxychart-beta horizontal\n"
+    pass_chart = (
+        f'{head}  x-axis [{names}]\n  y-axis "Pass rate (%)" 0 --> 100\n'
+        f"  bar [{', '.join(map(str, rates))}]"
+    )
+    cost_chart = (
+        f'{head}  x-axis [{names}]\n  y-axis "Cost (USD)" 0 --> {math.ceil(top / scale) * scale}\n'
+        f"  bar [{', '.join(map(str, costs))}]"
+    )
+    return (
+        '<div class="charts">'
+        + diagram(pass_chart, "Pass rate by agent")
+        + diagram(cost_chart, "Cost by agent")
+        + "</div>"
+    )
 
 
 def table(head: list[str], rows: list[str], *, cls: str = "", empty: str, attrs: str = "") -> str:
@@ -438,6 +492,7 @@ def index(trials: list[dict], generated: str) -> str:
 <h2>Agents</h2>
 <p class="hint">Cost is the API list-price equivalent where the agent reports none. A dash
 marks a value that no trial of the agent records.</p>
+{agent_charts(trials)}
 {table(agent_head, agent_rows(trials), cls="sortable", empty="No trials were found.")}
 </section>
 <section id="tool-errors" class="block">
@@ -484,28 +539,29 @@ def offset(at: float | None, base: float | None) -> str | None:
     )
 
 
+def gantt_time(ms: float) -> str:
+    """An epoch time in milliseconds as a Gantt date. Pele reads and writes it in one zone, so it stays UTC."""
+    return datetime.fromtimestamp(ms / 1000, UTC).strftime("%Y-%m-%d %H:%M:%S")
+
+
 def run_timeline(trial: dict) -> str:
     """The phase bar of the run and the activity strip of its events: the signature object."""
     phases = [p for p in trial["phases"] if p["start"] is not None and p["end"] is not None]
     parts = []
     if phases:
         start, end = min(p["start"] for p in phases), max(p["end"] for p in phases)
-        span = max(end - start, 1)
-        bars, legend = [], []
-        for p in phases:
-            left, width = 100 * (p["start"] - start) / span, 100 * (p["end"] - p["start"]) / span
+        rows, legend = [], []
+        for number_, p in enumerate(phases, 1):
             name = PHASE_NAMES[p["name"]]
-            bars.append(
-                f'<span class="phase phase-{p["name"]}" style="left:{left:.3f}%;'
-                f'width:{max(width, 0.4):.3f}%" title="{esc(name)}"></span>'
-            )
+            rows.append(f"  {name} :p{number_}, {gantt_time(p['start'])}, {gantt_time(p['end'])}")
             legend.append(
-                f'<li><span class="swatch phase-{p["name"]}"></span>{esc(name)} '
-                f'<span class="mono">{esc(duration(p["end"] - p["start"]))}</span></li>'
+                f'<li>{esc(name)} <span class="mono">{esc(duration(p["end"] - p["start"]))}</span></li>'
             )
+        axis = "%H:%M" if end - start >= 1_800_000 else "%H:%M:%S"
+        chart = "gantt\n  dateFormat YYYY-MM-DD HH:mm:ss\n  axisFormat " + axis + "\n"
+        chart += "\n".join(rows)
         parts.append(
-            f'<div class="phasebar" role="img" aria-label="Run phases">{"".join(bars)}'
-            f'</div><ul class="legend">{"".join(legend)}</ul>'
+            diagram(chart, "Run phases in UTC") + f'<ul class="legend">{"".join(legend)}</ul>'
         )
     else:
         parts.append('<p class="empty">Harbor recorded no phase times for this trial.</p>')

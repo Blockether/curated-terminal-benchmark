@@ -1,4 +1,4 @@
-// Filters, sorting and URL state for the CTB report. The pages read fine without this file.
+// Filters, sorting, URL state and Pele diagrams for the CTB report. The pages read fine without this file.
 (function () {
   "use strict";
   document.documentElement.classList.add("js");
@@ -149,7 +149,24 @@
     if (target && target.hidden) { show("all"); target.scrollIntoView(); }
   }
 
+  function setupDiagrams() {
+    var blocks = document.querySelectorAll("pre.mermaid");
+    if (!window.pele || !blocks.length) return;
+    Array.prototype.forEach.call(blocks, function (block) {
+      var source = block.textContent;
+      try {
+        var width = Math.max(320, block.clientWidth);
+        window.pele.mount(block, source, { maxWidth: width, config: { gantt: { useWidth: width } } });
+        block.setAttribute("data-drawn", "");
+      } catch (error) {
+        block.textContent = source;
+        block.setAttribute("data-failed", "");
+      }
+    });
+  }
+
   setupSorting();
   setupFilters();
   setupTranscript();
+  setupDiagrams();
 })();
