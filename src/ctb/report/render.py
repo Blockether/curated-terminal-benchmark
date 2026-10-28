@@ -633,13 +633,21 @@ def name_table(groups: dict, label: str, empty: str, *, marked: bool = True) -> 
 
 
 def usage(trial: dict) -> tuple[int | None, int | None, int | None]:
-    """Input, cached and output tokens: the sum over the calls, else the run totals."""
+    """Input, cached and output tokens from the first source that has them.
+
+    The sources are the calls, then the run totals of the agent, then Harbor's agent result.
+    """
     s = trial["summary"]
     if any(e["tokens"] for e in trial["events"] if e["kind"] == "call"):
         return s["input"], s["cache"], s["output"]
-    run = run_result(trial["events"])
-    used = (run or {}).get("tokens") or {}
-    return used.get("input"), used.get("cache"), used.get("output")
+    used = (run_result(trial["events"]) or {}).get("tokens")
+    if used:
+        return used["input"], used["cache"], used["output"]
+    harbor = trial["harbor"]
+    # Harbor writes 0 for a count that the agent did not report, so all zeros mean none.
+    if any(harbor.get(key) for key in ("input", "cache", "output")):
+        return harbor["input"], harbor["cache"], harbor["output"]
+    return None, None, None
 
 
 def tokens_note(trial: dict) -> str | None:

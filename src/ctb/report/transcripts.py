@@ -424,6 +424,28 @@ def read_dirge(agent: Path, model: str) -> list[dict]:
                     )
                 elif part.get("type") == "text":
                     events.append(event("user", text=part.get("text")))
+        elif record.get("type") == "result":
+            used = record.get("usage") or {}
+            # Dirge writes 0.0 when it has no price for the model, so only a positive cost counts.
+            cost = record.get("total_cost_usd") or None
+            events.append(
+                event(
+                    "result",
+                    name=record.get("subtype"),
+                    error=bool(record.get("is_error")),
+                    ms=record.get("duration_ms"),
+                    ms_source="recorded" if record.get("duration_ms") is not None else None,
+                    tokens=tokens(
+                        used.get("input_tokens"),
+                        used.get("cached_input_tokens") or used.get("cache_read_input_tokens"),
+                        used.get("output_tokens"),
+                    )
+                    if used
+                    else None,
+                    cost=cost,
+                    cost_source="recorded" if cost is not None else None,
+                )
+            )
     return events
 
 

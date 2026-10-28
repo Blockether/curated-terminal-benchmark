@@ -2,7 +2,7 @@ import json
 import re
 
 from ctb.report import render
-from ctb.report.transcripts import event
+from ctb.report.transcripts import event, read_dirge
 from ctb.report.trials import clean_version, summarize
 
 
@@ -193,3 +193,34 @@ def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):
     assert "Agent execution :p1, 2026-10-16 10:00:00, 2026-10-16 10:02:00" in page
     assert "Verifier :p2, 2026-10-16 10:02:00, 2026-10-16 10:03:00" in page
     assert render.mermaid_text('a "b": c#d;') == "a  b   c d"
+
+
+def test_tokens_come_from_the_run_totals_or_harbor_when_no_call_records_them(tmp_path):
+    # Dirge writes usage only in its final result record, not in each assistant message.
+    lines = [
+        {"type": "assistant", "message": {"id": "m1", "content": [{"type": "text", "text": "Hi"}]}},
+        {
+            "type": "result",
+            "subtype": "success",
+            "is_error": False,
+            "duration_ms": 249_392,
+            "total_cost_usd": 0.0,
+            "usage": {
+                "input_tokens": 448_724,
+                "cached_input_tokens": 238_080,
+                "output_tokens": 7_620,
+            },
+        },
+    ]
+    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(line) for line in lines) + "\n")
+    events = read_dirge(tmp_path, "openai/gpt-5.5")
+    result = events[-1]
+    assert result["kind"] == "result" and result["ms"] == 249_392 and result["cost"] is None
+    harbor = {"input": 0, "cache": 0, "output": 0}
+    trial = {"events": events, "summary": summarize(events), "harbor": harbor}
+    assert render.usage(trial) == (448_724, 238_080, 7_620)
+    plain = [e for e in events if e["kind"] != "result"]
+    trial = {"events": plain, "summary": summarize(plain), "harbor": harbor}
+    assert render.usage(trial) == (None, None, None)
+    trial["harbor"] = {"input": 30, "cache": 10, "output": 5}
+    assert render.usage(trial) == (30, 10, 5)
