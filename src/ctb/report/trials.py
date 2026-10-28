@@ -93,12 +93,7 @@ def load(trial: Path, jobs: Path) -> dict:
     parts = trial.relative_to(jobs).parts
     round_ = parts[0] if parts[0] != "suite" else f"suite/{parts[2]}"
     key = harness(info.get("name") or "")
-    events, notes = READERS[key](trial / "agent", model) if key else ([], [])
-    if not events:
-        notes.append("No transcript was found for this trial.")
-    tools = [e for e in events if e["kind"] == "tool"]
-    if tools and all(e["error"] is None for e in tools):
-        notes.append("This harness does not mark tool errors, so tool errors are not recorded.")
+    events = READERS[key](trial / "agent", model) if key else []
     if not any(e["kind"] == "user" for e in events):
         prompt = instruction(trial, result)
         if prompt:
@@ -129,6 +124,5 @@ def load(trial: Path, jobs: Path) -> dict:
             for name in PHASES
         ],
         "events": events,
-        "notes": notes,
         "summary": summarize(events),
     }

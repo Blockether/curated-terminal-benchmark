@@ -374,7 +374,7 @@ def trial_rows(trials: list[dict]) -> list[str]:
             f'<td data-v="{esc(t["agent"])}">{esc(t["agent"])}</td>'
             f'<td data-v="{f["outcome"]}">{chip(f["outcome"], t["error"])}</td>'
             + td(duration(f["run_ms"]), -1 if f["run_ms"] is None else f["run_ms"])
-            + td(money(f["cost"]), -1 if f["cost"] is None else f["cost"], title=f["cost_source"])
+            + td(money(f["cost"]), -1 if f["cost"] is None else f["cost"])
             + td(number(s["provider_calls"]), s["provider_calls"])
             + td(duration(s["provider_ms"]), -1 if s["provider_ms"] is None else s["provider_ms"])
             + td(number(s["tool_calls"]), s["tool_calls"])
@@ -632,48 +632,44 @@ def name_table(groups: dict, label: str, empty: str, *, marked: bool = True) -> 
     return table(head, rows, cls="sortable", empty=empty)
 
 
+def usage(trial: dict) -> tuple[int | None, int | None, int | None]:
+    """Input, cached and output tokens: the sum over the calls, else the run totals."""
+    s = trial["summary"]
+    if any(e["tokens"] for e in trial["events"] if e["kind"] == "call"):
+        return s["input"], s["cache"], s["output"]
+    run = run_result(trial["events"])
+    used = (run or {}).get("tokens") or {}
+    return used.get("input"), used.get("cache"), used.get("output")
+
+
+def tokens_note(trial: dict) -> str | None:
+    """All tokens of the run in one short phrase, or None when none are recorded."""
+    tokens_in, _, tokens_out = usage(trial)
+    if tokens_in is None and tokens_out is None:
+        return None
+    return f"{number((tokens_in or 0) + (tokens_out or 0))} tokens"
+
+
 def provider_list(trial: dict) -> str:
+    """The same call facts for every harness. A value that the harness lacks is not recorded."""
     s, calls = trial["summary"], [e for e in trial["events"] if e["kind"] == "call"]
     times = [e["ms"] for e in calls if e["ms"] is not None]
-    sources = sorted({e["ms_source"] for e in calls if e["ms_source"]})
-    timing = [
+    tokens_in, cached, tokens_out = usage(trial)
+    items = [
         ("Calls", number(s["provider_calls"])),
-        ("Timed calls", number(s["provider_timed"])),
         ("Total time", duration(s["provider_ms"])),
         ("Mean time", duration(statistics.mean(times)) if times else None),
         ("Longest call", duration(max(times)) if times else None),
-        ("Time source", ", ".join(sources) or None),
         ("Failed calls", number(s["provider_errors"])),
+        ("Cost", money(trial["facts"]["cost"])),
+        ("Input tokens", number(tokens_in)),
+        ("Cached tokens", number(cached)),
+        ("Output tokens", number(tokens_out)),
     ]
-    pairs = [
-        ("Priced calls", number(s["provider_priced"])),
-        ("Total cost", money(s["provider_cost"])),
-        ("Cost source", ", ".join(s["provider_cost_sources"]) or None),
-        ("Input tokens", number(s["input"]) if s["input"] else None),
-        ("Cached tokens", number(s["cache"]) if s["cache"] else None),
-        ("Output tokens", number(s["output"]) if s["output"] else None),
-    ]
-    groups = [("Time", timing), ("Cost and tokens of the calls", pairs)]
-    run = run_result(trial["events"])
-    if run:
-        used = run["tokens"] or {}
-        groups.append(
-            (
-                "Run totals that the agent wrote",
-                [
-                    ("Cost", money(run["cost"])),
-                    ("Input tokens", number(used.get("input"))),
-                    ("Cached tokens", number(used.get("cache"))),
-                    ("Output tokens", number(used.get("output"))),
-                    ("Duration", duration(run["ms"])),
-                ],
-            )
-        )
-    return "".join(
-        f'<div class="fact-group"><h3>{esc(title)}</h3><dl class="facts">'
+    return (
+        '<dl class="facts">'
         + "".join(f"<div><dt>{esc(k)}</dt><dd>{shown(v)}</dd></div>" for k, v in items)
-        + "</dl></div>"
-        for title, items in groups
+        + "</dl>"
     )
 
 
@@ -716,10 +712,7 @@ def event_item(index: int, e: dict, base: float | None) -> str:
             f"{t['input']:,} in, {t['cache']:,} cached, {t['output']:,} out</span>"
         )
     if e["cost"] is not None:
-        meta.append(
-            f'<span class="mono" title="{esc(e["cost_source"] or "")}">'
-            f"{esc(money(e['cost']))}</span>"
-        )
+        meta.append(f'<span class="mono">{esc(money(e["cost"]))}</span>')
     if e["error"]:
         meta.append('<span class="chip chip-error">Error</span>')
     name = f'<span class="ev-name mono">{esc(e["name"])}</span>' if e["name"] else ""
@@ -794,7 +787,7 @@ def trial_page(trial: dict) -> str:
                 number(s["provider_calls"]),
                 f"{duration(s['provider_ms'])} in calls" if s["provider_ms"] is not None else None,
             ),
-            ("Cost", money(f["cost"]), f["cost_source"]),
+            ("Cost", money(f["cost"]), tokens_note(trial)),
             (
                 "Tool calls",
                 number(s["tool_calls"]),
@@ -802,12 +795,6 @@ def trial_page(trial: dict) -> str:
             ),
             ("Tool errors", number(s["tool_errors"]), percent(s["tool_errors"], s["tool_calls"])),
         ]
-    )
-    notes = "".join(f"<li>{esc(n)}</li>" for n in trial["notes"])
-    notes_block = (
-        (f'<section class="block"><h2>Recording notes</h2><ul class="notes">{notes}</ul></section>')
-        if notes
-        else ""
     )
     commands = (
         f'<section class="block"><h2>Commands</h2>'
@@ -850,7 +837,6 @@ def trial_page(trial: dict) -> str:
 <h2>Errors</h2>
 {error_list(events)}
 </section>
-{notes_block}
 <section id="transcript" class="block">
 <h2>Transcript</h2>
 <nav class="chips" aria-label="Transcript filter">{chips}</nav>

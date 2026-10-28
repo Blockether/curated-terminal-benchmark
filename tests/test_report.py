@@ -1,4 +1,5 @@
 import json
+import re
 
 from ctb.report import render
 from ctb.report.transcripts import event
@@ -102,7 +103,23 @@ def test_build_writes_the_index_and_one_page_per_trial(tmp_path):
     assert "<script>x</script>" not in index and "<script>x</script>" not in page
     assert "&lt;script&gt;x&lt;/script&gt;" in index
     assert f'href="trial/{trial["id"]}.html"' in index
-    assert "Run totals that the agent wrote" in page and "$0.2500" in page
+    # Every harness gets the same call facts; run totals fill tokens that no call records.
+    calls = page[page.index('id="provider"') : page.index('id="tools"')]
+    labels = re.findall(r"<dt>([^<]+)</dt>", calls)
+    assert labels == [
+        "Calls",
+        "Total time",
+        "Mean time",
+        "Longest call",
+        "Failed calls",
+        "Cost",
+        "Input tokens",
+        "Cached tokens",
+        "Output tokens",
+    ]
+    assert "$0.2500" in calls and ">100<" in calls and ">40<" in calls and ">7<" in calls
+    assert "107 tokens" in page
+    assert "Recording notes" not in page and "Vis writes" not in page
     assert "Done &lt;b&gt;here&lt;/b&gt;." in page
     assert "not recorded" in page
     for name in render.ASSETS:

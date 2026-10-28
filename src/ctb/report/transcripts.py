@@ -12,8 +12,8 @@ A trial is a dict with the Harbor facts of one run and its `events`. An event is
 - `tokens`: {"input", "cache", "output"} of a provider call; input includes cache reads.
 - `cost`, `cost_source`: USD of a provider call, "recorded" or "list price".
 
-Nothing is invented: a value that a harness does not write stays None, and the reader adds
-a note to `notes` that the report shows.
+Nothing is invented: a value that a harness does not write stays None. The report shows
+the same fields for every harness and marks a missing value as not recorded.
 """
 
 import gzip
@@ -159,10 +159,10 @@ def pair(pending: dict, key: object, **fields: object) -> None:
             target[name] = clip(value) if name in ("input", "output", "text") else value
 
 
-# Harness readers. Each returns (events, notes).
+# Harness readers. Each returns the events.
 
 
-def read_pi(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_pi(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     pending: dict = {}
     for path in sorted((agent / "pi").rglob("*.jsonl")):
@@ -213,10 +213,10 @@ def read_pi(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     ms=message.get("durationMs"),
                     ms_source="recorded" if message.get("durationMs") is not None else None,
                 )
-    return events, []
+    return events
 
 
-def read_opencode(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_opencode(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     step: dict | None = None
     step_start = 0.0
@@ -265,11 +265,10 @@ def read_opencode(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     ms_source="recorded" if ms is not None else None,
                 )
             )
-    notes = ["Provider time is each step's time minus the tool time inside it."]
-    return events, notes
+    return events
 
 
-def read_codex(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_codex(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     pending: dict = {}
     anchor: float | None = None
@@ -371,17 +370,10 @@ def read_codex(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                             error=item.get("status") == "failed",
                         )
                     )
-    notes = [
-        (
-            "Provider time runs from the previous tool result or provider call to the next "
-            "token record."
-        ),
-        "Commands are the shell runs inside each exec script.",
-    ]
-    return events, notes
+    return events
 
 
-def read_dirge(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_dirge(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     pending: dict = {}
     seen: set = set()
@@ -432,8 +424,7 @@ def read_dirge(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     )
                 elif part.get("type") == "text":
                     events.append(event("user", text=part.get("text")))
-    notes = ["Dirge writes no times for single events, so call and tool times are not recorded."]
-    return events, notes
+    return events
 
 
 def edn_plain(value: object) -> object:
@@ -449,7 +440,7 @@ def edn_plain(value: object) -> object:
     return value
 
 
-def read_kmet(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_kmet(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     pending: dict = {}
     previous: float | None = None
@@ -505,14 +496,13 @@ def read_kmet(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     )
             if at is not None:
                 previous = at
-    notes = ["Provider and tool times come from the times of consecutive session entries."]
-    return events, notes
+    return events
 
 
-def read_samizdat(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_samizdat(agent: Path, model: str) -> list[dict]:
     path = agent / "samizdat-transcript.json"
     if not path.is_file():
-        return [], []
+        return []
     body = json.loads(path.read_text(encoding="utf-8"))
     turns = [t for branch in body.get("branches") or [] for t in branch.get("turns") or []]
     turns.sort(key=lambda t: (t.get("created_at") or "", t.get("turn") or 0))
@@ -554,13 +544,7 @@ def read_samizdat(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     error=failed,
                 )
             )
-    notes = [
-        (
-            "Samizdat writes no tool times. A tool error is a turn in category failure, a parse "
-            "error or a policy refusal."
-        )
-    ]
-    return events, notes
+    return events
 
 
 #: Streaming deltas: the iteration-final record holds the same text whole.
@@ -576,10 +560,10 @@ def vis_trace(agent: Path) -> Path | None:
     return None
 
 
-def read_vis(agent: Path, model: str) -> tuple[list[dict], list[str]]:
+def read_vis(agent: Path, model: str) -> list[dict]:
     path = vis_trace(agent)
     if path is None:
-        return [], []
+        return []
     events: list[dict] = []
     calls: dict = {}
     pending: dict = {}
@@ -647,8 +631,7 @@ def read_vis(agent: Path, model: str) -> tuple[list[dict], list[str]]:
                     cost_source="recorded" if cost.get("total_cost") is not None else None,
                 )
             )
-    notes = ["Vis writes the tokens and the cost of the whole run, not of each provider call."]
-    return events, notes
+    return events
 
 
 READERS = {
