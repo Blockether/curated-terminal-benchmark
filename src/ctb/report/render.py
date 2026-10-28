@@ -17,10 +17,10 @@ from pathlib import Path
 from ctb.report.trials import find, load
 
 STATIC = Path(__file__).parent / "static"
-ASSETS = ("tokens.css", "base.css", "report.css", "report.js")
+ASSETS = ("tokens.css", "base.css", "report.css", "report.js", "logo.svg")
 FONTS = (
-    "https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500"
-    "&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400..900"
+    "&family=JetBrains+Mono:wght@400;500&display=swap"
 )
 #: The text length above which an input or output starts closed.
 OPEN_LIMIT = 1_200
@@ -192,7 +192,9 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <body>
 <header class="topbar">
 <div class="container topbar-row">
-<a class="brand" href="{up}index.html">CTB report</a>
+<a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
+<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
+<span class="brand-name">CTB report</span></a>
 <nav aria-label="Sections">{nav}</nav>
 </div>
 </header>
@@ -343,7 +345,7 @@ def trial_rows(trials: list[dict]) -> list[str]:
 def options(name: str, label: str, values: list[str]) -> str:
     items = "".join(f'<option value="{esc(v)}">{esc(v)}</option>' for v in values)
     return (
-        f'<label class="field"><span>{esc(label)}</span><select name="{name}">'
+        f'<label class="field field-{name}"><span>{esc(label)}</span><select name="{name}">'
         f'<option value="">All</option>{items}</select></label>'
     )
 
@@ -414,17 +416,17 @@ def index(trials: list[dict], generated: str) -> str:
         th("Started", "text"),
     ]
     filters = f"""<form class="filters" method="get" action="#trials" data-filters>
-<label class="field field-wide"><span>Search</span>
+<label class="field field-q"><span>Search</span>
 <input type="search" name="q" placeholder="Task, agent or model" autocomplete="off"></label>
 {options("agent", "Agent", agents)}
 {options("round", "Round", rounds)}
-<label class="field"><span>Outcome</span><select name="outcome"><option value="">All</option>
+<label class="field field-outcome"><span>Outcome</span><select name="outcome"><option value="">All</option>
 <option value="passed">Passed</option><option value="failed">Failed</option>
 <option value="error">Error</option></select></label>
-<div class="filter-actions"><button type="submit" class="button">Apply</button>
-<a class="button button-quiet" href="index.html#trials">Reset</a></div>
+<noscript><button type="submit" class="filter-submit">Apply</button></noscript>
 </form>
-<p class="count" aria-live="polite" data-count>{len(trials)} trials</p>
+<div class="count-row"><p class="count" aria-live="polite" data-count>{len(trials)} trials</p>
+<a class="clear" href="index.html#trials" data-clear hidden>Clear filters</a></div>
 <p class="empty" data-empty hidden>No trials match these filters.</p>"""
     body = f"""<section class="head">
 <h1>Benchmark runs</h1>

@@ -1,6 +1,7 @@
 // Filters, sorting and URL state for the CTB report. The pages read fine without this file.
 (function () {
   "use strict";
+  document.documentElement.classList.add("js");
 
   function cellValue(row, index, type) {
     var cell = row.children[index];
@@ -97,6 +98,8 @@
         : "Showing " + shown + " of " + rows.length + " trials";
       empty.hidden = shown !== 0;
       table.parentElement.hidden = shown === 0;
+      var clear = document.querySelector("[data-clear]");
+      if (clear) clear.hidden = !(q || agent || round || outcome);
       setParams({ q: q, agent: agent, round: round, outcome: outcome });
     }
 
