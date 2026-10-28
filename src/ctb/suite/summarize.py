@@ -10,15 +10,22 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-from capture_trace import redact_value
-from run_suite import has_pinned_provider_call, has_vis_result, is_scored_attempt
+from ctb.suite import SUITE
+from ctb.suite.capture_trace import redact_value
+from ctb.suite.run_suite import (
+    DATASET,
+    JOBS,
+    has_pinned_provider_call,
+    has_vis_result,
+    is_scored_attempt,
+)
 
 
 def elapsed_seconds(start: str | None, end: str | None) -> float | None:
     if not start or not end:
         return None
-    start_time = datetime.fromisoformat(start.replace("Z", "+00:00"))
-    end_time = datetime.fromisoformat(end.replace("Z", "+00:00"))
+    start_time = datetime.fromisoformat(start)
+    end_time = datetime.fromisoformat(end)
     return round((end_time - start_time).total_seconds(), 3)
 
 
@@ -119,18 +126,14 @@ def trace_summary(path: Path, root: Path) -> dict | None:
                 trace = payload.get("trace")
                 if result_status == "error" and isinstance(trace, list):
                     for entry in reversed(trace):
-                        if not isinstance(entry, dict) or not isinstance(
-                            entry.get("error"), dict
-                        ):
+                        if not isinstance(entry, dict) or not isinstance(entry.get("error"), dict):
                             continue
                         error = entry["error"]
                         error_type = error.get("type")
                         if isinstance(error_type, str) and len(error_type) <= 100:
                             result_error_type = error_type
                         data = error.get("data")
-                        usage = (
-                            data.get("api-usage") if isinstance(data, dict) else None
-                        )
+                        usage = data.get("api-usage") if isinstance(data, dict) else None
                         if isinstance(usage, dict):
                             last_provider_error_usage = {
                                 name: usage[key]
@@ -243,10 +246,7 @@ def trial_summary(result_path: Path, root: Path) -> dict:
         status = "incomplete"
     elif exception:
         status = "exception"
-    elif (
-        result.get("agent_result") is not None
-        and result.get("verifier_result") is not None
-    ):
+    elif result.get("agent_result") is not None and result.get("verifier_result") is not None:
         status = "verified"
     else:
         status = "unverified"
@@ -258,16 +258,13 @@ def trial_summary(result_path: Path, root: Path) -> dict:
         "status": status,
         "exception_type": exception.get("exception_type") if exception else None,
         "finished_at": finished,
-        "model_attempt": has_vis_result(result)
-        or has_pinned_provider_call(result_path.parent),
+        "model_attempt": has_vis_result(result) or has_pinned_provider_call(result_path.parent),
         "scored": bool(finished) and is_scored_attempt(result, result_path.parent),
         "result_path": relative(result_path, root),
         "trace": trace_summary(result_path.parent / "agent/vis-trace.jsonl", root),
         "model": metadata.get("model"),
         "reward": (verifier.get("rewards") or {}).get("reward"),
-        "verifier_tests": verifier_test_counts(
-            result_path.parent / "verifier/ctrf.json"
-        ),
+        "verifier_tests": verifier_test_counts(result_path.parent / "verifier/ctrf.json"),
         "verifier_details": verifier_details(result_path.parent / "verifier"),
         "tokens": {
             "input": agent.get("n_input_tokens"),
@@ -275,9 +272,7 @@ def trial_summary(result_path: Path, root: Path) -> dict:
             "output": agent.get("n_output_tokens"),
         },
         "billed_cost_usd": agent.get("cost_usd"),
-        "estimated_metered_api_cost_usd": metadata.get(
-            "estimated_metered_api_cost_usd"
-        ),
+        "estimated_metered_api_cost_usd": metadata.get("estimated_metered_api_cost_usd"),
         "vis_duration_ms": metadata.get("duration_ms"),
         "vis_iterations": metadata.get("iteration_count"),
         "elapsed_seconds": elapsed_seconds(result.get("started_at"), finished),
@@ -321,8 +316,7 @@ def usage_totals(trials: list[dict]) -> dict:
         "cached_input_tokens": total(trial["tokens"]["cached"] for trial in attempts),
         "output_tokens": total(trial["tokens"]["output"] for trial in attempts),
         "unparsed_output_tokens_estimate": total(
-            (trial["trace"] or {}).get("failed_call_output_tokens_estimate")
-            for trial in attempts
+            (trial["trace"] or {}).get("failed_call_output_tokens_estimate") for trial in attempts
         ),
         "estimated_metered_api_cost_usd": total(
             trial["estimated_metered_api_cost_usd"] for trial in attempts
@@ -333,9 +327,7 @@ def usage_totals(trials: list[dict]) -> dict:
 
 def make_report(jobs_dir: Path, dataset_dir: Path) -> dict:
     root = jobs_dir.parent
-    trials = [
-        trial_summary(path, root) for path in sorted(jobs_dir.glob("*/*/result.json"))
-    ]
+    trials = [trial_summary(path, root) for path in sorted(jobs_dir.glob("*/*/result.json"))]
     task_dirs = sorted(path for path in dataset_dir.iterdir() if path.is_dir())
     gpu_tasks = []
     for task in task_dirs:
@@ -348,19 +340,11 @@ def make_report(jobs_dir: Path, dataset_dir: Path) -> dict:
         if isinstance(trial["task"], str)
     }
     verified = [trial for trial in trials if trial["status"] == "verified"]
-    rewards = [
-        trial["reward"]
-        for trial in verified
-        if isinstance(trial["reward"], (int, float))
-    ]
+    rewards = [trial["reward"] for trial in verified if isinstance(trial["reward"], (int, float))]
     # Score each task once, by its latest verified model attempt.
     scored = {}
     for trial in sorted(
-        (
-            trial
-            for trial in trials
-            if trial["scored"] and isinstance(trial["task"], str)
-        ),
+        (trial for trial in trials if trial["scored"] and isinstance(trial["task"], str)),
         key=lambda trial: trial["finished_at"],
     ):
         scored[trial["task"].removeprefix("terminal-bench/")] = trial
@@ -378,22 +362,16 @@ def make_report(jobs_dir: Path, dataset_dir: Path) -> dict:
     for trial in trials:
         streak = (trial["trace"] or {}).get("trailing_iteration_errors")
         if streak and streak["iterations"] > 1:
-            repeated_errors.append(
-                {"trial": f"{trial['job']}/{trial['trial']}", **streak}
-            )
+            repeated_errors.append({"trial": f"{trial['job']}/{trial['trial']}", **streak})
     return redact_value(
         {
             "dataset": "terminal-bench/terminal-bench@4.0.0",
             "total_dataset_tasks": len(task_dirs),
             "gpu_required_tasks": gpu_tasks,
-            "unattempted_tasks": [
-                task.name for task in task_dirs if task.name not in attempted
-            ],
+            "unattempted_tasks": [task.name for task in task_dirs if task.name not in attempted],
             "attempts": len(trials),
             "verified_attempts": len(verified),
-            "exception_attempts": sum(
-                trial["status"] == "exception" for trial in trials
-            ),
+            "exception_attempts": sum(trial["status"] == "exception" for trial in trials),
             "mean_verified_reward": sum(rewards) / len(rewards) if rewards else None,
             "scored_tasks": len(scored),
             "solved_tasks": solved,
@@ -409,11 +387,9 @@ def make_report(jobs_dir: Path, dataset_dir: Path) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--jobs", type=Path, default=Path("jobs"))
-    parser.add_argument(
-        "--dataset", type=Path, default=Path("artifacts/datasets/terminal-bench")
-    )
-    parser.add_argument("--output", type=Path, default=Path("runs/summary.json"))
+    parser.add_argument("--jobs", type=Path, default=JOBS)
+    parser.add_argument("--dataset", type=Path, default=DATASET)
+    parser.add_argument("--output", type=Path, default=SUITE / "runs" / "summary.json")
     args = parser.parse_args()
     report = make_report(args.jobs, args.dataset)
     args.output.parent.mkdir(parents=True, exist_ok=True)

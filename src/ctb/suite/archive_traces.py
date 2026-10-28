@@ -7,7 +7,9 @@ import subprocess
 from pathlib import Path
 from typing import BinaryIO
 
-JOBS = Path(__file__).resolve().parent / "jobs"
+from ctb.suite import SUITE
+
+JOBS = SUITE / "jobs"
 CHUNK = 1024 * 1024
 
 
@@ -114,18 +116,14 @@ def main() -> None:
         if not json.loads(path.read_text(encoding="utf-8")).get("finished_at"):
             continue
         names = ("agent/vis-trace.jsonl.gz", "agent/vis-trace.jsonl")
-        source = next(
-            (path.parent / n for n in names if (path.parent / n).is_file()), None
-        )
+        source = next((path.parent / n for n in names if (path.parent / n).is_file()), None)
         if source is None:
             continue
         try:
             manifest = archive_trace(source)
         except (EOFError, gzip.BadGzipFile):
             incomplete += 1
-            print(
-                f"Preserved incomplete gzip: {path.parent.parent.name}/{path.parent.name}"
-            )
+            print(f"Preserved incomplete gzip: {path.parent.parent.name}/{path.parent.name}")
             continue
         archived += 1
         print(

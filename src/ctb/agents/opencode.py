@@ -13,6 +13,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
+from ctb.toolkit import Toolkit
 
 OPENCODE_VERSION = "1.19.3"
 ANTHROPIC_PLUGIN = "@ex-machina/opencode-anthropic-auth@1.8.6"
@@ -100,8 +101,8 @@ def opencode_auth_json(access: credentials.Access, family: str = "openai") -> st
     return json.dumps({family: entry})
 
 
-class OpenCode(HarborOpenCode):
-    """Run both benchmark models with medium effort and pinned OAuth support."""
+class OpenCode(Toolkit, HarborOpenCode):
+    """Run both benchmark models with medium effort, pinned OAuth support and the toolkit."""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("variant", EFFORT)

@@ -52,9 +52,7 @@ class Redactor:
     """Retain only the suffix that could start a credential split across reads."""
 
     def __init__(self, variants: tuple[bytes, ...]):
-        self.pattern = (
-            re.compile(b"|".join(map(re.escape, variants))) if variants else None
-        )
+        self.pattern = re.compile(b"|".join(map(re.escape, variants))) if variants else None
         self.keep = max(map(len, variants), default=1) - 1
         self.pending = b""
 
@@ -80,13 +78,10 @@ def redact_value(value, variants=None):
     """Redact strings and mapping keys without changing numeric report fields."""
     variants = credential_variants() if variants is None else variants
     if isinstance(value, str):
-        return (
-            Redactor(variants).feed(value.encode("utf-8"), final=True).decode("utf-8")
-        )
+        return Redactor(variants).feed(value.encode("utf-8"), final=True).decode("utf-8")
     if isinstance(value, dict):
         return {
-            redact_value(key, variants): redact_value(item, variants)
-            for key, item in value.items()
+            redact_value(key, variants): redact_value(item, variants) for key, item in value.items()
         }
     if isinstance(value, list):
         return [redact_value(item, variants) for item in value]
@@ -113,13 +108,9 @@ def capture(command, stdout_path: Path, stderr_path: Path | None = None, *, cwd=
                 stderr=subprocess.PIPE if stderr else subprocess.STDOUT,
             )
         )
-        selector.register(
-            process.stdout, selectors.EVENT_READ, (stdout, Redactor(variants))
-        )
+        selector.register(process.stdout, selectors.EVENT_READ, (stdout, Redactor(variants)))
         if stderr:
-            selector.register(
-                process.stderr, selectors.EVENT_READ, (stderr, Redactor(variants))
-            )
+            selector.register(process.stderr, selectors.EVENT_READ, (stderr, Redactor(variants)))
         try:
             while selector.get_map():
                 for key, _ in selector.select():
@@ -152,7 +143,7 @@ def main() -> int:
         parser.error("a command is required")
     try:
         return capture(command, args.stdout, args.stderr)
-    except Exception:
+    except Exception:  # noqa: BLE001
         # An exception may itself contain credentials (for example in a path).
         print("Credential-safe benchmark capture failed", file=sys.stderr)
         return 1

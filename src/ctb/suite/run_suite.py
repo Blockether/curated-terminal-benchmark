@@ -15,13 +15,14 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import IO
 
-from archive_traces import archive_trace
-from capture_trace import capture
+from ctb.paths import ARTIFACTS, ROOT, SOURCE
+from ctb.suite import SUITE
+from ctb.suite.archive_traces import archive_trace
+from ctb.suite.capture_trace import capture
 
 MODEL = "zai-coding-plan/glm-5.3-flash"
-ROOT = Path(__file__).resolve().parent
-DATASET = ROOT / "artifacts/datasets/terminal-bench"
-JOBS = ROOT / "jobs"
+DATASET = ARTIFACTS / "datasets/terminal-bench"
+JOBS = SUITE / "jobs"
 CONCURRENCY = 2
 MEMORY_BUDGET_MB = 16384
 # Provider or setup breakage fails fast; observed model failures took over 20 minutes.
@@ -30,7 +31,7 @@ FAST_ERROR_MS = 600_000
 os.environ["HARBOR_TELEMETRY"] = "off"
 # Harbor imports the Vis adapter and the redaction plugin from the repository root.
 os.environ["PYTHONPATH"] = os.pathsep.join(
-    filter(None, [str(ROOT.parent), os.environ.get("PYTHONPATH")])
+    filter(None, [str(SOURCE), os.environ.get("PYTHONPATH")])
 )
 AGENT = "ctb.agents.vis:VisSolo"
 REDACTOR = "ctb.privacy:Redactor"
@@ -52,9 +53,7 @@ def catalog(dataset: Path) -> tuple[list[dict], list[str]]:
         tasks.append(
             {
                 "name": directory.name,
-                "hours": info.get("metadata", {}).get(
-                    "expert_time_estimate_hours", 999
-                ),
+                "hours": info.get("metadata", {}).get("expert_time_estimate_hours", 999),
                 "memory_mb": max(
                     environment.get("memory_mb") or 0,
                     verifier.get("memory_mb") or 0,
@@ -128,11 +127,7 @@ def pinned_model_work(trial: Path) -> tuple[bool, bool]:
                     if phase == "provider-call":
                         model = f"{payload.get('provider')}/{payload.get('model')}"
                         called = called or model == MODEL
-                    elif (
-                        called
-                        and phase in {"reasoning", "content"}
-                        and payload.get("delta")
-                    ):
+                    elif called and phase in {"reasoning", "content"} and payload.get("delta"):
                         return True, True
         except (EOFError, OSError, UnicodeDecodeError):
             pass
@@ -178,8 +173,7 @@ def accounted_tasks(jobs: Path) -> tuple[Counter[str], set[str], set[str]]:
         elif (
             isinstance(task, str)
             and result.get("finished_at")
-            and exception_type(result)
-            in {"AgentTimeoutError", "NonZeroAgentExitCodeError"}
+            and exception_type(result) in {"AgentTimeoutError", "NonZeroAgentExitCodeError"}
             and has_pinned_provider_call(path.parent)
         ):
             failed.add(task.removeprefix("terminal-bench/"))
@@ -189,9 +183,7 @@ def accounted_tasks(jobs: Path) -> tuple[Counter[str], set[str], set[str]]:
         job_result = trial.parent / "result.json"
         if (trial / "result.json").exists():
             continue
-        if job_result.exists() and json.loads(job_result.read_text()).get(
-            "finished_at"
-        ):
+        if job_result.exists() and json.loads(job_result.read_text()).get("finished_at"):
             continue
         in_flight.add(trial.name.split("__", 1)[0])
     return scored, in_flight, failed
@@ -233,12 +225,11 @@ def reclaim_images(machine: str, task: dict) -> None:
         ),
         (
             "trim the VM disk",
-            ["podman", "machine", "ssh", machine, "--"]
-            + ["sudo", "fstrim", "/var/lib/containers"],
+            ["podman", "machine", "ssh", machine, "--"] + ["sudo", "fstrim", "/var/lib/containers"],
         ),
     )
     for step, command in steps:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=600)
+        result = subprocess.run(command, capture_output=True, text=True, timeout=600, check=False)
         if result.returncode:
             print(
                 f"Could not {step} after {task['name']}: {result.stderr.strip()}",
@@ -263,15 +254,12 @@ def job_results(job: Path, task: dict) -> list[dict]:
         if name != task["name"]:
             continue
         if not is_scored_attempt(result, path.parent):
-            raise RuntimeError(
-                f"Incomplete metrics in {job.name}/{name}; inspect the trial"
-            )
+            raise RuntimeError(f"Incomplete metrics in {job.name}/{name}; inspect the trial")
         results.append(result)
     expected = task.get("attempts", 1)
     if len(results) < expected:
         raise RuntimeError(
-            f"Incomplete job {job.name}: {len(results)} of {expected} results "
-            f"for {task['name']}"
+            f"Incomplete job {job.name}: {len(results)} of {expected} results for {task['name']}"
         )
     return sorted(results, key=lambda result: str(result.get("finished_at")))
 
@@ -345,9 +333,7 @@ def finish_job(name: str, task: dict, returncode: int, jobs: Path) -> list[bool]
             f"agent_error={is_error}, agent_timeout={is_timeout}",
             flush=True,
         )
-        fast_errors.append(
-            is_error and (metadata.get("duration_ms") or 0) < FAST_ERROR_MS
-        )
+        fast_errors.append(is_error and (metadata.get("duration_ms") or 0) < FAST_ERROR_MS)
     return fast_errors
 
 
@@ -358,7 +344,7 @@ def main() -> None:
     parser.add_argument(
         "--jobs",
         type=Path,
-        help="Harbor jobs directory, with logs in runs/ beside it (default: jobs)",
+        help="Harbor jobs directory, with logs in runs/ beside it (default: jobs/suite/jobs)",
     )
     parser.add_argument(
         "--attempts",
@@ -401,9 +387,7 @@ def main() -> None:
         task for task in tasks if task["name"] not in completed | in_flight | failed
     ]
     # A Harbor job asks only for the scored attempts that its task still needs.
-    pending = [
-        {**task, "attempts": args.attempts - scored[task["name"]]} for task in queued
-    ]
+    pending = [{**task, "attempts": args.attempts - scored[task["name"]]} for task in queued]
     if args.json:
         names = {task["name"] for task in tasks}
         print(
@@ -463,14 +447,10 @@ def main() -> None:
                         "reclaim finished artifacts/images and resume"
                     )
                     break
-                name = job_name(
-                    args.job_prefix, jobs, [job for job, _ in running.values()]
-                )
+                name = job_name(args.job_prefix, jobs, [job for job, _ in running.values()])
                 print(f"Starting {name}: {task['name']}", flush=True)
                 log = runs / f"{name}.log"
-                future = pool.submit(
-                    capture, harbor_command(name, task, jobs), log, cwd=ROOT
-                )
+                future = pool.submit(capture, harbor_command(name, task, jobs), log, cwd=ROOT)
                 running[future] = (name, task)
                 started += 1
             if not running:
@@ -492,9 +472,7 @@ def main() -> None:
                         )
     if failures:
         raise RuntimeError("; ".join(failures))
-    print(
-        f"Task limit or remaining tasks reached; tasks started: {started}", flush=True
-    )
+    print(f"Task limit or remaining tasks reached; tasks started: {started}", flush=True)
 
 
 if __name__ == "__main__":

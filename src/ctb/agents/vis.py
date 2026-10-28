@@ -15,17 +15,16 @@ from harbor.agents.installed.base import BaseInstalledAgent
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb import credentials
+from ctb import credentials, toolkit
 from ctb.agents.base import (
-    ARTIFACTS,
     EFFORT,
     FAMILIES,
-    ROOT,
     VERBOSITY,
     CuratedAgent,
     min_token_seconds,
     split_model,
 )
+from ctb.paths import ARTIFACTS, ROOT
 
 #: Vis providers of the benchmark families. They use the subscription token files.
 PROVIDERS = {"anthropic": "anthropic-coding-plan", "openai": "openai-codex"}
@@ -37,10 +36,27 @@ LOGS = "/logs/agent"
 TRACE = f"{LOGS}/vis-trace.jsonl"
 TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
-#: Extras that unpack into the Vis home wait here until the agent command runs.
+#: The extensions of every profile, from the Extension Center. Each build gets its own archive.
+EXTENSIONS = {"Blockether/vis-lang-python": "1.15.2"}
+#: The extensions archive waits here until the agent command unpacks it into $HOME/.vis.
 EXTRAS = "/installed-agent/extras"
-#: The `into` value of an extra that unpacks into $HOME/.vis when the agent starts.
-VIS_HOME_TARGET = "vis-home"
+EXTENSIONS_UPLOAD = f"{EXTRAS}/vis-extensions.tar.gz"
+#: VIS_RUNTIME_DIR: worker sockets and temporary files of Vis, apart from the task's /tmp.
+#: It is in the agent home, so clean() removes it before the verifier runs.
+RUNTIME = "$HOME/.vis-runtime"
+# Install the extensions with the pinned build, then start Vis once to prepare their environments.
+EXTENSION_BUILD = """set -euo pipefail
+apt-get update -qq >/dev/null && apt-get install -y -qq ca-certificates git >/dev/null 2>&1
+mkdir -p /installed-agent && tar -xzf "/x/$BUNDLE" -C /installed-agent
+export HOME=/tmp/ctb-home VIS_HOME=/tmp/ctb-home/.vis
+mkdir -p "$VIS_HOME"
+for spec in $EXTENSIONS; do
+  /installed-agent/vis-agent extension install "${spec%@*}" --version "${spec#*@}" --global --trust
+done
+timeout 300 /installed-agent/vis-agent --db :memory -- x >/dev/null 2>&1 || true
+grep -h 'loaded Python extension' "$VIS_HOME"/logs/*/*.log
+tar -czf "/x/$OUT" -C "$VIS_HOME" extensions
+"""
 CHUNK = 1 << 20
 
 
@@ -76,35 +92,31 @@ def stamp(path: Path) -> list[str]:
 def check(path: Path, build: dict) -> None:
     """Refuse a bundle that is not the pinned build."""
     if not path.is_file():
-        raise FileNotFoundError(
-            f"Missing Vis build {path}; run `uv run python -m ctb.agents.vis fetch`."
-        )
+        raise FileNotFoundError(f"Missing Vis build {path}; run `uv run ctb fetch`.")
     digest = file_sha256(path)
     if digest != build["sha256"]:
         raise ValueError(f"{path} has sha256 {digest}, not the pinned {build['sha256']}")
 
 
-def extra_path(extra: dict) -> Path:
-    """The local copy of a profile extra. `vis-extras/build.sh` makes it."""
-    return ARTIFACTS / "vis-extras" / extra["asset"]
+def extensions_archive(build: dict) -> Path:
+    """The local extensions archive of one build. `fetch` makes it next to the bundle."""
+    return archive(build).with_name("vis-extensions.tar.gz")
 
 
-def check_extra(extra: dict) -> None:
-    """Refuse an extra that is missing, has another sha256 or has no known target."""
-    into = extra["into"]
-    if into != VIS_HOME_TARGET and Path("/installed-agent") not in (
-        Path(into),
-        *Path(into).parents,
-    ):
-        raise ValueError(
-            f"Extra {extra['asset']} unpacks into {into!r}; use vis-home or /installed-agent/..."
-        )
-    path = extra_path(extra)
-    if not path.is_file():
-        raise FileNotFoundError(f"Missing Vis extra {path}; run vis-extras/build.sh.")
-    digest = file_sha256(path)
-    if digest != extra["sha256"]:
-        raise ValueError(f"{path} has sha256 {digest}, not the pinned {extra['sha256']}")
+def build_extensions(build: dict) -> Path:
+    """Install EXTENSIONS with the pinned bundle in a linux/amd64 container and pack them."""
+    bundle, target = archive(build), extensions_archive(build)
+    partial = target.with_name(target.name + ".partial")
+    partial.unlink(missing_ok=True)
+    specs = " ".join(f"{name}@{version}" for name, version in EXTENSIONS.items())
+    subprocess.run(
+        ["podman", "run", "--rm", "--platform", "linux/amd64", "-v", f"{bundle.parent}:/x"]
+        + ["-e", f"BUNDLE={bundle.name}", "-e", f"EXTENSIONS={specs}", "-e", f"OUT={partial.name}"]
+        + ["docker.io/library/debian:bookworm-slim", "bash", "-c", EXTENSION_BUILD],
+        check=True,
+    )
+    partial.replace(target)
+    return target
 
 
 def fetch(build: dict | None = None) -> Path:
@@ -131,6 +143,8 @@ def fetch(build: dict | None = None) -> Path:
             check(download, build)
             download.replace(target)
     check(target, build)
+    if not extensions_archive(build).is_file():
+        build_extensions(build)
     return target
 
 
@@ -199,7 +213,7 @@ class VisSolo(CuratedAgent):
 
     def __init__(self, *args, profile: str | None = None, **kwargs) -> None:
         # CuratedAgent.__init__ accepts only the two benchmark models. Vis also runs
-        # providers with an API key (terminal_bench/), so this class checks the model.
+        # providers with an API key (ctb.suite), so this class checks the model.
         BaseInstalledAgent.__init__(self, *args, **kwargs)
         self.family, self.model = provider_model(self.model_name)
         found = settings()
@@ -221,25 +235,16 @@ class VisSolo(CuratedAgent):
 
     async def install(self, environment: BaseEnvironment) -> None:
         check(self.ARCHIVE, self.build)
-        extras = self.profile.get("extras", [])
-        for extra in extras:
-            check_extra(extra)
+        extensions = extensions_archive(self.build)
+        if not extensions.is_file():
+            raise FileNotFoundError(f"Missing Vis extensions {extensions}; run `uv run ctb fetch`.")
         await super().install(environment)
-        for extra in extras:
-            await environment.upload_file(extra_path(extra), "/tmp/ctb-extra.tgz")
-            await self.exec_as_root(environment, command=self.extra_command(extra))
-
-    @staticmethod
-    def extra_command(extra: dict) -> str:
-        """The root command that puts an uploaded extra in place."""
-        if extra["into"] == VIS_HOME_TARGET:
-            # clean() removes the agent home before the verifier, so the agent command unpacks it.
-            target = shlex.quote(f"{EXTRAS}/{extra['asset']}")
-            return f"mkdir -p {EXTRAS} && mv /tmp/ctb-extra.tgz {target} && chmod a+r {target}"
-        into = shlex.quote(extra["into"])
-        return (
-            f"mkdir -p {into} && tar -xzf /tmp/ctb-extra.tgz -C {into}"
-            f" && chmod -R a+rX {into} && rm /tmp/ctb-extra.tgz"
+        await environment.upload_file(extensions, "/tmp/ctb-extensions.tar.gz")
+        # clean() removes the agent home before the verifier, so the agent command unpacks it.
+        await self.exec_as_root(
+            environment,
+            command=f"mkdir -p {EXTRAS} && "
+            f"mv /tmp/ctb-extensions.tar.gz {EXTENSIONS_UPLOAD} && chmod a+r {EXTENSIONS_UPLOAD}",
         )
 
     def secret_files(self) -> dict[str, str]:
@@ -284,10 +289,11 @@ class VisSolo(CuratedAgent):
             names = ",".join(self.profile["extensions"]) or "none"
             flags.append(f"--extensions {shlex.quote(names)}")
         effort = self.profile.get("effort", EFFORT)
-        setup = "".join(
-            f"tar -xzf {shlex.quote(EXTRAS + '/' + extra['asset'])} -C $HOME/.vis && "
-            for extra in self.profile.get("extras", [])
-            if extra["into"] == VIS_HOME_TARGET
+        setup = (
+            f"tar -xzf {EXTENSIONS_UPLOAD} -C $HOME/.vis && "
+            f"mkdir -m 700 -p {RUNTIME} && mkdir -m 700 -p {RUNTIME}/tmp && "
+            f"export VIS_RUNTIME_DIR={RUNTIME} TMPDIR={RUNTIME}/tmp "
+            f"VIS_PYTHON_PACKAGES={toolkit.PACKAGES} && "
         )
         setup += "".join(
             f"export {name}={shlex.quote(str(value))} && "
@@ -328,6 +334,7 @@ class VisSolo(CuratedAgent):
                 "profile": self.profile_name,
                 "instruction_note": self.profile.get("instruction_note"),
                 "build": {key: self.build[key] for key in ("run_id", "commit", "sha256")},
+                "extensions": EXTENSIONS,
                 "error_count": sum(
                     isinstance(block, dict) and block.get("type") == "error"
                     for block in result.get("content") or []
@@ -350,47 +357,8 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
-class VisSoloV10(VisSolo):
-    """Vis solo with `python.environment: shared`, so py.run_tests has pytest."""
-
-    PROFILE = "solo-v10"
-
-    @staticmethod
-    def name() -> str:
-        return "vis-solo-v10"
-
-
-class VisLeadV10(VisTeam):
-    """Vis with Council on and `python.environment: shared`, so py.run_tests has pytest."""
-
-    PROFILE = "lead-v10"
-
-    @staticmethod
-    def name() -> str:
-        return "vis-lead-v10"
-
-
-class VisLeadV11(VisTeam):
-    """Lead v10 on a build that reports text-free model progress (svar 0.7.215)."""
-
-    PROFILE = "lead-v11"
-
-    @staticmethod
-    def name() -> str:
-        return "vis-lead-v11"
-
-
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {
-    cls.name(): cls.PROFILE
-    for cls in (
-        VisSolo,
-        VisTeam,
-        VisSoloV10,
-        VisLeadV10,
-        VisLeadV11,
-    )
-}
+AGENT_PROFILES = {cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam)}
 
 
 def builds() -> list[dict]:
@@ -410,6 +378,13 @@ def run_record(agents: list[str]) -> dict:
     build = found["build"]
     return {
         "build": {key: build[key] for key in ("repo", "run_id", "commit", "sha256")},
+        "extensions": EXTENSIONS,
+        # `fetch` builds each extensions archive locally, so the record keeps its digest.
+        "extensions_sha256": {
+            str(pin["run_id"]): file_sha256(extensions_archive(pin))
+            for pin in builds()
+            if extensions_archive(pin).is_file()
+        },
         "profiles": {
             agent: {"name": AGENT_PROFILES[agent], **found["profiles"][AGENT_PROFILES[agent]]}
             for agent in agents

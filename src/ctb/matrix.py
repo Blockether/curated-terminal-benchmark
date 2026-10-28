@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ctb.agents.base import REASONING_SUMMARY
+from ctb.paths import ROOT
 
-ROOT = Path(__file__).resolve().parents[1]
 MODELS = {"openai": "openai/gpt-6.1-sol"}
 
 
@@ -30,18 +30,9 @@ AGENTS = {
     for spec in (
         AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("openai",)),
         AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("openai",)),
-        # Experiment arms: each pins its own Vis build in profiles.toml.
-        *(
-            AgentSpec(name, f"ctb.agents.vis:{cls}", ("openai",), experiment=True)
-            for name, cls in (
-                ("vis-solo-v10", "VisSoloV10"),
-                ("vis-lead-v10", "VisLeadV10"),
-                ("vis-lead-v11", "VisLeadV11"),
-            )
-        ),
         AgentSpec(
             "codex",
-            "codex",
+            "ctb.agents.codex:Codex",
             ("openai",),
             effort_kwarg=True,
             agent_kwargs=(f"reasoning_summary={REASONING_SUMMARY}",),

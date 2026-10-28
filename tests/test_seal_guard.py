@@ -161,12 +161,12 @@ def test_real_git_hook_uses_index_and_blocks_changed_evidence(evidence, monkeypa
     from pathlib import Path
 
     root, seal, manifest = evidence
-    source = Path(guard.__file__).resolve().parents[1]
+    source = Path(guard.__file__).resolve().parents[2]
     (root / ".githooks").mkdir()
     shutil.copy2(source / ".githooks/pre-commit", root / ".githooks/pre-commit")
     (root / ".venv").symlink_to(source / ".venv", target_is_directory=True)
-    env = dict(os.environ, PYTHONPATH=str(source))
-    monkeypatch.setenv("PYTHONPATH", str(source))
+    env = dict(os.environ, PYTHONPATH=str(source / "src"))
+    monkeypatch.setenv("PYTHONPATH", str(source / "src"))
 
     def git(*args):
         return subprocess.run(["git", *args], cwd=root, env=env, capture_output=True, check=False)

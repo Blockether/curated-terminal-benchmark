@@ -8,8 +8,8 @@ import subprocess
 
 import pytest
 
-from archive_traces import archive_trace
-from summarize import trace_summary
+from ctb.suite.archive_traces import archive_trace
+from ctb.suite.summarize import trace_summary
 
 
 def write_trace(folder, contents):
@@ -67,9 +67,7 @@ def test_preexisting_archive_is_checked_before_deleting_gzip(tmp_path):
     source = write_trace(tmp_path / "agent", contents)
     target = source.with_suffix(".zst")
     target.write_bytes(
-        subprocess.run(
-            ["zstd", "-q", "-c"], input=contents, capture_output=True, check=True
-        ).stdout
+        subprocess.run(["zstd", "-q", "-c"], input=contents, capture_output=True, check=True).stdout
     )
     assert archive_trace(source)["trace"] == target.name
     assert not source.exists()
@@ -108,7 +106,5 @@ def test_plain_jsonl_trace_is_archived_without_loss(tmp_path):
         len(contents),
     )
     assert manifest["raw_sha256"] == hashlib.sha256(contents).hexdigest()
-    unpacked = subprocess.run(
-        ["zstd", "-dc", str(target)], capture_output=True, check=True
-    )
+    unpacked = subprocess.run(["zstd", "-dc", str(target)], capture_output=True, check=True)
     assert unpacked.stdout == contents

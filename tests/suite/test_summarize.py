@@ -7,7 +7,7 @@ import subprocess
 
 import pytest
 
-from summarize import elapsed_seconds, make_report, trace_summary, verifier_details
+from ctb.suite.summarize import elapsed_seconds, make_report, trace_summary, verifier_details
 
 
 def test_elapsed_seconds_requires_both_timestamps():
@@ -174,9 +174,7 @@ def test_verifier_details_keep_only_numeric_task_scores(tmp_path):
     (tmp_path / "ctrf.json").write_text(json.dumps({"results": {"summary": {}}}))
     (tmp_path / "reward.json").write_text(json.dumps({"reward": 0.0}))
     (tmp_path / "reward_details.json").write_text(
-        json.dumps(
-            {"score": 0.0, "passed": True, "note": "text", "checks": [{"passed": "no"}]}
-        )
+        json.dumps({"score": 0.0, "passed": True, "note": "text", "checks": [{"passed": "no"}]})
     )
     (tmp_path / "cases.json").write_text(json.dumps([1, 2]))
     (tmp_path / "trace_results.json").write_text(
@@ -238,20 +236,14 @@ def test_report_scores_each_task_by_latest_verified_model_attempt(tmp_path):
                 {
                     "task_name": f"terminal-bench/{task}",
                     "finished_at": finished,
-                    "exception_info": {"exception_type": exception}
-                    if exception
-                    else None,
+                    "exception_info": {"exception_type": exception} if exception else None,
                     "agent_result": agent,
-                    "verifier_result": None
-                    if reward is None
-                    else {"rewards": {"reward": reward}},
+                    "verifier_result": None if reward is None else {"rewards": {"reward": reward}},
                 }
             )
         )
         if task != "setup":
-            (trial / "agent/vis-trace.jsonl").write_text(
-                provider_call + "\n" + model_output + "\n"
-            )
+            (trial / "agent/vis-trace.jsonl").write_text(provider_call + "\n" + model_output + "\n")
     report = make_report(jobs, dataset)
     assert report["solved_tasks"] == ["retried"]
     assert report["scored_tasks"] == 2
@@ -322,19 +314,14 @@ def test_report_groups_scored_tasks_by_how_their_latest_attempt_ended(tmp_path):
                 {
                     "task_name": f"terminal-bench/{task}",
                     "finished_at": finished,
-                    "exception_info": {"exception_type": exception}
-                    if exception
-                    else None,
+                    "exception_info": {"exception_type": exception} if exception else None,
                     "agent_result": agent,
                     "verifier_result": {"rewards": {"reward": reward}},
                 }
             )
         )
         (trial / "agent/vis-trace.jsonl").write_text(
-            "".join(
-                json.dumps(frame) + "\n"
-                for frame in [provider_call, model_output, *frames]
-            )
+            "".join(json.dumps(frame) + "\n" for frame in [provider_call, model_output, *frames])
         )
     report = make_report(jobs, dataset)
     assert report["task_outcomes"] == {
@@ -372,10 +359,7 @@ def test_report_lists_attempts_that_end_repeating_one_error(tmp_path):
             [
                 failed(1, "tool-timeout"),
                 ended(2),
-                *(
-                    failed(iteration, "python-worker-retired")
-                    for iteration in (3, 4, 5)
-                ),
+                *(failed(iteration, "python-worker-retired") for iteration in (3, 4, 5)),
             ],
         ),
         ("last-error", [ended(1), failed(2, "http-error")]),

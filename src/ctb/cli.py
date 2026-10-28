@@ -21,28 +21,26 @@ from pathlib import Path
 
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
-from ctb import credentials, privacy
+from ctb import credentials, privacy, toolkit
 from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
     DEFAULT_AGENTS,
     MODELS,
-    ROOT,
     Trial,
     load_tasks,
     select_tasks,
     trials,
 )
 from ctb.metrics import round_metrics
+from ctb.paths import ARTIFACTS, ROOT, SOURCE
 from ctb.proxy import Proxy
 
-ARTIFACTS = ROOT / "artifacts"
 RESULTS = ROOT / "results"
-# The full-suite Vis harness (moved out of the Vis repository) owns the shared artifacts.
-SUITE_ARTIFACTS = ROOT / "terminal_bench" / "artifacts"
-DATASET = Path(os.environ.get("CTB_DATASET", SUITE_ARTIFACTS / "datasets" / "terminal-bench"))
-COMPOSE = SUITE_ARTIFACTS / "docker-compose"
+# `harbor download terminal-bench/terminal-bench@4.0.0 --output-dir artifacts/datasets` puts it here.
+DATASET = Path(os.environ.get("CTB_DATASET", ARTIFACTS / "datasets" / "terminal-bench"))
+COMPOSE = ARTIFACTS / "docker-compose"
 # Tracked verifier fixes, copied over the downloaded dataset before each run.
 TASK_FIXES = ROOT / "task-fixes"
 # Pinned master commits. Dirge patches preserve provider token accounting.
@@ -54,8 +52,6 @@ KMET_REPO, KMET_COMMIT = (
 SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
-# The newest Vis release with a native Linux x64 bundle.
-VIS_RELEASE = "v0.2.37"
 BB_MIN = "1.13.225"
 SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
@@ -190,26 +186,15 @@ def fetch_samizdat() -> Path:
     return archive
 
 
-def fetch_vis() -> Path:
-    """The native Linux x64 Vis bundle of VIS_RELEASE, checked against its SHA256SUMS."""
-    archive = ARTIFACTS / "vis-agent-linux-amd64.tar.gz"
-    if not archive.is_file():
-        name = "vis-agent-linux-x64.tar.gz"
-        with tempfile.TemporaryDirectory(prefix="ctb-vis-", dir=ARTIFACTS) as work:
-            sh(
-                ["gh", "release", "download", VIS_RELEASE, "-R", "Blockether/vis"]
-                + ["-p", name, "-p", "SHA256SUMS", "-D", work]
-            )
-            sums = dict(
-                reversed(line.split())
-                for line in (Path(work) / "SHA256SUMS").read_text().splitlines()
-            )
-            download_path = Path(work) / name
-            actual = hashlib.sha256(download_path.read_bytes()).hexdigest()
-            if actual != sums.get(name):
-                raise RuntimeError(f"SHA-256 mismatch for {name}")
-            download_path.rename(archive)
-    return archive
+def fetch_toolkit() -> Path:
+    """The Python toolkit of every agent, built from the pinned CPython and requirements."""
+    target = toolkit.archive()
+    if not target.is_file():
+        cpython = download(
+            toolkit.CPYTHON_URL, ARTIFACTS / toolkit.CPYTHON_ASSET, toolkit.CPYTHON_SHA256
+        )
+        toolkit.build(cpython, target)
+    return target
 
 
 def fetch_kmet() -> Path:
@@ -223,13 +208,16 @@ def fetch_kmet() -> Path:
 
 
 def fetch() -> None:
-    """Get every agent for linux-amd64: native Vis, dirge, kmet and samizdat.
+    """Get everything for linux-amd64: the Python toolkit, native Vis, dirge, kmet and samizdat.
 
-    Vis needs the gh CLI: it gets the release and the build of profiles.toml. kmet needs
-    Babashka >= BB_MIN on PATH or in artifacts/tools; dirge and samizdat need Podman.
+    Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
+    kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
+    dirge and samizdat need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
-    for archive in (fetch_vis(), vis.fetch(), fetch_dirge(), fetch_kmet(), fetch_samizdat()):
+    archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
+    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat()]
+    for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
 
@@ -244,7 +232,7 @@ def podman_config() -> Path:
 
 def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict[str, str]:
     """Process environment of one Harbor job; built-in agents read tokens from it."""
-    env = dict(os.environ, PYTHONPATH=str(ROOT), CONTAINERS_CONF_OVERRIDE=str(podman_config()))
+    env = dict(os.environ, PYTHONPATH=str(SOURCE), CONTAINERS_CONF_OVERRIDE=str(podman_config()))
     privacy.telemetry_off(env)
     if trial.agent.proxy:
         if proxy is None:
@@ -524,7 +512,10 @@ def git_state() -> dict:
 
 def pins() -> dict:
     return {
-        "vis": VIS_RELEASE,
+        "python_toolkit": {
+            "cpython": f"{toolkit.CPYTHON_VERSION}+{toolkit.CPYTHON_RELEASE}",
+            "requirements_sha256": toolkit.requirements_sha256(),
+        },
         "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,
         "samizdat": samizdat.COMMIT,
@@ -683,7 +674,7 @@ def metrics(args: argparse.Namespace) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("fetch", help="get native Vis, dirge, kmet and samizdat for linux-amd64")
+    sub.add_parser("fetch", help="get the Python toolkit and every agent for linux-amd64")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
     run_parser.add_argument("--round", required=True)
     run_parser.add_argument("--agents", default=DEFAULT_AGENTS)

@@ -12,21 +12,18 @@ def test_only_supported_model_pairs_become_trials():
     ]
 
 
-def test_two_experiment_arms_run_in_one_round():
-    agents = ["vis-lead-v10", "vis-lead-v11"]
+def test_two_vis_arms_run_task_major_in_one_round():
+    agents = ["vis-solo", "vis-team"]
     assert [t.job for t in matrix.trials(agents, ["openai"], ["x", "y"])] == [
-        "vis-lead-v10__openai__x",
-        "vis-lead-v11__openai__x",
-        "vis-lead-v10__openai__y",
-        "vis-lead-v11__openai__y",
+        "vis-solo__openai__x",
+        "vis-team__openai__x",
+        "vis-solo__openai__y",
+        "vis-team__openai__y",
     ]
 
 
-def test_experiment_arms_stay_out_of_the_default_matrix():
-    defaults = matrix.DEFAULT_AGENTS.split(",")
-    assert "vis-team" in defaults
-    experiments = {"vis-solo-v10", "vis-lead-v10", "vis-lead-v11"}
-    assert not experiments & set(defaults)
+def test_every_arm_is_in_the_default_matrix():
+    assert matrix.DEFAULT_AGENTS.split(",") == list(matrix.AGENTS)
 
 
 def test_kmet_runs_only_on_the_gpt_model():

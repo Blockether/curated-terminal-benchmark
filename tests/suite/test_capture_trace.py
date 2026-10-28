@@ -11,7 +11,7 @@ from urllib.parse import quote
 
 import pytest
 
-from capture_trace import Redactor, capture, credential_variants, redact_value
+from ctb.suite.capture_trace import Redactor, capture, credential_variants, redact_value
 
 
 @pytest.mark.parametrize("size", [1, 2, 7, 31, 65536])
@@ -33,9 +33,9 @@ def test_credentials_redacted_across_every_chunk_boundary(size):
 def test_redaction_keeps_nonsecret_bytes_and_numeric_types():
     assert Redactor(()).feed(b"ordinary output") == b"ordinary output"
     variants = credential_variants({"OTHER_API_KEY": "fixture-key-1234"})
-    assert redact_value(
-        {"fixture-key-1234": [1234, True, None, "fixture-key-1234"]}, variants
-    ) == {"[REDACTED]": [1234, True, None, "[REDACTED]"]}
+    assert redact_value({"fixture-key-1234": [1234, True, None, "fixture-key-1234"]}, variants) == {
+        "[REDACTED]": [1234, True, None, "[REDACTED]"]
+    }
 
 
 def test_short_or_numeric_settings_are_not_credentials():
@@ -56,9 +56,7 @@ def test_short_or_numeric_settings_are_not_credentials():
 
 
 @pytest.mark.parametrize("compressed", [False, True])
-def test_capture_drains_both_streams_and_preserves_failure(
-    tmp_path, monkeypatch, compressed
-):
+def test_capture_drains_both_streams_and_preserves_failure(tmp_path, monkeypatch, compressed):
     key = "fixture-credential-without-real-provider"
     monkeypatch.setenv("ZAI_CODING_API_KEY", key)
     out = tmp_path / ("trace.gz" if compressed else "harbor.log")
@@ -66,10 +64,12 @@ def test_capture_drains_both_streams_and_preserves_failure(
     command = [
         sys.executable,
         "-c",
-        "import os, sys; key = os.environ['ZAI_CODING_API_KEY']; "
-        "[(os.write(1, ('stdout ' + key + '\\n').encode()), "
-        "os.write(2, ('stderr ' + key + '\\n').encode())) for _ in range(5000)]; "
-        "sys.exit(7)",
+        (
+            "import os, sys; key = os.environ['ZAI_CODING_API_KEY']; "
+            "[(os.write(1, ('stdout ' + key + '\\n').encode()), "
+            "os.write(2, ('stderr ' + key + '\\n').encode())) for _ in range(5000)]; "
+            "sys.exit(7)"
+        ),
     ]
     assert capture(command, out, err) == 7
     if compressed:
@@ -94,11 +94,11 @@ def test_capture_fails_closed_without_credential(tmp_path, monkeypatch):
 def test_cli_failure_never_prints_sensitive_exception(tmp_path, monkeypatch):
     key = "fixture-secret-in-missing-command"
     monkeypatch.setenv("ZAI_CODING_API_KEY", key)
-    script = Path(__file__).parents[1] / "capture_trace.py"
     result = subprocess.run(
         [
             sys.executable,
-            str(script),
+            "-m",
+            "ctb.suite.capture_trace",
             "--stdout",
             str(tmp_path / "trace.gz"),
             "--",
@@ -106,6 +106,7 @@ def test_cli_failure_never_prints_sensitive_exception(tmp_path, monkeypatch):
         ],
         capture_output=True,
         timeout=10,
+        check=False,
     )
     assert result.returncode == 1
     assert key.encode() not in result.stdout + result.stderr
@@ -131,9 +132,7 @@ def test_serialized_credentials_are_redacted_in_reports(monkeypatch):
 
 def test_console_pytest_collects_without_pythonpath():
     # CI invokes the console entrypoint, unlike the language tool's module runner.
-    environment = {
-        key: value for key, value in os.environ.items() if key != "PYTHONPATH"
-    }
+    environment = {key: value for key, value in os.environ.items() if key != "PYTHONPATH"}
     result = subprocess.run(
         [
             str(Path(sys.executable).with_name("pytest")),
@@ -141,11 +140,12 @@ def test_console_pytest_collects_without_pythonpath():
             "-q",
             "tests",
         ],
-        cwd=Path(__file__).parents[1],
+        cwd=Path(__file__).parents[2],
         env=environment,
         capture_output=True,
         text=True,
         timeout=30,
+        check=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "tests collected" in result.stdout

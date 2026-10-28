@@ -10,7 +10,8 @@ from harbor.agents.installed.base import PackageSpec
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent
+from ctb.agents.base import EFFORT, CuratedAgent
+from ctb.paths import ARTIFACTS
 
 # The newest main commit; v0.1.0 is the only release and is 100 commits older.
 COMMIT = "97727796fc245f918f10b0db52537562aacb80dc"

@@ -10,8 +10,8 @@ from harbor.agents.installed.base import BaseInstalledAgent, PackageSpec, with_p
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-ROOT = Path(__file__).resolve().parents[2]
-ARTIFACTS = ROOT / "artifacts"
+from ctb.toolkit import Toolkit
+
 EFFORT = "medium"
 # GPT Responses settings of every agent: pi's defaults, and the Codex catalog verbosity.
 VERBOSITY = "low"
@@ -66,8 +66,8 @@ async def agent_home(agent: BaseInstalledAgent, environment: BaseEnvironment) ->
     return home
 
 
-class CuratedAgent(BaseInstalledAgent):
-    """An installed agent that gets files and secrets only for one run."""
+class CuratedAgent(Toolkit, BaseInstalledAgent):
+    """An installed agent that gets files and secrets only for one run, and the Python toolkit."""
 
     SYSTEM_PACKAGES: ClassVar[dict[str, PackageSpec]] = {
         **BaseInstalledAgent.SYSTEM_PACKAGES,
@@ -89,7 +89,7 @@ class CuratedAgent(BaseInstalledAgent):
     async def install(self, environment: BaseEnvironment) -> None:
         if not self.ARCHIVE.is_file():
             raise FileNotFoundError(
-                f"Missing agent archive: {self.ARCHIVE}; run `uv run python -m ctb.cli fetch`."
+                f"Missing agent archive: {self.ARCHIVE}; run `uv run ctb fetch`."
             )
         await self.ensure_system_dependencies(environment, ("ca_certificates",))
         await environment.upload_file(self.ARCHIVE, "/tmp/ctb-agent.tar.gz")

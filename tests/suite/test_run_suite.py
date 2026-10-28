@@ -12,8 +12,9 @@ from pathlib import Path
 
 import pytest
 
-import run_suite
-from run_suite import (
+from ctb.paths import SOURCE
+from ctb.suite import run_suite
+from ctb.suite.run_suite import (
     accounted_tasks,
     archive_job_traces,
     catalog,
@@ -36,13 +37,9 @@ def write_model_trace(trial, *, streamed=True):
         }
     ]
     if streamed:
-        frames.append(
-            {"event": "trace-chunk", "payload": {"phase": "reasoning", "delta": "Let"}}
-        )
+        frames.append({"event": "trace-chunk", "payload": {"phase": "reasoning", "delta": "Let"}})
     (trial / "agent").mkdir(parents=True, exist_ok=True)
-    with gzip.open(
-        trial / "agent/vis-trace.jsonl.gz", "wt", encoding="utf-8"
-    ) as stream:
+    with gzip.open(trial / "agent/vis-trace.jsonl.gz", "wt", encoding="utf-8") as stream:
         stream.writelines(json.dumps(frame) + "\n" for frame in frames)
 
 
@@ -108,9 +105,7 @@ def test_accounting_retries_setup_only_failures_but_not_live_trials(tmp_path):
     stale = jobs / "finished" / "retry-me__abcd"
     stale.mkdir(parents=True)
     (stale / "config.json").write_text("{}")
-    (jobs / "finished" / "result.json").write_text(
-        '{"finished_at":"2026-01-01T00:00:01Z"}'
-    )
+    (jobs / "finished" / "result.json").write_text('{"finished_at":"2026-01-01T00:00:01Z"}')
     write_model_trace(jobs / "old" / "completed__abcd")
     scored, in_flight, failed = accounted_tasks(jobs)
     assert scored == {"completed": 1}
@@ -125,9 +120,7 @@ def test_refused_model_calls_are_retryable_failures_not_scores(tmp_path):
         "task_name": "terminal-bench/refused",
         "finished_at": "2026-01-01T00:00:01Z",
         "exception_info": {"exception_type": "NonZeroAgentExitCodeError"},
-        "agent_result": {
-            "metadata": {"vis": {"model": run_suite.MODEL, "status": "error"}}
-        },
+        "agent_result": {"metadata": {"vis": {"model": run_suite.MODEL, "status": "error"}}},
         "verifier_result": {"rewards": {"reward": 0.0}},
     }
     write_model_attempt(trial, result, streamed=False)
@@ -212,18 +205,13 @@ def test_accounting_reads_model_work_from_archived_traces(tmp_path):
 def test_retry_task_refuses_unaccounted_completed_or_active_trials(
     tmp_path, monkeypatch, capsys, name
 ):
-    monkeypatch.setattr(
-        run_suite.sys, "argv", ["run_suite", "--dry-run", "--retry-task", name]
-    )
+    monkeypatch.setattr(run_suite.sys, "argv", ["run_suite", "--dry-run", "--retry-task", name])
     monkeypatch.setattr(run_suite, "JOBS", tmp_path / "jobs")
     monkeypatch.setattr(
         run_suite,
         "catalog",
         lambda _: (
-            [
-                {"name": task}
-                for task in ("completed", "live", "interrupted", "pending")
-            ],
+            [{"name": task} for task in ("completed", "live", "interrupted", "pending")],
             [],
         ),
     )
@@ -352,9 +340,7 @@ def test_dry_run_json_counts_the_scored_attempts_of_each_task(monkeypatch, capsy
 
 
 def test_attempts_must_be_positive(monkeypatch):
-    monkeypatch.setattr(
-        run_suite.sys, "argv", ["run_suite", "--dry-run", "--attempts", "0"]
-    )
+    monkeypatch.setattr(run_suite.sys, "argv", ["run_suite", "--dry-run", "--attempts", "0"])
     with pytest.raises(SystemExit):
         run_suite.main()
 
@@ -450,17 +436,13 @@ def one_task_queue(tmp_path, monkeypatch):
     monkeypatch.setattr(run_suite, "JOBS", tmp_path / "jobs")
     task = {"name": "sample", "memory_mb": 4096}
     monkeypatch.setattr(run_suite, "catalog", lambda _: ([task], []))
-    monkeypatch.setattr(
-        run_suite, "accounted_tasks", lambda _: (Counter(), set(), set())
-    )
+    monkeypatch.setattr(run_suite, "accounted_tasks", lambda _: (Counter(), set(), set()))
     monkeypatch.setattr(run_suite, "free_gb", lambda _: (32, 32))
     monkeypatch.setattr(run_suite, "reclaim_images", lambda *_: None)
     return task
 
 
-def test_queue_captures_harbor_logs_through_redaction(
-    tmp_path, monkeypatch, one_task_queue
-):
+def test_queue_captures_harbor_logs_through_redaction(tmp_path, monkeypatch, one_task_queue):
     calls = []
 
     def capture(command, path, *, cwd):
@@ -478,9 +460,7 @@ def test_queue_captures_harbor_logs_through_redaction(
     assert command[-4:] == ["--job-name", "suite-001", "-i", "sample"]
 
 
-def test_queue_keeps_harbor_offline_and_trials_private(
-    tmp_path, monkeypatch, one_task_queue
-):
+def test_queue_keeps_harbor_offline_and_trials_private(tmp_path, monkeypatch, one_task_queue):
     telemetry = []
 
     def capture(command, path, *, cwd):
@@ -538,9 +518,7 @@ def write_job_attempt(jobs, command, **vis):
 def write_attempts(jobs, job, name, count, **vis):
     """Write the trials of one Harbor job that ran several attempts of a task."""
     for number in range(count):
-        write_model_attempt(
-            jobs / job / f"{name}__{number:04}", scored_result(name, **vis)
-        )
+        write_model_attempt(jobs / job / f"{name}__{number:04}", scored_result(name, **vis))
 
 
 def test_queue_runs_missing_attempts_in_the_round_jobs_directory(
@@ -550,9 +528,7 @@ def test_queue_runs_missing_attempts_in_the_round_jobs_directory(
     monkeypatch.setattr(
         run_suite.sys, "argv", ["run_suite", "--attempts", "3", "--jobs", str(jobs)]
     )
-    monkeypatch.setattr(
-        run_suite, "accounted_tasks", lambda _: (Counter(["sample"]), set(), set())
-    )
+    monkeypatch.setattr(run_suite, "accounted_tasks", lambda _: (Counter(["sample"]), set(), set()))
     monkeypatch.setattr(run_suite, "archive_job_traces", lambda _: None)
     calls = []
 
@@ -571,16 +547,12 @@ def test_queue_runs_missing_attempts_in_the_round_jobs_directory(
     assert output.count("Finished suite-001/sample: reward=0.0") == 2
 
 
-def test_queue_counts_fast_agent_errors_per_attempt(
-    tmp_path, monkeypatch, one_task_queue
-):
+def test_queue_counts_fast_agent_errors_per_attempt(tmp_path, monkeypatch, one_task_queue):
     monkeypatch.setattr(run_suite.sys, "argv", ["run_suite", "--attempts", "2"])
     monkeypatch.setattr(run_suite, "archive_job_traces", lambda _: None)
 
     def capture(command, path, *, cwd):
-        write_attempts(
-            tmp_path / "jobs", "suite-001", "sample", 2, status="error", duration_ms=1
-        )
+        write_attempts(tmp_path / "jobs", "suite-001", "sample", 2, status="error", duration_ms=1)
         return 0
 
     monkeypatch.setattr(run_suite, "capture", capture)
@@ -588,9 +560,7 @@ def test_queue_counts_fast_agent_errors_per_attempt(
         run_suite.main()
 
 
-def test_queue_starts_next_task_when_one_slot_frees(
-    tmp_path, monkeypatch, capsys, one_task_queue
-):
+def test_queue_starts_next_task_when_one_slot_frees(tmp_path, monkeypatch, capsys, one_task_queue):
     tasks = [{"name": name, "memory_mb": 4096} for name in ("long", "short", "next")]
     monkeypatch.setattr(run_suite, "catalog", lambda _: (tasks, []))
     monkeypatch.setattr(run_suite.sys, "argv", ["run_suite"])
@@ -609,9 +579,7 @@ def test_queue_starts_next_task_when_one_slot_frees(
     monkeypatch.setattr(run_suite, "capture", capture)
     run_suite.main()
     output = capsys.readouterr().out
-    assert output.index("Starting suite-003: next") < output.index(
-        "Finished suite-001/long"
-    )
+    assert output.index("Starting suite-003: next") < output.index("Finished suite-001/long")
     assert "tasks started: 3" in output
 
 
@@ -664,14 +632,10 @@ def test_reclaim_images_removes_task_images_and_reports_failures(monkeypatch, ca
         "sample-verifier",
     ]
     assert commands[1][-3:] == ["sudo", "fstrim", "/var/lib/containers"]
-    assert capsys.readouterr().out == (
-        "Could not trim the VM disk after sample: trim refused\n"
-    )
+    assert capsys.readouterr().out == ("Could not trim the VM disk after sample: trim refused\n")
 
 
-def test_queue_reclaims_images_after_each_validated_job(
-    tmp_path, monkeypatch, one_task_queue
-):
+def test_queue_reclaims_images_after_each_validated_job(tmp_path, monkeypatch, one_task_queue):
     reclaimed = []
     monkeypatch.setattr(run_suite, "archive_job_traces", lambda _: None)
     monkeypatch.setattr(
@@ -707,8 +671,8 @@ def test_harbor_runs_the_benchmark_adapter_with_redaction():
 
 
 def test_harbor_can_import_the_adapter_and_the_plugin():
-    # Harbor inherits this environment: the repository root must be on PYTHONPATH.
-    assert str(run_suite.ROOT.parent) in os.environ["PYTHONPATH"].split(os.pathsep)
+    # Harbor inherits this environment: the package sources must be on PYTHONPATH.
+    assert str(SOURCE) in os.environ["PYTHONPATH"].split(os.pathsep)
     subprocess.run(
         [sys.executable, "-c", "import ctb.agents.vis, ctb.privacy"],
         check=True,

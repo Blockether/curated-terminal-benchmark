@@ -10,6 +10,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, agent_home, min_token_seconds, split_model, stage_files
+from ctb.toolkit import Toolkit
 
 PI_VERSION = "1.3.0"
 ANTHROPIC_PLUGIN = "@gotgenes/pi-anthropic-auth@3.4.3"
@@ -24,8 +25,8 @@ def pi_auth_json(access: credentials.Access, family: str = "openai") -> str:
     return json.dumps({"openai-codex" if family == "openai" else "anthropic": entry})
 
 
-class Pi(HarborPi):
-    """Run both benchmark models with medium effort and pinned OAuth support."""
+class Pi(Toolkit, HarborPi):
+    """Run both benchmark models with medium effort, pinned OAuth support and the toolkit."""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("reasoning_effort", EFFORT)

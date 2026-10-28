@@ -1,8 +1,8 @@
-# The Vis build and the run profiles of ctb/agents/vis.py.
+# The Vis build and the run profiles of src/ctb/agents/vis.py.
 # A round uses one build and one profile for each Vis agent.
 
 # The native Linux x64 bundle of one native-release.yml dry run, on main or another branch.
-# Run `uv run python -m ctb.agents.vis fetch` to download it to artifacts/vis-builds/<run_id>/.
+# `uv run ctb fetch` downloads it to artifacts/vis-builds/<run_id>/ and builds its extensions.
 # Run `uv run python -m ctb.agents.vis pin <run_id>` to pin another run: it downloads the
 # bundle, checks the stamp against the head commit of the run and writes this table.
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
@@ -19,61 +19,27 @@ sha256 = "f99cb16906e70d18a7611a4ccf03eacf2cb652637a140ae17fd8b62456cedcee"
 #   effort      --reasoning-effort
 #   persist     true keeps a session database (Council needs it); false uses --db :memory
 #   config      keys that go into $HOME/.vis/config.yml over the provider settings
+#   path        directories before PATH; /installed-agent puts vis-agent on PATH
+#   env         more environment variables of the Vis process
 #   instruction_note  text that goes after the task instruction, after one blank line
 #   build       run_id, commit and sha256 of the build of this profile, over [build]
+# Every profile also gets the extensions of src/ctb/agents/vis.py (EXTENSIONS), the Python
+# toolkit packages (VIS_PYTHON_PACKAGES) and its own VIS_RUNTIME_DIR in the agent home.
 # vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
-# Each experiment arm vis-<name> uses the profile <name>.
 
+# One Vis agent, Council off. `python.environment: shared` with vis-agent on PATH gives
+# py.run_tests the pytest of the toolkit.
 [profiles.solo]
 toggles = { council = false, draft_backend = "off" }
 effort = "medium"
 persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
 
 [profiles.team]
 toggles = { council = true, subagents = true, draft_backend = "off" }
 effort = "medium"
 persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.
-config = { toggles = { council = true, subagents = true } }
-
-# Solo with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
-[profiles.solo-v10]
-toggles = { council = false, draft_backend = "off" }
-effort = "medium"
-persist = false
-config = { python = { environment = "shared" } }
-path = ["/installed-agent"]
-extras = [
-  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
-  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
-]
-env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
-build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
-
-# Council on, with `python.environment: shared` and vis-agent on PATH, so py.run_tests has pytest.
-[profiles.lead-v10]
-toggles = { council = true, subagents = true, draft_backend = "off" }
-effort = "medium"
-persist = true
 config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
 path = ["/installed-agent"]
-extras = [
-  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
-  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
-]
-env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
-build = { run_id = 40387451476, commit = "91a73201b8d473d03cc19e7a34ca492c289b8027", sha256 = "bcb70c9b029be451f9931884f84587ee6690ec612014185bb2a88d199882af58" }
-
-# Lead v10 on svar 0.7.215: text-free model progress moves the Vis stall clock.
-[profiles.lead-v11]
-toggles = { council = true, subagents = true, draft_backend = "off" }
-effort = "medium"
-persist = true
-config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
-path = ["/installed-agent"]
-extras = [
-  { asset = "python-packages.tgz", sha256 = "8bb1edd6d855904dd260cdefbad7d2a25dc82e65450d72278747aec541d22d24", into = "/installed-agent" },
-  { asset = "vis-extensions.tgz", sha256 = "d34e79c566dfce96740f25ef24653e73a056098c51421404f5309075a65af2d4", into = "vis-home" },
-]
-env = { VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }
-build = { run_id = 40489327253, commit = "3350d4f6c7bb5a6ba7ede26e70188bdae1204e49", sha256 = "68bb677d17874f56070eb2d451160dd422bdbd05ae6011375d2c47959de32a6b" }

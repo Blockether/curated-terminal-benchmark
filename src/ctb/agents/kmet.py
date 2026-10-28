@@ -7,7 +7,8 @@ from edn_format import Keyword, loads
 from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
-from ctb.agents.base import ARTIFACTS, EFFORT, CuratedAgent, min_token_seconds
+from ctb.agents.base import EFFORT, CuratedAgent, min_token_seconds
+from ctb.paths import ARTIFACTS
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"

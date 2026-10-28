@@ -7,13 +7,13 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import (
-    ARTIFACTS,
     EFFORT,
     REASONING_SUMMARY,
     VERBOSITY,
     CuratedAgent,
     min_token_seconds,
 )
+from ctb.paths import ARTIFACTS
 
 DIRGE = "/installed-agent/dirge"
 STREAM = "dirge.jsonl"

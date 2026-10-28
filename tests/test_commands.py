@@ -29,7 +29,7 @@ from ctb.agents.opencode import (
     watchdog_verdict,
 )
 from ctb.agents.pi import Pi, pi_auth_json
-from ctb.agents.vis import VisLeadV10, VisLeadV11, VisSolo, VisSoloV10, VisTeam
+from ctb.agents.vis import VisSolo, VisTeam
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -132,22 +132,20 @@ def test_vis_profile_build_pins_its_own_build(pinned):
     assert [pin["run_id"] for pin in vis.builds()] == [build["run_id"], 43]
 
 
-def test_vis_experiment_arms_keep_their_toggles_and_the_task_text():
-    for cls, profile in ((VisLeadV10, "lead-v10"), (VisLeadV11, "lead-v11")):
-        command = agent(cls, "openai/gpt-6.1-sol").command("do 'it'")
-        toggles = "council=true,subagents=true,draft_backend=off"
-        assert f"--name {profile} --persist --toggles verbosity=low,{toggles} --model" in command
+def test_vis_arms_share_python_and_keep_the_task_text():
+    team = agent(VisTeam, "openai/gpt-6.1-sol").command("do 'it'")
+    solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
+    for command in (team, solo):
         config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
-        # Subagents resolve toggles from the configuration, not from --toggles.
-        assert config["toggles"]["subagents"] is True
         assert config["python"]["environment"] == "shared"
-    solo = agent(VisSoloV10, "openai/gpt-6.1-sol").command("x")
-    assert "--name solo-v10 --db :memory --toggles verbosity=low,council=false" in solo
+        assert 'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent' in command
+    # Subagents resolve toggles from the configuration, not from --toggles.
+    team_config = json.loads(team.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
+    assert team_config["toggles"]["subagents"] is True
     # Profiles without a note keep the task text as it is.
     assert "-- x >" in solo
-    assert "-- x >" in agent(VisTeam, "openai/gpt-6.1-sol").command("x")
     names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
-    assert names == ["VisSolo", "VisTeam", "VisSoloV10", "VisLeadV10", "VisLeadV11"]
+    assert names == ["VisSolo", "VisTeam"]
     assert set(vis.AGENT_PROFILES.values()) <= set(vis.settings()["profiles"])
 
 
@@ -179,6 +177,7 @@ def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
     assert (found["run_id"], found["commit"], found["sha256"]) == (42, "a" * 40, build["sha256"])
     assert vis.archive(found).parts[-2] == "42"
     vis.write_pin(found)
+    vis.extensions_archive(found).write_bytes(b"extensions")
     assert vis.settings()["build"]["run_id"] == 42
     assert vis.settings()["profiles"]["solo"] == {"persist": False}
     assert vis.fetch() == vis.archive(found)
@@ -206,17 +205,28 @@ def test_vis_installs_only_the_pinned_build(pinned):
     solo.exec_as_root = AsyncMock()
     solo._get_system_package_manager = AsyncMock(return_value="apt-get")
     environment = AsyncMock()
-    with pytest.raises(FileNotFoundError, match="ctb.agents.vis fetch"):
+    with pytest.raises(FileNotFoundError, match="uv run ctb fetch"):
         asyncio.run(solo.install(environment))
     solo.ARCHIVE.parent.mkdir(parents=True)
     solo.ARCHIVE.write_bytes(b"another build")
     with pytest.raises(ValueError, match="not the pinned"):
         asyncio.run(solo.install(environment))
-    environment.upload_file.assert_not_awaited()
     solo.ARCHIVE.write_bytes(data)
+    with pytest.raises(FileNotFoundError, match="Missing Vis extensions"):
+        asyncio.run(solo.install(environment))
+    environment.upload_file.assert_not_awaited()
+    extensions = vis.extensions_archive(solo.build)
+    extensions.write_bytes(b"extensions")
     asyncio.run(solo.install(environment))
-    environment.upload_file.assert_awaited_once_with(solo.ARCHIVE, "/tmp/ctb-agent.tar.gz")
+    uploads = [call.args for call in environment.upload_file.await_args_list]
+    assert uploads == [
+        (solo.ARCHIVE, "/tmp/ctb-agent.tar.gz"),
+        (extensions, "/tmp/ctb-extensions.tar.gz"),
+    ]
     assert solo.ARCHIVE.parts[-3:] == ("vis-builds", "7", "vis-agent-linux-x64.tar.gz")
+    assert extensions.parent == solo.ARCHIVE.parent
+    command = solo.exec_as_root.await_args_list[-1].kwargs["command"]
+    assert "mv /tmp/ctb-extensions.tar.gz /installed-agent/extras/vis-extensions.tar.gz" in command
 
 
 def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch):
@@ -225,6 +235,12 @@ def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch):
 
     def download(argv, check):
         calls.append(argv)
+        if argv[0] == "podman":
+            # The extensions build writes its archive into the mounted bundle directory.
+            out = next(a for a in argv if a.startswith("OUT=")).removeprefix("OUT=")
+            mount = argv[argv.index("-v") + 1].removesuffix(":/x")
+            (Path(mount) / out).write_bytes(b"extensions")
+            return
         directory = Path(argv[argv.index("-D") + 1])
         (directory / build["asset"]).write_bytes(payload)
 
@@ -235,9 +251,11 @@ def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch):
     payload = data
     path = vis.fetch()
     assert path.read_bytes() == data
-    assert calls[-1][:6] == ["gh", "run", "download", "7", "-R", "Blockether/vis"]
+    assert calls[-2][:6] == ["gh", "run", "download", "7", "-R", "Blockether/vis"]
+    assert calls[-1][0] == "podman" and "EXTENSIONS=Blockether/vis-lang-python@1.15.2" in calls[-1]
+    assert vis.extensions_archive(build).read_bytes() == b"extensions"
     vis.fetch()
-    assert len(calls) == 2
+    assert len(calls) == 3
 
 
 def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
@@ -286,6 +304,9 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
     first, second = json.loads((tmp_path / "ctb-runs.json").read_text())
     assert first["vis"]["build"]["run_id"] == 7
     assert first["vis"]["profiles"] == {"vis-solo": {"name": "solo", "persist": False}}
+    assert first["vis"]["extensions"] == vis.EXTENSIONS
+    # No extensions archive exists yet, so the record has no digest for it.
+    assert first["vis"]["extensions_sha256"] == {}
     assert "vis" not in second
 
 
@@ -327,7 +348,7 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
 
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
-    assert command[command.index("-a") + 1] == "codex"
+    assert command[command.index("-a") + 1] == "ctb.agents.codex:Codex"
     assert command[-6:] == [
         "--ak",
         "reasoning_effort=medium",
@@ -599,62 +620,17 @@ def test_task_fixes_skip_a_task_that_the_dataset_does_not_have(tmp_path):
     assert not (tmp_path / "interleaved-vigenere").exists()
 
 
-def test_vis_v10_unpacks_its_pinned_extras(pinned, tmp_path):
-    build, data = pinned
-    packages = b"packages"
-    home = b"extensions"
-    extras = [
-        {
-            "asset": "p.tgz",
-            "sha256": hashlib.sha256(packages).hexdigest(),
-            "into": "/installed-agent",
-        },
-        {"asset": "h.tgz", "sha256": hashlib.sha256(home).hexdigest(), "into": "vis-home"},
-    ]
-    profiles = {
-        "solo-v10": {
-            "persist": "false",
-            "extras": "["
-            + ", ".join(
-                "{ " + ", ".join(f"{k} = {json.dumps(v)}" for k, v in extra.items()) + " }"
-                for extra in extras
-            )
-            + "]",
-            "env": '{ VIS_PYTHON_PACKAGES = "/installed-agent/python-packages" }',
-            "path": '["/installed-agent"]',
-        }
-    }
-    write_settings(vis.SETTINGS, build, profiles)
-    solo = vis.VisSoloV10(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
-    command = solo.command("x")
+def test_vis_unpacks_its_extensions_and_keeps_its_runtime_apart(pinned):
+    command = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
+    runtime = "$HOME/.vis-runtime"
     assert (
-        "export VIS_HOME=$HOME/.vis && tar -xzf /installed-agent/extras/h.tgz -C $HOME/.vis && "
-        "export VIS_PYTHON_PACKAGES=/installed-agent/python-packages && "
-        'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent'
+        "export VIS_HOME=$HOME/.vis && "
+        "tar -xzf /installed-agent/extras/vis-extensions.tar.gz -C $HOME/.vis && "
+        f"mkdir -m 700 -p {runtime} && mkdir -m 700 -p {runtime}/tmp && "
+        f"export VIS_RUNTIME_DIR={runtime} TMPDIR={runtime}/tmp "
+        "VIS_PYTHON_PACKAGES=/installed-agent/ctb-python/lib/python3.14/site-packages && "
+        "/installed-agent/vis-agent"
     ) in command
-    solo.exec_as_root = AsyncMock()
-    solo._get_system_package_manager = AsyncMock(return_value="apt-get")
-    environment = AsyncMock()
-    solo.ARCHIVE.parent.mkdir(parents=True)
-    solo.ARCHIVE.write_bytes(data)
-    with pytest.raises(FileNotFoundError, match="vis-extras/build.sh"):
-        asyncio.run(solo.install(environment))
-    vis.extra_path(extras[0]).parent.mkdir(parents=True)
-    vis.extra_path(extras[0]).write_bytes(packages)
-    vis.extra_path(extras[1]).write_bytes(b"another")
-    with pytest.raises(ValueError, match="not the pinned"):
-        asyncio.run(solo.install(environment))
-    environment.upload_file.assert_not_awaited()
-    vis.extra_path(extras[1]).write_bytes(home)
-    asyncio.run(solo.install(environment))
-    uploads = [call.args for call in environment.upload_file.await_args_list]
-    assert uploads[1:] == [
-        (vis.extra_path(extras[0]), "/tmp/ctb-extra.tgz"),
-        (vis.extra_path(extras[1]), "/tmp/ctb-extra.tgz"),
-    ]
-    commands = [call.kwargs["command"] for call in solo.exec_as_root.await_args_list][-2:]
-    assert commands[0].startswith("mkdir -p /installed-agent && tar -xzf /tmp/ctb-extra.tgz")
-    assert "mv /tmp/ctb-extra.tgz /installed-agent/extras/h.tgz" in commands[1]
 
 
 def test_vis_keeps_its_logs_and_exit_status(pinned):
@@ -663,8 +639,3 @@ def test_vis_keeps_its_logs_and_exit_status(pinned):
         "2> /logs/agent/vis-stderr.log; status=$?; "
         "cp -R $HOME/.vis/logs /logs/agent/vis-logs 2>/dev/null; exit $status"
     )
-
-
-def test_vis_extra_refuses_an_unknown_target(pinned):
-    with pytest.raises(ValueError, match="vis-home"):
-        vis.check_extra({"asset": "x.tgz", "sha256": "0", "into": "/tmp"})
