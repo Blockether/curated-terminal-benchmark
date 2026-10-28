@@ -194,6 +194,7 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <div class="container topbar-row">
 <a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
+<span class="brand-sep" aria-hidden="true">|</span>
 <span class="brand-name">CTB report</span></a>
 <nav aria-label="Sections">{nav}</nav>
 </div>
