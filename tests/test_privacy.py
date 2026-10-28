@@ -68,7 +68,7 @@ def test_secrets_come_from_sensitive_names_and_credential_files(tmp_path):
     env = {
         "CTB_PROXY_KEY": PROXY_KEY,
         "CODEX_AUTH_JSON_PATH": str(codex),
-        "CLAUDE_FORCE_OAUTH": "1",
+        "CODEX_HOME": "/root/.codex",
         "MAX_TOKENS": "128000000",
         "PATH": "/usr/bin:/bin",
     }
@@ -89,7 +89,7 @@ def test_redaction_keeps_binary_files_and_reports_changes(tmp_path):
 
 
 def test_redactor_removes_planted_credentials_from_trajectories(tmp_path, monkeypatch):
-    auth = tmp_path / "anthropic-auth.json"
+    auth = tmp_path / "openai-codex-auth.json"
     auth.write_text(json.dumps({"access_token": TOKEN, "expires_at_ms": 1}))
     monkeypatch.setattr(privacy, "CREDENTIAL_FILES", (auth,))
     monkeypatch.setenv("CTB_PROXY_KEY", PROXY_KEY)

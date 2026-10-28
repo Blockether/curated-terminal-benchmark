@@ -40,14 +40,14 @@ def agent(cls, model, logs=Path("/tmp/ctb-test-logs")):
 
 
 def test_vis_team_uses_the_gateway_path_with_council_on():
-    team = agent(VisTeam, "anthropic/claude-opus-5-5").command("do 'it'")
+    team = agent(VisTeam, "openai/gpt-6.1-sol").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
     assert (
         "--name team --persist --toggles verbosity=low,council=true,subagents=true,draft_backend=off"
         in team
     )
     assert "--db :memory" not in team
-    assert "anthropic-coding-plan/claude-opus-5-5 --reasoning-effort medium" in team
+    assert "openai-codex/gpt-6.1-sol --reasoning-effort medium" in team
     assert "--name solo --db :memory --toggles verbosity=low,council=false" in solo
     assert "openai-codex/gpt-6.1-sol" in solo
     assert "--trajectory /logs/agent/trajectory.json --full-trace-json-stream" in solo
@@ -383,40 +383,15 @@ def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]
 
 
-def test_opencode_and_pi_use_pinned_anthropic_plugins_with_medium_effort():
-    opencode = agent(OpenCode, "anthropic/claude-opus-5-5")
-    pi = agent(Pi, "anthropic/claude-opus-5-5")
-    assert opencode.options.variant == "medium"
-    assert "@ex-machina/opencode-anthropic-auth@1.8.6" in opencode._build_register_config_command()
-    assert pi.options.thinking == "medium"
-    assert pi.model_connection.provider == "anthropic"
-    assert "--extension npm:@gotgenes/pi-anthropic-auth@3.4.3" in pi.build_cli_flags()
+def test_only_the_gpt_model_runs():
+    for cls in (OpenCode, Pi, Dirge):
+        with pytest.raises(ValueError, match="Use --model openai/gpt-6.1-sol"):
+            agent(cls, "anthropic/claude-opus-5-5")
     assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
-    access = credentials.Access("A", 123)
-    assert json.loads(pi_auth_json(access, "anthropic")) == {
-        "anthropic": {"type": "oauth", "access": "A", "refresh": "", "expires": 123}
-    }
-    (login,) = json.loads(opencode_auth_json(access, "anthropic"))
-    assert login["integrationID"] == "anthropic"
-    assert login["value"] == {
-        "type": "oauth",
-        "methodID": "oauth",
-        "refresh": "",
-        "access": "A",
-        "expires": 123,
-    }
-    for name in ("pi", "opencode"):
-        assert AGENTS[name].families == ("openai",)
 
 
-def test_opencode_opus_output_limit_is_128k_without_changing_gpt():
-    # OpenCode 2 takes the output limit from the model limit, not from an environment variable.
-    opus = agent(OpenCode, "anthropic/claude-opus-5-5")
+def test_opencode_sends_low_gpt_verbosity():
     gpt = agent(OpenCode, "openai/gpt-6.1-sol")
-    assert opus._opencode_config["provider"]["anthropic"]["models"]["claude-opus-5-5"]["limit"] == {
-        "context": 1000000,
-        "output": 128000,
-    }
     # OpenCode sets GPT verbosity only for gpt-5.x ids, so ctb sends pi's `low` itself.
     assert gpt._opencode_config["provider"] == {
         "openai": {"models": {"gpt-6.1-sol": {"options": {"textVerbosity": "low"}}}}
@@ -457,11 +432,9 @@ def test_dirge_tokens_come_from_the_result_event(tmp_path):
     }
     lines = [{"type": "assistant"}, {"type": "result", "usage": usage}]
     (tmp_path / "dirge.jsonl").write_text("\n".join(map(json.dumps, lines)) + "\n")
-    opus, gpt = AgentContext(), AgentContext()
-    agent(Dirge, "anthropic/claude-opus-5-5", tmp_path).populate_context_post_run(opus)
+    gpt = AgentContext()
     agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(gpt)
-    # Anthropic counts cached tokens apart from input_tokens; OpenAI counts them inside.
-    assert tokens(opus) == (185, 80, 7)
+    # OpenAI counts cached tokens inside input_tokens.
     assert tokens(gpt) == (100, 80, 7)
 
 

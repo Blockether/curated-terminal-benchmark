@@ -31,24 +31,18 @@ class Dirge(CuratedAgent):
         return f"{DIRGE} --version"
 
     def config(self) -> dict:
-        auth = "anthropic" if self.family == "anthropic" else "chatgpt"
         return {
             "provider": self.family,
             "yolo": True,
-            "providers": {self.family: {"auth": auth, "model": self.model, "effort": EFFORT}},
+            "providers": {self.family: {"auth": "chatgpt", "model": self.model, "effort": EFFORT}},
         }
 
     def secret_files(self) -> dict[str, str]:
-        files = {".config/dirge/config.json": json.dumps(self.config())}
-        if self.family == "openai":
-            access = credentials.codex_vis(min_token_seconds())
-            files[".codex/auth.json"] = credentials.codex_auth_json(access)
-        return files
-
-    def secret_env(self) -> dict[str, str]:
-        if self.family == "anthropic":
-            return {"ANTHROPIC_OAUTH_TOKEN": credentials.anthropic(min_token_seconds()).token}
-        return {}
+        access = credentials.codex_vis(min_token_seconds())
+        return {
+            ".config/dirge/config.json": json.dumps(self.config()),
+            ".codex/auth.json": credentials.codex_auth_json(access),
+        }
 
     def command(self, instruction: str) -> str:
         return (
@@ -71,11 +65,6 @@ class Dirge(CuratedAgent):
                     usage = event.get("usage")
         if not usage:
             return
-        cached = usage.get("cached_input_tokens", 0)
-        prompt = usage.get("input_tokens", 0)
-        if self.family == "anthropic":
-            # Anthropic counts cache reads and writes apart from input_tokens.
-            prompt += cached + usage.get("cache_creation_input_tokens", 0)
-        context.n_input_tokens = prompt
-        context.n_cache_tokens = cached
+        context.n_input_tokens = usage.get("input_tokens", 0)
+        context.n_cache_tokens = usage.get("cached_input_tokens", 0)
         context.n_output_tokens = usage.get("output_tokens", 0)

@@ -27,24 +27,23 @@ def run_args(**extra):
     return argparse.Namespace(**{**base, **extra})
 
 
-def test_host_env_defers_a_claude_trial_with_a_short_token(monkeypatch, tmp_path):
-    def short(_min_valid_s):
+def test_a_short_token_blocks_the_trial(monkeypatch, tmp_path):
+    def short(*_args):
         raise credentials.ExpiringToken("short")
 
-    monkeypatch.setattr(credentials, "anthropic", short)
-    with pytest.raises(credentials.ExpiringToken):
-        cli.host_env(matrix.Trial(matrix.AGENTS["dirge"], "anthropic", "t"), tmp_path)
+    monkeypatch.setattr(cli, "podman_ready", lambda: True)
+    monkeypatch.setattr(cli, "host_env", short)
+    trial = matrix.Trial(matrix.AGENTS["dirge"], "openai", "t")
+    assert (
+        cli.run_trial(trial, tmp_path / "jobs", tmp_path, 0.25) == "blocked dirge__openai__t: short"
+    )
 
 
-def test_run_retries_deferred_trials_after_a_token_refresh(root, monkeypatch, capsys):
-    answers = iter(["defer dirge: short", "done dirge: reward=1.0"])
-    refreshes = []
-    monkeypatch.setattr(cli, "run_trial", lambda *a: next(answers))
-    monkeypatch.setattr(credentials, "refresh_anthropic", refreshes.append)
+def test_run_records_each_trial_once(root, monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(cli, "run_trial", lambda *a: calls.append(a) or "done dirge: reward=1.0")
     cli.run(run_args())
-    out = capsys.readouterr().out
-    assert "1 trials wait for a Claude token refresh" in out and "done dirge" in out
-    assert len(refreshes) == 1
+    assert "done dirge" in capsys.readouterr().out and len(calls) == 1
     record = json.loads((root / "jobs/r/ctb-runs.json").read_text())
     assert record[0]["pins"]["dirge"] == cli.DIRGE_COMMIT and record[0]["parallel"] == 1
 

@@ -27,7 +27,7 @@ from ctb.agents.base import (
 from ctb.paths import ARTIFACTS, ROOT
 
 #: Vis providers of the benchmark families. They use the subscription token files.
-PROVIDERS = {"anthropic": "anthropic-coding-plan", "openai": "openai-codex"}
+PROVIDERS = {"openai": "openai-codex"}
 #: Other Vis providers read an API key from this host variable.
 API_KEYS = {"zai-coding-plan": "ZAI_CODING_API_KEY"}
 SETTINGS = ROOT / "profiles.toml"
@@ -248,9 +248,6 @@ class VisSolo(CuratedAgent):
         )
 
     def secret_files(self) -> dict[str, str]:
-        if self.family == "anthropic":
-            access = credentials.anthropic(min_token_seconds())
-            return {".vis/anthropic-auth.json": credentials.vis_anthropic_file(access)}
         if self.family == "openai":
             access = credentials.codex_vis(min_token_seconds())
             return {".vis/openai-codex-auth.json": credentials.vis_codex_file(access)}

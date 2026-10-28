@@ -21,8 +21,7 @@ JOLT_VERSION = "v0.8.23"
 ARCHIVE_NAME = f"samizdat-{VERSION}-x86_64-linux.tar.gz"
 SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
 RUN_LOG = "samizdat-run.json"
-# Opus 5.5 refuses a forced tool_choice, so the proxy asks for the tool in the prompt.
-FEATURES = {"anthropic": ":reasoning-effort", "openai": ":native-tool-choice :reasoning-effort"}
+FEATURES = ":native-tool-choice :reasoning-effort"
 
 
 def proxy_env() -> tuple[str, str]:
@@ -72,7 +71,7 @@ class Samizdat(CuratedAgent):
             f'                    :base-url "{url}/v1"\n'
             '                    :api-key-env "CTB_PROXY_KEY"\n'
             f'                    :model "{self.model}"\n'
-            f"                    :features #{{{FEATURES[self.family]}}}\n"
+            f"                    :features #{{{FEATURES}}}\n"
             f'                    :reasoning-effort "{EFFORT}"\n'
             "                    :context-window 1000000\n"
             "                    :max-tokens 128000}}\n"

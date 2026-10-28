@@ -4,7 +4,6 @@ Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
 Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Vis solo and Vis team.
-Claude Code is not part of the active configuration.
 
 ## Layout
 

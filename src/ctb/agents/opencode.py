@@ -1,4 +1,4 @@
-"""OpenCode 2 through Harbor, with pinned subscription authentication plugins."""
+"""OpenCode 2 through Harbor, with the ChatGPT subscription login."""
 
 import asyncio
 import json
@@ -21,7 +21,6 @@ from ctb.toolkit import Toolkit
 OPENCODE_VERSION = "2.2.0"
 #: OpenCode 2 is published as @opencode/cli; the opencode-ai package stops at 1.x.
 OPENCODE_PACKAGE = "@opencode/cli"
-ANTHROPIC_PLUGIN = "@ex-machina/opencode-anthropic-auth@1.8.6"
 #: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Keep them off
 #: /logs, a host mount of the Podman VM, which gets only OpenCode's log.
 LOCAL_DATA = "/tmp/ctb-opencode"
@@ -142,14 +141,14 @@ def watchdog_verdict(output: str, idle_s: float, idle_limit_s: float) -> str | N
     return None
 
 
-def opencode_auth_json(access: credentials.Access, family: str = "openai") -> str:
+def opencode_auth_json(access: credentials.Access) -> str:
     """Create a subscription login without permission to rotate the host token.
 
     OpenCode 2 keeps logins in its database, so ctb loads this list with `opencode auth import`.
     """
     value = {
         "type": "oauth",
-        "methodID": "chatgpt-browser" if family == "openai" else "oauth",
+        "methodID": "chatgpt-browser",
         "refresh": "",
         "access": access.token,
         "expires": access.expires_ms,
@@ -158,7 +157,7 @@ def opencode_auth_json(access: credentials.Access, family: str = "openai") -> st
         value["metadata"] = {"accountID": access.account_id}
     credential = {
         "id": "cred_ctb",
-        "integrationID": family,
+        "integrationID": "openai",
         "label": "OAuth",
         "active": True,
         "value": value,
@@ -167,34 +166,20 @@ def opencode_auth_json(access: credentials.Access, family: str = "openai") -> st
 
 
 class OpenCode(Toolkit, HarborOpenCode):
-    """Run both benchmark models with medium effort, pinned OAuth support and the toolkit."""
+    """Run the benchmark model with medium effort, the subscription login and the toolkit."""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("variant", EFFORT)
         super().__init__(*args, version=version or OPENCODE_VERSION, **kwargs)
-        family, model = split_model(self.model_name)
-        if family == "anthropic":
-            self._opencode_config = {
-                **self._opencode_config,
-                "plugin": [*self._opencode_config.get("plugin", []), ANTHROPIC_PLUGIN],
-                "provider": {
-                    **self._opencode_config.get("provider", {}),
-                    "anthropic": {
-                        "models": {
-                            "claude-opus-5-5": {"limit": {"context": 1000000, "output": 128000}}
-                        }
-                    },
-                },
-            }
-        else:
-            # OpenCode sets GPT verbosity only for gpt-5.x ids; send pi's `low` for every GPT.
-            self._opencode_config = {
-                **self._opencode_config,
-                "provider": {
-                    **self._opencode_config.get("provider", {}),
-                    "openai": {"models": {model: {"options": {"textVerbosity": VERBOSITY}}}},
-                },
-            }
+        _, model = split_model(self.model_name)
+        # OpenCode sets GPT verbosity only for gpt-5.x ids; send pi's `low` for every GPT.
+        self._opencode_config = {
+            **self._opencode_config,
+            "provider": {
+                **self._opencode_config.get("provider", {}),
+                "openai": {"models": {model: {"options": {"textVerbosity": VERBOSITY}}}},
+            },
+        }
 
     @override
     async def install(self, environment: BaseEnvironment) -> None:
@@ -269,16 +254,11 @@ class OpenCode(Toolkit, HarborOpenCode):
         if not self.model_name or "/" not in self.model_name:
             raise ValueError("Model name must be in the format provider/model_name")
         self._instruction = instruction
-        family, _ = split_model(self.model_name)
-        access = (
-            credentials.refresh_anthropic(min_token_seconds())
-            if family == "anthropic"
-            else credentials.codex_vis(min_token_seconds())
-        )
+        access = credentials.codex_vis(min_token_seconds())
         env = self.opencode_env()
         login = f"{LOCAL_DATA}/credentials.json"
         await stage_files(
-            self, environment, {"credentials.json": opencode_auth_json(access, family)}, LOCAL_DATA
+            self, environment, {"credentials.json": opencode_auth_json(access)}, LOCAL_DATA
         )
         stopped: list[str] = []
         error: BaseException | None = None

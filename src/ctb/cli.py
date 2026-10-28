@@ -243,9 +243,6 @@ def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict
         env["PODMAN_COMPOSE_PROVIDER"] = str(COMPOSE)
     for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN"):
         env.pop(key, None)
-    if trial.family == "anthropic" and not trial.agent.proxy:
-        # Agents read the token again inside Harbor: a short token defers the trial here.
-        credentials.anthropic(min_token_seconds())
     if trial.agent.name == "codex":
         auth = secret_dir / "auth.json"
         auth.write_text(credentials.codex_auth_json(credentials.codex_cli(min_token_seconds())))
@@ -408,8 +405,6 @@ def run_trial(
         os.chmod(secrets, 0o700)
         try:
             env = host_env(trial, Path(secrets), proxy)
-        except credentials.ExpiringToken as error:
-            return f"defer {trial.job}: {error}"
         except credentials.CredentialError as error:
             return f"blocked {trial.job}: {error}"
         started = time.monotonic()
@@ -479,21 +474,12 @@ def run(args: argparse.Namespace) -> None:
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
     try:
-        pending = selected
-        while pending:
-            deferred = []
-            with ThreadPoolExecutor(args.parallel) as pool:
-                lines = pool.map(
-                    lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), pending
-                )
-                for trial, line in zip(pending, lines):
-                    print(line, flush=True)
-                    if line.startswith("defer "):
-                        deferred.append(trial)
-            if deferred:
-                print(f"{len(deferred)} trials wait for a Claude token refresh", flush=True)
-                credentials.refresh_anthropic(min_token_seconds())
-            pending = deferred
+        with ThreadPoolExecutor(args.parallel) as pool:
+            lines = pool.map(
+                lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), selected
+            )
+            for line in lines:
+                print(line, flush=True)
     except PodmanDown as error:
         raise SystemExit(str(error)) from error
     finally:
@@ -526,8 +512,6 @@ def pins() -> dict:
             "opencode": opencode.OPENCODE_VERSION,
             "pi": pi.PI_VERSION,
         },
-        "auth_plugins": {"opencode": opencode.ANTHROPIC_PLUGIN, "pi": pi.ANTHROPIC_PLUGIN},
-        "opencode_anthropic_max_output_tokens": 128000,
         "models": MODELS,
         "effort": EFFORT,
         "task_fixes": sorted(

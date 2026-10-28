@@ -5,7 +5,7 @@ from ctb.agents.base import split_model
 
 
 def test_only_supported_model_pairs_become_trials():
-    jobs = [t.job for t in matrix.trials(["codex", "vis-team"], ["anthropic", "openai"], ["x"])]
+    jobs = [t.job for t in matrix.trials(["codex", "vis-team"], ["other", "openai"], ["x"])]
     assert jobs == [
         "codex__openai__x",
         "vis-team__openai__x",
@@ -24,12 +24,6 @@ def test_two_vis_arms_run_task_major_in_one_round():
 
 def test_every_arm_is_in_the_default_matrix():
     assert matrix.DEFAULT_AGENTS.split(",") == list(matrix.AGENTS)
-
-
-def test_kmet_runs_only_on_the_gpt_model():
-    assert [t.job for t in matrix.trials(["kmet"], ["anthropic", "openai"], ["x"])] == [
-        "kmet__openai__x"
-    ]
 
 
 def test_task_selectors():

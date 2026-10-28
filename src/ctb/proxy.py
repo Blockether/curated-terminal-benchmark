@@ -1,9 +1,9 @@
 """OpenAI Chat Completions proxy for agents that only speak that wire.
 
 samizdat reaches models only through an OpenAI-compatible endpoint. This proxy
-runs on the host. It sends `claude-*` models to the Anthropic Messages API and
-`gpt-*` models to the ChatGPT Codex Responses API, with the subscription
-access tokens that Vis keeps. The container gets only a random proxy key.
+runs on the host. It sends `gpt-*` models to the ChatGPT Codex Responses API,
+with the subscription access token that Vis keeps. The container gets only a
+random proxy key.
 """
 
 import hashlib
@@ -20,17 +20,8 @@ from pathlib import Path
 from ctb import credentials
 from ctb.agents.base import REASONING_SUMMARY, VERBOSITY
 
-ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 CODEX_URL = "https://chatgpt.com/backend-api/codex/responses"
-CLAUDE_IDENTITY = "You are Claude Code, Anthropic's official CLI for Claude."
-ANTHROPIC_HEADERS = {
-    "anthropic-version": "2023-06-01",
-    "anthropic-beta": "claude-code-20250219,oauth-2025-04-20",
-    "anthropic-dangerous-direct-browser-access": "true",
-    "user-agent": "claude-cli/2.1.280",
-    "x-app": "cli",
-}
-MODELS = ("claude-opus-5-5", "gpt-6.1-sol")
+MODELS = ("gpt-6.1-sol",)
 TOKEN_MIN_S = 120
 TIMEOUT_S = 900
 
@@ -59,120 +50,6 @@ def _forced_tool(tool_choice) -> str | None:
     if isinstance(tool_choice, dict):
         return (tool_choice.get("function") or {}).get("name")
     return None
-
-
-# --- Anthropic ---------------------------------------------------------------
-
-
-def anthropic_body(req: dict) -> dict:
-    system = [{"type": "text", "text": CLAUDE_IDENTITY}]
-    turns: list[dict] = []
-
-    def add(role: str, blocks: list[dict]) -> None:
-        if turns and turns[-1]["role"] == role:
-            turns[-1]["content"].extend(blocks)
-        else:
-            turns.append({"role": role, "content": list(blocks)})
-
-    for m in req.get("messages") or []:
-        role, text = m.get("role"), _text(m.get("content"))
-        if role in ("system", "developer"):
-            if text:
-                system.append({"type": "text", "text": text})
-        elif role == "user":
-            add("user", [{"type": "text", "text": text or "(empty)"}])
-        elif role == "assistant":
-            blocks = [{"type": "text", "text": text}] if text else []
-            for call in m.get("tool_calls") or []:
-                fn = call.get("function") or {}
-                try:
-                    args = json.loads(fn.get("arguments") or "{}")
-                except json.JSONDecodeError:
-                    args = {"raw": fn.get("arguments")}
-                blocks.append(
-                    {"type": "tool_use", "id": call["id"], "name": fn["name"], "input": args}
-                )
-            add("assistant", blocks or [{"type": "text", "text": "(empty)"}])
-        elif role == "tool":
-            add(
-                "user",
-                [
-                    {
-                        "type": "tool_result",
-                        "tool_use_id": m.get("tool_call_id"),
-                        "content": text,
-                    }
-                ],
-            )
-    if not turns or turns[0]["role"] != "user":
-        turns.insert(0, {"role": "user", "content": [{"type": "text", "text": "Begin."}]})
-    body = {
-        "model": req["model"],
-        "max_tokens": int(req.get("max_tokens") or req.get("max_completion_tokens") or 16384),
-        "system": system,
-        "messages": turns,
-    }
-    tools = _tool_specs(req.get("tools"))
-    if tools:
-        body["tools"] = [
-            {
-                "name": t["name"],
-                "description": t.get("description", ""),
-                "input_schema": t.get("parameters") or {"type": "object", "properties": {}},
-            }
-            for t in tools
-        ]
-    forced = _forced_tool(req.get("tool_choice"))
-    effort = req.get("reasoning_effort")
-    if forced:
-        # Opus 5.5 refuses a forced tool_choice, so ask for the call in words.
-        body["tool_choice"] = {"type": "auto"}
-        system.append(
-            {"type": "text", "text": f"Respond now with one call to the `{forced}` tool."}
-        )
-    if effort != "none":
-        body["thinking"] = {"type": "adaptive", "display": "omitted"}
-    if effort and effort != "none":
-        body["output_config"] = {"effort": effort}
-    system[-1]["cache_control"] = {"type": "ephemeral"}
-    return body
-
-
-def anthropic_reply(data: dict) -> tuple[dict, dict]:
-    text, calls = [], []
-    for block in data.get("content") or []:
-        if block.get("type") == "text":
-            text.append(block["text"])
-        elif block.get("type") == "tool_use":
-            calls.append(
-                {
-                    "id": block["id"],
-                    "type": "function",
-                    "function": {"name": block["name"], "arguments": json.dumps(block["input"])},
-                }
-            )
-    stop = data.get("stop_reason")
-    finish = {"max_tokens": "length", "tool_use": "tool_calls"}.get(stop, "stop")
-    u = data.get("usage") or {}
-    cached = u.get("cache_read_input_tokens") or 0
-    prompt = (u.get("input_tokens") or 0) + cached + (u.get("cache_creation_input_tokens") or 0)
-    message = {"role": "assistant", "content": "".join(text)}
-    if calls:
-        message["tool_calls"] = calls
-    usage = {
-        "prompt_tokens": prompt,
-        "completion_tokens": u.get("output_tokens") or 0,
-        "total_tokens": prompt + (u.get("output_tokens") or 0),
-        "prompt_tokens_details": {"cached_tokens": cached},
-    }
-    return {"message": message, "finish_reason": finish, "model": data.get("model")}, usage
-
-
-def call_anthropic(req: dict) -> tuple[dict, dict]:
-    token = credentials.refresh_anthropic(TOKEN_MIN_S).token
-    headers = {**ANTHROPIC_HEADERS, "Authorization": f"Bearer {token}"}
-    data = _post_json(ANTHROPIC_URL, anthropic_body(req), headers)
-    return anthropic_reply(data)
 
 
 # --- Codex Responses ---------------------------------------------------------
@@ -327,18 +204,12 @@ def _open(url: str, body: dict, headers: dict):
         raise UpstreamError(e.code, e.read().decode("utf-8", "replace")) from e
 
 
-def _post_json(url: str, body: dict, headers: dict) -> dict:
-    with _open(url, body, headers) as resp:
-        return json.loads(resp.read())
-
-
 def complete(req: dict) -> dict:
     """One OpenAI chat completion, answered by the upstream of its model."""
     if req.get("stream"):
         raise UpstreamError(400, "stream is not supported; remove :stream from the features")
     model = str(req.get("model") or "")
-    call = call_anthropic if model.startswith("claude-") else call_codex
-    choice, usage = call(req)
+    choice, usage = call_codex(req)
     return {
         "id": f"chatcmpl-{uuid.uuid4()}",
         "object": "chat.completion",

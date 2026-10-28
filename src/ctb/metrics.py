@@ -8,13 +8,12 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-#: Tools that start a subagent: Claude Code Task and Agent, Codex spawn_agent, OpenCode task.
-SUBAGENT_TOOLS = frozenset({"Task", "Agent", "spawn_agent", "task"})
+#: Tools that start a subagent: Codex spawn_agent and OpenCode task.
+SUBAGENT_TOOLS = frozenset({"spawn_agent", "task"})
 #: API list prices in USD per token: input, cache read and output (litellm, 2026-10-16).
 #: The trials run on subscriptions, so a cost is the API equivalent, not a bill.
 PRICES = {
     "gpt-6.1-sol": (2e-06, 1e-07, 1e-05),
-    "claude-opus-5-5": (4e-06, 2e-07, 2e-05),
 }
 PHASES = ("environment_setup", "agent_setup", "agent_execution", "verifier")
 

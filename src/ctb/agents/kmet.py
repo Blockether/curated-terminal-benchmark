@@ -26,10 +26,6 @@ class Kmet(CuratedAgent):
         return f"{KMET} --version"
 
     def secret_files(self) -> dict[str, str]:
-        if self.family != "openai":
-            raise ValueError(
-                "kmet has no Anthropic OAuth transport; run it with openai/gpt-6.1-sol"
-            )
         access = credentials.codex_vis(min_token_seconds())
         return {".kmet/agent/auth.edn": credentials.kmet_auth_edn("openai-codex", access)}
 

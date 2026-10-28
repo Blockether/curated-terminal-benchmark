@@ -17,7 +17,7 @@ EFFORT = "medium"
 VERBOSITY = "low"
 REASONING_SUMMARY = "auto"
 AGENT_HOME = "/tmp/ctb-home"
-FAMILIES = {"anthropic": "claude-opus-5-5", "openai": "gpt-6.1-sol"}
+FAMILIES = {"openai": "gpt-6.1-sol"}
 
 
 def min_token_seconds() -> int:
@@ -26,7 +26,7 @@ def min_token_seconds() -> int:
 
 
 def split_model(model_name: str | None) -> tuple[str, str]:
-    """Accept only the two models of this benchmark: `anthropic/…` or `openai/…`."""
+    """Accept only the model of this benchmark: `openai/gpt-6.1-sol`."""
     family, _, model = (model_name or "").partition("/")
     if FAMILIES.get(family) != model:
         allowed = ", ".join(f"{f}/{m}" for f, m in FAMILIES.items())

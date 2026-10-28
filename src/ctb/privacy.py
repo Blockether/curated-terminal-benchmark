@@ -20,7 +20,7 @@ HUB_FLAGS = frozenset(
     {"--upload", "--launch", "--public", "--share-org", "--share-user", "--stream"}
 )
 # The agents give trials the tokens in these files.
-CREDENTIAL_FILES = (credentials.VIS_ANTHROPIC, credentials.VIS_CODEX, credentials.CODEX_CLI)
+CREDENTIAL_FILES = (credentials.VIS_CODEX, credentials.CODEX_CLI)
 # Shorter values also match ordinary words and numbers.
 MIN_SECRET = 8
 

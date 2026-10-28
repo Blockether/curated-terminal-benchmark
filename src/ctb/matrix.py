@@ -39,7 +39,6 @@ AGENTS = {
             version="0.163.0",
         ),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",)),
-        # kmet has no Anthropic OAuth transport, so it runs only on the GPT model.
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).
         AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True),

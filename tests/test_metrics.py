@@ -58,8 +58,8 @@ def test_a_trial_without_an_agent_cost_gets_the_api_list_price(tmp_path):
 
 
 def test_subagent_tools_of_each_agent_count_as_subagents(tmp_path):
-    write_trial(tmp_path, "claude-code__anthropic__x", cost=1.5, tools=["Task", "Agent", "Bash"])
-    row = trial_metrics(tmp_path / "jobs/r/claude-code__anthropic__x/t1/result.json")
+    write_trial(tmp_path, "codex__openai__x", cost=1.5, tools=["spawn_agent", "task", "Bash"])
+    row = trial_metrics(tmp_path / "jobs/r/codex__openai__x/t1/result.json")
     assert row["subagents"] == 2
     assert row["cost_usd"] == 1.5 and row["cost_source"] == "agent"
 

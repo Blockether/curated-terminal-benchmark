@@ -20,13 +20,10 @@ def samizdat(model, logs=Path("/tmp/ctb-test-logs")):
     return Samizdat(logs_dir=logs, model_name=model)
 
 
-def test_samizdat_reaches_each_model_through_the_proxy(proxy_vars):
-    opus = samizdat("anthropic/claude-opus-5-5").config()
+def test_samizdat_reaches_the_model_through_the_proxy(proxy_vars):
     gpt = samizdat("openai/gpt-6.1-sol").config()
-    assert ':base-url "http://host.containers.internal:5555/v1"' in opus
-    assert ':model "claude-opus-5-5"' in opus and ':reasoning-effort "medium"' in opus
-    # Opus refuses a forced tool_choice; only GPT gets the native feature.
-    assert ":features #{:reasoning-effort}" in opus
+    assert ':base-url "http://host.containers.internal:5555/v1"' in gpt
+    assert ':model "gpt-6.1-sol"' in gpt and ':reasoning-effort "medium"' in gpt
     assert ":features #{:native-tool-choice :reasoning-effort}" in gpt
     assert ":approval {:mode :yolo}" in gpt and "k3y" not in gpt
     assert samizdat("openai/gpt-6.1-sol").secret_env() == {"CTB_PROXY_KEY": "k3y"}
@@ -55,14 +52,9 @@ def test_host_env_gives_samizdat_the_proxy_url_and_key(tmp_path):
     class FakeProxy:
         port, key = 4242, "secret"
 
-    env = host_env(matrix.Trial(matrix.AGENTS["samizdat"], "anthropic", "t"), tmp_path, FakeProxy())
+    env = host_env(matrix.Trial(matrix.AGENTS["samizdat"], "openai", "t"), tmp_path, FakeProxy())
     assert env["CTB_PROXY_URL"] == "http://host.containers.internal:4242"
     assert env["CTB_PROXY_KEY"] == "secret"
-
-
-def test_samizdat_runs_only_on_the_gpt_model():
-    jobs = [t.job for t in matrix.trials(["samizdat"], ["anthropic", "openai"], ["x"])]
-    assert jobs == ["samizdat__openai__x"]
 
 
 def test_samizdat_tokens_come_from_the_saved_run(tmp_path, proxy_vars):
@@ -71,7 +63,7 @@ def test_samizdat_tokens_come_from_the_saved_run(tmp_path, proxy_vars):
         json.dumps({"run": {"status": "completed", "usage": usage}})
     )
     context = AgentContext()
-    samizdat("anthropic/claude-opus-5-5", tmp_path).populate_context_post_run(context)
+    samizdat("openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert (context.n_input_tokens, context.n_cache_tokens, context.n_output_tokens) == (100, 80, 7)
     assert context.metadata == {"samizdat": {"status": "completed", "turns": 3}}
 
