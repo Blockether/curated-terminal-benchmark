@@ -671,6 +671,17 @@ def metrics(args: argparse.Namespace) -> None:
     print(f"wrote {out.relative_to(ROOT)}")
 
 
+def report(args: argparse.Namespace) -> None:
+    """Write the HTML report of every trial under --jobs to --out."""
+    from ctb.report.render import build
+
+    jobs, out = Path(args.jobs).resolve(), Path(args.out).resolve()
+    if not jobs.is_dir():
+        raise SystemExit(f"{jobs} does not exist")
+    trials = build(jobs, out, args.workers)
+    print(f"wrote {len(trials)} trials to {out / 'index.html'}")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -694,6 +705,10 @@ def main(argv: list[str] | None = None) -> None:
     seal_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
     metrics_parser = sub.add_parser("metrics", help="cost, time and token table of a sealed round")
     metrics_parser.add_argument("--round", required=True)
+    report_parser = sub.add_parser("report", help="HTML report of every trial and its transcript")
+    report_parser.add_argument("--jobs", default=str(ROOT / "jobs"))
+    report_parser.add_argument("--out", default=str(ARTIFACTS / "report"))
+    report_parser.add_argument("--workers", type=int, help="processes; the default is up to 8")
     args = parser.parse_args(argv)
     commands = {
         "fetch": lambda _: fetch(),
@@ -701,6 +716,7 @@ def main(argv: list[str] | None = None) -> None:
         "summary": summary,
         "seal": seal,
         "metrics": metrics,
+        "report": report,
     }
     commands[args.command](args)
 

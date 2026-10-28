@@ -6,6 +6,7 @@ dependencies = [
     "edn-format>=0.8.0",
     "harbor==0.24.0",
     "vis-agent==0.2.38",
+    "zstandard>=0.25.0",
 ]
 
 [project.scripts]
