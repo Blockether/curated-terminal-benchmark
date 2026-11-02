@@ -34,7 +34,8 @@ Each agent command adds `ctb-python/bin` to the end of `PATH`. A Python of the t
 Vis also imports these packages in its sandbox through `VIS_PYTHON_PACKAGES`. Vis gets the `py` extension (`Blockether/vis-lang-python`), installed by `ctb fetch` with the pinned Vis build.
 Each Vis trial keeps its runtime files in `$HOME/.vis-runtime` through `VIS_RUNTIME_DIR`, away from the task workspace.
 
-To pin a new Vis build, use a successful `native-release.yml` run of Blockether/vis:
+The current pin uses Vis `v0.5.0`. Its release archive has a pinned commit and SHA-256.
+To pin a workflow artifact instead, use a successful `native-release.yml` run of Blockether/vis:
 
 ```sh
 uv run python -m ctb.agents.vis pin RUN_ID
@@ -83,22 +84,8 @@ Run only one queue at a time. GPU-only tasks stay unattempted on the Podman mach
 
 ## Results
 
-Round `gpt-all-482f2f5`: GPT (`openai`) on all 12 tasks, one trial each, 2 h agent limit. Harness commits `482f2f5` and `ad88d89`.
-
-| Agent | Pass | Agent min | Cost USD |
-| --- | --- | --- | --- |
-| codex 0.163.0 | 7/12 | 118.7 | 5.29 |
-| opencode 1.19.3 | 6/12 | 103.4 | 2.96 |
-| pi 1.3.0 | 5/12 | 87.0 | 2.73 |
-| kmet f249f0bf | 2/12 | 67.5 | 1.76 |
-| dirge 45377633 | 1/12 | 358.4 | 21.26 |
-| samizdat 97727796 | 0/12 | 686.5 | 91.27 |
-
-The seal, metrics and transcript manifest are in `results/gpt-all-482f2f5*.json`. Notes:
-
-- kmet: 2 runs ended on a TLS `bad_record_mac` from the Codex endpoint. kmet does not retry.
-- dirge: 2 runs hung after one minute until the 2 h limit. One verifier timed out after 1800 s.
-- samizdat: runs stop at its own turn limit (`gates.edn`, 200 turns for a small change). 2 runs hit the 2 h limit.
+A new GPT comparison is being prepared. Previous results remain in Git history.
+Reports use HTML. Print the HTML page to create a PDF; there is no separate PDF renderer.
 
 ## Privacy and seals
 

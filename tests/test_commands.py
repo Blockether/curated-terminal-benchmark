@@ -161,8 +161,13 @@ def test_vis_instruction_note_goes_after_the_task(pinned):
     assert f"-- {expected} >" in noted.command("do 'it'")
 
 
-def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
+@pytest.mark.parametrize("release", [None, "v0.5.0"])
+def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path, release):
     build, data = pinned
+    if release:
+        vis.SETTINGS.write_text(
+            vis.SETTINGS.read_text().replace("[build]", f'[build]\nrelease = "{release}"')
+        )
     calls = []
 
     def gh(argv, check, **kwargs):
@@ -180,6 +185,8 @@ def test_vis_pin_takes_a_run_of_any_branch(pinned, monkeypatch, tmp_path):
     vis.write_pin(found)
     vis.extensions_archive(found).write_bytes(b"extensions")
     assert vis.settings()["build"]["run_id"] == 42
+    assert "release" not in vis.settings()["build"]
+    assert "release" not in found
     assert vis.settings()["profiles"]["solo"] == {"persist": False}
     assert vis.fetch() == vis.archive(found)
     assert len(calls) == 2
@@ -230,8 +237,11 @@ def test_vis_installs_only_the_pinned_build(pinned):
     assert "mv /tmp/ctb-extensions.tar.gz /installed-agent/extras/vis-extensions.tar.gz" in command
 
 
-def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch):
+@pytest.mark.parametrize("release", [None, "v0.5.0"])
+def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch, release):
     build, data = pinned
+    if release:
+        build["release"] = release
     calls = []
 
     def download(argv, check):
@@ -242,20 +252,23 @@ def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch):
             mount = argv[argv.index("-v") + 1].removesuffix(":/x")
             (Path(mount) / out).write_bytes(b"extensions")
             return
+        if release:
+            assert argv[:4] == ["gh", "release", "download", release]
         directory = Path(argv[argv.index("-D") + 1])
         (directory / build["asset"]).write_bytes(payload)
 
     monkeypatch.setattr(vis.subprocess, "run", download)
     payload = bundle_bytes("b" * 40)
     with pytest.raises(ValueError, match="built b+, not the pinned a+"):
-        vis.fetch()
+        vis.fetch(build)
     payload = data
-    path = vis.fetch()
+    path = vis.fetch(build)
     assert path.read_bytes() == data
-    assert calls[-2][:6] == ["gh", "run", "download", "7", "-R", "Blockether/vis"]
+    if not release:
+        assert calls[-2][:4] == ["gh", "run", "download", "7"]
     assert calls[-1][0] == "podman" and "EXTENSIONS=Blockether/vis-lang-python@1.15.2" in calls[-1]
     assert vis.extensions_archive(build).read_bytes() == b"extensions"
-    vis.fetch()
+    vis.fetch(build)
     assert len(calls) == 3
 
 
@@ -313,8 +326,8 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
 
 def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
-        "codex": "0.163.0",
-        "opencode": "2.2.0",
+        "codex": "0.166.0",
+        "opencode": "2.2.5",
         "pi": "1.3.0",
     }
 
@@ -356,7 +369,7 @@ def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
         "--ak",
         "reasoning_summary=auto",
         "--ak",
-        "version=0.163.0",
+        "version=0.166.0",
     ]
 
 
@@ -368,7 +381,7 @@ def test_agent_setup_gets_more_time_than_the_harbor_default():
 def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
     opencode = agent(OpenCode, "openai/gpt-6.1-sol")
     assert opencode.options.variant == "medium"
-    assert opencode._version == "2.2.0"
+    assert opencode._version == "2.2.5"
     # OpenCode 2 has no --variant flag; the variant follows the model after `#`.
     assert "--model='openai/gpt-6.1-sol#medium'" in opencode.run_command("x")
     pi = Pi(
@@ -517,7 +530,7 @@ def test_opencode_installs_the_pinned_opencode_2_package():
     opencode.ensure_system_dependencies = AsyncMock()
     opencode.exec_as_agent = fake_exec
     asyncio.run(opencode.install(None))
-    assert "npm i -g @opencode/cli@2.2.0 && opencode --version" in commands[0]
+    assert "npm i -g @opencode/cli@2.2.5 && opencode --version" in commands[0]
     assert "opencode-ai" not in commands[0]
 
 

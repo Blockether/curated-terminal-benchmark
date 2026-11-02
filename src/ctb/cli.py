@@ -47,7 +47,7 @@ TASK_FIXES = ROOT / "task-fixes"
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
 KMET_REPO, KMET_COMMIT = (
     "https://github.com/kmetia/kmet-agent.git",
-    "f249f0bf5ffc0937c91245084d359695fc0dcdf3",
+    "b141b2bdf9ee26f6366552b94259ab8a4a40195b",
 )
 SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 # Task containers reach the host proxy here (Podman's name for the host).

@@ -1,17 +1,18 @@
 # The Vis build and the run profiles of src/ctb/agents/vis.py.
 # A round uses one build and one profile for each Vis agent.
 
-# The native Linux x64 bundle of one native-release.yml dry run, on main or another branch.
+# The native Linux x64 bundle of a release or workflow run.
 # `uv run ctb fetch` downloads it to artifacts/vis-builds/<run_id>/ and builds its extensions.
 # Run `uv run python -m ctb.agents.vis pin <run_id>` to pin another run: it downloads the
 # bundle, checks the stamp against the head commit of the run and writes this table.
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
 [build]
 repo = "Blockether/vis"
-run_id = 40677059236
-commit = "25633cd04b602d256b733c4e6da450be4b9a5f89"
+run_id = 41435381498
+release = "v0.5.0"
+commit = "57bb188258d1911c24fadd59ebfdcef560597771"
 asset = "vis-agent-linux-x64.tar.gz"
-sha256 = "56c8d8efd313e4d3c845e2dd4962dd8152fee01d30d4dc963c7c8b93ce6bf503"
+sha256 = "19fb05a0118a222790abd6976e4fd9f7573078e5ca7b07560c454b265d70bb72"
 
 # A profile sets each switch of one Vis agent:
 #   toggles     engine toggles for --toggles; council.run needs subagents = true (default off)

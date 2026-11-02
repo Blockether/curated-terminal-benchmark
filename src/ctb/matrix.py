@@ -36,7 +36,7 @@ AGENTS = {
             ("openai",),
             effort_kwarg=True,
             agent_kwargs=(f"reasoning_summary={REASONING_SUMMARY}",),
-            version="0.163.0",
+            version="0.166.0",
         ),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",)),
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),

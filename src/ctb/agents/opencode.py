@@ -18,7 +18,7 @@ from ctb import credentials
 from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
 from ctb.toolkit import Toolkit
 
-OPENCODE_VERSION = "2.2.0"
+OPENCODE_VERSION = "2.2.5"
 #: OpenCode 2 is published as @opencode/cli; the opencode-ai package stops at 1.x.
 OPENCODE_PACKAGE = "@opencode/cli"
 #: OpenCode keeps a SQLite database and a git snapshot store in XDG_DATA_HOME. Keep them off

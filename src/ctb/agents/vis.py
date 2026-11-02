@@ -120,7 +120,7 @@ def build_extensions(build: dict) -> Path:
 
 
 def fetch(build: dict | None = None) -> Path:
-    """Download the pinned workflow artifact once, then check its commit and sha256.
+    """Download the pinned release or workflow artifact, then check its commit and sha256.
 
     GitHub keeps a dry-run artifact for 7 days. After that, only the local copy is left.
     """
@@ -129,11 +129,11 @@ def fetch(build: dict | None = None) -> Path:
     if not target.is_file():
         target.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="ctb-vis-", dir=target.parent) as work:
-            subprocess.run(
-                ["gh", "run", "download", str(build["run_id"]), "-R", build["repo"]]
-                + ["-n", build["asset"], "-D", work],
-                check=True,
-            )
+            if build.get("release"):
+                command = ["gh", "release", "download", build["release"], "-p", build["asset"]]
+            else:
+                command = ["gh", "run", "download", str(build["run_id"]), "-n", build["asset"]]
+            subprocess.run(command + ["-R", build["repo"], "-D", work], check=True)
             download = Path(work) / build["asset"]
             commit = stamp(download)[1]
             if commit != build["commit"]:
@@ -406,6 +406,7 @@ def run_build(run_id: int, repo: str = "Blockether/vis") -> dict:
     if info.get("conclusion") != "success":
         raise ValueError(f"Run {run_id} has conclusion {info.get('conclusion')!r}, not success")
     build = {**settings()["build"], "repo": repo, "run_id": run_id, "commit": info["headSha"]}
+    build.pop("release", None)
     target = archive(build)
     if not target.is_file():
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -436,6 +437,8 @@ def write_pin(build: dict, path: Path | None = None) -> None:
         if line.startswith("["):
             break
         key = line.partition("=")[0].strip()
+        if key == "release":
+            lines[index] = ""
         if key in ("repo", "run_id", "commit", "sha256"):
             lines[index] = f"{key} = {json.dumps(build[key])}"
     path.write_text(head + sep + "\n".join(lines), encoding="utf-8")

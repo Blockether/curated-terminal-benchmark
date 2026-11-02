@@ -14,7 +14,7 @@ from ctb.agents.base import EFFORT, CuratedAgent
 from ctb.paths import ARTIFACTS
 
 # The newest main commit; v0.1.0 is the only release and is 100 commits older.
-COMMIT = "97727796fc245f918f10b0db52537562aacb80dc"
+COMMIT = "9411f00c87d5ddb725f46eb8794e0d93a479835f"
 VERSION = COMMIT[:8]
 # The jolt release that builds it; samizdat CI also builds with the latest jolt release.
 JOLT_VERSION = "v0.8.23"

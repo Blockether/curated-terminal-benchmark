@@ -12,7 +12,7 @@ from ctb.paths import ARTIFACTS
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = "kmet-f249f0bf-linux-amd64.tar.gz"
+ARCHIVE_NAME = "kmet-b141b2bd-linux-amd64.tar.gz"
 
 
 class Kmet(CuratedAgent):
