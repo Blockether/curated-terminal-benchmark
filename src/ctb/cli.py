@@ -262,7 +262,7 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
         "-m",
         trial.model,
         "-e",
-        "podman",
+        "ctb.environment:Podman",
         "-k",
         "1",
         "-n",
@@ -280,6 +280,9 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
         "--plugin",
         privacy.REDACTOR,
     ]
+    if (TASK_FIXES / trial.task / "tests").is_dir():
+        # Bundled verifier images otherwise ignore the tracked task fixes.
+        command += ["--verifier", "harbor.verifier.verifier:Verifier"]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
     for kwarg in trial.agent.agent_kwargs:
