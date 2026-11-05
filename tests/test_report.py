@@ -108,7 +108,7 @@ def test_build_writes_the_index_and_one_page_per_trial(tmp_path):
     labels = re.findall(r"<dt>([^<]+)</dt>", calls)
     assert labels == [
         "Calls",
-        "Total time",
+        "Recorded call time",
         "Mean time",
         "Longest call",
         "Failed calls",
@@ -258,3 +258,125 @@ def test_opencode_2_last_step_takes_its_usage_from_the_session_export(tmp_path):
     (tmp_path / "opencode" / "session.json").unlink()
     last = [e for e in read_opencode(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"][-1]
     assert last["tokens"] is None
+
+
+def test_run_usage_includes_side_calls_missing_from_turn_events():
+    calls = [event("call", tokens={"input": 100, "cache": 20, "output": 10})]
+    run = event("result", tokens={"input": 140, "cache": 30, "output": 15})
+    trial = {
+        "events": calls + [run],
+        "summary": summarize(calls + [run]),
+        "harbor": {"input": 140, "cache": 30, "output": 15},
+    }
+    assert render.usage(trial) == (140, 30, 15)
+    trial["events"] = calls
+    assert render.usage(trial) == (140, 30, 15)
+    trial["harbor"] = {"input": 0, "cache": 0, "output": 0}
+    assert render.usage(trial) == (100, 20, 10)
+    trial["events"] = []
+    assert render.usage(trial) == (None, None, None)
+
+
+def test_dirge_calls_without_ids_are_not_deduplicated(tmp_path, monkeypatch):
+    records = [{"type": "assistant", "message": {"content": []}} for _ in range(1000)]
+    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
+    assert (
+        len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1000
+    )
+    # Streaming decoders can reuse storage; object identity is not a message identity.
+    from ctb.report import transcripts
+
+    original = transcripts.jsonl
+    record = {"type": "assistant", "message": {"content": []}}
+    monkeypatch.setattr(transcripts, "jsonl", lambda path: (record for _ in range(1000)))
+    assert (
+        len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1000
+    )
+    monkeypatch.setattr(transcripts, "jsonl", original)
+    records = [{"type": "assistant", "message": {"id": "same", "content": []}} for _ in range(3)]
+    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
+    assert len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1
+
+
+def test_partial_call_prices_do_not_become_a_run_total():
+    events = [event("call", cost=1.0), event("call")]
+    trial = {
+        "events": events,
+        "summary": summarize(events),
+        "harbor": {
+            "cost_usd": None,
+            "cost_source": None,
+            "seconds": {"total": 2, "agent_execution": 1},
+        },
+        "error": None,
+        "passed": False,
+    }
+    assert render.facts(trial)["cost"] is None
+    events[1]["cost"] = 2.0
+    trial["summary"] = summarize(events)
+    assert render.facts(trial)["cost"] == 3.0
+
+
+def test_opencode_session_totals_include_reasoning_and_incomplete_export(tmp_path):
+    from ctb.agents.opencode import session_usage
+    from ctb.metrics import list_price
+
+    used = {"input": 100, "output": 10, "reasoning": 30, "cache": {"read": 40}}
+    assert session_usage([{"tokens": used}])[:3] == (140, 40, 40)
+    export = tmp_path / "opencode" / "session.json"
+    export.parent.mkdir()
+    export.write_text(
+        json.dumps(
+            {
+                "messages": [
+                    {"id": "m1", "type": "assistant", "tokens": used, "time": {"completed": 100}}
+                ]
+            }
+        )
+    )
+    events = read_opencode(tmp_path, "openai/gpt-6.1-sol")
+    trial = {
+        "events": events,
+        "summary": summarize(events),
+        "model": "openai/gpt-6.1-sol",
+        "error": None,
+        "passed": True,
+        "harbor": {
+            "seconds": {"total": 1, "agent_execution": 1},
+            "cost_usd": 0.01,
+            "cost_source": "list price",
+            "input": 140,
+            "cache": 40,
+            "output": 10,
+        },
+    }
+    assert render.usage(trial) == (140, 40, 40)
+    assert render.facts(trial)["cost"] == list_price(trial["model"], 140, 40, 40)
+    trial["harbor"].update(cost_usd=0.5, cost_source="agent")
+    assert render.facts(trial)["cost"] == 0.5
+    export.write_text("invalid")
+    trial["events"] = read_opencode(tmp_path, trial["model"])
+    assert render.usage(trial) == (None, None, None)
+    assert render.facts(trial)["cost"] == 0.5
+    trial["harbor"]["cost_source"] = "list price"
+    assert render.facts(trial)["cost"] is None
+
+
+def test_opencode_rejects_stale_or_empty_usage_export(tmp_path):
+    path = tmp_path / "opencode" / "session.json"
+    path.parent.mkdir()
+    message = {
+        "id": "old",
+        "type": "assistant",
+        "time": {"completed": 1},
+        "tokens": {"input": 100, "output": 20},
+    }
+    path.write_text(json.dumps({"messages": [message]}))
+    stream = tmp_path / "opencode.txt"
+    stream.write_text(json.dumps({"type": "step_start", "part": {"messageID": "new"}}))
+    assert render.run_result(read_opencode(tmp_path, "m"))["usage_complete"] is False
+    stream.write_text("")
+    for used in ({}, {"input": True, "output": 2}, {"input": 1, "output": -1}):
+        message["tokens"] = used
+        path.write_text(json.dumps({"messages": [message]}))
+        assert render.run_result(read_opencode(tmp_path, "m"))["usage_complete"] is False

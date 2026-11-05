@@ -640,7 +640,7 @@ def test_opencode_tokens_come_from_the_session_export(tmp_path):
     (tmp_path / "opencode" / "session.json").write_text(json.dumps(exported))
     context = AgentContext()
     agent(OpenCode, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
-    assert tokens(context) == (310, 200, 23)
+    assert tokens(context) == (310, 200, 28)  # Visible output plus reasoning.
     assert context.cost_usd is None
 
 

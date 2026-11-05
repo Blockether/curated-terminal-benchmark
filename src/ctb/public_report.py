@@ -189,6 +189,7 @@ METRIC_NUMBERS = (
     "cost",
     "provider_calls",
     "provider_ms",
+    "provider_timed",
     "tool_calls",
     "tool_errors",
     "provider_errors",
@@ -199,6 +200,7 @@ METRIC_NUMBERS = (
 )
 COUNTS = {
     "provider_calls",
+    "provider_timed",
     "tool_calls",
     "tool_errors",
     "provider_errors",
@@ -231,8 +233,9 @@ def validate_metrics(metrics, data):
         sha(m["setup"])
         for key in METRIC_NUMBERS:
             measurement(m[key], count=key in COUNTS)
-        for key in ("provider_calls", "tool_calls", "provider_errors"):
+        for key in ("provider_calls", "provider_timed", "tool_calls", "provider_errors"):
             require(m[key] is not None)
+        require(m["provider_timed"] <= m["provider_calls"])
         require(type(m["reward"]) in (int, float, type(None)) and m["reward"] in (None, 0, 1))
         require(row["passed"] == (m["reward"] == 1))
         require(
@@ -291,6 +294,7 @@ def collect_metrics(root):
                     for k in (
                         "provider_calls",
                         "provider_ms",
+                        "provider_timed",
                         "tool_calls",
                         "tool_errors",
                         "provider_errors",

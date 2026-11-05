@@ -255,6 +255,7 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
     step_start = 0.0
     step_tools = 0.0
     step_message: str | None = None
+    observed_messages: set[str | None] = set()
     # OpenCode 2 omits the step_finish of the last step; its session export still has the usage.
     unfinished: list[tuple[dict, str | None, float, float]] = []
     path = agent / "opencode.txt"
@@ -265,6 +266,7 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
                 unfinished.append((step, step_message, step_start, step_tools))
             step, step_start, step_tools = call(model, at, None, None, None), at or 0, 0.0
             step_message = part.get("messageID")
+            observed_messages.add(step_message)
             events.append(step)
         elif kind == "step_finish" and step is not None:
             step.update(
@@ -296,12 +298,57 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
             )
     if step is not None:
         unfinished.append((step, step_message, step_start, step_tools))
-    messages = opencode_messages(agent) if unfinished else {}
+    messages = opencode_messages(agent)
     for open_step, message_id, start, tools_ms in unfinished:
         if message := messages.get(message_id or ""):
             end = (message.get("time") or {}).get("completed")
             used = message.get("tokens") or {}
             open_step.update(opencode_step(model, start, end, tools_ms, used, message.get("cost")))
+
+    # The export includes the final call that can be absent from the stream.
+    def recorded_usage(message):
+        used = message.get("tokens")
+        if not isinstance(used, dict) or not {"input", "output"} <= used.keys():
+            return False
+        cache = used.get("cache", {})
+        if not isinstance(cache, dict):
+            return False
+        counts = [
+            used["input"],
+            used["output"],
+            used.get("reasoning", 0),
+            cache.get("read", 0),
+            cache.get("write", 0),
+        ]
+        return all(type(n) is int and n >= 0 for n in counts)
+
+    complete = (
+        bool(messages)
+        and observed_messages <= messages.keys()
+        and all(
+            recorded_usage(m) and (m.get("time") or {}).get("completed") for m in messages.values()
+        )
+    )
+    total = None
+    if complete:
+        used = [m["tokens"] for m in messages.values()]
+        cached = sum((u.get("cache") or {}).get("read") or 0 for u in used)
+        total = tokens(
+            sum(u.get("input") or 0 for u in used) + cached,
+            cached,
+            sum((u.get("output") or 0) + (u.get("reasoning") or 0) for u in used),
+        )
+    events.append(
+        event(
+            "result",
+            name="OpenCode session accounting",
+            tokens=total,
+            usage_complete=complete,
+            text="Complete session export, including reasoning output."
+            if complete
+            else "Incomplete session export. Recorded steps are not a full run total.",
+        )
+    )
     return events
 
 
@@ -418,9 +465,10 @@ def read_dirge(agent: Path, model: str) -> list[dict]:
     for record in jsonl(path) if path.is_file() else []:
         message = record.get("message") or {}
         if record.get("type") == "assistant":
-            key = message.get("id") or id(record)
-            if key not in seen:
-                seen.add(key)
+            key = message.get("id")
+            if key is None or key not in seen:
+                if key is not None:
+                    seen.add(key)
                 used = message.get("usage")
                 events.append(
                     call(

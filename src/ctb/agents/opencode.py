@@ -127,7 +127,7 @@ def session_usage(steps: list[dict]) -> tuple[int, int, int, float | None]:
     used = [step.get("tokens") or {} for step in steps]
     cached = sum((u.get("cache") or {}).get("read") or 0 for u in used)
     input_tokens = sum(u.get("input") or 0 for u in used) + cached
-    output_tokens = sum(u.get("output") or 0 for u in used)
+    output_tokens = sum((u.get("output") or 0) + (u.get("reasoning") or 0) for u in used)
     cost = sum(step.get("cost") or 0 for step in steps)
     return input_tokens, cached, output_tokens, cost or None
 

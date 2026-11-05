@@ -111,3 +111,23 @@ All public styles, scripts, font files and nested CSS imports use one content-de
 revision. The revision changes when any approved UI asset changes. This prevents a cached
 script or stylesheet from a previous deployment from controlling newer HTML. Transcript
 payloads keep their existing content hashes and are not changed by a layout update.
+
+## Comparison and metric coverage
+
+The default observed view compares the same task checksums and model across selected agents.
+It can combine different recorded setups. Its warning means that it is not a controlled ranking.
+The strict view requires the same recorded setup as well. Neither view substitutes another task.
+
+All attempts includes failed attempts in resource measurements and success rates. A failed
+attempt can consume less without being better. Joint successes restricts resource measurements
+to tasks that every selected agent passed. Each metric uses only tasks with values for every
+selected agent. The page shows its denominator and task list. No missing value becomes zero.
+Full trial time includes environment setup and verification; agent time is separate.
+
+Derived report totals use complete run records before partial call records. OpenCode session
+exports include visible output and reasoning output in the API list-price equivalent. Invalid
+exports have no full-run token or cost total. Dirge messages without IDs are distinct calls;
+only explicit duplicate IDs are removed. Samizdat run totals include its side calls.
+These reader corrections do not change source results or seals. Re-export and audit normalized
+transcripts after reader changes, then approve the new hashes on main. Per-call timings that
+were never recorded remain unavailable. API-equivalent cost is not a subscription charge.

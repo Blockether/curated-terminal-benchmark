@@ -97,3 +97,44 @@ def test_selection_requires_every_selected_agent_in_the_same_setup():
     data.append(trial("d", "x", passed=False))
     group = selected_cohorts(data, ["a", "b", "d"])[0]
     assert group["tasks"] == ["x"] and group["solved"] == []
+
+
+def test_observed_comparison_keeps_setup_differences_and_failures_visible():
+    from ctb.report.comparison import selected_cohorts
+
+    data = [
+        trial("a", "x", cost=4),
+        trial("b", "x", False, cost=1, setup="other"),
+        trial("a", "changed"),
+        trial("b", "changed", checksum="different", setup="other"),
+    ]
+    assert selected_cohorts(data, ["a", "b"]) == []
+    group = selected_cohorts(data, ["a", "b"], strict=False, basis="attempted")[0]
+    assert group["tasks"] == ["x"] and group["solved"] == []
+    assert group["setups"] == ["other", "setup"] and not group["strict"]
+    assert group["rows"]["b"]["passed"] == 0
+    assert group["rows"]["a"]["cost"] == 4 and group["rows"]["b"]["cost"] == 1
+    assert group["mismatched"] == ["changed"]
+    assert selected_cohorts(data, ["a", "missing"], strict=False) == []
+
+
+def test_attempt_metrics_use_complete_paired_tasks_not_zero_imputation():
+    from ctb.report.comparison import selected_cohorts
+
+    data = [
+        trial("a", "x", cost=None),
+        trial("b", "x", False),
+        trial("a", "y", cost=6),
+        trial("b", "y", False, cost=2),
+    ]
+    for t in data:
+        t["facts"]["run_ms"] = 5000
+    group = selected_cohorts(data, ["a", "b"], basis="attempted")[0]
+    assert group["metric_tasks"]["cost"] == ["y"]
+    assert group["metric_tasks"]["run_ms"] == ["x", "y"]
+    assert group["rows"]["a"]["cost"] == 6
+    assert group["rows"]["b"]["run_ms"] == 5000
+    assert group["rows"]["b"]["passed"] == 0
+    solved = selected_cohorts(data, ["a", "b"])[0]
+    assert solved["metric_tasks"]["cost"] == []
+    assert solved["rows"]["a"]["cost"] is None

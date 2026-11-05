@@ -6,10 +6,12 @@ import math
 from collections import defaultdict
 
 
-def cohorts(trials):
+def cohorts(trials, *, strict=True, basis="solved"):
+    if basis not in ("solved", "attempted"):
+        raise ValueError("Unknown comparison basis")
     groups = defaultdict(list)
     for trial in trials:
-        groups[(trial.get("model"), trial.get("setup"))].append(trial)
+        groups[(trial.get("model"), trial.get("setup") if strict else "observed")].append(trial)
     result = []
     for (model, setup), group in sorted(groups.items(), key=lambda item: str(item[0])):
         agents = sorted({t["agent"] for t in group})
@@ -30,10 +32,10 @@ def cohorts(trials):
                 matched.append(task)
         solved = [task for task in matched if all(by_task[task][a][0]["passed"] for a in agents)]
         metric_tasks = {}
-        for metric in ("cost", "agent_ms"):
+        for metric in ("cost", "agent_ms", "run_ms"):
             metric_tasks[metric] = [
                 task
-                for task in solved
+                for task in (solved if basis == "solved" else matched)
                 if all(
                     type(by_task[task][a][0]["facts"].get(metric)) in (int, float)
                     and math.isfinite(by_task[task][a][0]["facts"][metric])
@@ -69,6 +71,9 @@ def cohorts(trials):
             {
                 "model": model,
                 "setup": setup,
+                "setups": sorted({t.get("setup") or "unknown" for t in group}),
+                "strict": strict,
+                "basis": basis,
                 "agents": agents,
                 "tasks": matched,
                 "solved": solved,
@@ -116,13 +121,15 @@ def setup_id(run):
     return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
 
 
-def selected_cohorts(trials, agents):
+def selected_cohorts(trials, agents, *, strict=True, basis="solved"):
     """Return only complete groups for the explicit selection, never a smaller substitute."""
     selected = set(agents)
     if len(selected) < 2:
         return []
     return [
         group
-        for group in cohorts([t for t in trials if t["agent"] in selected])
+        for group in cohorts(
+            [t for t in trials if t["agent"] in selected], strict=strict, basis=basis
+        )
         if set(group["agents"]) == selected and group["model"] and group["setup"]
     ]
