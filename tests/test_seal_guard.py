@@ -229,3 +229,53 @@ def test_metrics_reference_the_result_digest_not_their_own(evidence):
     staged = stage(seal, manifest)
     staged["results/r-metrics.json"] = path.read_bytes()
     assert guard.validate(root, staged, set()) == 4
+
+
+def test_pre_agent_failure_keeps_infrastructure_evidence(evidence):
+    root, seal, manifest = evidence
+    trial = root / "jobs/r/a/t"
+    (trial / "agent/transcript.txt").unlink()
+    body = {
+        "trial_name": "t",
+        "agent_setup": None,
+        "agent_execution": None,
+        "agent_result": None,
+        "verifier_result": None,
+        "environment_setup": {"started_at": "start", "finished_at": "end"},
+        "exception_info": {"exception_type": "RuntimeError"},
+    }
+    (trial / "result.json").write_text(json.dumps(body))
+    for name in ("trial.log", "exception.txt", "config.json"):
+        (trial / name).write_text("Infrastructure failure evidence")
+    seal["rows"][0]["result_sha256"] = hashlib.sha256(
+        (trial / "result.json").read_bytes()
+    ).hexdigest()
+    signed(seal)
+    (root / "results/r.json").write_text(json.dumps(seal))
+    manifest["seals"][0]["digest"] = seal["digest"]
+    manifest["files"] = [
+        {
+            "path": p.relative_to(root).as_posix(),
+            "bytes": p.stat().st_size,
+            "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+        }
+        for p in sorted(root.rglob("*"))
+        if p.is_file()
+    ]
+    signed(manifest)
+    assert guard.validate(root, stage(seal, manifest), set()) == 5
+    # An agent that did start still needs agent evidence.
+    body["agent_execution"] = {"started_at": "start"}
+    (trial / "result.json").write_text(json.dumps(body))
+    seal["rows"][0]["result_sha256"] = hashlib.sha256(
+        (trial / "result.json").read_bytes()
+    ).hexdigest()
+    signed(seal)
+    (root / "results/r.json").write_text(json.dumps(seal))
+    manifest["seals"][0]["digest"] = seal["digest"]
+    for row in manifest["files"]:
+        raw = (root / row["path"]).read_bytes()
+        row.update(bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
+    signed(manifest)
+    with pytest.raises(guard.UnsafeSeal, match="agent evidence"):
+        guard.validate(root, stage(seal, manifest), set())

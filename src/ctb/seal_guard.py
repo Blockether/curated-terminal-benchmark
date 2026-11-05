@@ -232,7 +232,22 @@ def validate(root, staged, known):
             continue
         agent = path.parent / "agent"
         if not agent.is_dir() or not any(p.is_file() for p in agent.rglob("*")):
-            raise UnsafeSeal("Trial has no agent evidence")
+            setup = body.get("environment_setup") or {}
+            before_agent = (
+                all(
+                    key in body and body[key] is None
+                    for key in ("agent_setup", "agent_execution", "agent_result", "verifier_result")
+                )
+                and setup.get("started_at")
+                and setup.get("finished_at")
+                and (body.get("exception_info") or {}).get("exception_type")
+                and all(
+                    (path.parent / name).is_file() and (path.parent / name).stat().st_size
+                    for name in ("trial.log", "exception.txt", "config.json")
+                )
+            )
+            if not before_agent:
+                raise UnsafeSeal("Trial has no agent evidence")
         for child in path.parent.rglob("*"):
             if child.is_symlink():
                 if child.relative_to(root).as_posix() not in covered:
