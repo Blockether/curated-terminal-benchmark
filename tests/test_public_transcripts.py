@@ -96,7 +96,7 @@ class TranscriptTests(unittest.TestCase):
     def test_real_checked_site_mutations_fail(self):
         root = Path(__file__).resolve().parents[1]
         comparison, manifest, metrics = pub.checked_inputs(root)
-        self.assertEqual(len(manifest["transcripts"]), 72)
+        self.assertEqual(len(manifest["transcripts"]), len(comparison["rows"]))
         # Reuse a small synthetic site with an approved synthetic manifest.
         from unittest.mock import patch
 

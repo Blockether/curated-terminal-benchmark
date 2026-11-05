@@ -27,7 +27,7 @@ class PublicReportTests(unittest.TestCase):
 
     def test_render_has_real_results_and_no_external_requests(self):
         text = p.render(self.data, self.metrics).decode()
-        self.assertIn("72 trials", text)
+        self.assertIn(f"{len(p.SELECTION) * len(p.TASKS)} trials", text)
         self.assertIn("100%", text)
         self.assertIn("photonic-waveguide-routing", text)
         self.assertNotIn("https://", text)

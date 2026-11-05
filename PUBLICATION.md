@@ -40,7 +40,7 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
-Four original full rounds are sealed. The comparison selects 12 tasks for each of six agents.
+Five original full rounds are sealed. The comparison selects 12 tasks for each of seven agents.
 Older rounds and recovery trials are not substituted. A seal proves that recorded hashes did
 not change, not fairness or correctness. Vis used newer verifier and health-check fixes;
 the public page states this difference.

@@ -344,7 +344,9 @@ def main():
         raise SystemExit(
             "Publication refused. Inspect locally; do not upload this directory."
         ) from None
-    print("Publication checked: 72 sanitized transcripts and exact site files.")
+    print(
+        f"Publication checked: {len(report.SELECTION) * len(report.TASKS)} sanitized transcripts and exact site files."
+    )
 
 
 if __name__ == "__main__":

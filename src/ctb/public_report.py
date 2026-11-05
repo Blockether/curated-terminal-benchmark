@@ -18,6 +18,7 @@ SELECTION = {
     "opencode": "gpt-opencode-03-c30ea7d",
     "kmet": "gpt-sequential-c30ea7d",
     "samizdat": "gpt-sequential-c30ea7d",
+    "pi": "gpt-pi-150-59a845e",
 }
 TASKS = (
     "bun-sourcemap-leak",
@@ -85,7 +86,7 @@ def validate(data):
         require(source["round"] == SELECTION[agent])
         sha(source["seal_sha256"])
         sha(source["harness_commit"], 40)
-    require(type(data["rows"]) is list and len(data["rows"]) == 72)
+    require(type(data["rows"]) is list and len(data["rows"]) == len(SELECTION) * len(TASKS))
     seen = set()
     for row in data["rows"]:
         keys(row, ("agent", "task", "passed", "error", "result_sha256"))
@@ -366,7 +367,8 @@ SCOPE = """<section class="block" id="scope"><h2>Comparison scope</h2>
 <p class="hint">Vis 0.5.3 solo · GPT-6.1-sol · medium effort · 12 tasks per agent · 2 hours per task.
 Latest complete round per agent. The source results are sealed, not certified as fair or error-free.
 Vis used a newer harness with verifier upload, photonic rendering and health-check fixes.
-Other agents used c30ea7d. Recovery trials and older rounds are not substituted.
+Pi 1.5.0 used the newer shared Python toolkit and setup note.
+The other agents used c30ea7d. Recovery trials and older rounds are not substituted.
 This comparison does not use one identical harness revision.</p>
 <p class="hint">A trial can pass and still record an exception. Check its reward as well as its outcome.
 Transcripts are sanitized, normalized text views, not complete raw logs.
@@ -489,7 +491,9 @@ def main():
         build(args.root, args.out, args.check)
     except (ValueError, KeyError, TypeError, OSError):
         raise SystemExit("Public report refused. No artifact may be uploaded.") from None
-    print("Public report checked: 72 trials; exact report assets and metrics.")
+    print(
+        f"Public report checked: {len(SELECTION) * len(TASKS)} trials; exact report assets and metrics."
+    )
 
 
 if __name__ == "__main__":

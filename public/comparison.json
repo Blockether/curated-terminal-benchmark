@@ -503,6 +503,90 @@
       "passed": false,
       "result_sha256": "17ca9a5ac88ef977fe7a9f3e570e83b6ba5367e8245544a03a1a33aea7785c92",
       "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "75c538d30a398521160841537c45fcbd0b98c48285ec89dec0a5a9e05a451d46",
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "9111f9f43894d7a450d413d3be5698fc227eab204fac8c5afd58507aca08505b",
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "bb8a3b27120cbbfadcf011c503396622d930d31b9524197f04f26003e83fafbd",
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "0308727f18e26cdf10738e805cb53f09b5a1342c47a403bfccda9719fba4cf18",
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "5508750b1cbfacf32039dbfa17ca9c26d394122fc2582a4d54fc3e5b166c0c5c",
+      "task": "music-harmony"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "0603b69d3ef408d5468cd04ade54b6c373fd8d5f701cda433cd46bfbf8472dd4",
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "9a11fae7c28b2e776250979c66814c31c6f884010a4d7cfa668ede45ce340d53",
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "1d0b68c791ea6400d5dd8a19a21530fac8537d55405526fde59362dbd34bf679",
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "259f7fee466a6ddd732bc50a9b8ce3fac87a303bf5312d247d0f5355d1d0745d",
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "560a6506886097c6e466046d7b50fb4a29c57fcf172fab4541b35d2f0e51fdac",
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "b8dd8cae9db7fafb9d328d6a57302b41ab9854e0b2abcd5c4f46f33e99dc919a",
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "746103caf4ddf1e2e1b19690b31c5027145c1c49cc3a89e574e32299b8806920",
+      "task": "wal-recovery-ordering"
     }
   ],
   "schema": 1,
@@ -526,6 +610,11 @@
       "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
       "round": "gpt-opencode-03-c30ea7d",
       "seal_sha256": "781893127962f8c95df82fd53946ed84afd9e8a93d69635d814ce54337517a4a"
+    },
+    "pi": {
+      "harness_commit": "59a845e8bbde370acb856f9b7915e7788ad3d6f3",
+      "round": "gpt-pi-150-59a845e",
+      "seal_sha256": "91fccb1e46afb010de044fbb514a58b4232903e224fce1fc007ab2d11a947ee8"
     },
     "samizdat": {
       "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
