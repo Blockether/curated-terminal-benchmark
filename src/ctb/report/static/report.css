@@ -179,7 +179,9 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
   .facts, .facts-head { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) var(--space-md); }
   .topbar .container { padding-inline: 0; }
   .topbar-row { flex-wrap: wrap; gap: 0; min-height: 0; }
-  .brand { min-height: 48px; padding-inline: var(--gutter); font-size: var(--text-md); }
+  .brand { min-height: 48px; padding: var(--space-xs) var(--gutter); font-size: var(--text-md); flex-wrap: wrap; }
+  .brand-sep { display: none; }
+  .brand-name { flex-basis: 100%; white-space: normal; }
   .brand img { height: 24px; }
   .topbar nav { flex: 1 0 100%; gap: 0; border-top: var(--rule-hair) solid var(--color-rule); font-size: var(--text-xs); }
   .topbar nav a { flex: 1 1 auto; justify-content: center; padding-inline: var(--space-2xs); }

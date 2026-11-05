@@ -218,7 +218,7 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
 <span class="brand-sep" aria-hidden="true">|</span>
-<span class="brand-name">CTB report</span></a>
+<span class="brand-name">Terminal-Bench 4.0 — Curated Tasks</span></a>
 <nav aria-label="Sections">{nav}</nav>
 </div>
 </header>
@@ -855,7 +855,7 @@ marks a value that no trial of the agent records.</p>
         '<a href="#matched">Matched tasks</a><a href="#agents">Agents</a><a href="#tool-errors">Tool errors</a>'
         '<a href="#trials">Trials</a>'
     )
-    return page("CTB report", body, depth=0, nav=nav, description=lead)
+    return page("Terminal-Bench 4.0 — Curated Tasks", body, depth=0, nav=nav, description=lead)
 
 
 # Trial page
