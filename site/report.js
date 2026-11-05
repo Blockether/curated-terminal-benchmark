@@ -150,10 +150,46 @@
     if (target && target.hidden) { show("all"); target.scrollIntoView(); }
   }
 
+  function setupComparison() {
+    var picker = document.querySelector("[data-compare-picker]");
+    if (!picker) return;
+    var inputs = Array.from(picker.querySelectorAll("input[name=compare]"));
+    var panels = Array.from(document.querySelectorAll("[data-comparison-panel]"));
+    var status = document.querySelector("[data-comparison-status]");
+    var params = new URLSearchParams(location.search);
+    var requested = params.has("compare") ? params.get("compare").split(",")
+      : panels.length ? JSON.parse(panels[0].dataset.comparisonPanel) : [];
+    inputs.forEach(function (input) { input.checked = requested.includes(input.value); });
+    function apply() {
+      var selected = inputs.filter(function (input) { return input.checked; }).map(function (input) { return input.value; }).sort();
+      var key = JSON.stringify(selected), shown = 0;
+      panels.forEach(function (panel) {
+        panel.hidden = JSON.stringify(JSON.parse(panel.dataset.comparisonPanel)) !== key;
+        if (!panel.hidden) shown += 1;
+      });
+      status.textContent = selected.length < 2 ? "Choose at least two agents to compare."
+        : !shown ? "No matched comparison: these agents do not share a recorded model and setup. Choose agents from the same setup; no results are combined."
+        : shown > 1 ? "These agents have separate comparable setups. Each result below stays within one setup."
+        : "";
+      var url = new URL(location.href);
+      url.searchParams.set("compare", selected.join(","));
+      history.replaceState(null, "", url);
+      setupDiagrams();
+    }
+    picker.addEventListener("change", apply);
+    window.addEventListener("popstate", function () {
+      var values = (new URLSearchParams(location.search).get("compare") || "").split(",");
+      inputs.forEach(function (input) { input.checked = values.includes(input.value); });
+      apply();
+    });
+    apply();
+  }
+
   function setupDiagrams() {
     var blocks = document.querySelectorAll("pre.mermaid");
     if (!window.pele || !blocks.length) return;
     Array.prototype.forEach.call(blocks, function (block) {
+      if (block.hasAttribute("data-drawn") || block.closest("[hidden]")) return;
       var source = block.textContent;
       try {
         var width = Math.max(320, block.clientWidth);
@@ -166,6 +202,7 @@
     });
   }
 
+  setupComparison();
   setupSorting();
   setupFilters();
   setupTranscript();
