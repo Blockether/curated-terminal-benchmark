@@ -168,9 +168,10 @@
         if (!panel.hidden) shown += 1;
       });
       status.textContent = selected.length < 2 ? "Choose at least two agents to compare."
-        : !shown ? "No matched comparison: these agents do not share a recorded model and setup. Choose agents from the same setup; no results are combined."
+        : !shown ? selected.join(" + ") + ": no matching setup. These runs cannot be ranked together. Choose compatible agents; a new matched run is needed for this selection."
         : shown > 1 ? "These agents have separate comparable setups. Each result below stays within one setup."
-        : "";
+        : "Comparing " + selected.length + " agents on matching tasks and setup. Results update as you select.";
+      status.dataset.state = selected.length < 2 ? "idle" : shown ? "ready" : "unmatched";
       var url = new URL(location.href);
       url.searchParams.set("compare", selected.join(","));
       history.replaceState(null, "", url);
