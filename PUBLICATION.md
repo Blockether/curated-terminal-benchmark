@@ -94,3 +94,13 @@ the same note about `ctb-python` and `ctb-pytest`. Task `python3` stays first on
 harness does not replace task-specific runtimes. The setup checks package versions before
 the agent runs and records `toolkit-inventory.json` and `python-resolution.txt` locally.
 These records are evidence, not public transcript payloads. Historical runs are not changed.
+
+## Agent selection
+
+The comparison selector accepts two or more agents. A URL with `compare=codex,dirge`
+keeps the selection when the page reloads. Only the selected comparison is visible.
+An empty selection, one agent, or incompatible recorded setups does not produce a ranking.
+Open the metric coverage section to see which shared trials record each measurement.
+Provider time and tool time are not inferred from total agent time. The selected Dirge
+logs record final usage for completed runs but no per-call usage or event timing.
+Interrupted runs can lack a final usage record. Missing values stay missing.

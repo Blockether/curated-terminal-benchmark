@@ -79,3 +79,21 @@ def test_pairwise_overlap_without_all_agent_overlap():
     html = matched_comparisons([trial("a", "x"), trial("b", "x"), trial("b", "y"), trial("c", "y")])
     assert "a vs b" in html and "b vs c" in html
     assert "1 shared tasks; 1 jointly solved" in html
+
+
+def test_selection_requires_every_selected_agent_in_the_same_setup():
+    from ctb.report.comparison import selected_cohorts
+
+    data = [trial("a", "x"), trial("b", "x"), trial("c", "x", setup="other")]
+    assert selected_cohorts(data, []) == []
+    assert selected_cohorts(data, ["a"]) == []
+    assert selected_cohorts(data, ["a", "missing"]) == []
+    assert selected_cohorts(data, ["a", "c"]) == []
+    assert selected_cohorts(data, ["a", "b", "c"]) == []
+    group = selected_cohorts(data, ["b", "a", "a"])[0]
+    assert group["agents"] == ["a", "b"]
+    assert group["tasks"] == ["x"]
+    assert group["rows"]["a"]["passed"] == 1
+    data.append(trial("d", "x", passed=False))
+    group = selected_cohorts(data, ["a", "b", "d"])[0]
+    assert group["tasks"] == ["x"] and group["solved"] == []

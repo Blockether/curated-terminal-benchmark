@@ -6,6 +6,7 @@ A value that a harness does not record shows as "not recorded", never as zero.
 """
 
 import html
+import json
 import math
 import os
 import re
@@ -17,7 +18,7 @@ from datetime import UTC, datetime
 from itertools import combinations, repeat
 from pathlib import Path
 
-from ctb.report.comparison import cohorts
+from ctb.report.comparison import cohorts, selected_cohorts
 
 STATIC = Path(__file__).parent / "static"
 ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
@@ -277,124 +278,152 @@ def agent_charts(trials: list[dict]) -> str:
     )
 
 
+def comparison_panel(group: dict, trials: list[dict]) -> str:
+    """One selected group: outcomes first, then efficiency on jointly solved tasks."""
+    agents = group["agents"]
+    rows = []
+    for agent in agents:
+        row = group["rows"][agent]
+        rows.append(
+            f'<tr><th scope="row">{esc(agent)}</th>'
+            + td(f"{row['passed']} / {len(group['tasks'])}", row["passed"])
+            + td(percent(row["passed"], len(group["tasks"])))
+            + td(money(row["cost"]))
+            + td(duration(row["agent_ms"]))
+            + td(None if row["cost_ratio"] is None else f"{row['cost_ratio']:.2f}×")
+            + td(None if row["agent_ms_ratio"] is None else f"{row['agent_ms_ratio']:.2f}×")
+            + "</tr>"
+        )
+    content = table(
+        [
+            th("Agent", "text", False),
+            th("Passed", sortable=False),
+            th("Pass rate", sortable=False),
+            th("Mean cost", sortable=False),
+            th("Mean agent time", sortable=False),
+            th("Cost ratio", sortable=False),
+            th("Time ratio", sortable=False),
+        ],
+        rows,
+        empty="No matched outcomes.",
+    )
+    charts = []
+    for metric, label in (("cost", "Cost ratio"), ("agent_ms", "Time ratio")):
+        values = [group["rows"][a][metric + "_ratio"] for a in agents]
+        if all(v is not None for v in values):
+            names = ", ".join(f'"{mermaid_text(a)}"' for a in agents)
+            source = (
+                f"xychart-beta horizontal\n  x-axis [{names}]\n"
+                f'  y-axis "Relative ratio (lower is better)" 0 --> {max(2, math.ceil(max(values)))}\n'
+                f"  bar [{', '.join(str(round(v, 3)) for v in values)}]"
+            )
+            charts.append(diagram(source, label + " on the same successful tasks"))
+    if charts:
+        content += '<div class="charts">' + "".join(charts) + "</div>"
+    else:
+        content += '<p class="empty">No efficiency chart: no jointly solved tasks with complete measurements for this selection.</p>'
+    coverage = []
+    for agent in agents:
+        cells = [
+            t
+            for t in trials
+            if t["agent"] == agent
+            and t.get("setup") == group["setup"]
+            and t.get("model") == group["model"]
+            and t["task"] in group["tasks"]
+        ]
+
+        def recorded(key, source, cells=cells):
+            return f"{sum(t.get(source, {}).get(key) is not None for t in cells)} / {len(cells)}"
+
+        coverage.append(
+            f'<tr><th scope="row">{esc(agent)}</th>'
+            + td(recorded("cost", "facts"))
+            + td(recorded("agent_ms", "facts"))
+            + td(recorded("provider_ms", "summary"))
+            + td(recorded("tool_ms", "summary"))
+            + "</tr>"
+        )
+    content += '<details class="comparison-details"><summary>Metric coverage and comparison details</summary>'
+    content += table(
+        [
+            th("Agent", "text", False),
+            th("Cost", sortable=False),
+            th("Agent time", sortable=False),
+            th("Provider time", sortable=False),
+            th("Tool time", sortable=False),
+        ],
+        coverage,
+        empty="No measurements.",
+    )
+    content += (
+        '<p class="hint">Coverage counts recorded measurements across shared tasks, including failures. '
+        "Cost and time above use only jointly solved tasks with measurements for every selected agent. "
+        "Missing values are not zero. Agent time is not provider time.</p>"
+    )
+    if "dirge" in agents:
+        content += (
+            '<p class="hint">Dirge records final usage for completed runs, but these source logs have no '
+            "per-call token usage, provider times or tool times. Interrupted runs may have no final usage. "
+            "A missing final result cannot be reconstructed from message counts.</p>"
+        )
+    content += '<p class="hint">Cost tasks: ' + esc(
+        ", ".join(group["metric_tasks"]["cost"]) or "none"
+    )
+    content += (
+        ". Time tasks: " + esc(", ".join(group["metric_tasks"]["agent_ms"]) or "none") + ".</p>"
+    )
+    content += (
+        f'<p class="hint">Excluded: {len(group["excluded"])} missing, {len(group["ambiguous"])} with retries, '
+        f"{len(group['mismatched'])} with different or missing task checksums.</p>"
+        f'<p class="hint">Model: {esc(group["model"])}. Setup: <code>{esc(group["setup"])}</code>.</p></details>'
+    )
+    key = esc(json.dumps(agents))
+    return (
+        f'<div data-comparison-panel="{key}" hidden><h3>{esc(" vs ".join(agents))}</h3>'
+        f'<p class="comparison-coverage">{len(group["tasks"])} shared tasks; {len(group["solved"])} jointly solved. '
+        f"Cost coverage: {len(group['metric_tasks']['cost'])}; time coverage: {len(group['metric_tasks']['agent_ms'])}.</p>"
+        + content
+        + "</div>"
+    )
+
+
 def matched_comparisons(trials: list[dict]) -> str:
-    """Show matched outcomes and successful-task efficiency without selecting retries."""
-    blocks = []
+    """Render selectable matched groups. The browser exposes only the selected agents."""
+    agents = sorted({t["agent"] for t in trials})
+    panels = []
     for cohort in cohorts(trials):
-        agents = cohort["agents"]
-        heading = ", ".join(agents)
-        setup = cohort["setup"]
-        note = (
-            f"Model: {cohort['model']}. Setup: {setup or 'not recorded'}. "
-            f"{len(cohort['tasks'])} shared tasks; {len(cohort['solved'])} solved by every agent. "
-            f"Excluded: {len(cohort['excluded'])} missing, {len(cohort['ambiguous'])} with retries, "
-            f"{len(cohort['mismatched'])} with different or missing task checksums."
-        )
-        body = f'<h3>{esc(heading)}</h3><p class="hint">{esc(note)}</p>'
-        if len(agents) < 2 or not setup or not cohort["model"]:
-            blocks.append(
-                body + '<p class="empty">No matched comparison is available for this setup.</p>'
-            )
+        if not cohort["model"] or not cohort["setup"]:
             continue
-        outcome = []
-        for agent in agents:
-            passed = cohort["rows"][agent]["passed"]
-            outcome.append(
-                f'<tr><th scope="row">{esc(agent)}</th>'
-                + td(str(passed), passed)
-                + td(str(len(cohort["tasks"])), len(cohort["tasks"]))
-                + td(
-                    percent(passed, len(cohort["tasks"])),
-                    passed / len(cohort["tasks"]) if cohort["tasks"] else None,
-                )
-                + "</tr>"
-            )
-        body += table(
-            [th("Agent", "text"), th("Passed"), th("Shared tasks"), th("Pass rate")],
-            outcome,
-            cls="sortable",
-            empty="No matched outcomes.",
-        )
-        if not cohort["solved"]:
-            body += '<p class="empty">No task was solved by all these agents. No all-agent efficiency score is shown.</p>'
-        pairs = []
-        for left, right in combinations(agents, 2):
-            pair = cohorts(
-                [
+        members = cohort["agents"]
+        for size in range(2, len(members) + 1):
+            for selection in combinations(members, size):
+                subset = [
                     t
                     for t in trials
-                    if t.get("setup") == setup
-                    and t.get("model") == cohort["model"]
-                    and t["agent"] in (left, right)
+                    if t.get("setup") == cohort["setup"] and t.get("model") == cohort["model"]
                 ]
-            )[0]
-            rows = []
-            for agent in (left, right):
-                row = pair["rows"][agent]
-                rows.append(
-                    f'<tr><th scope="row">{esc(agent)}</th>'
-                    + td(money(row["cost"]), row["cost"])
-                    + td(duration(row["agent_ms"]), row["agent_ms"])
-                    + td(
-                        None if row["cost_ratio"] is None else f"{row['cost_ratio']:.2f}×",
-                        row["cost_ratio"],
-                    )
-                    + td(
-                        None if row["agent_ms_ratio"] is None else f"{row['agent_ms_ratio']:.2f}×",
-                        row["agent_ms_ratio"],
-                    )
-                    + "</tr>"
-                )
-            content = table(
-                [
-                    th("Agent", "text"),
-                    th("Mean cost"),
-                    th("Mean agent time"),
-                    th("Cost ratio"),
-                    th("Time ratio"),
-                ],
-                rows,
-                empty="No pair.",
-            )
-            for metric, label in (("cost", "Cost ratio"), ("agent_ms", "Time ratio")):
-                values = [pair["rows"][a][metric + "_ratio"] for a in (left, right)]
-                if all(v is not None for v in values):
-                    names = ", ".join(f'"{mermaid_text(a)}"' for a in (left, right))
-                    source = (
-                        f"xychart-beta horizontal\n  x-axis [{names}]\n"
-                        f'  y-axis "Relative ratio (lower is better)" 0 --> {max(2, math.ceil(max(values)))}\n'
-                        f"  bar [{', '.join(str(round(v, 3)) for v in values)}]"
-                    )
-                    content += diagram(source, label + " on the same successful tasks")
-            details = (
-                f"{len(pair['tasks'])} shared tasks; {len(pair['solved'])} jointly solved. "
-                f"Cost coverage: {len(pair['metric_tasks']['cost'])}; "
-                f"time coverage: {len(pair['metric_tasks']['agent_ms'])}. "
-                f"Ratio coverage (positive baselines): cost {pair['rows'][left]['cost_ratio_tasks']}, "
-                f"time {pair['rows'][left]['agent_ms_ratio_tasks']}."
-            )
-            task_text = (
-                "Cost tasks: "
-                + ", ".join(pair["metric_tasks"]["cost"])
-                + ". Time tasks: "
-                + ", ".join(pair["metric_tasks"]["agent_ms"])
-            )
-            pairs.append(
-                f"<details><summary>{esc(left)} vs {esc(right)}</summary>"
-                f'<p class="hint">{esc(details)}</p>{content}'
-                f'<p class="hint">{esc(task_text)}</p></details>'
-            )
-        blocks.append(body + "".join(pairs))
+                for group in selected_cohorts(subset, selection):
+                    panels.append(comparison_panel(group, subset))
+    controls = "".join(
+        f'<label class="compare-choice"><input type="checkbox" name="compare" '
+        f'value="{esc(agent)}"><span>{esc(agent)}</span></label>'
+        for agent in agents
+    )
     return (
-        '<section id="matched" class="block"><h2>Matched task comparisons</h2>'
-        '<p class="hint">Success rates use the same assigned tasks, including failures. '
-        "Cost and time use only tasks both agents solved, with a recorded value for both. "
-        "Each task has equal weight. Ratios are geometric means relative to the lower value "
-        "on each task; lower is better. This successful-task view does not replace success rate. "
-        "Different setup revisions are separate. Matching records do not prove equal host load or provider conditions. Missing data and duplicate attempts are not zero "
-        "and are not selected by best result. These fixed cohorts do not change with the trial-list filters.</p>"
-        + "".join(blocks)
-        + "</section>"
+        '<section id="matched" class="block"><h2>Compare agents</h2>'
+        '<p class="hint">Choose two or more agents. Success rates include failures on the same tasks. '
+        "Cost and time compare only tasks all selected agents solved.</p>"
+        '<fieldset class="compare-picker" data-compare-picker><legend>Agents to compare</legend>'
+        + controls
+        + '</fieldset><p class="comparison-status" data-comparison-status role="status"></p>'
+        '<noscript><p class="empty">Enable JavaScript to select a comparison. Recorded trial tables remain available below.</p></noscript>'
+        + "".join(panels)
+        + '<details class="comparison-details"><summary>How matching works</summary>'
+        '<p class="hint">Task checksums, model and setup revision must match. Different configurations are not pooled. '
+        "Ratios give each task equal weight: a geometric mean relative to the lowest measured value on that task. "
+        "Lower is better. Zero baselines have no ratio. Matching does not prove equal host load or provider conditions. "
+        "Trial-list filters below do not change this selection.</p></details></section>"
     )
 
 

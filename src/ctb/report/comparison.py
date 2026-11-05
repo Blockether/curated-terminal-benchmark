@@ -114,3 +114,15 @@ def setup_id(run):
         },
     }
     return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+
+
+def selected_cohorts(trials, agents):
+    """Return only complete groups for the explicit selection, never a smaller substitute."""
+    selected = set(agents)
+    if len(selected) < 2:
+        return []
+    return [
+        group
+        for group in cohorts([t for t in trials if t["agent"] in selected])
+        if set(group["agents"]) == selected and group["model"] and group["setup"]
+    ]
