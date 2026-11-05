@@ -5,8 +5,8 @@
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: E, the trials table is fourteen columns wide, so it scrolls inside its own pane with the task pinned and the page never scrolls sideways */
 /* Hallmark · waive 72 · every flagged box is a details element; in Chrome no open one overflows (732 open, 0 over) and a closed one is 42px high · a closed body is not painted until a person opens it */
 /* Hallmark · answered F25 · the column that names the row is pinned with position: sticky and the pane scrolls on its own */
-@import url("./tokens.css?v=7a6270fdfc70db0ce051");
-@import url("./base.css?v=7a6270fdfc70db0ce051");
+@import url("./tokens.css?v=41773e6ae12ab898fedb");
+@import url("./base.css?v=41773e6ae12ab898fedb");
 
 :root { --container: 1280px; --gutter: 40px; --control: 40px; --hit: 44px; }
 
@@ -237,3 +237,9 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
 @media print { .compare-picker, .comparison-status { display: none; } }
 
 #matched [data-comparison-panel] > h3 { font-size: 20px; line-height: 1.3; max-width: none; }
+
+/* Comparison scope stays visible; resource use never implies successful completion. */
+.comparison-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-block: 24px; }
+.comparison-modes select { width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; border: 1px solid var(--color-rule-2); background: var(--color-paper-2); color: var(--color-ink); }
+.comparison-warning { border-left: 4px solid var(--color-accent); background: var(--color-paper-3); padding: 16px; margin-block: 16px 24px; max-width: none; }
+@media (max-width: 40rem) { .comparison-modes { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
