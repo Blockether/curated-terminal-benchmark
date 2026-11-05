@@ -34,7 +34,7 @@ Each agent command adds `ctb-python/bin` to the end of `PATH`. A Python of the t
 Vis also imports these packages in its sandbox through `VIS_PYTHON_PACKAGES`. Vis gets the `py` extension (`Blockether/vis-lang-python`), installed by `ctb fetch` with the pinned Vis build.
 Each Vis trial keeps its runtime files in `$HOME/.vis-runtime` through `VIS_RUNTIME_DIR`, away from the task workspace.
 
-The current pin uses Vis `v0.5.0`. Its release archive has a pinned commit and SHA-256.
+The current pin uses Vis `v0.5.3`. Its release archive has a pinned commit and SHA-256.
 To pin a workflow artifact instead, use a successful `native-release.yml` run of Blockether/vis:
 
 ```sh
@@ -84,7 +84,18 @@ Run only one queue at a time. GPU-only tasks stay unattempted on the Podman mach
 
 ## Results
 
-A new GPT comparison is being prepared. Previous results remain in Git history.
+[Open the comparison report](https://blockether.github.io/curated-terminal-benchmark/?compare=vis-solo,opencode&mode=general).
+Select Vis and one or more other agents. General shows all attempts and totals.
+Normalized shows means for tasks that every selected agent passed with the same task content and model.
+Missing measurements stay unavailable. Different setup versions produce a warning.
+
+New Dirge runs record each tool call and result immediately in `dirge.jsonl`.
+The `ctb_tool_call` and `ctb_tool_result` records include unique trace IDs, inputs, outputs,
+and measured tool duration. An interrupted call stays in the log without a result or duration.
+If provider IDs are ambiguous, the result stays unpaired and has no duration.
+Old logs remain unchanged; their missing timing data is not estimated.
+The `tools-v4` archive is separate from the previous `usage-v3` archive.
+Existing frozen benchmark queues keep their original code and archives.
 Reports use HTML. Print the HTML page to create a PDF; there is no separate PDF renderer.
 
 ## Privacy and seals

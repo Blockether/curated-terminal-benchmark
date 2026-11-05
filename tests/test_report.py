@@ -380,3 +380,78 @@ def test_opencode_rejects_stale_or_empty_usage_export(tmp_path):
         message["tokens"] = used
         path.write_text(json.dumps({"messages": [message]}))
         assert render.run_result(read_opencode(tmp_path, "m"))["usage_complete"] is False
+
+
+def test_dirge_immediate_tools_survive_an_interrupted_turn(tmp_path):
+    records = [
+        {
+            "type": "ctb_tool_call",
+            "id": "a",
+            "name": "bash",
+            "input": {"command": "sleep 5"},
+            "at_ms": 1000,
+        },
+        {"type": "ctb_tool_call", "id": "b", "name": "read", "input": {"path": "x"}, "at_ms": 1001},
+        {"type": "ctb_tool_result", "id": "b", "output": "file contents", "duration_ms": 0},
+    ]
+    path = tmp_path / "dirge.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in records) + '\n{"type":')
+    events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
+    tools = [e for e in events if e["kind"] == "tool"]
+    assert len(tools) == 2
+    assert tools[0]["name"] == "bash" and tools[0]["at"] == 1000
+    assert tools[0]["output"] is None and tools[0]["ms"] is None
+    assert tools[1]["output"] == "file contents"
+    assert tools[1]["ms"] == 0 and tools[1]["ms_source"] == "recorded"
+    assert not [e for e in events if e["kind"] == "call"]
+
+
+def test_dirge_immediate_tools_do_not_duplicate_turn_blocks(tmp_path):
+    records = [
+        {
+            "type": "ctb_tool_call",
+            "id": "a",
+            "name": "bash",
+            "input": {"command": "echo ok"},
+            "at_ms": 1000,
+        },
+        {"type": "ctb_tool_result", "id": "a", "output": "ok", "duration_ms": 25},
+        {
+            "type": "assistant",
+            "message": {
+                "content": [
+                    {"type": "tool_use", "id": "a", "name": "bash", "input": {"command": "echo ok"}}
+                ]
+            },
+        },
+        {
+            "type": "user",
+            "message": {"content": [{"type": "tool_result", "tool_use_id": "a", "content": "ok"}]},
+        },
+    ]
+    path = tmp_path / "dirge.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in records))
+    for _ in range(2):
+        events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
+        tools = [e for e in events if e["kind"] == "tool"]
+        assert len(tools) == 1
+        assert tools[0]["ms"] == 25 and tools[0]["output"] == "ok"
+        assert len([e for e in events if e["kind"] == "call"]) == 1
+    path.write_text("\n".join(json.dumps(r) for r in records[2:]))
+    legacy = [e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "tool"]
+    assert len(legacy) == 1 and legacy[0]["output"] == "ok" and legacy[0]["ms"] is None
+    path.write_text("")
+    assert read_dirge(tmp_path, "openai/gpt-6.1-sol") == []
+
+
+def test_dirge_unpaired_result_is_not_a_tool_call(tmp_path):
+    records = [
+        {"type": "ctb_tool_call", "id": "1", "name": "read", "input": {}},
+        {"type": "ctb_tool_result", "id": None, "output": "unpaired", "duration_ms": None},
+    ]
+    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
+    events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
+    tools = [e for e in events if e["kind"] == "tool"]
+    assert len(tools) == 1 and tools[0]["output"] is None and tools[0]["ms"] is None
+    assert events[-1]["name"] == "Unpaired tool result"
+    assert events[-1]["text"] == "unpaired"

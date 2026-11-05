@@ -1,0 +1,137 @@
+--- a/src/provider/run.rs
++++ b/src/provider/run.rs
+@@ -432,7 +432,13 @@
+         let mut turn_tool_uses: Vec<(String, String, serde_json::Value)> = Vec::new();
+         let mut turn_tool_results: Vec<(String, String)> = Vec::new();
+ 
++        let mut ctb_tool_trace = CtbToolTrace::default();
+         while let Some(event) = event_rx.recv().await {
++            if stream_json {
++                if let Some(record) = ctb_tool_trace.observe(&event) {
++                    runner::emit_stream_json_event(record);
++                }
++            }
+             match event {
+                 AgentEvent::ToolCall { id, name, args } => {
+                     if stream_json {
+@@ -1113,3 +1119,120 @@
+         );
+     }
+ }
++
++// CTB records tool events before TurnEnd, including calls in interrupted turns.
++#[derive(Default)]
++struct CtbToolTrace {
++    sequence: u64,
++    pending: Vec<(String, u64, Option<std::time::Instant>, bool)>,
++}
++
++impl CtbToolTrace {
++    fn observe(&mut self, event: &AgentEvent) -> Option<serde_json::Value> {
++        use std::time::{Instant, SystemTime, UNIX_EPOCH};
++        match event {
++            AgentEvent::ToolCall { id, name, args } => {
++                self.sequence += 1;
++                let ambiguous = self.pending.iter().any(|e| e.0 == id.as_str());
++                if ambiguous {
++                    for entry in self.pending.iter_mut().filter(|e| e.0 == id.as_str()) {
++                        entry.3 = true;
++                    }
++                }
++                self.pending.push((id.to_string(), self.sequence, None, ambiguous));
++                Some(serde_json::json!({
++                    "type": "ctb_tool_call", "id": self.sequence.to_string(),
++                    "name": name.as_str(), "input": args,
++                    "at_ms": SystemTime::now().duration_since(UNIX_EPOCH).ok()
++                        .map(|d| d.as_millis() as u64),
++                }))
++            }
++            AgentEvent::ToolStarted { id } => {
++                if let Some(entry) = self.pending.iter_mut().rev().find(|e| e.0 == id.as_str()) {
++                    entry.2 = Some(Instant::now());
++                }
++                None
++            }
++            AgentEvent::ToolResult { id, output, .. } => {
++                let index = self.pending.iter().rposition(|e| e.0 == id.as_str());
++                let paired = index.map(|i| self.pending.remove(i)).filter(|e| !e.3);
++                let trace_id = paired.as_ref().map(|e| e.1.to_string());
++                let duration = paired.and_then(|e| e.2)
++                    .map(|s| s.elapsed().as_millis() as u64);
++                Some(serde_json::json!({
++                    "type": "ctb_tool_result", "id": trace_id,
++                    "output": output.as_str(), "duration_ms": duration,
++                }))
++            }
++            _ => None,
++        }
++    }
++}
++
++#[cfg(test)]
++mod ctb_tool_trace_tests {
++    use super::*;
++
++    #[test]
++    fn ctb_tool_trace_keeps_calls_before_turn_end() {
++        let mut trace = CtbToolTrace::default();
++        let call = trace.observe(&AgentEvent::ToolCall {
++            id: "a".into(), name: "bash".into(), args: serde_json::json!({"command":"echo ok"}),
++        }).unwrap();
++        assert_eq!(call["type"], "ctb_tool_call");
++        assert_eq!(call["input"]["command"], "echo ok");
++        assert!(call["at_ms"].as_u64().unwrap() > 0);
++        trace.observe(&AgentEvent::ToolStarted { id: "a".into() });
++        let result = trace.observe(&AgentEvent::ToolResult {
++            id: "a".into(), output: "ok".into(), kind: Default::default(),
++        }).unwrap();
++        assert_eq!(result["id"], call["id"]);
++        assert_eq!(result["output"], "ok");
++        assert!(result["duration_ms"].as_u64().is_some());
++        assert!(trace.pending.is_empty());
++    }
++
++    #[test]
++    fn ctb_tool_trace_pairs_parallel_calls_and_keeps_unknown_time() {
++        let mut trace = CtbToolTrace::default();
++        for id in ["a", "b"] {
++            trace.observe(&AgentEvent::ToolCall {
++                id: id.into(), name: "read".into(), args: serde_json::json!({}),
++            });
++        }
++        let result = trace.observe(&AgentEvent::ToolResult {
++            id: "b".into(), output: "second".into(), kind: Default::default(),
++        }).unwrap();
++        assert_eq!(result["id"], "2");
++        assert!(result["duration_ms"].is_null());
++        assert_eq!(trace.pending.len(), 1);
++        assert_eq!(trace.pending[0].0, "a");
++    }
++
++    #[test]
++    fn ctb_tool_trace_does_not_guess_repeated_ids() {
++        let mut trace = CtbToolTrace::default();
++        for id in ["", "same"] {
++            for _ in 0..2 {
++                trace.observe(&AgentEvent::ToolCall {
++                    id: id.into(), name: "read".into(), args: serde_json::json!({}),
++                });
++                trace.observe(&AgentEvent::ToolStarted { id: id.into() });
++            }
++            for _ in 0..2 {
++                let result = trace.observe(&AgentEvent::ToolResult {
++                    id: id.into(), output: "unpaired".into(), kind: Default::default(),
++                }).unwrap();
++                assert!(result["id"].is_null());
++                assert!(result["duration_ms"].is_null());
++                assert_eq!(result["output"], "unpaired");
++            }
++        }
++        let orphan = trace.observe(&AgentEvent::ToolResult {
++            id: "unknown".into(), output: "orphan".into(), kind: Default::default(),
++        }).unwrap();
++        assert!(orphan["id"].is_null());
++        assert_eq!(orphan["output"], "orphan");
++        assert!(trace.pending.is_empty());
++    }
++}

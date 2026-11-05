@@ -462,9 +462,31 @@ def read_dirge(agent: Path, model: str) -> list[dict]:
     pending: dict = {}
     seen: set = set()
     path = agent / "dirge.jsonl"
+    immediate = path.is_file() and any(r.get("type") == "ctb_tool_call" for r in jsonl(path))
     for record in jsonl(path) if path.is_file() else []:
         message = record.get("message") or {}
-        if record.get("type") == "assistant":
+        if record.get("type") == "ctb_tool_call":
+            tool = event(
+                "tool",
+                name=record.get("name"),
+                input=record.get("input"),
+                at=record.get("at_ms"),
+            )
+            pending[record.get("id")] = tool
+            events.append(tool)
+        elif record.get("type") == "ctb_tool_result":
+            if record.get("id") not in pending:
+                events.append(event("user", name="Unpaired tool result", text=record.get("output")))
+                continue
+            duration = record.get("duration_ms")
+            pair(
+                pending,
+                record.get("id"),
+                output=record.get("output"),
+                ms=duration,
+                ms_source="recorded" if duration is not None else None,
+            )
+        elif record.get("type") == "assistant":
             key = message.get("id")
             if key is None or key not in seen:
                 if key is not None:
@@ -491,7 +513,7 @@ def read_dirge(agent: Path, model: str) -> list[dict]:
                     events.append(event("assistant", text=part["text"]))
                 elif kind == "thinking" and part.get("thinking"):
                     events.append(event("reasoning", text=part["thinking"]))
-                elif kind == "tool_use":
+                elif kind == "tool_use" and not immediate:
                     tool = event("tool", name=part.get("name"), input=part.get("input"))
                     pending[part.get("id")] = tool
                     events.append(tool)
@@ -500,7 +522,7 @@ def read_dirge(agent: Path, model: str) -> list[dict]:
             if isinstance(content, str):
                 events.append(event("user", text=content))
             for part in content if isinstance(content, list) else []:
-                if part.get("type") == "tool_result":
+                if part.get("type") == "tool_result" and not immediate:
                     pair(
                         pending,
                         part.get("tool_use_id"),

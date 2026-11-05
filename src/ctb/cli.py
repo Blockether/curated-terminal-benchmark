@@ -58,7 +58,7 @@ DIRGE_BUILD = (
     "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
     "rustup target add x86_64-unknown-linux-musl >/dev/null && "
     "cargo test --release --target x86_64-unknown-linux-musl --bin dirge -- "
-    "codex_completed_response_keeps_usage codex_body_gets_gpt_settings && "
+    "codex_completed_response_keeps_usage codex_body_gets_gpt_settings ctb_tool_trace && "
     "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
 )
 # The steps of samizdat's release.yml on ubuntu-22.04, without its test and smoke steps.
@@ -125,7 +125,11 @@ def fetch_dirge() -> Path:
         path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
         prepare_dirge_rig(path)
         apply_patches(
-            path, "dirge-usage.patch", "dirge-rig-stream.patch", "dirge-codex-settings.patch"
+            path,
+            "dirge-usage.patch",
+            "dirge-rig-stream.patch",
+            "dirge-codex-settings.patch",
+            "dirge-tool-trace.patch",
         )
         sh(
             [

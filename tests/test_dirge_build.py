@@ -69,7 +69,12 @@ def test_fetch_dirge_prepares_and_patches_before_build(tmp_path, monkeypatch):
         (
             "patch",
             source,
-            ("dirge-usage.patch", "dirge-rig-stream.patch", "dirge-codex-settings.patch"),
+            (
+                "dirge-usage.patch",
+                "dirge-rig-stream.patch",
+                "dirge-codex-settings.patch",
+                "dirge-tool-trace.patch",
+            ),
         ),
     ]
     assert calls[2] == ("build", cli.DIRGE_BUILD)

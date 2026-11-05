@@ -9,6 +9,7 @@ import pytest
 from harbor.models.agent.context import AgentContext
 
 from ctb.agents.dirge import Dirge
+from ctb.report.transcripts import read_dirge
 
 
 @pytest.mark.skipif(os.environ.get("CTB_LIVE_DIRGE") != "1", reason="requires live model access")
@@ -48,7 +49,7 @@ def test_dirge_reports_provider_usage(tmp_path, monkeypatch):
                 "docker.io/library/python:3.12-slim-bookworm",
                 "sh",
                 "-c",
-                agent.command("Reply with OK. Do not use tools."),
+                agent.command("Use the bash tool to run printf CTB_TOOL_TRACE_OK. Then reply OK."),
             ],
             capture_output=True,
             text=True,
@@ -61,8 +62,13 @@ def test_dirge_reports_provider_usage(tmp_path, monkeypatch):
         assert not final["is_error"], final
         context = AgentContext()
         agent.populate_context_post_run(context)
-        assert context.n_input_tokens > 0, (logs / "dirge-debug.log").read_text()
+        assert context.n_input_tokens > 0
         assert context.n_output_tokens > 0
+        tools = [event for event in read_dirge(logs, agent.model_name) if event["kind"] == "tool"]
+        assert tools
+        assert any("CTB_TOOL_TRACE_OK" in (tool["output"] or "") for tool in tools)
+        assert all(tool["name"] and tool["input"] and tool["at"] for tool in tools)
+        assert all(tool["ms"] is not None and tool["ms_source"] == "recorded" for tool in tools)
     finally:
         for path in home.rglob("*"):
             if path.is_file():
