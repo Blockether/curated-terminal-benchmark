@@ -78,7 +78,7 @@ def test_pairwise_overlap_without_all_agent_overlap():
 
     html = matched_comparisons([trial("a", "x"), trial("b", "x"), trial("b", "y"), trial("c", "y")])
     assert "a vs b" in html and "b vs c" in html
-    assert "1 shared tasks; 1 jointly solved" in html
+    assert cohorts([trial("a", "x"), trial("b", "x")])[0]["solved"] == ["x"]
 
 
 def test_selection_requires_every_selected_agent_in_the_same_setup():
@@ -138,3 +138,32 @@ def test_attempt_metrics_use_complete_paired_tasks_not_zero_imputation():
     solved = selected_cohorts(data, ["a", "b"])[0]
     assert solved["metric_tasks"]["cost"] == []
     assert solved["rows"]["a"]["cost"] is None
+
+
+def test_general_keeps_extra_attempts_and_normalized_only_shared_successes():
+    from ctb.report.comparison import general_summary
+
+    data = [
+        trial("a", "1", cost=1),
+        trial("a", "2", cost=2),
+        trial("a", "3", cost=3),
+        trial("b", "2", cost=4),
+        trial("b", "3", cost=6),
+        trial("b", "4", cost=8),
+        trial("b", "failed", passed=False, cost=10),
+    ]
+    general = general_summary(data, ["a", "b"])
+    assert general["a"]["attempts"] == 3
+    assert general["b"]["attempts"] == 4
+    assert general["b"]["passed"] == 3
+    assert general["a"]["cost"] == 6
+    assert general["b"]["cost"] == 28
+    normalized = cohorts(data, strict=False)[0]
+    assert normalized["solved"] == ["2", "3"]
+    assert normalized["rows"]["a"]["cost"] == 2.5
+    assert normalized["rows"]["b"]["cost"] == 5
+    data[-1]["facts"]["cost"] = None
+    general = general_summary(data, ["a", "b"])
+    assert general["b"]["cost"] is None
+    assert general["b"]["cost_recorded"] == 3
+    assert general_summary([], []) == {}

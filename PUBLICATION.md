@@ -76,18 +76,20 @@ The workflow supports a manual run too. It does not automatically select new ben
 
 ## Matched task comparisons
 
-Success rates include failures on the same assigned tasks. A task must have one trial per
-agent, the same task checksum, and a matching recorded setup. The setup includes the harness
-commit, Harbor, model effort, shared Python archive, task fixes, parallelism and timeout.
-Unknown setup data and duplicate attempts are excluded, not selected by the best result.
-Recorded setup equality does not prove equal host load or equal provider conditions.
+The selector has two views. **General** includes every attempt for each selected agent,
+including failures and extra tasks. It shows attempts, passes, overall pass rate and total
+cost and time. It does not intersect task sets. A total is unavailable if any attempt lacks
+that measurement; a partial sum is not a total.
 
-Efficiency comparisons use only jointly solved tasks. Each metric also requires a finite
-measurement from both agents. The page lists the exact tasks and coverage for each pair.
-The ratio is the geometric mean of per-task ratios to the lower measured value; each task
-has equal weight. Zero baselines have no ratio. This successful-task view does not replace
-success rate. Raw totals remain visible but are not task-normalized. Trial-list filters do
-not change the comparison cohorts. Different setup revisions remain separate.
+**Normalized** includes only tasks that every selected agent completed successfully, with
+the same task checksum and model. Duplicate attempts are excluded, not selected by the best
+result. It shows mean cost and time on that shared successful set, not pass rates. Each
+metric requires measurements for every selected agent on the same tasks. The page lists
+those tasks and metric coverage. No shared successes means no normalized comparison.
+
+Setup consistency is a separate warning in both views. Equal task content does not make
+different harnesses, packages or limits equivalent. Recorded setup equality also does not
+prove equal host load or provider conditions. Trial-list filters do not change these views.
 
 New trials use the same pinned Python archive and package inventory. Each agent receives
 the same note about `ctb-python` and `ctb-pytest`. Task `python3` stays first on PATH so the
@@ -99,7 +101,7 @@ These records are evidence, not public transcript payloads. Historical runs are 
 
 The comparison selector accepts two or more agents. A URL with `compare=codex,dirge`
 keeps the selection when the page reloads. Only the selected comparison is visible.
-An empty selection, one agent, or incompatible recorded setups does not produce a ranking.
+An empty selection or one agent does not produce a comparison. Different setups show a warning.
 Open the metric coverage section to see which shared trials record each measurement.
 Provider time and tool time are not inferred from total agent time. The selected Dirge
 logs record final usage for completed runs but no per-call usage or event timing.
@@ -114,15 +116,10 @@ payloads keep their existing content hashes and are not changed by a layout upda
 
 ## Comparison and metric coverage
 
-The default observed view compares the same task checksums and model across selected agents.
-It can combine different recorded setups. Its warning means that it is not a controlled ranking.
-The strict view requires the same recorded setup as well. Neither view substitutes another task.
-
-All attempts includes failed attempts in resource measurements and success rates. A failed
-attempt can consume less without being better. Joint successes restricts resource measurements
-to tasks that every selected agent passed. Each metric uses only tasks with values for every
-selected agent. The page shows its denominator and task list. No missing value becomes zero.
-Full trial time includes environment setup and verification; agent time is separate.
+General is the default view. The URL stores `mode=general` or `mode=normalized` and the
+selected agents. Missing values never become zero. Full trial time includes environment
+setup and verification; agent time is separate. A failed attempt can consume less without
+being better, so General resource totals must be read with the overall pass rate.
 
 Derived report totals use complete run records before partial call records. OpenCode session
 exports include visible output and reasoning output in the API list-price equivalent. Invalid

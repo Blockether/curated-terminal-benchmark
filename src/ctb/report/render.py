@@ -19,7 +19,7 @@ from itertools import combinations, repeat
 from pathlib import Path
 
 from ctb.metrics import list_price
-from ctb.report.comparison import cohorts, selected_cohorts
+from ctb.report.comparison import general_summary, selected_cohorts
 
 STATIC = Path(__file__).parent / "static"
 ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
@@ -296,17 +296,14 @@ def agent_charts(trials: list[dict]) -> str:
 
 
 def comparison_panel(group: dict, trials: list[dict]) -> str:
-    """Show outcomes and resource use with explicit task and measurement denominators."""
+    """Show resource means for tasks passed by every selected agent."""
     agents = group["agents"]
-    attempted = group["basis"] == "attempted"
-    basis_name = "all matched attempts" if attempted else "jointly solved tasks"
+    basis_name = "jointly solved tasks"
     rows = []
     for agent in agents:
         row = group["rows"][agent]
         rows.append(
             f'<tr><th scope="row">{esc(agent)}</th>'
-            + td(f"{row['passed']} / {len(group['tasks'])}", row["passed"])
-            + td(percent(row["passed"], len(group["tasks"])))
             + td(money(row["cost"]))
             + td(duration(row["run_ms"]))
             + td(duration(row["agent_ms"]))
@@ -317,14 +314,12 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
     if not group["strict"] and mixed:
         content += (
             '<p class="comparison-warning" role="note"><strong>Different setups.</strong> '
-            "These are observed results, not a controlled agent ranking. Task content and model match, "
-            "but harness revisions differ. Use Strict setup for controlled comparisons.</p>"
+            "This is not a controlled agent ranking. Normalizing tasks does not correct "
+            "different harness configurations. A matched setup run is needed.</p>"
         )
     content += table(
         [
             th("Agent", "text", False),
-            th("Passed", sortable=False),
-            th("Pass rate", sortable=False),
             th("Mean cost", sortable=False),
             th("Mean full trial time", sortable=False),
             th("Mean agent time", sortable=False),
@@ -338,25 +333,12 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
         f"{len(group['metric_tasks']['run_ms'])}; agent time uses {len(group['metric_tasks']['agent_ms'])}. "
         "Each metric uses the same tasks for every selected agent. "
         "Full trial time includes setup and verification. "
-        + (
-            "Failures are included. Lower resource use is not better performance when a task fails."
-            if attempted
-            else "Success rates above still include all matched failures."
-        )
-        + "</p>"
+        "Only tasks passed by every selected agent are included. Pass rates are shown in General."
+        "</p>"
     )
     charts = []
     names = ", ".join(f'"{mermaid_text(a)}"' for a in agents)
     series = []
-    if group["tasks"]:
-        series.append(
-            (
-                "Pass rate on matched tasks",
-                "Pass rate (%)",
-                [100 * group["rows"][a]["passed"] / len(group["tasks"]) for a in agents],
-                100,
-            )
-        )
     for metric, label, scale in (
         ("cost", "Mean cost (USD)", 1),
         ("run_ms", "Mean full trial time (minutes)", 60000),
@@ -376,10 +358,10 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
         charts.append(diagram(source, caption))
     if charts:
         content += '<div class="charts">' + "".join(charts) + "</div>"
-    if not group["solved"] and not attempted:
+    if not group["solved"]:
         content += (
             '<p class="empty">No tasks were solved by every selected agent. '
-            "Choose All attempts to see their recorded resource use, including failures.</p>"
+            "Choose General to see all attempts, including failures.</p>"
         )
     coverage = []
     for agent in agents:
@@ -389,7 +371,7 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
             if t["agent"] == agent
             and t.get("model") == group["model"]
             and (not group["strict"] or t.get("setup") == group["setup"])
-            and t["task"] in group["tasks"]
+            and t["task"] in group["solved"]
         ]
 
         def recorded(key, source, cells=cells):
@@ -420,7 +402,7 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
         empty="No measurements.",
     )
     content += (
-        '<p class="hint">Coverage counts recorded measurements, including failures. '
+        '<p class="hint">Coverage counts recorded measurements on shared successful tasks. '
         "A missing value is not zero. Provider and tool time are optional agent-specific diagnostics; "
         "the core comparison uses full trial time recorded by Harbor for every completed trial.</p>"
     )
@@ -470,64 +452,149 @@ def comparison_panel(group: dict, trials: list[dict]) -> str:
         )
     content += "</details>"
     key = esc(json.dumps(agents))
-    mode = "strict" if group["strict"] else "observed"
+    mode = "normalized"
     return (
-        f'<div data-comparison-panel="{key}" data-mode="{mode}" data-basis="{group["basis"]}" hidden>'
+        f'<div data-comparison-panel="{key}" data-mode="{mode}" hidden>'
         f"<h3>{esc(' vs '.join(agents))}</h3>"
-        f'<p class="comparison-coverage">{len(group["tasks"])} shared tasks; {len(group["solved"])} jointly solved.</p>'
+        f'<p class="comparison-coverage">{len(group["solved"])} tasks passed by every selected agent.</p>'
+        + '<p class="hint">Included tasks: '
+        + esc(", ".join(group["solved"]) or "none")
+        + "</p>"
         + content
         + "</div>"
     )
 
 
+def general_panel(trials, agents):
+    selected = [t for t in trials if t["agent"] in agents]
+    summary = general_summary(selected, agents)
+    rows, details = [], []
+    for agent, row in summary.items():
+        rows.append(
+            '<tr><th scope="row">'
+            + esc(agent)
+            + "</th>"
+            + td(number(row["attempts"]))
+            + td(number(row["passed"]))
+            + td(percent(row["passed"], row["attempts"]))
+            + td(money(row["cost"]))
+            + td(duration(row["run_ms"]))
+            + td(duration(row["agent_ms"]))
+            + "</tr>"
+        )
+        details.append(
+            '<p class="hint">'
+            + esc(agent)
+            + ": "
+            + esc(", ".join(row["tasks"]))
+            + ". Recorded cost: "
+            + str(row["cost_recorded"])
+            + "/"
+            + str(row["attempts"])
+            + "; full trial time: "
+            + str(row["run_ms_recorded"])
+            + "/"
+            + str(row["attempts"])
+            + "; agent time: "
+            + str(row["agent_ms_recorded"])
+            + "/"
+            + str(row["attempts"])
+            + ".</p>"
+        )
+    mixed = len({(t.get("model"), t.get("setup")) for t in selected}) != 1 or any(
+        not t.get("setup") for t in selected
+    )
+    warning = (
+        (
+            '<p class="comparison-warning"><strong>Different or unknown setups.</strong> '
+            "These historical totals are not a controlled agent ranking. Both views need the same "
+            "model, packages, limits and harness for a controlled comparison.</p>"
+        )
+        if mixed
+        else ""
+    )
+    content = table(
+        [
+            th(x, sortable=False)
+            for x in (
+                "Agent",
+                "Attempts",
+                "Passed",
+                "Pass rate",
+                "Total cost",
+                "Total full trial time",
+                "Total agent time",
+            )
+        ],
+        rows,
+        empty="No attempts.",
+    )
+    charts = []
+    names = ", ".join('"' + mermaid_text(a) + '"' for a in agents)
+    for metric, label, scale in (
+        (None, "Overall pass rate (%)", 1),
+        ("cost", "Total cost (USD)", 1),
+        ("run_ms", "Total full trial time (minutes)", 60000),
+    ):
+        values = [
+            100 * summary[a]["passed"] / summary[a]["attempts"]
+            if metric is None and summary[a]["attempts"]
+            else summary[a].get(metric)
+            for a in agents
+        ]
+        if all(v is not None for v in values):
+            values = [v / scale for v in values]
+            source = (
+                f"xychart-beta horizontal\n  x-axis [{names}]\n"
+                f'  y-axis "{label}" 0 --> {max(1, math.ceil(max(values)))}\n'
+                f"  bar [{', '.join(str(round(v, 4)) for v in values)}]"
+            )
+            charts.append(diagram(source, label))
+    return (
+        f'<div data-comparison-panel="{esc(json.dumps(list(agents)))}" data-mode="general" hidden>'
+        + "<h3>"
+        + esc(" vs ".join(agents))
+        + "</h3>"
+        + warning
+        + '<p class="hint">All attempts for each agent, including failures and extra tasks. '
+        "No task intersection or success filtering. A total is unavailable if any attempt lacks that measurement; "
+        "partial sums are not presented as totals.</p>"
+        + content
+        + '<div class="charts">'
+        + "".join(charts)
+        + "</div>"
+        + '<details class="comparison-details"><summary>Included tasks and metric coverage</summary>'
+        + "".join(details)
+        + "</details></div>"
+    )
+
+
 def matched_comparisons(trials: list[dict]) -> str:
-    """Keep observational comparison separate from strict setup and success-only analysis."""
+    """General includes all attempts; Normalized includes only shared successful tasks."""
     agents = sorted({t["agent"] for t in trials})
     panels = []
-    for strict in (False, True):
-        for cohort in cohorts(trials, strict=strict):
-            if not cohort["model"] or not cohort["setup"]:
-                continue
-            subset = [
-                t
-                for t in trials
-                if t.get("model") == cohort["model"]
-                and (not strict or t.get("setup") == cohort["setup"])
-            ]
-            for size in range(2, len(cohort["agents"]) + 1):
-                for selection in combinations(cohort["agents"], size):
-                    for basis in ("attempted", "solved"):
-                        for group in selected_cohorts(
-                            subset, selection, strict=strict, basis=basis
-                        ):
-                            panels.append(comparison_panel(group, subset))
+    for size in range(2, len(agents) + 1):
+        for selection in combinations(agents, size):
+            panels.append(general_panel(trials, selection))
+            for group in selected_cohorts(trials, selection, strict=False, basis="solved"):
+                panels.append(comparison_panel(group, trials))
     controls = "".join(
         f'<label class="compare-choice"><input type="checkbox" name="compare" value="{esc(agent)}">'
-        f'<span class="compare-label"><span>{esc(agent)}</span><small>Compare recorded tasks</small></span></label>'
+        f'<span class="compare-label"><span>{esc(agent)}</span><small>Select agent</small></span></label>'
         for agent in agents
     )
     return (
         '<section id="matched" class="block"><h2>Compare agents</h2>'
-        '<p class="hint">Choose agents, then compare all attempts or only their shared successes. '
-        "Different setups are flagged, never presented as a controlled ranking.</p>"
+        '<p class="hint">General: all attempts. Normalized: only tasks every selected agent passed.</p>'
         '<fieldset class="compare-picker" data-compare-picker><legend>Agents to compare</legend>'
         '<div class="compare-options">' + controls + "</div></fieldset>"
-        '<div class="comparison-modes"><label class="field"><span>Comparison</span>'
-        '<select data-comparison-mode><option value="observed">Observed · same tasks</option>'
-        '<option value="strict">Strict · same tasks and setup</option></select></label>'
-        '<label class="field"><span>Resource measurements</span><select data-comparison-basis>'
-        '<option value="attempted">All attempts · includes failures</option>'
-        '<option value="solved">Jointly solved tasks only</option></select></label></div>'
-        '<p class="comparison-status" data-comparison-status role="status">Loading comparison controls. '
-        "If this message stays, reload the page.</p>"
-        '<noscript><p class="empty">Enable JavaScript to select a comparison. Recorded trial tables remain available below.</p></noscript>'
+        '<div class="comparison-modes"><label class="field"><span>View</span>'
+        '<select data-comparison-mode><option value="general">General</option>'
+        '<option value="normalized">Normalized</option></select></label></div>'
+        '<p class="comparison-status" data-comparison-status role="status">Loading comparison controls.</p>'
+        "<noscript><p>Enable JavaScript to select a comparison.</p></noscript>"
         + "".join(panels)
-        + '<details class="comparison-details"><summary>How matching works</summary>'
-        '<p class="hint">Both views require the same model and task checksums. Observed results may span '
-        "different setups and are descriptive, not causal. Strict setup also requires identical recorded "
-        "harness configuration. All attempts includes failures; jointly solved excludes any task one selected "
-        "agent failed. Missing metrics exclude the same task for every agent from that metric only. "
-        "A fast failure is not a success. Trial-list filters below do not change this selection.</p></details></section>"
+        + "</section>"
     )
 
 

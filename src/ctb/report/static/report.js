@@ -157,41 +157,38 @@
     var panels = Array.from(document.querySelectorAll("[data-comparison-panel]"));
     var status = document.querySelector("[data-comparison-status]");
     var mode = document.querySelector("[data-comparison-mode]");
-    var basis = document.querySelector("[data-comparison-basis]");
     var params = new URLSearchParams(location.search);
     var requested = params.has("compare") ? params.get("compare").split(",")
       : panels.length ? JSON.parse(panels[0].dataset.comparisonPanel) : [];
     inputs.forEach(function (input) { input.checked = requested.includes(input.value); });
-    mode.value = params.get("mode") === "strict" ? "strict" : "observed";
-    basis.value = params.get("basis") === "solved" ? "solved" : "attempted";
+    mode.value = params.get("mode") === "normalized" || params.get("basis") === "solved" ? "normalized" : "general";
     function apply() {
       var selected = inputs.filter(function (input) { return input.checked; }).map(function (input) { return input.value; }).sort();
       var key = JSON.stringify(selected), shown = 0;
       panels.forEach(function (panel) {
-        panel.hidden = JSON.stringify(JSON.parse(panel.dataset.comparisonPanel)) !== key || panel.dataset.mode !== mode.value || panel.dataset.basis !== basis.value;
+        panel.hidden = JSON.stringify(JSON.parse(panel.dataset.comparisonPanel)) !== key || panel.dataset.mode !== mode.value;
         if (!panel.hidden) shown += 1;
       });
       status.textContent = selected.length < 2 ? "Choose at least two agents to compare."
-        : !shown ? selected.join(" + ") + ": no strict setup match. Select Observed to inspect recorded results with setup differences flagged; a new matched run is needed for a controlled ranking."
-        : shown > 1 ? "These agents have separate comparable setups. Each result below stays within one setup."
-        : "Comparing " + selected.length + " agents · " + (mode.value === "strict" ? "strict setup" : "observed results, not a controlled ranking") + " · " + (basis.value === "solved" ? "jointly solved tasks" : "all attempts, including failures") + ".";
+        : !shown ? "No shared successful tasks with matching task content and model for this selection."
+        : "Comparing " + selected.length + " agents · " + (mode.value === "general"
+          ? "General: all attempts, including failures and extra tasks."
+          : "Normalized: only tasks every selected agent passed.");
       status.dataset.state = selected.length < 2 ? "idle" : shown ? "ready" : "unmatched";
       var url = new URL(location.href);
       url.searchParams.set("compare", selected.join(","));
       url.searchParams.set("mode", mode.value);
-      url.searchParams.set("basis", basis.value);
+      url.searchParams.delete("basis");
       history.replaceState(null, "", url);
       setupDiagrams();
     }
     picker.addEventListener("change", apply);
     mode.addEventListener("change", apply);
-    basis.addEventListener("change", apply);
     window.addEventListener("popstate", function () {
       var values = (new URLSearchParams(location.search).get("compare") || "").split(",");
       inputs.forEach(function (input) { input.checked = values.includes(input.value); });
       var restored = new URLSearchParams(location.search);
-      mode.value = restored.get("mode") === "strict" ? "strict" : "observed";
-      basis.value = restored.get("basis") === "solved" ? "solved" : "attempted";
+      mode.value = restored.get("mode") === "normalized" || restored.get("basis") === "solved" ? "normalized" : "general";
       apply();
     });
     apply();

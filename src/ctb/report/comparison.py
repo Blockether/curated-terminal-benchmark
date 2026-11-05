@@ -133,3 +133,24 @@ def selected_cohorts(trials, agents, *, strict=True, basis="solved"):
         )
         if set(group["agents"]) == selected and group["model"] and group["setup"]
     ]
+
+
+def general_summary(trials, agents):
+    """All selected attempts, without task intersection or success filtering."""
+    result = {}
+    for agent in sorted(set(agents)):
+        cells = [t for t in trials if t["agent"] == agent]
+        row = {
+            "attempts": len(cells),
+            "passed": sum(t["passed"] for t in cells),
+            "tasks": [t["task"] for t in cells],
+        }
+        for metric in ("cost", "run_ms", "agent_ms"):
+            values = [t["facts"].get(metric) for t in cells]
+            recorded = [
+                v for v in values if type(v) in (int, float) and math.isfinite(v) and v >= 0
+            ]
+            row[metric + "_recorded"] = len(recorded)
+            row[metric] = sum(recorded) if cells and len(recorded) == len(cells) else None
+        result[agent] = row
+    return result
