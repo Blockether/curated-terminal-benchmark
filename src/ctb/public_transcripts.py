@@ -130,30 +130,63 @@ def manifest_check(manifest, comparison):
     report.require(sum(r["expanded_bytes"] for r in manifest["transcripts"].values()) <= MAX_TOTAL)
 
 
-def static_files(comparison, manifest):
-    index = report.render(comparison).decode()
-    links = "".join(
-        f'<li><a href="transcript.html?id={r["result_sha256"]}">{r["agent"]}: {r["task"]}</a></li>'
-        for r in comparison["rows"]
+def static_files(comparison, manifest, metrics):
+    fixed = report.expected(comparison, metrics)
+    fixed["index.html"] = report.render(comparison, metrics, transcripts=True)
+    fixed.update(
+        {
+            "transcripts.json": report.encoded(manifest),
+            "transcript.html": report.public_page(
+                report.layout.page(
+                    "Sanitized transcript",
+                    '<section class="head"><h1>Sanitized transcript</h1></section>'
+                    + transcript_body(),
+                    depth=0,
+                    nav='<a href="index.html">Comparison</a>',
+                    description="A sanitized transcript, loaded on demand.",
+                )
+            )
+            .replace("</head>", '<script src="viewer.js" defer></script></head>')
+            .encode(),
+            "viewer.js": (STATIC / "viewer.js").read_bytes(),
+        }
     )
-    index = index.replace(
-        "</main>",
-        "<h2>Sanitized transcripts</h2><p>Text only. "
-        "Credential-like values and local user paths are removed. "
-        "This is a normalized view, not a complete raw log. "
-        "One gzip file is fetched when you open a trial.</p><ul>" + links + "</ul></main>",
+    for trial in report.public_trials(comparison, metrics):
+        text = report.layout.trial_page(trial)
+        start = text.index('<section id="transcript"')
+        end = text.index("</section>", start) + len("</section>")
+        text = text[:start] + transcript_body(trial["id"]) + text[end:]
+        text = text.replace(
+            "This harness records no event times, so there is no activity strip.",
+            "Event times are not included in this normalized transcript view.",
+        )
+        text = text.replace(
+            "No errors were recorded in this transcript.",
+            "Event-level error details are not included in this normalized view.",
+        )
+        text = text.replace("</head>", '<script src="../viewer.js" defer></script></head>')
+        fixed["trial/" + trial["id"] + ".html"] = report.public_page(text).encode()
+    return fixed
+
+
+def transcript_body(result_hash=""):
+    chips = "".join(
+        f'<a class="chip-link" href="?show={key}#transcript" data-show="{key}">{label}</a>'
+        for key, label in report.layout.SHOW
+        if key != "errors"
     )
-    index = index.replace(
-        "Transcripts, prompts, logs, credentials and task artifacts stay local.",
-        "Raw logs, credentials and task artifacts stay local. Sanitized transcripts are linked below.",
+    return (
+        '<section id="transcript" class="block" data-result-id="' + result_hash + '">'
+        '<h2>Transcript</h2><p class="hint">Credential-like values and local user paths are removed. '
+        "This normalized text view is not a full raw log. Event timings and error flags are not included. "
+        "One verified gzip file is downloaded for this trial.</p>"
+        '<nav class="chips" aria-label="Transcript filter">' + chips + "</nav>"
+        '<p id="status" class="count" role="status">Loading selected transcript…</p>'
+        '<p class="count" data-event-count aria-live="polite"></p>'
+        '<p class="empty" data-empty hidden>No events of this kind.</p>'
+        "<noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript>"
+        '<ol id="events" class="events" data-events></ol></section>'
     )
-    return {
-        "index.html": index.encode(),
-        "comparison.json": report.encoded(comparison),
-        "transcripts.json": report.encoded(manifest),
-        "transcript.html": (STATIC / "transcript.html").read_bytes(),
-        "viewer.js": (STATIC / "viewer.js").read_bytes(),
-    }
 
 
 def checked_inputs(root):
@@ -161,15 +194,18 @@ def checked_inputs(root):
     report.require(comparison == report.from_seals(root))
     manifest = report.read(root / "public/transcript-hashes.json")
     manifest_check(manifest, comparison)
-    return comparison, manifest
+    metrics = report.checked_metrics(root, comparison)
+    return comparison, manifest, metrics
 
 
 def check(root, out, known=()):
-    comparison, manifest = checked_inputs(root)
+    comparison, manifest, metrics = checked_inputs(root)
     report.require(not any(p.is_symlink() for p in (out, *out.parents)))
-    fixed = static_files(comparison, manifest)
+    fixed = static_files(comparison, manifest, metrics)
     wanted = (
-        set(fixed) | {"transcripts"} | {f"transcripts/{h}.json.gz" for h in manifest["transcripts"]}
+        set(fixed)
+        | {"transcripts", "trial"}
+        | {f"transcripts/{h}.json.gz" for h in manifest["transcripts"]}
     )
     paths = list(out.rglob("*"))
     report.require({p.relative_to(out).as_posix() for p in paths} == wanted)
@@ -190,6 +226,7 @@ def check(root, out, known=()):
 
 
 def export(root, out):
+    metrics = report.read(root / "public/report-metrics.json")
     # Dependencies and credential files are used locally, never by the CI checker.
     from ctb.privacy import secret_values
     from ctb.report import transcripts
@@ -248,7 +285,8 @@ def export(root, out):
     manifest_check(manifest, comparison)
     # The caller stages this hash-only manifest on main after the local audit.
     (root / "public/transcript-hashes.json").write_bytes(report.encoded(manifest))
-    for name, raw in static_files(comparison, manifest).items():
+    for name, raw in static_files(comparison, manifest, metrics).items():
+        (out / name).parent.mkdir(parents=True, exist_ok=True)
         (out / name).write_bytes(raw)
     check(root, out, known)
 

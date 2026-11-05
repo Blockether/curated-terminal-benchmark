@@ -17,8 +17,6 @@ from datetime import UTC, datetime
 from itertools import repeat
 from pathlib import Path
 
-from ctb.report.trials import find, load
-
 STATIC = Path(__file__).parent / "static"
 ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
 FONTS = (
@@ -876,6 +874,8 @@ def trial_page(trial: dict) -> str:
 
 def write_trial(trial_dir: Path, jobs: Path, out: Path) -> dict:
     """Load one trial, write its page and return it without the events."""
+    from ctb.report.trials import load
+
     trial = load(trial_dir, jobs)
     trial["facts"] = facts(trial)
     (out / "trial" / f"{trial['id']}.html").write_text(trial_page(trial), encoding="utf-8")
@@ -885,6 +885,8 @@ def write_trial(trial_dir: Path, jobs: Path, out: Path) -> dict:
 
 def build(jobs: Path, out: Path, workers: int | None = None) -> list[dict]:
     """Write the whole site to `out`. A second run rewrites every page and removes stale ones."""
+    from ctb.report.trials import find
+
     trial_dirs = find(jobs)
     pages = out / "trial"
     pages.mkdir(parents=True, exist_ok=True)

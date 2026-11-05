@@ -116,6 +116,7 @@
     var count = document.querySelector("[data-event-count]");
     var empty = document.querySelector("[data-empty]");
     var items = list.querySelectorAll("li.ev");
+    if (!items.length) return;
 
     function show(key) {
       var shown = 0;
@@ -168,5 +169,6 @@
   setupSorting();
   setupFilters();
   setupTranscript();
+  document.addEventListener("ctb:transcript-loaded", setupTranscript);
   setupDiagrams();
 })();

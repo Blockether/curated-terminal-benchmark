@@ -21,13 +21,36 @@ class PublicReportTests(unittest.TestCase):
             ],
         }
 
+        root = Path(__file__).resolve().parents[1]
+        first = next(iter(p.read(root / "public/report-metrics.json").values()))
+        self.metrics = {"c" * 64: {**first, "reward": 1}}
+
     def test_render_has_real_results_and_no_external_requests(self):
-        text = p.render(self.data).decode()
-        self.assertIn("12/12", text)
-        self.assertIn("100.0%", text)
+        text = p.render(self.data, self.metrics).decode()
+        self.assertIn("72 trials", text)
+        self.assertIn("100%", text)
         self.assertIn("photonic-waveguide-routing", text)
         self.assertNotIn("https://", text)
-        self.assertNotIn("<script", text)
+        self.assertIn('src="report.js"', text)
+
+    def test_metrics_reject_unknown_text_and_invalid_numbers(self):
+        root = Path(__file__).resolve().parents[1]
+        data = p.read(root / "public/comparison.json")
+        metrics = p.read(root / "public/report-metrics.json")
+        p.validate_metrics(metrics, data)
+        key = next(iter(metrics))
+        for field, value in (
+            ("run_ms", -1),
+            ("cost", float("nan")),
+            ("tool_calls", True),
+            ("secret", "private"),
+        ):
+            bad = copy.deepcopy(metrics)
+            bad[key][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                p.validate_metrics(bad, data)
+        with self.assertRaises(ValueError):
+            p.validate_metrics({}, data)
 
     def test_unknown_or_secret_values_fail(self):
         changes = [
@@ -43,7 +66,7 @@ class PublicReportTests(unittest.TestCase):
                 data = copy.deepcopy(self.data)
                 data["rows"][0][key] = value
                 with self.assertRaises(ValueError):
-                    p.render(data)
+                    p.render(data, self.metrics)
         for key in ("logs", "token", "prompt"):
             data = copy.deepcopy(self.data)
             data[key] = "SECRET-canary"
@@ -70,9 +93,9 @@ class PublicReportTests(unittest.TestCase):
         for kind in ("extra", "hidden", "nested", "symlink", "tamper"):
             with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
                 out = Path(tmp).resolve()
-                for name, raw in p.expected(self.data).items():
+                for name, raw in p.expected(self.data, self.metrics).items():
                     (out / name).write_bytes(raw)
-                p.check_output(out, self.data)
+                p.check_output(out, self.data, self.metrics)
                 if kind == "extra":
                     (out / "transcript.txt").write_text("SECRET-canary")
                 elif kind == "hidden":
@@ -85,7 +108,7 @@ class PublicReportTests(unittest.TestCase):
                 else:
                     (out / "index.html").write_text("SECRET-canary")
                 with self.assertRaises(ValueError):
-                    p.check_output(out, self.data)
+                    p.check_output(out, self.data, self.metrics)
 
     def test_duplicate_json_keys_fail(self):
         with tempfile.TemporaryDirectory() as tmp:

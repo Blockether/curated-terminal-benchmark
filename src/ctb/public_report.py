@@ -2,10 +2,13 @@
 
 import argparse
 import hashlib
-import html
 import json
+import math
 import re
+from datetime import datetime
 from pathlib import Path
+
+from ctb.report import render as layout
 
 SELECTION = {
     "vis-solo": "gpt-vis-solo-053-6e1a71a",
@@ -136,75 +139,274 @@ def encoded(data):
     return (json.dumps(data, indent=2, sort_keys=True) + "\n").encode()
 
 
-def render(data):
-    validate(data)
-    ranking = sorted(
-        SELECTION, key=lambda a: (-sum(r["passed"] for r in data["rows"] if r["agent"] == a), a)
-    )
-    summary = []
-    for agent in ranking:
-        rows = [r for r in data["rows"] if r["agent"] == agent]
-        count = sum(r["passed"] for r in rows)
-        errors = sum(r["error"] is not None for r in rows)
-        summary.append(
-            f"<tr><th>{agent}</th><td>{count}/12</td><td>{count / 12:.1%}</td>"
-            f"<td>{errors}</td></tr>"
+# Only these tool labels can enter the public metrics, never arbitrary log text.
+TOOLS = frozenset(
+    [
+        "__no_call__",
+        "__parse_error__",
+        "__provider_error__",
+        "apply_patch",
+        "ask_human",
+        "bash",
+        "bash_output",
+        "done",
+        "edit",
+        "edit_file",
+        "exec",
+        "execution",
+        "fetch_turn",
+        "glob",
+        "grep",
+        "kill_shell",
+        "list_dir",
+        "message",
+        "papercut",
+        "patch",
+        "plan",
+        "python_execution",
+        "read",
+        "read_digest",
+        "read_file",
+        "read_minified",
+        "repo_overview",
+        "request_user_input_async",
+        "resource",
+        "run_code",
+        "shell",
+        "skill",
+        "split",
+        "task",
+        "tool_search",
+        "write",
+        "write_file",
+        "write_todo_list",
+    ]
+)
+METRIC_NUMBERS = (
+    "run_ms",
+    "agent_ms",
+    "cost",
+    "provider_calls",
+    "provider_ms",
+    "tool_calls",
+    "tool_errors",
+    "provider_errors",
+    "tool_ms",
+    "input",
+    "cache",
+    "output",
+)
+COUNTS = {
+    "provider_calls",
+    "tool_calls",
+    "tool_errors",
+    "provider_errors",
+    "input",
+    "cache",
+    "output",
+}
+
+
+def measurement(value, *, count=False):
+    require(
+        value is None
+        or (
+            type(value) in ((int,) if count else (int, float))
+            and math.isfinite(value)
+            and 0 <= value <= 1e15
         )
-    matrix = []
-    lookup = {(r["agent"], r["task"]): r for r in data["rows"]}
-    for task in TASKS:
-        cells = []
-        for agent in ranking:
-            row = lookup[agent, task]
-            label = "PASS" if row["passed"] else "FAIL"
-            if row["error"]:
-                label += " *"
-            cells.append(f'<td class="{label.split()[0].lower()}">{label}</td>')
-        matrix.append(f"<tr><th>{task}</th>{''.join(cells)}</tr>")
-    sources = "".join(
-        f"<tr><th>{a}</th><td>{s['round']}</td><td>{s['harness_commit']}</td>"
-        f"<td>{s['seal_sha256']}</td></tr>"
-        for a, s in data["sources"].items()
     )
-    return (
-        """<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
-<title>Vis vs terminal agents</title><style>
-body{font:16px system-ui,sans-serif;background:#111827;color:#e5e7eb;margin:0;padding:4vw}
-main{max-width:1280px;margin:auto}h1{font-size:2.6rem}a{color:#93c5fd}
-table{border-collapse:collapse;width:100%;margin:24px 0}th,td{padding:12px;text-align:left;border-bottom:1px solid #374151}
-.pass{color:#86efac}.fail{color:#fca5a5}.scroll{overflow:auto}p{line-height:1.6}.note{border-left:4px solid #fbbf24;padding:16px;background:#1f2937}
-.hashes{font-size:12px} @media print{body{background:white;color:black}.scroll{overflow:visible}th,td{padding:5px}.hashes{word-break:break-all}}
-</style></head><body><main><h1>Vis vs terminal agents</h1>
-<p>Vis 0.5.3 solo · GPT-6.1-sol · medium effort · 12 tasks per agent · 2 hours per task.</p>
-<p class="note">Latest complete round per agent. The source results are sealed, not certified as fair or error-free.
+
+
+def validate_metrics(metrics, data):
+    keys(metrics, {r["result_sha256"] for r in data["rows"]})
+    for row in data["rows"]:
+        m = metrics[row["result_sha256"]]
+        keys(m, (*METRIC_NUMBERS, "tools", "phases", "started_at", "reward"))
+        for key in METRIC_NUMBERS:
+            measurement(m[key], count=key in COUNTS)
+        for key in ("provider_calls", "tool_calls", "provider_errors"):
+            require(m[key] is not None)
+        require(type(m["reward"]) in (int, float, type(None)) and m["reward"] in (None, 0, 1))
+        require(row["passed"] == (m["reward"] == 1))
+        require(
+            type(m["started_at"]) is str and re.fullmatch(r"[0-9T:.+Z-]{19,40}", m["started_at"])
+        )
+        datetime.fromisoformat(m["started_at"])
+        require(type(m["tools"]) is dict and set(m["tools"]) <= TOOLS)
+        for tool in m["tools"].values():
+            keys(tool, ("calls", "errors", "ms", "timed"))
+            for key, value in tool.items():
+                require(value is not None)
+                measurement(value, count=key != "ms")
+            require(tool["errors"] <= tool["calls"] and tool["timed"] <= tool["calls"])
+        require(sum(t["calls"] for t in m["tools"].values()) == m["tool_calls"])
+        require(
+            m["tool_errors"] is None
+            or m["tool_errors"] == sum(t["errors"] for t in m["tools"].values())
+        )
+        require(type(m["phases"]) is list and len(m["phases"]) == 4)
+        require({p["name"] for p in m["phases"]} == set(layout.PHASE_NAMES))
+        for phase in m["phases"]:
+            keys(phase, ("name", "start", "end"))
+            for key in ("start", "end"):
+                measurement(phase[key])
+            require(
+                phase["start"] is None or phase["end"] is None or phase["end"] >= phase["start"]
+            )
+    return metrics
+
+
+def collect_metrics(root):
+    """Read local evidence once; publish only checked numeric fields and known tool names."""
+    from ctb.report.trials import load
+
+    data = from_seals(root)
+    metrics = {}
+    for agent, name in SELECTION.items():
+        seal = read(root / "results" / (name + ".json"))
+        for row in seal["rows"]:
+            if row["agent"] != agent:
+                continue
+            path = root / row["result"]
+            require(path.resolve().is_relative_to((root / "jobs").resolve()))
+            require(hashlib.sha256(path.read_bytes()).hexdigest() == row["result_sha256"])
+            trial = load(path.parent, root / "jobs")
+            facts, summary = layout.facts(trial), trial["summary"]
+            metrics[row["result_sha256"]] = {
+                **{k: facts[k] for k in ("run_ms", "agent_ms", "cost")},
+                **{
+                    k: summary[k]
+                    for k in (
+                        "provider_calls",
+                        "provider_ms",
+                        "tool_calls",
+                        "tool_errors",
+                        "provider_errors",
+                        "tool_ms",
+                        "tools",
+                    )
+                },
+                "phases": trial["phases"],
+                "started_at": trial["started_at"],
+                "reward": trial["reward"],
+                **dict(zip(("input", "cache", "output"), layout.usage(trial))),
+            }
+    return validate_metrics(metrics, data)
+
+
+def checked_metrics(root, data):
+    metrics = validate_metrics(read(root / "public/report-metrics.json"), data)
+    for agent, name in SELECTION.items():
+        for row in read(root / "results" / (name + ".json"))["rows"]:
+            if row["agent"] == agent:
+                m = metrics[row["result_sha256"]]
+                require(m["reward"] == row["reward"] and m["started_at"] == row["started_at"])
+    return metrics
+
+
+def public_trials(data, metrics):
+    validate(data)
+    validate_metrics(metrics, data)
+    trials = []
+    for r in data["rows"]:
+        m = metrics[r["result_sha256"]]
+        trials.append(
+            {
+                **r,
+                "id": r["result_sha256"],
+                "model": "openai/gpt-6.1-sol",
+                "round": data["sources"][r["agent"]]["round"],
+                "reward": m["reward"],
+                "started_at": m["started_at"],
+                "version": "0.5.3" if r["agent"] == "vis-solo" else None,
+                "error_message": None,
+                "events": [],
+                "phases": m["phases"],
+                "harbor": {k: m[k] for k in ("input", "cache", "output")},
+                "facts": {
+                    **{k: m[k] for k in ("run_ms", "agent_ms", "cost")},
+                    "outcome": "error" if r["error"] else "passed" if r["passed"] else "failed",
+                },
+                "summary": {
+                    **{k: m[k] for k in METRIC_NUMBERS},
+                    "tools": m["tools"],
+                    "commands": {},
+                },
+            }
+        )
+    return trials
+
+
+SCOPE = """<section class="block" id="scope"><h2>Comparison scope</h2>
+<p class="hint">Vis 0.5.3 solo · GPT-6.1-sol · medium effort · 12 tasks per agent · 2 hours per task.
+Latest complete round per agent. The source results are sealed, not certified as fair or error-free.
 Vis used a newer harness with verifier upload, photonic rendering and health-check fixes.
 Other agents used c30ea7d. Recovery trials and older rounds are not substituted.
 This comparison does not use one identical harness revision.</p>
-<h2>Results</h2><table><thead><tr><th>Agent</th><th>Passed</th><th>Rate</th><th>Exceptions</th></tr></thead><tbody>"""
-        + "".join(summary)
-        + "</tbody></table><h2>Tasks</h2><p>* The trial recorded an exception. A PASS can coexist with an exception.</p><div class=scroll><table><thead><tr><th>Task</th>"
-        + "".join(f"<th>{html.escape(a)}</th>" for a in ranking)
-        + "</tr></thead><tbody>"
-        + "".join(matrix)
-        + "</tbody></table></div>"
-        + "<h2>Sealed sources</h2><div class=scroll><table class=hashes><thead><tr><th>Agent</th><th>Round</th><th>Harness commit</th><th>Seal SHA-256</th></tr></thead><tbody>"
-        + sources
-        + "</tbody></table></div><p><a href=comparison.json>Download public result data</a></p>"
-        + "<p>Only result fields and hashes are published. Transcripts, prompts, logs, credentials and task artifacts stay local. No analytics or external assets are loaded.</p></main></body></html>\n"
-    ).encode()
+<p class="hint">A trial can pass and still record an exception. Check its reward as well as its outcome.
+Transcripts are sanitized, normalized text views, not complete raw logs.
+Only the selected transcript is downloaded. Raw logs and task artifacts stay local.</p>
+<p><a href="comparison.json">Result data and seal hashes</a> · <a href="report-metrics.json">Report metrics</a></p></section>"""
 
 
-def expected(data):
-    return {"index.html": render(data), "comparison.json": encoded(data)}
+def public_page(text):
+    # Keep the original layout. Use only local assets and inert transcript text.
+    text = text.replace('<link rel="preconnect" href="https://fonts.googleapis.com">\n', "")
+    text = text.replace(
+        f'<link rel="stylesheet" href="{layout.FONTS}">',
+        '<link rel="stylesheet" href="'
+        + ("../" if 'href="../report.css"' in text else "")
+        + 'fonts.css">',
+    )
+    policy = "default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'"
+    return text.replace(
+        '<meta charset="utf-8">',
+        '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'
+        + policy
+        + '">',
+    )
 
 
-def check_output(out, data):
+def assets():
+    result = {name: (layout.STATIC / name).read_bytes() for name in layout.ASSETS}
+    static = Path(__file__).parent / "publication_static"
+    for name in (
+        "fonts.css",
+        "inter-latin.woff2",
+        "jetbrains-mono-latin.woff2",
+        "font-licenses.txt",
+    ):
+        result[name] = (static / name).read_bytes()
+    return result
+
+
+def render(data, metrics, *, transcripts=False):
+    text = layout.index(public_trials(data, metrics), "from sealed results")
+    text = text.replace(
+        '</section>\n<div class="panels readings">',
+        "</section>\n" + SCOPE + '\n<div class="panels readings">',
+        1,
+    )
+    if not transcripts:
+        text = re.sub(r'<a href="trial/[0-9a-f]{64}\.html">([^<]+)</a>', r"\1", text)
+    return public_page(text).encode()
+
+
+def expected(data, metrics):
+    return {
+        "index.html": render(data, metrics),
+        "comparison.json": encoded(data),
+        "report-metrics.json": encoded(metrics),
+        **assets(),
+    }
+
+
+def check_output(out, data, metrics):
     require(not any(p.is_symlink() for p in (out, *out.parents)))
     files = list(out.rglob("*"))
-    require({p.relative_to(out).as_posix() for p in files} == set(expected(data)))
-    for name, raw in expected(data).items():
+    require({p.relative_to(out).as_posix() for p in files} == set(expected(data, metrics)))
+    for name, raw in expected(data, metrics).items():
         path = out / name
         require(path.is_file() and not path.is_symlink() and path.read_bytes() == raw)
 
@@ -212,14 +414,15 @@ def check_output(out, data):
 def build(root, out, check=False):
     data = validate(read(root / "public/comparison.json"))
     require(data == from_seals(root))
+    metrics = checked_metrics(root, data)
     require(not any(p.is_symlink() for p in (out, *out.parents)))
     if not check:
         # Refuse a reused or contaminated output rather than upload stale content.
         require(not out.exists())
         out.mkdir(parents=True)
-        for name, raw in expected(data).items():
+        for name, raw in expected(data, metrics).items():
             (out / name).write_bytes(raw)
-    check_output(out, data)
+    check_output(out, data, metrics)
 
 
 def main():
@@ -232,7 +435,7 @@ def main():
         build(args.root, args.out, args.check)
     except (ValueError, KeyError, TypeError, OSError):
         raise SystemExit("Public report refused. No artifact may be uploaded.") from None
-    print("Public report checked: 72 trials; two allowlisted files.")
+    print("Public report checked: 72 trials; exact report assets and metrics.")
 
 
 if __name__ == "__main__":

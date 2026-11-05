@@ -95,7 +95,7 @@ class TranscriptTests(unittest.TestCase):
 
     def test_real_checked_site_mutations_fail(self):
         root = Path(__file__).resolve().parents[1]
-        comparison, manifest = pub.checked_inputs(root)
+        comparison, manifest, metrics = pub.checked_inputs(root)
         self.assertEqual(len(manifest["transcripts"]), 72)
         # Reuse a small synthetic site with an approved synthetic manifest.
         from unittest.mock import patch
@@ -117,11 +117,12 @@ class TranscriptTests(unittest.TestCase):
                     "events": 1,
                 }
                 blobs[row["result_sha256"]] = raw
-            for name, raw in pub.static_files(comparison, fake).items():
+            for name, raw in pub.static_files(comparison, fake, metrics).items():
+                (out / name).parent.mkdir(parents=True, exist_ok=True)
                 (out / name).write_bytes(raw)
             for key, raw in blobs.items():
                 (out / "transcripts" / (key + ".json.gz")).write_bytes(raw)
-            with patch.object(pub, "checked_inputs", return_value=(comparison, fake)):
+            with patch.object(pub, "checked_inputs", return_value=(comparison, fake, metrics)):
                 pub.check(root, out)
                 (out / ".env").write_text("synthetic secret")
                 with self.assertRaises(ValueError):

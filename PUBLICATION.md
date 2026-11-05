@@ -1,13 +1,18 @@
 # Public comparison and sanitized transcripts
 
 `main` holds source code, result seals, evidence manifests and public transcript hashes.
-`gh-pages` holds only the Pages workflow and `site/`: a comparison, a text viewer, manifests,
+`gh-pages` holds only the Pages workflow and `site/`: the original report layout, a text viewer, manifests,
 and 72 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
 artifacts, or the local HTML report. The public export is a different directory.
 
 ## Data boundary
 
 `public_report.py` projects a closed set of agents, tasks, errors, outcomes and hashes.
+`public/report-metrics.json` holds reviewed numeric measurements, phase times and known tool
+labels for the same 72 result hashes. Unknown fields and tool names are refused. Rewards and
+start times must match the seals. The Pages checker does not read source logs.
+The public pages use `ctb.report.render` and the original report assets. Fonts are local,
+with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
 `public_transcripts.py export` reads the selected local transcripts. It removes current known
 credential values and their common encodings, credential-like patterns, opaque credential
 fields and local user paths before compression. It does not clip text before the scan.
@@ -50,6 +55,9 @@ log and exception evidence are still required, hashed and scanned. Incomplete au
 
 1. Finish and audit trials. Seal the original results without changing their outcomes.
 2. Update the explicit selection and `public/comparison.json` from `from_seals`.
+   Use `public_report.collect_metrics(root)` to collect the matching metrics from local evidence.
+   Validate and review them before writing `public/report-metrics.json`. This operation checks
+   each source result hash and does not change evidence.
 3. Export into a new directory, for example:
 
    ```sh
@@ -58,7 +66,7 @@ log and exception evidence are still required, hashed and scanned. Incomplete au
    ```
 
 4. Run tests and the independent credential scan. Inspect the sanitized output locally.
-5. Commit the source, seals and hash-only public manifests on `main`. Keep evidence local.
+5. Commit the source, seals, reviewed metrics and hash-only public manifests on `main`. Keep evidence local.
 6. Put only the exported site and `.github/workflows/pages.yml` on `gh-pages`. Do not merge main
    into that branch or put source evidence there. Check the exact site again before its commit.
 7. Push `main`, then `gh-pages`. The workflow checks and deploys the public branch automatically.
