@@ -380,15 +380,17 @@ def public_page(text):
         + 'fonts.css">',
     )
     policy = "default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'"
-    return text.replace(
-        '<meta charset="utf-8">',
-        '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'
-        + policy
-        + '">',
+    return version_assets(
+        text.replace(
+            '<meta charset="utf-8">',
+            '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'
+            + policy
+            + '">',
+        )
     )
 
 
-def assets():
+def source_assets():
     result = {name: (layout.STATIC / name).read_bytes() for name in layout.ASSETS}
     static = Path(__file__).parent / "publication_static"
     for name in (
@@ -399,6 +401,34 @@ def assets():
     ):
         result[name] = (static / name).read_bytes()
     return result
+
+
+def asset_revision():
+    """Invalidate every dependent URL when any approved UI asset changes."""
+    digest = hashlib.sha256()
+    raw = source_assets()
+    raw["viewer.js"] = (Path(__file__).parent / "publication_static/viewer.js").read_bytes()
+    for name, content in sorted(raw.items()):
+        digest.update(name.encode() + b"\0" + content + b"\0")
+    return digest.hexdigest()[:20]
+
+
+def version_assets(text):
+    names = (*source_assets(), "viewer.js")
+    pattern = (
+        r"(?P<name>"
+        + "|".join(re.escape(n) for n in names)
+        + r")(?P<query>\?v=[0-9a-f]+)?(?=[\"')])"
+    )
+    revision = asset_revision()
+    return re.sub(pattern, lambda m: m["name"] + "?v=" + revision, text)
+
+
+def assets():
+    return {
+        name: version_assets(raw.decode()).encode() if name.endswith(".css") else raw
+        for name, raw in source_assets().items()
+    }
 
 
 def render(data, metrics, *, transcripts=False):

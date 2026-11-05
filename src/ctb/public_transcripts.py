@@ -166,7 +166,10 @@ def static_files(comparison, manifest, metrics):
         )
         text = text.replace("</head>", '<script src="../viewer.js" defer></script></head>')
         fixed["trial/" + trial["id"] + ".html"] = report.public_page(text).encode()
-    return fixed
+    return {
+        name: report.version_assets(raw.decode()).encode() if name.endswith(".html") else raw
+        for name, raw in fixed.items()
+    }
 
 
 def transcript_body(result_hash=""):

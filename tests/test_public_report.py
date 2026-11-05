@@ -31,7 +31,7 @@ class PublicReportTests(unittest.TestCase):
         self.assertIn("100%", text)
         self.assertIn("photonic-waveguide-routing", text)
         self.assertNotIn("https://", text)
-        self.assertIn('src="report.js"', text)
+        self.assertIn('src="report.js?v=', text)
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):
         root = Path(__file__).resolve().parents[1]
@@ -131,6 +131,26 @@ class PublicReportTests(unittest.TestCase):
             (out / ".credential").write_text("SECRET-canary")
             with self.assertRaises(ValueError):
                 p.build(root, out, check=True)
+
+
+class AssetRevisionTests(unittest.TestCase):
+    def test_changed_asset_changes_browser_url_and_nested_css_urls(self):
+        from unittest.mock import patch
+
+        raw = p.source_assets()
+        first = p.public_page('<meta charset="utf-8"><script src="report.js"></script>')
+        with patch.object(
+            p, "source_assets", return_value={**raw, "report.js": raw["report.js"] + b"\n// next"}
+        ):
+            second = p.public_page('<meta charset="utf-8"><script src="report.js"></script>')
+            self.assertNotEqual(first, second)
+            revision = p.asset_revision()
+            self.assertIn("report.js?v=" + revision, second)
+            self.assertIn(("tokens.css?v=" + revision).encode(), p.assets()["report.css"])
+            self.assertIn(("inter-latin.woff2?v=" + revision).encode(), p.assets()["fonts.css"])
+            nested = p.version_assets('<script src="../viewer.js"></script>')
+            self.assertIn("../viewer.js?v=" + revision, nested)
+            self.assertEqual(p.version_assets(nested), nested)
 
 
 if __name__ == "__main__":

@@ -405,18 +405,25 @@ def matched_comparisons(trials: list[dict]) -> str:
                 ]
                 for group in selected_cohorts(subset, selection):
                     panels.append(comparison_panel(group, subset))
+    peers = {agent: set() for agent in agents}
+    for cohort in cohorts(trials):
+        if cohort["model"] and cohort["setup"]:
+            for agent in cohort["agents"]:
+                peers[agent].update(set(cohort["agents"]) - {agent})
     controls = "".join(
-        f'<label class="compare-choice"><input type="checkbox" name="compare" '
-        f'value="{esc(agent)}"><span>{esc(agent)}</span></label>'
+        f'<label class="compare-choice"><input type="checkbox" name="compare" value="{esc(agent)}">'
+        f'<span class="compare-label"><span>{esc(agent)}</span><small>'
+        + (f"{len(peers[agent])} compatible agents" if peers[agent] else "No matching setup yet")
+        + "</small></span></label>"
         for agent in agents
     )
     return (
         '<section id="matched" class="block"><h2>Compare agents</h2>'
         '<p class="hint">Choose two or more agents. Success rates include failures on the same tasks. '
         "Cost and time compare only tasks all selected agents solved.</p>"
-        '<fieldset class="compare-picker" data-compare-picker><legend>Agents to compare</legend>'
+        '<fieldset class="compare-picker" data-compare-picker><legend>Agents to compare</legend><div class="compare-options">'
         + controls
-        + '</fieldset><p class="comparison-status" data-comparison-status role="status"></p>'
+        + '</div></fieldset><p class="comparison-status" data-comparison-status role="status">Loading comparison controls. If this message stays, reload the page.</p>'
         '<noscript><p class="empty">Enable JavaScript to select a comparison. Recorded trial tables remain available below.</p></noscript>'
         + "".join(panels)
         + '<details class="comparison-details"><summary>How matching works</summary>'

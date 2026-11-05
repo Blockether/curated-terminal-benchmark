@@ -104,3 +104,10 @@ Open the metric coverage section to see which shared trials record each measurem
 Provider time and tool time are not inferred from total agent time. The selected Dirge
 logs record final usage for completed runs but no per-call usage or event timing.
 Interrupted runs can lack a final usage record. Missing values stay missing.
+
+## Asset updates
+
+All public styles, scripts, font files and nested CSS imports use one content-derived URL
+revision. The revision changes when any approved UI asset changes. This prevents a cached
+script or stylesheet from a previous deployment from controlling newer HTML. Transcript
+payloads keep their existing content hashes and are not changed by a layout update.
