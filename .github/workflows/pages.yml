@@ -1,0 +1,48 @@
+name: Publish checked transcripts
+on:
+  push:
+    branches: [gh-pages]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          path: builder
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event_name == 'push' && github.sha || 'gh-pages' }}
+          path: publication
+          persist-credentials: false
+      - name: Test publication boundaries without benchmark credentials
+        working-directory: builder
+        run: |
+          PYTHONPATH=src python3 -m unittest discover -s tests -p test_public_report.py
+          PYTHONPATH=src python3 -m unittest discover -s tests -p test_public_transcripts.py
+      - name: Verify exact bytes, hashes, schema and decompressed transcripts
+        run: PYTHONPATH=builder/src python3 -m ctb.public_transcripts check --root builder --out publication/site
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: publication/site
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/gh-pages' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
