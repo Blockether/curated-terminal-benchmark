@@ -5,8 +5,8 @@
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: E, the trials table is fourteen columns wide, so it scrolls inside its own pane with the task pinned and the page never scrolls sideways */
 /* Hallmark · waive 72 · every flagged box is a details element; in Chrome no open one overflows (732 open, 0 over) and a closed one is 42px high · a closed body is not painted until a person opens it */
 /* Hallmark · answered F25 · the column that names the row is pinned with position: sticky and the pane scrolls on its own */
-@import url("./tokens.css?v=ee9aad513521861086ff");
-@import url("./base.css?v=ee9aad513521861086ff");
+@import url("./tokens.css?v=ce1499d145d90a8fb66b");
+@import url("./base.css?v=ce1499d145d90a8fb66b");
 
 :root { --container: 1280px; --gutter: 40px; --control: 40px; --hit: 44px; }
 
@@ -179,7 +179,9 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
   .facts, .facts-head { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) var(--space-md); }
   .topbar .container { padding-inline: 0; }
   .topbar-row { flex-wrap: wrap; gap: 0; min-height: 0; }
-  .brand { min-height: 48px; padding-inline: var(--gutter); font-size: var(--text-md); }
+  .brand { min-height: 48px; padding: var(--space-xs) var(--gutter); font-size: var(--text-md); flex-wrap: wrap; }
+  .brand-sep { display: none; }
+  .brand-name { flex-basis: 100%; white-space: normal; }
   .brand img { height: 24px; }
   .topbar nav { flex: 1 0 100%; gap: 0; border-top: var(--rule-hair) solid var(--color-rule); font-size: var(--text-xs); }
   .topbar nav a { flex: 1 1 auto; justify-content: center; padding-inline: var(--space-2xs); }
