@@ -1,7 +1,9 @@
 """pi through Harbor, with the ChatGPT subscription login."""
 
 import dataclasses
+import inspect
 import json
+import shlex
 
 from harbor.agents.installed.pi import Pi as HarborPi
 from harbor.agents.model_connection import ResolvedModelConnection
@@ -10,9 +12,9 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, agent_home, min_token_seconds, split_model, stage_files
-from ctb.toolkit import Toolkit
+from ctb.toolkit import TOOLKIT, Toolkit
 
-PI_VERSION = "1.3.0"
+PI_VERSION = "1.5.0"
 AUTH = ".pi/agent/auth.json"
 
 
@@ -22,6 +24,28 @@ def pi_auth_json(access: credentials.Access) -> str:
     if access.account_id:
         entry["accountId"] = access.account_id
     return json.dumps({"openai-codex": entry})
+
+
+def validate_completion(text: str) -> str:
+    """Pi JSON mode can exit zero after a provider error. Check its final assistant event."""
+    reason = None
+    for line in text.splitlines():
+        try:
+            event = json.loads(line)
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(event, dict):
+            continue
+        message = event.get("message")
+        if (
+            event.get("type") == "message_end"
+            and isinstance(message, dict)
+            and message.get("role") == "assistant"
+        ):
+            reason = message.get("stopReason")
+    if reason != "stop":
+        raise RuntimeError("Pi did not record a successful terminal assistant event")
+    return reason
 
 
 class Pi(Toolkit, HarborPi):
@@ -44,6 +68,14 @@ class Pi(Toolkit, HarborPi):
         await stage_files(self, environment, {AUTH: pi_auth_json(access)}, home)
         try:
             await super().run(instruction, environment, context)
+            script = (
+                "import json\nfrom pathlib import Path\n"
+                + inspect.getsource(validate_completion)
+                + "\nvalidate_completion(Path('/logs/agent/pi.txt').read_text())\n"
+            )
+            await self.exec_as_agent(
+                environment, command=f"{TOOLKIT}/bin/python3 -I -c {shlex.quote(script)}"
+            )
         finally:
             # Remove the token before the verifier runs.
             await self.exec_as_root(environment, command=f"rm -f {home}/{AUTH}")

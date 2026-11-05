@@ -25,3 +25,14 @@ Keep original trials unchanged. Do not seal until recovery evidence has been rev
    - Data: original trials and recovery trials.
    - Acceptance criteria: run checks, commit and push the fixes; report unresolved errors before sealing.
    - Unknowns: provider failures might require upstream changes, not harness changes.
+
+
+# Pi and matched task comparisons
+
+1. Pin Pi 1.5.0 and reject an incomplete terminal response. State: tested; live round pending.
+2. Check the shared Python inventory and deliver the same setup note through each adapter.
+   State: unit tests and repeated amd64 container installation passed; mismatch rejected.
+3. Compare the same tasks and recorded setup. Retain failures in success rates; use paired,
+   jointly solved tasks for cost and time. State: seven independent boundary checks passed.
+4. Publish the checked report without changing evidence. State: local browser checks passed;
+   deployment and Pi round are the final execution steps. Pi is not a result row until its full round is complete and audited.

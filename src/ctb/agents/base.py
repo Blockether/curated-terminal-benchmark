@@ -10,7 +10,7 @@ from harbor.agents.installed.base import BaseInstalledAgent, PackageSpec, with_p
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb.toolkit import Toolkit
+from ctb.toolkit import Toolkit, shared_instruction
 
 EFFORT = "medium"
 # GPT Responses settings of every agent: pi's defaults, and the Codex catalog verbosity.
@@ -120,6 +120,7 @@ class CuratedAgent(Toolkit, BaseInstalledAgent):
     async def run(
         self, instruction: str, environment: BaseEnvironment, context: AgentContext
     ) -> None:
+        instruction = shared_instruction(instruction)
         await self.exec_as_agent(environment, command=f"mkdir -p {AGENT_HOME} /logs/agent")
         try:
             await self.stage(environment, self.secret_files())

@@ -328,7 +328,7 @@ def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
         "codex": "0.166.0",
         "opencode": "2.2.5",
-        "pi": "1.3.0",
+        "pi": "1.5.0",
     }
 
 
@@ -390,7 +390,7 @@ def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
         reasoning_effort="medium",
     )
     assert pi.options.thinking == "medium"
-    assert pi._version == "1.3.0"
+    assert pi._version == "1.5.0"
     assert pi.model_connection.provider == "openai-codex"
     command = harbor_command(Trial(AGENTS["pi"], "openai", "t"), Path("/j"), 0.25)
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]

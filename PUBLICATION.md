@@ -73,3 +73,24 @@ log and exception evidence are still required, hashed and scanned. Incomplete au
 8. Watch the deployment and verify the live page and a transcript. A failed check blocks deployment.
 
 The workflow supports a manual run too. It does not automatically select new benchmark data.
+
+## Matched task comparisons
+
+Success rates include failures on the same assigned tasks. A task must have one trial per
+agent, the same task checksum, and a matching recorded setup. The setup includes the harness
+commit, Harbor, model effort, shared Python archive, task fixes, parallelism and timeout.
+Unknown setup data and duplicate attempts are excluded, not selected by the best result.
+Recorded setup equality does not prove equal host load or equal provider conditions.
+
+Efficiency comparisons use only jointly solved tasks. Each metric also requires a finite
+measurement from both agents. The page lists the exact tasks and coverage for each pair.
+The ratio is the geometric mean of per-task ratios to the lower measured value; each task
+has equal weight. Zero baselines have no ratio. This successful-task view does not replace
+success rate. Raw totals remain visible but are not task-normalized. Trial-list filters do
+not change the comparison cohorts. Different setup revisions remain separate.
+
+New trials use the same pinned Python archive and package inventory. Each agent receives
+the same note about `ctb-python` and `ctb-pytest`. Task `python3` stays first on PATH so the
+harness does not replace task-specific runtimes. The setup checks package versions before
+the agent runs and records `toolkit-inventory.json` and `python-resolution.txt` locally.
+These records are evidence, not public transcript payloads. Historical runs are not changed.

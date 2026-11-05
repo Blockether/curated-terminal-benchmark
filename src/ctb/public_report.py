@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ctb.report import render as layout
+from ctb.report.comparison import setup_id
 
 SELECTION = {
     "vis-solo": "gpt-vis-solo-053-6e1a71a",
@@ -222,7 +223,12 @@ def validate_metrics(metrics, data):
     keys(metrics, {r["result_sha256"] for r in data["rows"]})
     for row in data["rows"]:
         m = metrics[row["result_sha256"]]
-        keys(m, (*METRIC_NUMBERS, "tools", "phases", "started_at", "reward"))
+        keys(
+            m,
+            (*METRIC_NUMBERS, "tools", "phases", "started_at", "reward", "task_checksum", "setup"),
+        )
+        sha(m["task_checksum"])
+        sha(m["setup"])
         for key in METRIC_NUMBERS:
             measurement(m[key], count=key in COUNTS)
         for key in ("provider_calls", "tool_calls", "provider_errors"):
@@ -273,7 +279,12 @@ def collect_metrics(root):
             require(hashlib.sha256(path.read_bytes()).hexdigest() == row["result_sha256"])
             trial = load(path.parent, root / "jobs")
             facts, summary = layout.facts(trial), trial["summary"]
+            runs = [r for r in seal["runs"] if agent in r["agents"].split(",")]
+            identities = {setup_id(r) for r in runs}
+            require(len(identities) == 1 and None not in identities)
             metrics[row["result_sha256"]] = {
+                "task_checksum": row["task_checksum"],
+                "setup": next(iter(identities)),
                 **{k: facts[k] for k in ("run_ms", "agent_ms", "cost")},
                 **{
                     k: summary[k]
@@ -301,6 +312,13 @@ def checked_metrics(root, data):
         for row in read(root / "results" / (name + ".json"))["rows"]:
             if row["agent"] == agent:
                 m = metrics[row["result_sha256"]]
+                require(m["task_checksum"] == row["task_checksum"])
+                runs = [
+                    r
+                    for r in read(root / "results" / (name + ".json"))["runs"]
+                    if agent in r["agents"].split(",")
+                ]
+                require({setup_id(r) for r in runs} == {m["setup"]})
                 require(m["reward"] == row["reward"] and m["started_at"] == row["started_at"])
     return metrics
 
@@ -315,6 +333,8 @@ def public_trials(data, metrics):
             {
                 **r,
                 "id": r["result_sha256"],
+                "task_checksum": m["task_checksum"],
+                "setup": m["setup"],
                 "model": "openai/gpt-6.1-sol",
                 "round": data["sources"][r["agent"]]["round"],
                 "reward": m["reward"],

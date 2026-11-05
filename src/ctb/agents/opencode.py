@@ -16,7 +16,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
-from ctb.toolkit import Toolkit
+from ctb.toolkit import Toolkit, shared_instruction
 
 OPENCODE_VERSION = "2.2.5"
 #: OpenCode 2 is published as @opencode/cli; the opencode-ai package stops at 1.x.
@@ -250,6 +250,7 @@ class OpenCode(Toolkit, HarborOpenCode):
     async def run(
         self, instruction: str, environment: BaseEnvironment, context: AgentContext
     ) -> None:
+        instruction = shared_instruction(instruction)
         # Harbor's run uses OpenCode 1 flags, so ctb runs OpenCode 2 itself.
         if not self.model_name or "/" not in self.model_name:
             raise ValueError("Model name must be in the format provider/model_name")

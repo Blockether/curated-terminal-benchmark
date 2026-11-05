@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from ctb.metrics import PHASES, trial_metrics
+from ctb.report.comparison import setup_id
 from ctb.report.transcripts import READERS, epoch_ms, event, harness, instruction
 
 
@@ -100,7 +101,12 @@ def load(trial: Path, jobs: Path) -> dict:
             events.insert(0, event("user", text=prompt))
     reward = ((result.get("verifier_result") or {}).get("rewards") or {}).get("reward")
     exception = result.get("exception_info") or {}
+    manifest = jobs / parts[0] / "ctb-runs.json"
+    runs = json.loads(manifest.read_text()) if manifest.is_file() else []
+    ids = {setup_id(r) for r in runs if (info.get("name") or "") in r.get("agents", "").split(",")}
     return {
+        "task_checksum": result.get("task_checksum"),
+        "setup": next(iter(ids)) if len(ids) == 1 else None,
         "id": slug(f"{round_}-{result.get('trial_name') or trial.name}"),
         "round": round_,
         "agent": info.get("name") or "unknown",

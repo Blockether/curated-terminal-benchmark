@@ -43,6 +43,9 @@ class Recorder:
     async def exec_as_root(self, environment, command):
         self.calls.append(command)
 
+    async def exec_as_agent(self, environment, command, *args, **kwargs):
+        self.calls.append(command)
+
 
 class Agent(toolkit.Toolkit, Recorder):
     pass
@@ -109,3 +112,64 @@ def test_the_archive_name_follows_the_requirements(tmp_path, monkeypatch):
     toolkit.REQUIREMENTS.write_text("numpy==2\n")
     assert toolkit.archive() != first
     assert first.name.startswith(f"ctb-python-{toolkit.CPYTHON_VERSION}-")
+
+
+def test_shared_tools_are_explicit_and_inventory_is_checked():
+    environment, agent = AsyncMock(), Agent()
+    asyncio.run(toolkit.install(agent, environment))
+    command = agent.calls[-1]
+    assert "ctb-python" in command and "ctb-pytest" in command
+    assert "toolkit-inventory.json" in command
+    assert "importlib.metadata" in command
+    assert "numpy" in command
+
+
+def test_shared_instruction_is_the_same_for_all_agents():
+    class RunRecorder:
+        async def run(self, instruction, environment, context):
+            return instruction
+
+    class Shared(toolkit.Toolkit, RunRecorder):
+        pass
+
+    text = asyncio.run(Shared().run("Solve this task.", None, None))
+    assert text.startswith("Solve this task.")
+    assert "ctb-python" in text and "ctb-pytest" in text
+    assert text.count(toolkit.SETUP_NOTE) == 1
+    assert asyncio.run(Shared().run(text, None, None)) == text
+
+
+@pytest.mark.parametrize("name", ["dirge", "kmet", "samizdat", "vis-solo", "vis-team", "opencode"])
+def test_real_adapter_run_receives_shared_instruction(name, tmp_path, monkeypatch):
+    from harbor.models.agent.context import AgentContext
+
+    from ctb import credentials
+    from ctb.agents import opencode
+
+    instance = harbor_class(AGENTS[name].harbor)(logs_dir=tmp_path, model_name="openai/gpt-6.1-sol")
+    captured = []
+
+    def command(instruction):
+        captured.append(instruction)
+        return "true"
+
+    monkeypatch.setattr(instance, "exec_as_agent", AsyncMock())
+    monkeypatch.setattr(instance, "exec_as_root", AsyncMock())
+    if name == "opencode":
+        monkeypatch.setattr(
+            credentials,
+            "codex_vis",
+            lambda _: credentials.Access("synthetic", 123, account_id="test"),
+        )
+        monkeypatch.setattr(opencode, "stage_files", AsyncMock())
+        monkeypatch.setattr(instance, "run_command", command)
+        monkeypatch.setattr(instance, "_watch", AsyncMock())
+        monkeypatch.setattr(instance, "_collect", AsyncMock())
+        monkeypatch.setattr(instance, "_error_messages", list)
+    else:
+        monkeypatch.setattr(instance, "stage", AsyncMock())
+        monkeypatch.setattr(instance, "secret_files", dict)
+        monkeypatch.setattr(instance, "secret_env", dict)
+        monkeypatch.setattr(instance, "command", command)
+    asyncio.run(instance.run("Solve this task.", AsyncMock(), AgentContext()))
+    assert captured == [toolkit.shared_instruction("Solve this task.")]

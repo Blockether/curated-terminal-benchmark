@@ -6,6 +6,7 @@ also imports these packages in its sandbox, through VIS_PYTHON_PACKAGES.
 """
 
 import hashlib
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -29,6 +30,30 @@ PACKAGES = f"{TOOLKIT}/lib/python{CPYTHON_VERSION.rpartition('.')[0]}/site-packa
 #: The shell prefix of each agent command. It appends the toolkit, so it never hides a task tool.
 PATH_SETUP = f'export PATH="$PATH:{TOOLKIT}/bin"; '
 UPLOAD = "/tmp/ctb-python.tar.gz"
+SETUP_NOTE = """Shared benchmark tools: ctb-python and ctb-pytest use the same pinned Python
+and packages for every agent. They are in /installed-agent/ctb-python/bin.
+The task's own python3 stays first on PATH. Use ctb-python for analysis packages;
+use the task's interpreter for its application when required. Do not change the verifier."""
+
+
+def shared_instruction(instruction: str) -> str:
+    return instruction if instruction.endswith(SETUP_NOTE) else instruction + "\n\n" + SETUP_NOTE
+
+
+def inventory_script() -> str:
+    expected = dict(line.split("==", 1) for line in REQUIREMENTS.read_text().splitlines() if line)
+    return f"""import importlib.metadata as metadata
+import json, platform, sys
+expected = {expected!r}
+actual = {{name: metadata.version(name) for name in expected}}
+if actual != expected or platform.python_version() != {CPYTHON_VERSION!r}:
+    raise SystemExit('Shared Python package inventory does not match the benchmark pin')
+print(json.dumps({{'schema': 1, 'python': platform.python_version(),
+    'executable': sys.executable, 'packages': actual,
+    'requirements_sha256': {requirements_sha256()!r}}}, sort_keys=True))
+"""
+
+
 # Build in a Debian image without Python, so the archive cannot depend on a system Python.
 BUILD = """set -euo pipefail
 mkdir -p /installed-agent
@@ -74,7 +99,11 @@ async def install(agent, environment: BaseEnvironment) -> None:
     await agent.exec_as_root(
         environment,
         command=f"mkdir -p /installed-agent && rm -rf {TOOLKIT} && "
-        f"tar -xzf {UPLOAD} -C /installed-agent && chmod -R a+rX {TOOLKIT} && rm -f {UPLOAD}",
+        f"tar -xzf {UPLOAD} -C /installed-agent && chmod -R a+rX {TOOLKIT} && rm -f {UPLOAD} && "
+        f"ln -sfn python3 {TOOLKIT}/bin/ctb-python && "
+        f"printf '%s\\n' '#!/bin/sh' 'exec {TOOLKIT}/bin/python3 -m pytest \"$@\"' > {TOOLKIT}/bin/ctb-pytest && "
+        f"chmod a+rx {TOOLKIT}/bin/ctb-pytest && mkdir -p /logs/agent && "
+        f"{TOOLKIT}/bin/python3 -I -c {shlex.quote(inventory_script())} > /logs/agent/toolkit-inventory.json",
     )
 
 
@@ -89,6 +118,14 @@ class Toolkit:
             raise FileNotFoundError(f"Missing Python toolkit {archive()}; run `uv run ctb fetch`.")
         await super().setup(environment)
         await install(self, environment)
+        await self.exec_as_agent(
+            environment,
+            command="{ command -v python3 || true; python3 --version 2>&1 || true; "
+            "command -v ctb-python; ctb-python --version; } > /logs/agent/python-resolution.txt",
+        )
+
+    async def run(self, instruction, environment, context):
+        return await super().run(shared_instruction(instruction), environment, context)
 
     async def exec_as_agent(self, environment: BaseEnvironment, command: str, *args, **kwargs):
         return await super().exec_as_agent(environment, PATH_SETUP + command, *args, **kwargs)

@@ -504,6 +504,8 @@ def pins() -> dict:
         "python_toolkit": {
             "cpython": f"{toolkit.CPYTHON_VERSION}+{toolkit.CPYTHON_RELEASE}",
             "requirements_sha256": toolkit.requirements_sha256(),
+            "setup_note_sha256": hashlib.sha256(toolkit.SETUP_NOTE.encode()).hexdigest(),
+            "inventory_schema": 1,
         },
         "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,

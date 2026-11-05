@@ -86,7 +86,7 @@ def trial_metrics(result_path: Path) -> dict:
     cache = usage.get("n_cache_tokens") or 0
     output = usage.get("n_output_tokens") or 0
     cost, source = usage.get("cost_usd"), "agent"
-    if cost is None:
+    if cost is None and any((input_, cache, output)):
         cost, source = list_price(model, input_, cache, output), "list price"
     times = {phase: seconds(result.get(phase)) for phase in PHASES}
     times["total"] = seconds(result)

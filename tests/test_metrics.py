@@ -114,3 +114,14 @@ def test_totals_leave_the_cost_open_when_a_trial_has_no_price():
 
 def test_an_unknown_model_has_no_list_price():
     assert list_price("other/model", 10, 0, 10) is None
+
+
+def test_missing_usage_is_not_a_free_run(tmp_path):
+    path = tmp_path / "result.json"
+    path.write_text(
+        json.dumps(
+            {"config": {"agent": {"model_name": "openai/gpt-6.1-sol"}}, "agent_result": None}
+        )
+    )
+    assert trial_metrics(path)["cost_usd"] is None
+    assert trial_metrics(path)["cost_source"] is None
