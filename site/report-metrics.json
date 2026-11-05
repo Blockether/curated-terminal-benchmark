@@ -1,0 +1,4723 @@
+{
+  "01df3c9af0cb2c87d0feda21e9dcef4bb5a7c007b4660cda3d58da8f6f4b1f49": {
+    "agent_ms": 193400.0,
+    "cache": 125952,
+    "cost": 0.0675,
+    "input": 137476,
+    "output": 3865,
+    "phases": [
+      {
+        "end": 1793789837381.116,
+        "name": "environment_setup",
+        "start": 1793789835767.424
+      },
+      {
+        "end": 1793790032346.3188,
+        "name": "agent_setup",
+        "start": 1793789837381.321
+      },
+      {
+        "end": 1793790225705.689,
+        "name": "agent_execution",
+        "start": 1793790032347.355
+      },
+      {
+        "end": 1793790554002.144,
+        "name": "verifier",
+        "start": 1793790244954.782
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 55119.0,
+    "reward": 1.0,
+    "run_ms": 718600.0,
+    "started_at": "2026-11-04T10:57:15.444089Z",
+    "tool_calls": 23,
+    "tool_errors": 0,
+    "tool_ms": 89957.0,
+    "tools": {
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 692.0,
+        "timed": 1
+      },
+      "patch": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 38586.0,
+        "timed": 2
+      },
+      "read": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 1072.0,
+        "timed": 15
+      },
+      "shell": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 49607.0,
+        "timed": 5
+      }
+    }
+  },
+  "0812a110bba2b60d33caf472a1b9c2dccd9d7df72896c076977a2b713c21b0a8": {
+    "agent_ms": 301600.0,
+    "cache": 198144,
+    "cost": 0.1244,
+    "input": 228777,
+    "output": 7443,
+    "phases": [
+      {
+        "end": 1793786548079.225,
+        "name": "environment_setup",
+        "start": 1793786541468.6602
+      },
+      {
+        "end": 1793786823181.052,
+        "name": "agent_setup",
+        "start": 1793786548079.98
+      },
+      {
+        "end": 1793787124811.358,
+        "name": "agent_execution",
+        "start": 1793786823182.6821
+      },
+      {
+        "end": 1793787151514.479,
+        "name": "verifier",
+        "start": 1793787138148.586
+      }
+    ],
+    "provider_calls": 17,
+    "provider_errors": 0,
+    "provider_ms": 165504.0,
+    "reward": 0.0,
+    "run_ms": 611300.0,
+    "started_at": "2026-11-04T10:02:20.239615Z",
+    "tool_calls": 16,
+    "tool_errors": 0,
+    "tool_ms": 79549.0,
+    "tools": {
+      "patch": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 52445.0,
+        "timed": 4
+      },
+      "read": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 715.0,
+        "timed": 3
+      },
+      "shell": {
+        "calls": 9,
+        "errors": 0,
+        "ms": 26389.0,
+        "timed": 9
+      }
+    }
+  },
+  "08bcf42eedfd7f983188b3f64aae6ba5922371734f39651d0deb626764ea59b8": {
+    "agent_ms": 71100.0,
+    "cache": 4608,
+    "cost": 0.0338,
+    "input": 13406,
+    "output": 1574,
+    "phases": [
+      {
+        "end": 1793665494723.05,
+        "name": "environment_setup",
+        "start": 1793665493329.901
+      },
+      {
+        "end": 1793665550759.459,
+        "name": "agent_setup",
+        "start": 1793665494723.1628
+      },
+      {
+        "end": 1793665621907.296,
+        "name": "agent_execution",
+        "start": 1793665550759.9011
+      },
+      {
+        "end": 1793665647581.083,
+        "name": "verifier",
+        "start": 1793665634125.0042
+      }
+    ],
+    "provider_calls": 5,
+    "provider_errors": 0,
+    "provider_ms": 68753.74731445312,
+    "reward": 0.0,
+    "run_ms": 154300.0,
+    "started_at": "2026-11-03T00:24:53.252378Z",
+    "tool_calls": 4,
+    "tool_errors": 0,
+    "tool_ms": 235.808349609375,
+    "tools": {
+      "bash": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 198.286865234375,
+        "timed": 1
+      },
+      "read": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 37.521484375,
+        "timed": 3
+      }
+    }
+  },
+  "09b7de9cae266b21ca588baf9b5eb0f26287d2e87ba93508260bf01a64b38b3e": {
+    "agent_ms": 475600.0,
+    "cache": 1688576,
+    "cost": 0.4237,
+    "input": 1768341,
+    "output": 9529,
+    "phases": [
+      {
+        "end": 1793667762720.1309,
+        "name": "environment_setup",
+        "start": 1793667759324.7239
+      },
+      {
+        "end": 1793667849361.062,
+        "name": "agent_setup",
+        "start": 1793667781125.308
+      },
+      {
+        "end": 1793668324960.8071,
+        "name": "agent_execution",
+        "start": 1793667849361.744
+      },
+      {
+        "end": 1793668360629.996,
+        "name": "verifier",
+        "start": 1793668347669.22
+      }
+    ],
+    "provider_calls": 34,
+    "provider_errors": 0,
+    "provider_ms": 412769.0119628906,
+    "reward": 0.0,
+    "run_ms": 601400.0,
+    "started_at": "2026-11-03T01:02:39.264293Z",
+    "tool_calls": 33,
+    "tool_errors": 3,
+    "tool_ms": 59389.826904296875,
+    "tools": {
+      "bash": {
+        "calls": 24,
+        "errors": 2,
+        "ms": 59101.029052734375,
+        "timed": 24
+      },
+      "edit": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 26.488037109375,
+        "timed": 2
+      },
+      "run_code": {
+        "calls": 1,
+        "errors": 1,
+        "ms": 212.380859375,
+        "timed": 1
+      },
+      "write": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 49.928955078125,
+        "timed": 6
+      }
+    }
+  },
+  "11fc7d910da7d772cdb33b34e3dfae1c43ca3220d4c7204f75e26c2e502aba90": {
+    "agent_ms": 2187600.0,
+    "cache": 346624,
+    "cost": 5.582,
+    "input": 2788896,
+    "output": 61013,
+    "phases": [
+      {
+        "end": 1793733098471.451,
+        "name": "environment_setup",
+        "start": 1793733096988.486
+      },
+      {
+        "end": 1793733450175.4329,
+        "name": "agent_setup",
+        "start": 1793733098473.031
+      },
+      {
+        "end": 1793735637730.73,
+        "name": "agent_execution",
+        "start": 1793733450179.021
+      },
+      {
+        "end": 1793735702561.855,
+        "name": "verifier",
+        "start": 1793735654090.824
+      }
+    ],
+    "provider_calls": 188,
+    "provider_errors": 0,
+    "provider_ms": 1786412,
+    "reward": 0.0,
+    "run_ms": 2606500.0,
+    "started_at": "2026-11-03T19:11:36.105648Z",
+    "tool_calls": 188,
+    "tool_errors": 43,
+    "tool_ms": null,
+    "tools": {
+      "__provider_error__": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 9,
+        "errors": 5,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "message": {
+        "calls": 35,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 84,
+        "errors": 38,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "tool_search": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 13,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "153e6255e18eca93fc4436794f9c8a996ac6d6fa02cf7774453620be3d9be8b3": {
+    "agent_ms": 423700.0,
+    "cache": 297728,
+    "cost": 0.2106,
+    "input": 310395,
+    "output": 15551,
+    "phases": [
+      {
+        "end": 1793830552315.707,
+        "name": "environment_setup",
+        "start": 1793830551598.673
+      },
+      {
+        "end": 1793830614401.354,
+        "name": "agent_setup",
+        "start": 1793830552315.811
+      },
+      {
+        "end": 1793831038089.212,
+        "name": "agent_execution",
+        "start": 1793830614401.631
+      },
+      {
+        "end": 1793831064292.616,
+        "name": "verifier",
+        "start": 1793831050787.397
+      }
+    ],
+    "provider_calls": 22,
+    "provider_errors": 0,
+    "provider_ms": 374623.82251,
+    "reward": 0.0,
+    "run_ms": 512799.99999999994,
+    "started_at": "2026-11-04T22:15:51.527880Z",
+    "tool_calls": 21,
+    "tool_errors": 2,
+    "tool_ms": 25545.0,
+    "tools": {
+      "python_execution": {
+        "calls": 21,
+        "errors": 2,
+        "ms": 25545.0,
+        "timed": 21
+      }
+    }
+  },
+  "17ca9a5ac88ef977fe7a9f3e570e83b6ba5367e8245544a03a1a33aea7785c92": {
+    "agent_ms": 2969800.0,
+    "cache": 2321536,
+    "cost": 4.3055,
+    "input": 4119789,
+    "output": 43150,
+    "phases": [
+      {
+        "end": 1793743055479.001,
+        "name": "environment_setup",
+        "start": 1793743054751.263
+      },
+      {
+        "end": 1793743127411.297,
+        "name": "agent_setup",
+        "start": 1793743055479.105
+      },
+      {
+        "end": 1793746097169.831,
+        "name": "agent_execution",
+        "start": 1793743127412.4192
+      },
+      {
+        "end": 1793746122229.271,
+        "name": "verifier",
+        "start": 1793746109670.99
+      }
+    ],
+    "provider_calls": 233,
+    "provider_errors": 0,
+    "provider_ms": 2278677,
+    "reward": 0.0,
+    "run_ms": 3067600.0,
+    "started_at": "2026-11-03T21:57:34.653622Z",
+    "tool_calls": 233,
+    "tool_errors": 33,
+    "tool_ms": null,
+    "tools": {
+      "__provider_error__": {
+        "calls": 34,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 50,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 130,
+        "errors": 33,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "split": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "1fc2d24ec803c7e3a127b02b96bb76ed7cb5e7cf9b467f0343a3f62e274b30eb": {
+    "agent_ms": 6131300.0,
+    "cache": 2094080,
+    "cost": 4.0391,
+    "input": 3533509,
+    "output": 90004,
+    "phases": [
+      {
+        "end": 1793702864557.937,
+        "name": "environment_setup",
+        "start": 1793702863682.366
+      },
+      {
+        "end": 1793702960031.899,
+        "name": "agent_setup",
+        "start": 1793702864558.0562
+      },
+      {
+        "end": 1793709091302.767,
+        "name": "agent_execution",
+        "start": 1793702960032.601
+      },
+      {
+        "end": 1793709120113.4429,
+        "name": "verifier",
+        "start": 1793709104827.337
+      }
+    ],
+    "provider_calls": 235,
+    "provider_errors": 0,
+    "provider_ms": 2579633,
+    "reward": 0.0,
+    "run_ms": 6256500.0,
+    "started_at": "2026-11-03T10:47:43.598606Z",
+    "tool_calls": 235,
+    "tool_errors": 19,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 39,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 49,
+        "errors": 1,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "execution": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 101,
+        "errors": 18,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 30,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "tool_search": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "233f9c4283da2f4caf1af8730ab65c484fdda4fe707c39ee6f11ed9f0b9f667d": {
+    "agent_ms": 578100.0,
+    "cache": 719488,
+    "cost": 0.4133,
+    "input": 782446,
+    "output": 21545,
+    "phases": [
+      {
+        "end": 1793717528858.4749,
+        "name": "environment_setup",
+        "start": 1793717528177.653
+      },
+      {
+        "end": 1793717591385.853,
+        "name": "agent_setup",
+        "start": 1793717528858.677
+      },
+      {
+        "end": 1793718169479.2,
+        "name": "agent_execution",
+        "start": 1793717591386.7542
+      },
+      {
+        "end": 1793718271939.395,
+        "name": "verifier",
+        "start": 1793718185627.2659
+      }
+    ],
+    "provider_calls": 21,
+    "provider_errors": 0,
+    "provider_ms": 526379.0,
+    "reward": 0.0,
+    "run_ms": 743800.0,
+    "started_at": "2026-11-03T14:52:08.098941Z",
+    "tool_calls": 20,
+    "tool_errors": 1,
+    "tool_ms": 46700.0,
+    "tools": {
+      "exec": {
+        "calls": 20,
+        "errors": 1,
+        "ms": 46700.0,
+        "timed": 20
+      }
+    }
+  },
+  "2521b6563ea7461b031ef8efbea99268104872a73fa05057ec19afbec195102a": {
+    "agent_ms": 274100.0,
+    "cache": 167168,
+    "cost": 0.1947,
+    "input": 205773,
+    "output": 10080,
+    "phases": [
+      {
+        "end": 1793837353793.916,
+        "name": "environment_setup",
+        "start": 1793837353096.914
+      },
+      {
+        "end": 1793837415838.751,
+        "name": "agent_setup",
+        "start": 1793837353794.121
+      },
+      {
+        "end": 1793837689953.246,
+        "name": "agent_execution",
+        "start": 1793837415839.347
+      },
+      {
+        "end": 1793837715267.377,
+        "name": "verifier",
+        "start": 1793837702178.039
+      }
+    ],
+    "provider_calls": 14,
+    "provider_errors": 0,
+    "provider_ms": 244675.946817,
+    "reward": 1.0,
+    "run_ms": 362200.0,
+    "started_at": "2026-11-05T00:09:13.040345Z",
+    "tool_calls": 13,
+    "tool_errors": 0,
+    "tool_ms": 10639.0,
+    "tools": {
+      "python_execution": {
+        "calls": 13,
+        "errors": 0,
+        "ms": 10639.0,
+        "timed": 13
+      }
+    }
+  },
+  "25a69e0c1f96b5b3e590f6e2f22dab1a78122fa120673903f65552162d3e022d": {
+    "agent_ms": 532200.0,
+    "cache": 462848,
+    "cost": 0.2578,
+    "input": 483140,
+    "output": 17097,
+    "phases": [
+      {
+        "end": 1793827933539.1182,
+        "name": "environment_setup",
+        "start": 1793827932818.625
+      },
+      {
+        "end": 1793827992743.762,
+        "name": "agent_setup",
+        "start": 1793827933539.313
+      },
+      {
+        "end": 1793828524944.4731,
+        "name": "agent_execution",
+        "start": 1793827992744.206
+      },
+      {
+        "end": 1793828829848.809,
+        "name": "verifier",
+        "start": 1793828537542.756
+      }
+    ],
+    "provider_calls": 25,
+    "provider_errors": 0,
+    "provider_ms": 439260.648756,
+    "reward": 1.0,
+    "run_ms": 897100.0,
+    "started_at": "2026-11-04T21:32:12.733506Z",
+    "tool_calls": 24,
+    "tool_errors": 0,
+    "tool_ms": 76713.0,
+    "tools": {
+      "python_execution": {
+        "calls": 24,
+        "errors": 0,
+        "ms": 76713.0,
+        "timed": 24
+      }
+    }
+  },
+  "28b0ea8922445c371f877a3b9fd1100d53b5ec91fdcd8debe679965dad305a14": {
+    "agent_ms": 196100.0,
+    "cache": 207232,
+    "cost": 0.1593,
+    "input": 237486,
+    "output": 7805,
+    "phases": [
+      {
+        "end": 1793718892207.33,
+        "name": "environment_setup",
+        "start": 1793718891556.128
+      },
+      {
+        "end": 1793719086054.85,
+        "name": "agent_setup",
+        "start": 1793718892207.5168
+      },
+      {
+        "end": 1793719282147.958,
+        "name": "agent_execution",
+        "start": 1793719086055.26
+      },
+      {
+        "end": 1793719310261.718,
+        "name": "verifier",
+        "start": 1793719296843.7878
+      }
+    ],
+    "provider_calls": 11,
+    "provider_errors": 0,
+    "provider_ms": 187404.0,
+    "reward": 1.0,
+    "run_ms": 418800.0,
+    "started_at": "2026-11-03T15:14:51.478929Z",
+    "tool_calls": 10,
+    "tool_errors": 0,
+    "tool_ms": 1838.0,
+    "tools": {
+      "exec": {
+        "calls": 9,
+        "errors": 0,
+        "ms": 1800.0,
+        "timed": 9
+      },
+      "request_user_input_async": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 38.0,
+        "timed": 1
+      }
+    }
+  },
+  "2fbc2f6d255b6d4bbfe077743a867b3d1db652060be245da93d7f9eaf7c5cf25": {
+    "agent_ms": 6736300.0,
+    "cache": 1929600,
+    "cost": 4.6498,
+    "input": 3660534,
+    "output": 94554,
+    "phases": [
+      {
+        "end": 1793695757258.761,
+        "name": "environment_setup",
+        "start": 1793695756385.012
+      },
+      {
+        "end": 1793695837348.957,
+        "name": "agent_setup",
+        "start": 1793695757259.165
+      },
+      {
+        "end": 1793702573604.9631,
+        "name": "agent_execution",
+        "start": 1793695837349.442
+      },
+      {
+        "end": 1793702860906.016,
+        "name": "verifier",
+        "start": 1793702589734.345
+      }
+    ],
+    "provider_calls": 230,
+    "provider_errors": 0,
+    "provider_ms": 3332143,
+    "reward": 0.0,
+    "run_ms": 7104700.0,
+    "started_at": "2026-11-03T08:49:16.265600Z",
+    "tool_calls": 230,
+    "tool_errors": 16,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 32,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 42,
+        "errors": 1,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 123,
+        "errors": 15,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 23,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "2fc62e7a72244c605dd062eedeb45821c5b33d4225f7329c679d9b90265e60d6": {
+    "agent_ms": 265900.0,
+    "cache": 117888,
+    "cost": 0.1164,
+    "input": 134265,
+    "output": 7181,
+    "phases": [
+      {
+        "end": 1793665649658.304,
+        "name": "environment_setup",
+        "start": 1793665648980.101
+      },
+      {
+        "end": 1793665707303.295,
+        "name": "agent_setup",
+        "start": 1793665649658.4712
+      },
+      {
+        "end": 1793665973160.478,
+        "name": "agent_execution",
+        "start": 1793665707303.564
+      },
+      {
+        "end": 1793665997544.331,
+        "name": "verifier",
+        "start": 1793665985563.3909
+      }
+    ],
+    "provider_calls": 17,
+    "provider_errors": 0,
+    "provider_ms": 241855.4697265625,
+    "reward": 0.0,
+    "run_ms": 348600.0,
+    "started_at": "2026-11-03T00:27:28.913440Z",
+    "tool_calls": 16,
+    "tool_errors": 3,
+    "tool_ms": 21596.531494140625,
+    "tools": {
+      "bash": {
+        "calls": 10,
+        "errors": 3,
+        "ms": 21505.618896484375,
+        "timed": 10
+      },
+      "edit": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 28.508544921875,
+        "timed": 3
+      },
+      "read": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 41.052978515625,
+        "timed": 1
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 21.35107421875,
+        "timed": 2
+      }
+    }
+  },
+  "302eb4ee635ab11def9b811c35117251da1d0db6ee943fad1b3502a5552e8847": {
+    "agent_ms": 139500.0,
+    "cache": 153344,
+    "cost": 0.0743,
+    "input": 166168,
+    "output": 3335,
+    "phases": [
+      {
+        "end": 1793714495580.976,
+        "name": "environment_setup",
+        "start": 1793714493701.3608
+      },
+      {
+        "end": 1793714670171.165,
+        "name": "agent_setup",
+        "start": 1793714495581.0908
+      },
+      {
+        "end": 1793714809717.4849,
+        "name": "agent_execution",
+        "start": 1793714670171.725
+      },
+      {
+        "end": 1793715086783.4949,
+        "name": "verifier",
+        "start": 1793714836622.924
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 107567.0,
+    "reward": 1.0,
+    "run_ms": 593300.0,
+    "started_at": "2026-11-03T14:01:33.524036Z",
+    "tool_calls": 7,
+    "tool_errors": 0,
+    "tool_ms": 22900.0,
+    "tools": {
+      "exec": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 22900.0,
+        "timed": 7
+      }
+    }
+  },
+  "354826401bc53a40ef212121b5988918e5f7e29ea3aaaa0429fa8b6d5514bdda": {
+    "agent_ms": 2056300.0000000002,
+    "cache": 16384,
+    "cost": 0.0434,
+    "input": 22632,
+    "output": 4760,
+    "phases": [
+      {
+        "end": 1793780666627.943,
+        "name": "environment_setup",
+        "start": 1793780665698.011
+      },
+      {
+        "end": 1793780857689.7422,
+        "name": "agent_setup",
+        "start": 1793780666628.102
+      },
+      {
+        "end": 1793782914033.8818,
+        "name": "agent_execution",
+        "start": 1793780857690.257
+      },
+      {
+        "end": 1793783475342.135,
+        "name": "verifier",
+        "start": 1793782950589.528
+      }
+    ],
+    "provider_calls": 5,
+    "provider_errors": 0,
+    "provider_ms": 115513.0,
+    "reward": 1.0,
+    "run_ms": 2809800.0,
+    "started_at": "2026-11-04T08:24:25.564398Z",
+    "tool_calls": 4,
+    "tool_errors": 0,
+    "tool_ms": 58646.0,
+    "tools": {
+      "patch": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 52358.0,
+        "timed": 1
+      },
+      "shell": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 6288.0,
+        "timed": 3
+      }
+    }
+  },
+  "364bea49b0aae287dc65ba451efb15d045bc7308ea49ba3d0f721c8a9d09f7f2": {
+    "agent_ms": 2535900.0,
+    "cache": 1382912,
+    "cost": 0.2978,
+    "input": 1404302,
+    "output": 52994,
+    "phases": [
+      {
+        "end": 1793783478166.862,
+        "name": "environment_setup",
+        "start": 1793783477304.2349
+      },
+      {
+        "end": 1793783658424.597,
+        "name": "agent_setup",
+        "start": 1793783478166.995
+      },
+      {
+        "end": 1793786194303.125,
+        "name": "agent_execution",
+        "start": 1793783658425.0059
+      },
+      {
+        "end": 1793786526495.966,
+        "name": "verifier",
+        "start": 1793786208083.196
+      }
+    ],
+    "provider_calls": 34,
+    "provider_errors": 0,
+    "provider_ms": 2045047.0,
+    "reward": null,
+    "run_ms": 3049500.0,
+    "started_at": "2026-11-04T09:11:17.186098Z",
+    "tool_calls": 34,
+    "tool_errors": 0,
+    "tool_ms": 385214.0,
+    "tools": {
+      "patch": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 104455.0,
+        "timed": 14
+      },
+      "read": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 302.0,
+        "timed": 2
+      },
+      "shell": {
+        "calls": 18,
+        "errors": 0,
+        "ms": 280457.0,
+        "timed": 18
+      }
+    }
+  },
+  "37eb4493909179e1cdb6c58baae726ae3ac28ab46c9090275c7e63a8c82074bc": {
+    "agent_ms": 969400.0,
+    "cache": 979072,
+    "cost": 0.3599,
+    "input": 1003686,
+    "output": 21280,
+    "phases": [
+      {
+        "end": 1793708934925.639,
+        "name": "environment_setup",
+        "start": 1793708934272.0598
+      },
+      {
+        "end": 1793709091666.934,
+        "name": "agent_setup",
+        "start": 1793708934925.8672
+      },
+      {
+        "end": 1793710061087.855,
+        "name": "agent_execution",
+        "start": 1793709091667.365
+      },
+      {
+        "end": 1793710256090.2778,
+        "name": "verifier",
+        "start": 1793710091175.4639
+      }
+    ],
+    "provider_calls": 25,
+    "provider_errors": 0,
+    "provider_ms": 910933.0,
+    "reward": 1.0,
+    "run_ms": 1321900.0,
+    "started_at": "2026-11-03T12:28:54.195466Z",
+    "tool_calls": 24,
+    "tool_errors": 1,
+    "tool_ms": 50700.0,
+    "tools": {
+      "exec": {
+        "calls": 24,
+        "errors": 1,
+        "ms": 50700.0,
+        "timed": 24
+      }
+    }
+  },
+  "396b9fe7918588fa1572d1966075586d13d2e7f6beea8cebbb505e60bc5bd656": {
+    "agent_ms": 271300.0,
+    "cache": 138240,
+    "cost": 0.606,
+    "input": 388363,
+    "output": 9198,
+    "phases": [
+      {
+        "end": 1793738277216.294,
+        "name": "environment_setup",
+        "start": 1793738276533.117
+      },
+      {
+        "end": 1793738433156.311,
+        "name": "agent_setup",
+        "start": 1793738277216.427
+      },
+      {
+        "end": 1793738704498.587,
+        "name": "agent_execution",
+        "start": 1793738433156.584
+      },
+      {
+        "end": 1793738734865.644,
+        "name": "verifier",
+        "start": 1793738722294.782
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 458400.0,
+    "started_at": "2026-11-03T20:37:56.434354Z",
+    "tool_calls": 35,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "apply_patch": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "bash": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_minified": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "3aba1ec206407a5d1cc462e51c60b928301567c086468150df9f1563738f3e5c": {
+    "agent_ms": 161400.0,
+    "cache": 44800,
+    "cost": 0.0925,
+    "input": 64067,
+    "output": 4952,
+    "phases": [
+      {
+        "end": 1793669424581.7239,
+        "name": "environment_setup",
+        "start": 1793669423870.5361
+      },
+      {
+        "end": 1793669483141.9211,
+        "name": "agent_setup",
+        "start": 1793669424581.91
+      },
+      {
+        "end": 1793669644514.331,
+        "name": "agent_execution",
+        "start": 1793669483142.3499
+      },
+      {
+        "end": 1793669669651.217,
+        "name": "verifier",
+        "start": 1793669656609.144
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 158030.15307617188,
+    "reward": 0.0,
+    "run_ms": 245900.0,
+    "started_at": "2026-11-03T01:30:23.794303Z",
+    "tool_calls": 11,
+    "tool_errors": 2,
+    "tool_ms": 1128.223876953125,
+    "tools": {
+      "bash": {
+        "calls": 4,
+        "errors": 1,
+        "ms": 882.131591796875,
+        "timed": 4
+      },
+      "edit": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 43.926025390625,
+        "timed": 3
+      },
+      "run_code": {
+        "calls": 2,
+        "errors": 1,
+        "ms": 179.121337890625,
+        "timed": 2
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 23.044921875,
+        "timed": 2
+      }
+    }
+  },
+  "44ef368f86d6d25b00e575bdeaf477bcd7983500932376298127f9eb8cd1c90f": {
+    "agent_ms": 2382400.0,
+    "cache": 2184960,
+    "cost": 4.4402,
+    "input": 4098962,
+    "output": 32780,
+    "phases": [
+      {
+        "end": 1793730563732.966,
+        "name": "environment_setup",
+        "start": 1793730560398.0588
+      },
+      {
+        "end": 1793730660385.704,
+        "name": "agent_setup",
+        "start": 1793730582266.242
+      },
+      {
+        "end": 1793733042787.434,
+        "name": "agent_execution",
+        "start": 1793730660386.156
+      },
+      {
+        "end": 1793733089189.6519,
+        "name": "verifier",
+        "start": 1793733071965.6711
+      }
+    ],
+    "provider_calls": 235,
+    "provider_errors": 0,
+    "provider_ms": 2087554,
+    "reward": 0.0,
+    "run_ms": 2528900.0,
+    "started_at": "2026-11-03T18:29:20.317204Z",
+    "tool_calls": 235,
+    "tool_errors": 4,
+    "tool_ms": null,
+    "tools": {
+      "__provider_error__": {
+        "calls": 35,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 35,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 162,
+        "errors": 4,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "4b32867fe6385615c2c32bea8fc48032de638f3ac980597b41de81d626af25e5": {
+    "agent_ms": 253400.0,
+    "cache": 75648,
+    "cost": 0.0973,
+    "input": 97195,
+    "output": 6795,
+    "phases": [
+      {
+        "end": 1793796073498.923,
+        "name": "environment_setup",
+        "start": 1793796072630.285
+      },
+      {
+        "end": 1793796432534.7878,
+        "name": "agent_setup",
+        "start": 1793796073499.031
+      },
+      {
+        "end": 1793796685972.868,
+        "name": "agent_execution",
+        "start": 1793796432539.124
+      },
+      {
+        "end": 1793796714334.346,
+        "name": "verifier",
+        "start": 1793796700186.2322
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 110477.0,
+    "reward": 0.0,
+    "run_ms": 641800.0,
+    "started_at": "2026-11-04T12:41:12.513444Z",
+    "tool_calls": 15,
+    "tool_errors": 0,
+    "tool_ms": 63853.0,
+    "tools": {
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 1365.0,
+        "timed": 1
+      },
+      "patch": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 59459.0,
+        "timed": 3
+      },
+      "read": {
+        "calls": 9,
+        "errors": 0,
+        "ms": 1716.0,
+        "timed": 9
+      },
+      "shell": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 1313.0,
+        "timed": 2
+      }
+    }
+  },
+  "54e2a8dacc90fab0cb77ffa10bc81fe1f74e45912b15e1606ac2e99a2b2ea3a4": {
+    "agent_ms": 186000.0,
+    "cache": 144256,
+    "cost": 0.1142,
+    "input": 157321,
+    "output": 7368,
+    "phases": [
+      {
+        "end": 1793718274419.16,
+        "name": "environment_setup",
+        "start": 1793718273703.475
+      },
+      {
+        "end": 1793718410413.954,
+        "name": "agent_setup",
+        "start": 1793718274419.272
+      },
+      {
+        "end": 1793718596458.4082,
+        "name": "agent_execution",
+        "start": 1793718410415.2588
+      },
+      {
+        "end": 1793718889820.478,
+        "name": "verifier",
+        "start": 1793718611169.484
+      }
+    ],
+    "provider_calls": 7,
+    "provider_errors": 0,
+    "provider_ms": 177270.0,
+    "reward": 1.0,
+    "run_ms": 616200.0,
+    "started_at": "2026-11-03T15:04:33.628011Z",
+    "tool_calls": 6,
+    "tool_errors": 0,
+    "tool_ms": 2200.0,
+    "tools": {
+      "exec": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 2200.0,
+        "timed": 6
+      }
+    }
+  },
+  "60673c08ce4c5a23995dc45886cb6410af52783b54b1dda36525023a5a11af39": {
+    "agent_ms": 158100.0,
+    "cache": 49024,
+    "cost": 0.083,
+    "input": 65098,
+    "output": 4594,
+    "phases": [
+      {
+        "end": 1793665999416.524,
+        "name": "environment_setup",
+        "start": 1793665998761.135
+      },
+      {
+        "end": 1793666033120.9941,
+        "name": "agent_setup",
+        "start": 1793665999416.685
+      },
+      {
+        "end": 1793666191225.6501,
+        "name": "agent_execution",
+        "start": 1793666033121.521
+      },
+      {
+        "end": 1793666234143.169,
+        "name": "verifier",
+        "start": 1793666204311.218
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": 148947.412109375,
+    "reward": 0.0,
+    "run_ms": 235400.0,
+    "started_at": "2026-11-03T00:33:18.705328Z",
+    "tool_calls": 12,
+    "tool_errors": 3,
+    "tool_ms": 6997.997802734375,
+    "tools": {
+      "bash": {
+        "calls": 5,
+        "errors": 2,
+        "ms": 6769.01318359375,
+        "timed": 5
+      },
+      "edit": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 12.7958984375,
+        "timed": 1
+      },
+      "read": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 14.23583984375,
+        "timed": 2
+      },
+      "run_code": {
+        "calls": 2,
+        "errors": 1,
+        "ms": 170.21484375,
+        "timed": 2
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 31.738037109375,
+        "timed": 2
+      }
+    }
+  },
+  "687652aef94c5e17cd3842f46653afcc68667c5f94907f76bb8d667f673675ae": {
+    "agent_ms": 7200200.0,
+    "cache": null,
+    "cost": 0.0,
+    "input": null,
+    "output": null,
+    "phases": [
+      {
+        "end": 1793724942361.9102,
+        "name": "environment_setup",
+        "start": 1793724925881.68
+      },
+      {
+        "end": 1793724997831.689,
+        "name": "agent_setup",
+        "start": 1793724942362.063
+      },
+      {
+        "end": 1793732198007.705,
+        "name": "agent_execution",
+        "start": 1793724997832.1619
+      },
+      {
+        "end": 1793732336176.898,
+        "name": "verifier",
+        "start": 1793732223046.514
+      }
+    ],
+    "provider_calls": 7,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 7410400.0,
+    "started_at": "2026-11-03T16:55:25.802470Z",
+    "tool_calls": 12,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "repo_overview": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "6c16a53ef4f5a4b8ecc4fae675efd2f82dad4bd7e54ecfb09ecb8d907da1d231": {
+    "agent_ms": 774000.0,
+    "cache": 436480,
+    "cost": 0.2869,
+    "input": 473150,
+    "output": 16988,
+    "phases": [
+      {
+        "end": 1793707752472.4219,
+        "name": "environment_setup",
+        "start": 1793707751535.686
+      },
+      {
+        "end": 1793707894418.9912,
+        "name": "agent_setup",
+        "start": 1793707752472.552
+      },
+      {
+        "end": 1793708668437.5378,
+        "name": "agent_execution",
+        "start": 1793707894419.584
+      },
+      {
+        "end": 1793708932144.55,
+        "name": "verifier",
+        "start": 1793708684267.781
+      }
+    ],
+    "provider_calls": 19,
+    "provider_errors": 0,
+    "provider_ms": 761059.0,
+    "reward": 1.0,
+    "run_ms": 1180700.0,
+    "started_at": "2026-11-03T12:09:11.459896Z",
+    "tool_calls": 18,
+    "tool_errors": 1,
+    "tool_ms": 6300.0,
+    "tools": {
+      "exec": {
+        "calls": 18,
+        "errors": 1,
+        "ms": 6300.0,
+        "timed": 18
+      }
+    }
+  },
+  "6f0b0c926c8179ba94abd26db639a91bf182a845b6eeca99b43b24e5950485a3": {
+    "agent_ms": 7200400.0,
+    "cache": 1933184,
+    "cost": 2.9372,
+    "input": 3051019,
+    "output": 50497,
+    "phases": [
+      {
+        "end": 1793714773325.05,
+        "name": "environment_setup",
+        "start": 1793714769372.051
+      },
+      {
+        "end": 1793714874779.281,
+        "name": "agent_setup",
+        "start": 1793714773325.5469
+      },
+      {
+        "end": 1793722075203.475,
+        "name": "agent_execution",
+        "start": 1793714874780.156
+      },
+      {
+        "end": 1793722117711.605,
+        "name": "verifier",
+        "start": 1793722089482.962
+      }
+    ],
+    "provider_calls": 198,
+    "provider_errors": 0,
+    "provider_ms": 2374726,
+    "reward": 1.0,
+    "run_ms": 7348500.0,
+    "started_at": "2026-11-03T14:06:09.163883Z",
+    "tool_calls": 198,
+    "tool_errors": 14,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 26,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 46,
+        "errors": 2,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "papercut": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "resource": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 69,
+        "errors": 12,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 31,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "7c1ab265dff6c4de6991e249f0378280aad8d549db3331cdb771eb791005fa45": {
+    "agent_ms": 25617000.0,
+    "cache": 1043328,
+    "cost": 5.2948,
+    "input": 3356311,
+    "output": 52368,
+    "phases": [
+      {
+        "end": 1793669672037.393,
+        "name": "environment_setup",
+        "start": 1793669671348.629
+      },
+      {
+        "end": 1793669729862.118,
+        "name": "agent_setup",
+        "start": 1793669672037.531
+      },
+      {
+        "end": 1793695346837.533,
+        "name": "agent_execution",
+        "start": 1793669729862.617
+      },
+      {
+        "end": 1793695754414.205,
+        "name": "verifier",
+        "start": 1793695361178.199
+      }
+    ],
+    "provider_calls": 230,
+    "provider_errors": 0,
+    "provider_ms": 2164064,
+    "reward": 1.0,
+    "run_ms": 26083100.0,
+    "started_at": "2026-11-03T01:34:31.297208Z",
+    "tool_calls": 230,
+    "tool_errors": 32,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 34,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 54,
+        "errors": 17,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "papercut": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 95,
+        "errors": 15,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 29,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "7ccc99dee21e1ffb0a5a829c5b61d32dcbdd521383816710a47e94bd7df634b6": {
+    "agent_ms": 5529000.0,
+    "cache": 2289024,
+    "cost": 4.0072,
+    "input": 3658097,
+    "output": 103709,
+    "phases": [
+      {
+        "end": 1793709127816.711,
+        "name": "environment_setup",
+        "start": 1793709126576.447
+      },
+      {
+        "end": 1793709179100.801,
+        "name": "agent_setup",
+        "start": 1793709127816.832
+      },
+      {
+        "end": 1793714708142.38,
+        "name": "agent_execution",
+        "start": 1793709179101.073
+      },
+      {
+        "end": 1793714764781.541,
+        "name": "verifier",
+        "start": 1793714722974.292
+      }
+    ],
+    "provider_calls": 230,
+    "provider_errors": 0,
+    "provider_ms": 2800081,
+    "reward": 0.0,
+    "run_ms": 5638500.0,
+    "started_at": "2026-11-03T12:32:06.325330Z",
+    "tool_calls": 230,
+    "tool_errors": 31,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 34,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "ask_human": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 58,
+        "errors": 13,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "execution": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "papercut": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "resource": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 78,
+        "errors": 18,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "split": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 22,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "81d3623cee6d501c4bf5430f262968a68fb2efb5c3a09bd85659faaf119fe9e4": {
+    "agent_ms": 1370300.0,
+    "cache": 1539456,
+    "cost": 0.3759,
+    "input": 1568035,
+    "output": 33085,
+    "phases": [
+      {
+        "end": 1793788099809.638,
+        "name": "environment_setup",
+        "start": 1793788072477.0579
+      },
+      {
+        "end": 1793788273718.034,
+        "name": "agent_setup",
+        "start": 1793788099809.834
+      },
+      {
+        "end": 1793789644005.513,
+        "name": "agent_execution",
+        "start": 1793788273718.853
+      },
+      {
+        "end": 1793789829715.7358,
+        "name": "verifier",
+        "start": 1793789696693.229
+      }
+    ],
+    "provider_calls": 50,
+    "provider_errors": 0,
+    "provider_ms": 766577.0,
+    "reward": 0.0,
+    "run_ms": 1757300.0,
+    "started_at": "2026-11-04T10:27:52.369145Z",
+    "tool_calls": 56,
+    "tool_errors": 0,
+    "tool_ms": 450240.0,
+    "tools": {
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 890.0,
+        "timed": 1
+      },
+      "patch": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 148321.0,
+        "timed": 14
+      },
+      "read": {
+        "calls": 17,
+        "errors": 0,
+        "ms": 1811.0,
+        "timed": 17
+      },
+      "shell": {
+        "calls": 24,
+        "errors": 0,
+        "ms": 299218.0,
+        "timed": 24
+      }
+    }
+  },
+  "87ed61ef9d34c4f59d2d48bb26e78793360ae013bd1b8a96aa73d47cb5f328c1": {
+    "agent_ms": 596800.0,
+    "cache": 511232,
+    "cost": 0.2416,
+    "input": 526287,
+    "output": 18973,
+    "phases": [
+      {
+        "end": 1793794505550.3982,
+        "name": "environment_setup",
+        "start": 1793794501149.625
+      },
+      {
+        "end": 1793794635467.561,
+        "name": "agent_setup",
+        "start": 1793794505550.536
+      },
+      {
+        "end": 1793795232259.694,
+        "name": "agent_execution",
+        "start": 1793794635468.3262
+      },
+      {
+        "end": 1793795364114.902,
+        "name": "verifier",
+        "start": 1793795247286.875
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 155542.0,
+    "reward": 0.0,
+    "run_ms": 864000.0,
+    "started_at": "2026-11-04T12:15:00.125481Z",
+    "tool_calls": 42,
+    "tool_errors": 1,
+    "tool_ms": 471368.0,
+    "tools": {
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 1070.0,
+        "timed": 1
+      },
+      "patch": {
+        "calls": 9,
+        "errors": 1,
+        "ms": 234561.0,
+        "timed": 9
+      },
+      "read": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 2037.0,
+        "timed": 15
+      },
+      "shell": {
+        "calls": 17,
+        "errors": 0,
+        "ms": 233700.0,
+        "timed": 17
+      }
+    }
+  },
+  "8b925dbd6243c25340b713c99559ac5a622f18385de06760fb22c6bbcd352e23": {
+    "agent_ms": 186500.0,
+    "cache": 98688,
+    "cost": 0.0773,
+    "input": 111406,
+    "output": 4197,
+    "phases": [
+      {
+        "end": 1793833683148.818,
+        "name": "environment_setup",
+        "start": 1793833682406.508
+      },
+      {
+        "end": 1793833735311.0,
+        "name": "agent_setup",
+        "start": 1793833683148.924
+      },
+      {
+        "end": 1793833921796.856,
+        "name": "agent_execution",
+        "start": 1793833735311.9658
+      },
+      {
+        "end": 1793834177059.722,
+        "name": "verifier",
+        "start": 1793833941034.96
+      }
+    ],
+    "provider_calls": 11,
+    "provider_errors": 0,
+    "provider_ms": 108072.41742700001,
+    "reward": 1.0,
+    "run_ms": 494700.0,
+    "started_at": "2026-11-04T23:08:02.332845Z",
+    "tool_calls": 10,
+    "tool_errors": 0,
+    "tool_ms": 58462.0,
+    "tools": {
+      "python_execution": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 58462.0,
+        "timed": 10
+      }
+    }
+  },
+  "8bf443f108624a82eff77ff5d173ab80c87aa2ccb71569a8af238e863fc89051": {
+    "agent_ms": 240500.0,
+    "cache": 26752,
+    "cost": 0.0971,
+    "input": 38993,
+    "output": 6999,
+    "phases": [
+      {
+        "end": 1793664900600.709,
+        "name": "environment_setup",
+        "start": 1793664899918.607
+      },
+      {
+        "end": 1793664952184.8481,
+        "name": "agent_setup",
+        "start": 1793664900600.892
+      },
+      {
+        "end": 1793665192648.59,
+        "name": "agent_execution",
+        "start": 1793664952185.261
+      },
+      {
+        "end": 1793665491976.155,
+        "name": "verifier",
+        "start": 1793665204761.813
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 235803.81323242188,
+    "reward": 0.0,
+    "run_ms": 592100.0,
+    "started_at": "2026-11-03T00:14:59.860312Z",
+    "tool_calls": 9,
+    "tool_errors": 0,
+    "tool_ms": 2163.242919921875,
+    "tools": {
+      "bash": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 2114.540771484375,
+        "timed": 6
+      },
+      "edit": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 31.703125,
+        "timed": 2
+      },
+      "write": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 16.9990234375,
+        "timed": 1
+      }
+    }
+  },
+  "8fc20bfd6c7d945b9358c6f4c5185f8339e44bcc341a83efd9e0c95be6e2df3b": {
+    "agent_ms": 1595600.0,
+    "cache": 1653120,
+    "cost": 0.7004,
+    "input": 1698169,
+    "output": 44498,
+    "phases": [
+      {
+        "end": 1793831842090.058,
+        "name": "environment_setup",
+        "start": 1793831825143.477
+      },
+      {
+        "end": 1793831899555.422,
+        "name": "agent_setup",
+        "start": 1793831842090.173
+      },
+      {
+        "end": 1793833495142.445,
+        "name": "agent_execution",
+        "start": 1793831899555.716
+      },
+      {
+        "end": 1793833680604.034,
+        "name": "verifier",
+        "start": 1793833555090.017
+      }
+    ],
+    "provider_calls": 46,
+    "provider_errors": 0,
+    "provider_ms": 1181538.250378,
+    "reward": 1.0,
+    "run_ms": 1855500.0,
+    "started_at": "2026-11-04T22:37:05.058604Z",
+    "tool_calls": 45,
+    "tool_errors": 0,
+    "tool_ms": 399587.0,
+    "tools": {
+      "python_execution": {
+        "calls": 45,
+        "errors": 0,
+        "ms": 399587.0,
+        "timed": 45
+      }
+    }
+  },
+  "900c39fba45ccd2445669e7d3d407e19a2054279433fc2c30c1ee1a697d8a810": {
+    "agent_ms": 542900.0,
+    "cache": 249856,
+    "cost": 0.258,
+    "input": 291015,
+    "output": 15069,
+    "phases": [
+      {
+        "end": 1793666607458.318,
+        "name": "environment_setup",
+        "start": 1793666589227.645
+      },
+      {
+        "end": 1793666670270.872,
+        "name": "agent_setup",
+        "start": 1793666607458.561
+      },
+      {
+        "end": 1793667213166.532,
+        "name": "agent_execution",
+        "start": 1793666670271.851
+      },
+      {
+        "end": 1793667355416.801,
+        "name": "verifier",
+        "start": 1793667240723.634
+      }
+    ],
+    "provider_calls": 29,
+    "provider_errors": 0,
+    "provider_ms": 480274.626953125,
+    "reward": 1.0,
+    "run_ms": 766300.0,
+    "started_at": "2026-11-03T00:43:09.118084Z",
+    "tool_calls": 34,
+    "tool_errors": 2,
+    "tool_ms": 60879.00244140625,
+    "tools": {
+      "bash": {
+        "calls": 19,
+        "errors": 2,
+        "ms": 59668.73583984375,
+        "timed": 19
+      },
+      "edit": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 50.630126953125,
+        "timed": 4
+      },
+      "read": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 999.468994140625,
+        "timed": 7
+      },
+      "write": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 160.16748046875,
+        "timed": 4
+      }
+    }
+  },
+  "961fc9c15e738c8d7d78694ed41f52bbf02861c301c687f73abbb68494c98dfa": {
+    "agent_ms": null,
+    "cache": null,
+    "cost": 0.0,
+    "input": null,
+    "output": null,
+    "phases": [
+      {
+        "end": 1793733637909.303,
+        "name": "environment_setup",
+        "start": 1793733620114.158
+      },
+      {
+        "end": null,
+        "name": "agent_setup",
+        "start": null
+      },
+      {
+        "end": null,
+        "name": "agent_execution",
+        "start": null
+      },
+      {
+        "end": null,
+        "name": "verifier",
+        "start": null
+      }
+    ],
+    "provider_calls": 0,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": null,
+    "run_ms": 76300.0,
+    "started_at": "2026-11-03T19:20:19.944878Z",
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "tool_ms": null,
+    "tools": {}
+  },
+  "9bb72c5b4b46202dd51cf9974d843623f6608cf0d3b459bc28781c916f01a9b1": {
+    "agent_ms": 332000.0,
+    "cache": 290560,
+    "cost": 0.1889,
+    "input": 333688,
+    "output": 7355,
+    "phases": [
+      {
+        "end": 1793668362378.234,
+        "name": "environment_setup",
+        "start": 1793668361735.626
+      },
+      {
+        "end": 1793668409982.593,
+        "name": "agent_setup",
+        "start": 1793668362378.416
+      },
+      {
+        "end": 1793668741942.2952,
+        "name": "agent_execution",
+        "start": 1793668409983.18
+      },
+      {
+        "end": 1793668771237.864,
+        "name": "verifier",
+        "start": 1793668754645.164
+      }
+    ],
+    "provider_calls": 21,
+    "provider_errors": 0,
+    "provider_ms": 193431.13134765625,
+    "reward": 0.0,
+    "run_ms": 409600.0,
+    "started_at": "2026-11-03T01:12:41.683396Z",
+    "tool_calls": 21,
+    "tool_errors": 3,
+    "tool_ms": 136033.6865234375,
+    "tools": {
+      "bash": {
+        "calls": 11,
+        "errors": 2,
+        "ms": 135912.48803710938,
+        "timed": 11
+      },
+      "edit": {
+        "calls": 4,
+        "errors": 1,
+        "ms": 41.493896484375,
+        "timed": 4
+      },
+      "read": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 48.345703125,
+        "timed": 2
+      },
+      "write": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 31.35888671875,
+        "timed": 4
+      }
+    }
+  },
+  "9e0049348dddb322277439e843df8a0f90bdbde7d6afbd0d7fd22cb07e35be0f": {
+    "agent_ms": 251500.0,
+    "cache": 240896,
+    "cost": 0.1908,
+    "input": 279497,
+    "output": 8948,
+    "phases": [
+      {
+        "end": 1793836787565.406,
+        "name": "environment_setup",
+        "start": 1793836786836.545
+      },
+      {
+        "end": 1793836840305.365,
+        "name": "agent_setup",
+        "start": 1793836787565.551
+      },
+      {
+        "end": 1793837091832.608,
+        "name": "agent_execution",
+        "start": 1793836840306.103
+      },
+      {
+        "end": 1793837351697.0798,
+        "name": "verifier",
+        "start": 1793837104086.9639
+      }
+    ],
+    "provider_calls": 17,
+    "provider_errors": 0,
+    "provider_ms": 217655.995219,
+    "reward": 1.0,
+    "run_ms": 564900.0,
+    "started_at": "2026-11-04T23:59:46.772791Z",
+    "tool_calls": 16,
+    "tool_errors": 0,
+    "tool_ms": 16848.0,
+    "tools": {
+      "python_execution": {
+        "calls": 16,
+        "errors": 0,
+        "ms": 16848.0,
+        "timed": 16
+      }
+    }
+  },
+  "9f6d5263eed36864b5d2dc519173196fd154cca771eec8739e9539615b3c49aa": {
+    "agent_ms": 1602800.0,
+    "cache": 566016,
+    "cost": 0.4188,
+    "input": 585047,
+    "output": 32409,
+    "phases": [
+      {
+        "end": 1793828832504.3281,
+        "name": "environment_setup",
+        "start": 1793828831714.791
+      },
+      {
+        "end": 1793828886792.4321,
+        "name": "agent_setup",
+        "start": 1793828832504.553
+      },
+      {
+        "end": 1793830489582.9092,
+        "name": "agent_execution",
+        "start": 1793828886792.8938
+      },
+      {
+        "end": 1793830550074.741,
+        "name": "verifier",
+        "start": 1793830501842.774
+      }
+    ],
+    "provider_calls": 22,
+    "provider_errors": 0,
+    "provider_ms": 903812.384369,
+    "reward": 1.0,
+    "run_ms": 1718400.0,
+    "started_at": "2026-11-04T21:47:11.638753Z",
+    "tool_calls": 21,
+    "tool_errors": 1,
+    "tool_ms": 663868.0,
+    "tools": {
+      "python_execution": {
+        "calls": 21,
+        "errors": 1,
+        "ms": 663868.0,
+        "timed": 21
+      }
+    }
+  },
+  "a01c8ca899cd130e0efade2f8ea11c7f693350e4b532e75a3286044ec051ff15": {
+    "agent_ms": 225600.0,
+    "cache": 102528,
+    "cost": 0.0748,
+    "input": 115381,
+    "output": 6013,
+    "phases": [
+      {
+        "end": 1793787153599.536,
+        "name": "environment_setup",
+        "start": 1793787152941.304
+      },
+      {
+        "end": 1793787302165.236,
+        "name": "agent_setup",
+        "start": 1793787153599.708
+      },
+      {
+        "end": 1793787527753.469,
+        "name": "agent_execution",
+        "start": 1793787302166.016
+      },
+      {
+        "end": 1793787573679.2349,
+        "name": "verifier",
+        "start": 1793787542122.576
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": 126179.0,
+    "reward": 0.0,
+    "run_ms": 420800.0,
+    "started_at": "2026-11-04T10:12:32.866647Z",
+    "tool_calls": 12,
+    "tool_errors": 0,
+    "tool_ms": 57389.0,
+    "tools": {
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 737.0,
+        "timed": 1
+      },
+      "patch": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 47040.0,
+        "timed": 2
+      },
+      "read": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 391.0,
+        "timed": 3
+      },
+      "shell": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 9221.0,
+        "timed": 6
+      }
+    }
+  },
+  "a09b5eb70180963427c891932023afe2a6f8369cde7f4d8572f107fc30e946e6": {
+    "agent_ms": 608100.0,
+    "cache": 1384704,
+    "cost": 0.3974,
+    "input": 1431538,
+    "output": 16528,
+    "phases": [
+      {
+        "end": 1793834181855.175,
+        "name": "environment_setup",
+        "start": 1793834178471.16
+      },
+      {
+        "end": 1793834433569.996,
+        "name": "agent_setup",
+        "start": 1793834200337.29
+      },
+      {
+        "end": 1793835041683.702,
+        "name": "agent_execution",
+        "start": 1793834433573.7568
+      },
+      {
+        "end": 1793835077379.3599,
+        "name": "verifier",
+        "start": 1793835064479.729
+      }
+    ],
+    "provider_calls": 36,
+    "provider_errors": 0,
+    "provider_ms": 511105.177362,
+    "reward": 1.0,
+    "run_ms": 899000.0,
+    "started_at": "2026-11-04T23:16:18.376888Z",
+    "tool_calls": 35,
+    "tool_errors": 2,
+    "tool_ms": 68626.0,
+    "tools": {
+      "python_execution": {
+        "calls": 35,
+        "errors": 2,
+        "ms": 68626.0,
+        "timed": 35
+      }
+    }
+  },
+  "a15c5d49abf601419bc06afb3707c69ea464b4ca7d5beb7628e60214508de118": {
+    "agent_ms": 534900.0,
+    "cache": 867968,
+    "cost": 0.3045,
+    "input": 920102,
+    "output": 11341,
+    "phases": [
+      {
+        "end": 1793711955539.694,
+        "name": "environment_setup",
+        "start": 1793711952334.6692
+      },
+      {
+        "end": 1793712257670.147,
+        "name": "agent_setup",
+        "start": 1793711955539.816
+      },
+      {
+        "end": 1793712792533.7952,
+        "name": "agent_execution",
+        "start": 1793712257671.942
+      },
+      {
+        "end": 1793712850776.4102,
+        "name": "verifier",
+        "start": 1793712811424.327
+      }
+    ],
+    "provider_calls": 28,
+    "provider_errors": 0,
+    "provider_ms": 421453.0,
+    "reward": 1.0,
+    "run_ms": 898700.0,
+    "started_at": "2026-11-03T13:19:12.047846Z",
+    "tool_calls": 27,
+    "tool_errors": 0,
+    "tool_ms": 88700.0,
+    "tools": {
+      "exec": {
+        "calls": 27,
+        "errors": 0,
+        "ms": 88700.0,
+        "timed": 27
+      }
+    }
+  },
+  "a318d15f594d7befd43ab8c702659eaa66c8e265d4749045b7482938fce4107c": {
+    "agent_ms": 2210900.0,
+    "cache": 673024,
+    "cost": 3.3769,
+    "input": 2107320,
+    "output": 44102,
+    "phases": [
+      {
+        "end": 1793720352660.146,
+        "name": "environment_setup",
+        "start": 1793720351801.411
+      },
+      {
+        "end": 1793720409798.237,
+        "name": "agent_setup",
+        "start": 1793720352660.2622
+      },
+      {
+        "end": 1793722620730.1372,
+        "name": "agent_execution",
+        "start": 1793720409798.541
+      },
+      {
+        "end": 1793722819752.3652,
+        "name": "verifier",
+        "start": 1793722652634.27
+      }
+    ],
+    "provider_calls": 57,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 1.0,
+    "run_ms": 2468100.0,
+    "started_at": "2026-11-03T15:39:11.669131Z",
+    "tool_calls": 58,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 25,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "bash_output": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "kill_shell": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "a4913c89d42abbf110ccfb57662e8d93496bdf9b62a795a0ccbf405a7b5b80ab": {
+    "agent_ms": 672300.0,
+    "cache": 105088,
+    "cost": 1.2646,
+    "input": 666944,
+    "output": 13037,
+    "phases": [
+      {
+        "end": 1793719313367.148,
+        "name": "environment_setup",
+        "start": 1793719312707.836
+      },
+      {
+        "end": 1793719396188.342,
+        "name": "agent_setup",
+        "start": 1793719313367.244
+      },
+      {
+        "end": 1793720068536.667,
+        "name": "agent_execution",
+        "start": 1793719396190.1619
+      },
+      {
+        "end": 1793720349114.001,
+        "name": "verifier",
+        "start": 1793720080904.981
+      }
+    ],
+    "provider_calls": 30,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 1036500.0,
+    "started_at": "2026-11-03T15:21:52.641875Z",
+    "tool_calls": 32,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "a65c5bfa50c6a82b83b6cb6d8c025cc9122038f54e3f23151c529630ac4408bf": {
+    "agent_ms": 1160300.0,
+    "cache": 1393664,
+    "cost": 0.4505,
+    "input": 1420511,
+    "output": 25745,
+    "phases": [
+      {
+        "end": 1793712894660.179,
+        "name": "environment_setup",
+        "start": 1793712853313.0989
+      },
+      {
+        "end": 1793713121897.285,
+        "name": "agent_setup",
+        "start": 1793712894661.28
+      },
+      {
+        "end": 1793714282180.413,
+        "name": "agent_execution",
+        "start": 1793713121898.168
+      },
+      {
+        "end": 1793714490249.423,
+        "name": "verifier",
+        "start": 1793714333501.11
+      }
+    ],
+    "provider_calls": 38,
+    "provider_errors": 0,
+    "provider_ms": 1122341.0,
+    "reward": 0.0,
+    "run_ms": 1637000.0,
+    "started_at": "2026-11-03T13:34:13.209391Z",
+    "tool_calls": 37,
+    "tool_errors": 0,
+    "tool_ms": 31100.0,
+    "tools": {
+      "exec": {
+        "calls": 37,
+        "errors": 0,
+        "ms": 31100.0,
+        "timed": 37
+      }
+    }
+  },
+  "a7ab26dbc00dfb92e1d2f8506b25a7c95bd2a39a93950674da9f8489dff2c819": {
+    "agent_ms": 333200.0,
+    "cache": 260608,
+    "cost": 0.1352,
+    "input": 288579,
+    "output": 8594,
+    "phases": [
+      {
+        "end": 1793787576242.423,
+        "name": "environment_setup",
+        "start": 1793787575608.877
+      },
+      {
+        "end": 1793787706576.0442,
+        "name": "agent_setup",
+        "start": 1793787576242.6191
+      },
+      {
+        "end": 1793788039746.197,
+        "name": "agent_execution",
+        "start": 1793787706577.082
+      },
+      {
+        "end": 1793788070507.815,
+        "name": "verifier",
+        "start": 1793788054407.541
+      }
+    ],
+    "provider_calls": 18,
+    "provider_errors": 0,
+    "provider_ms": 203497.0,
+    "reward": 0.0,
+    "run_ms": 495000.0,
+    "started_at": "2026-11-04T10:19:35.521785Z",
+    "tool_calls": 18,
+    "tool_errors": 0,
+    "tool_ms": 73507.0,
+    "tools": {
+      "patch": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 21684.0,
+        "timed": 1
+      },
+      "read": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 307.0,
+        "timed": 3
+      },
+      "shell": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 51516.0,
+        "timed": 14
+      }
+    }
+  },
+  "a86953d07977b228a0b135e0f812602252d5425d6427352daa5d0508ed44b6f4": {
+    "agent_ms": 1195700.0,
+    "cache": 3465984,
+    "cost": 0.8076,
+    "input": 3547183,
+    "output": 29865,
+    "phases": [
+      {
+        "end": 1793715092287.113,
+        "name": "environment_setup",
+        "start": 1793715088506.4858
+      },
+      {
+        "end": 1793715256693.83,
+        "name": "agent_setup",
+        "start": 1793715110758.006
+      },
+      {
+        "end": 1793716452365.9612,
+        "name": "agent_execution",
+        "start": 1793715256695.496
+      },
+      {
+        "end": 1793716490833.251,
+        "name": "verifier",
+        "start": 1793716477749.374
+      }
+    ],
+    "provider_calls": 43,
+    "provider_errors": 0,
+    "provider_ms": 1128766.0,
+    "reward": 1.0,
+    "run_ms": 1402400.0,
+    "started_at": "2026-11-03T14:11:28.428977Z",
+    "tool_calls": 42,
+    "tool_errors": 0,
+    "tool_ms": 61200.0,
+    "tools": {
+      "exec": {
+        "calls": 42,
+        "errors": 0,
+        "ms": 61200.0,
+        "timed": 42
+      }
+    }
+  },
+  "af8c88e84ee600df0a989a5db3e4ac50292a8f703576c7235865eebb675adea9": {
+    "agent_ms": 339900.0,
+    "cache": 225920,
+    "cost": 0.7148,
+    "input": 528681,
+    "output": 8670,
+    "phases": [
+      {
+        "end": 1793723592390.897,
+        "name": "environment_setup",
+        "start": 1793723591730.942
+      },
+      {
+        "end": 1793723627714.8992,
+        "name": "agent_setup",
+        "start": 1793723592391.0862
+      },
+      {
+        "end": 1793723967606.588,
+        "name": "agent_execution",
+        "start": 1793723627715.2861
+      },
+      {
+        "end": 1793724018206.5151,
+        "name": "verifier",
+        "start": 1793723984420.5068
+      }
+    ],
+    "provider_calls": 20,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 426600.0,
+    "started_at": "2026-11-03T16:33:11.650481Z",
+    "tool_calls": 40,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_minified": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "repo_overview": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "b298f2c6f726552f9bd8e2682cb5b0f09cbed5dc75669c1268b71dc58e738aec": {
+    "agent_ms": 241700.0,
+    "cache": 126080,
+    "cost": 0.1074,
+    "input": 137006,
+    "output": 7289,
+    "phases": [
+      {
+        "end": 1793831066713.75,
+        "name": "environment_setup",
+        "start": 1793831065956.2869
+      },
+      {
+        "end": 1793831105035.731,
+        "name": "agent_setup",
+        "start": 1793831066714.009
+      },
+      {
+        "end": 1793831346691.894,
+        "name": "agent_execution",
+        "start": 1793831105036.202
+      },
+      {
+        "end": 1793831391992.889,
+        "name": "verifier",
+        "start": 1793831360270.1162
+      }
+    ],
+    "provider_calls": 15,
+    "provider_errors": 0,
+    "provider_ms": 207475.24674,
+    "reward": 0.0,
+    "run_ms": 326100.0,
+    "started_at": "2026-11-04T22:24:25.883773Z",
+    "tool_calls": 14,
+    "tool_errors": 0,
+    "tool_ms": 14176.0,
+    "tools": {
+      "python_execution": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 14176.0,
+        "timed": 14
+      }
+    }
+  },
+  "bb69bf45e47dd0797cf27fad61e29a6a74092b82cf5badce9043f2a3c178711f": {
+    "agent_ms": 245400.0,
+    "cache": 202496,
+    "cost": 0.1992,
+    "input": 239934,
+    "output": 10409,
+    "phases": [
+      {
+        "end": 1793668773333.19,
+        "name": "environment_setup",
+        "start": 1793668772628.973
+      },
+      {
+        "end": 1793668808568.1301,
+        "name": "agent_setup",
+        "start": 1793668773333.4119
+      },
+      {
+        "end": 1793669054008.2642,
+        "name": "agent_execution",
+        "start": 1793668808568.676
+      },
+      {
+        "end": 1793669145572.102,
+        "name": "verifier",
+        "start": 1793669067543.5679
+      }
+    ],
+    "provider_calls": 18,
+    "provider_errors": 0,
+    "provider_ms": 210728.90161132812,
+    "reward": 0.0,
+    "run_ms": 373000.0,
+    "started_at": "2026-11-03T01:19:32.553325Z",
+    "tool_calls": 22,
+    "tool_errors": 1,
+    "tool_ms": 32533.5849609375,
+    "tools": {
+      "bash": {
+        "calls": 7,
+        "errors": 1,
+        "ms": 32127.568359375,
+        "timed": 7
+      },
+      "edit": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 91.307861328125,
+        "timed": 5
+      },
+      "run_code": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 153.506103515625,
+        "timed": 1
+      },
+      "write": {
+        "calls": 9,
+        "errors": 0,
+        "ms": 161.20263671875,
+        "timed": 9
+      }
+    }
+  },
+  "bbc57d90d6139dca20ac70c01e62782a1b262d22d063331ec9970a16b43fe0ee": {
+    "agent_ms": 873400.0,
+    "cache": 1181312,
+    "cost": 0.5255,
+    "input": 1231410,
+    "output": 30716,
+    "phases": [
+      {
+        "end": 1793716493265.798,
+        "name": "environment_setup",
+        "start": 1793716492622.103
+      },
+      {
+        "end": 1793716591681.8389,
+        "name": "agent_setup",
+        "start": 1793716493265.999
+      },
+      {
+        "end": 1793717465079.553,
+        "name": "agent_execution",
+        "start": 1793716591682.1848
+      },
+      {
+        "end": 1793717526522.792,
+        "name": "verifier",
+        "start": 1793717480605.729
+      }
+    ],
+    "provider_calls": 32,
+    "provider_errors": 0,
+    "provider_ms": 816271.0,
+    "reward": 0.0,
+    "run_ms": 1034000.0,
+    "started_at": "2026-11-03T14:34:52.549487Z",
+    "tool_calls": 31,
+    "tool_errors": 1,
+    "tool_ms": 50800.0,
+    "tools": {
+      "exec": {
+        "calls": 31,
+        "errors": 1,
+        "ms": 50800.0,
+        "timed": 31
+      }
+    }
+  },
+  "beb19d77e4375efcf6ebd1afe8d15a5005575bf759dd7cee1ef7e5fadb9dc627": {
+    "agent_ms": 605000.0,
+    "cache": 378368,
+    "cost": 1.7252,
+    "input": 1142820,
+    "output": 15842,
+    "phases": [
+      {
+        "end": 1793722829435.124,
+        "name": "environment_setup",
+        "start": 1793722827490.747
+      },
+      {
+        "end": 1793722959280.942,
+        "name": "agent_setup",
+        "start": 1793722829435.293
+      },
+      {
+        "end": 1793723564286.9219,
+        "name": "agent_execution",
+        "start": 1793722959282.759
+      },
+      {
+        "end": 1793723590320.071,
+        "name": "verifier",
+        "start": 1793723576593.021
+      }
+    ],
+    "provider_calls": 29,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 763200.0,
+    "started_at": "2026-11-03T16:20:27.084425Z",
+    "tool_calls": 32,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "c18008757d6ddee246b938e08a35deeb08d8e8cdc6e35d537f708365f5046f87": {
+    "agent_ms": 2205900.0,
+    "cache": 2331008,
+    "cost": 3.3563,
+    "input": 3690925,
+    "output": 36032,
+    "phases": [
+      {
+        "end": 1793746124131.4868,
+        "name": "environment_setup",
+        "start": 1793746123467.884
+      },
+      {
+        "end": 1793746197387.609,
+        "name": "agent_setup",
+        "start": 1793746124131.652
+      },
+      {
+        "end": 1793748403252.455,
+        "name": "agent_execution",
+        "start": 1793746197388.063
+      },
+      {
+        "end": 1793748429497.931,
+        "name": "verifier",
+        "start": 1793748415897.285
+      }
+    ],
+    "provider_calls": 220,
+    "provider_errors": 0,
+    "provider_ms": 2109373,
+    "reward": 0.0,
+    "run_ms": 2306100.0,
+    "started_at": "2026-11-03T22:48:43.392709Z",
+    "tool_calls": 220,
+    "tool_errors": 33,
+    "tool_ms": null,
+    "tools": {
+      "__provider_error__": {
+        "calls": 20,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "ask_human": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 37,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "resource": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 129,
+        "errors": 33,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 21,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "c24e37d0e05e6e082631f760d95fb86723aee9c270231ebe81d7390141b95a21": {
+    "agent_ms": 1842400.0,
+    "cache": 1800704,
+    "cost": 3.8481,
+    "input": 3492546,
+    "output": 28432,
+    "phases": [
+      {
+        "end": 1793733706659.1238,
+        "name": "environment_setup",
+        "start": 1793733700157.5461
+      },
+      {
+        "end": 1793734266024.2131,
+        "name": "agent_setup",
+        "start": 1793733706659.317
+      },
+      {
+        "end": 1793736108397.511,
+        "name": "agent_execution",
+        "start": 1793734266026.9648
+      },
+      {
+        "end": 1793736467253.0352,
+        "name": "verifier",
+        "start": 1793736187212.716
+      }
+    ],
+    "provider_calls": 92,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 1.0,
+    "run_ms": 2767200.0,
+    "started_at": "2026-11-03T19:21:40.048861Z",
+    "tool_calls": 96,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 36,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "bash_output": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 31,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "grep": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "c3a69c0c4bf20e337ba5fe191bbe0928005fcbeed751597a30a31be4ab4fe187": {
+    "agent_ms": 637700.0,
+    "cache": 1336320,
+    "cost": 0.3524,
+    "input": 1375658,
+    "output": 14008,
+    "phases": [
+      {
+        "end": 1793710269879.915,
+        "name": "environment_setup",
+        "start": 1793710268493.64
+      },
+      {
+        "end": 1793710519468.752,
+        "name": "agent_setup",
+        "start": 1793710269880.05
+      },
+      {
+        "end": 1793711157142.1511,
+        "name": "agent_execution",
+        "start": 1793710519472.6218
+      },
+      {
+        "end": 1793711203160.76,
+        "name": "verifier",
+        "start": 1793711185241.618
+      }
+    ],
+    "provider_calls": 36,
+    "provider_errors": 0,
+    "provider_ms": 510215.0,
+    "reward": 1.0,
+    "run_ms": 934800.0,
+    "started_at": "2026-11-03T12:51:08.358434Z",
+    "tool_calls": 35,
+    "tool_errors": 2,
+    "tool_ms": 117300.0,
+    "tools": {
+      "exec": {
+        "calls": 35,
+        "errors": 2,
+        "ms": 117300.0,
+        "timed": 35
+      }
+    }
+  },
+  "c4631da63dbf8fa0b69ed282a10604bcca05f8defd889b3deb33a4c8175d6bb1": {
+    "agent_ms": 5434700.0,
+    "cache": 2134272,
+    "cost": 4.0598,
+    "input": 3713364,
+    "output": 68579,
+    "phases": [
+      {
+        "end": 1793724714565.341,
+        "name": "environment_setup",
+        "start": 1793724713778.424
+      },
+      {
+        "end": 1793724824981.4849,
+        "name": "agent_setup",
+        "start": 1793724714565.758
+      },
+      {
+        "end": 1793730259634.847,
+        "name": "agent_execution",
+        "start": 1793724824982.446
+      },
+      {
+        "end": 1793730558673.665,
+        "name": "verifier",
+        "start": 1793730278248.99
+      }
+    ],
+    "provider_calls": 230,
+    "provider_errors": 0,
+    "provider_ms": 2242171,
+    "reward": 1.0,
+    "run_ms": 5845000.0,
+    "started_at": "2026-11-03T16:51:53.624338Z",
+    "tool_calls": 230,
+    "tool_errors": 15,
+    "tool_ms": null,
+    "tools": {
+      "__no_call__": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 35,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "ask_human": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "done": {
+        "calls": 38,
+        "errors": 2,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "resource": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 101,
+        "errors": 13,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 39,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "c51090db337bf07641215b841b7a1721427714e6c341a6c7c12de1a6074c2db4": {
+    "agent_ms": 821900.0,
+    "cache": 513664,
+    "cost": 1.4129,
+    "input": 1108948,
+    "output": 17096,
+    "phases": [
+      {
+        "end": 1793724020257.171,
+        "name": "environment_setup",
+        "start": 1793724019641.628
+      },
+      {
+        "end": 1793724070996.499,
+        "name": "agent_setup",
+        "start": 1793724020257.3508
+      },
+      {
+        "end": 1793724892937.799,
+        "name": "agent_execution",
+        "start": 1793724070996.768
+      },
+      {
+        "end": 1793724924436.9048,
+        "name": "verifier",
+        "start": 1793724906806.259
+      }
+    ],
+    "provider_calls": 41,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 904900.0,
+    "started_at": "2026-11-03T16:40:19.550646Z",
+    "tool_calls": 48,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 27,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "c8c70ef0540cafac039dd22baa54387440a301513424cc58c2db50af9cc90447": {
+    "agent_ms": 684100.0,
+    "cache": 622848,
+    "cost": 0.4661,
+    "input": 691140,
+    "output": 26727,
+    "phases": [
+      {
+        "end": 1793835969836.314,
+        "name": "environment_setup",
+        "start": 1793835969176.584
+      },
+      {
+        "end": 1793836009209.292,
+        "name": "agent_setup",
+        "start": 1793835969836.5122
+      },
+      {
+        "end": 1793836693308.24,
+        "name": "agent_execution",
+        "start": 1793836009209.806
+      },
+      {
+        "end": 1793836785192.821,
+        "name": "verifier",
+        "start": 1793836707159.6812
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 594525.221104,
+    "reward": 0.0,
+    "run_ms": 816100.0,
+    "started_at": "2026-11-04T23:46:09.076160Z",
+    "tool_calls": 22,
+    "tool_errors": 0,
+    "tool_ms": 69427.0,
+    "tools": {
+      "python_execution": {
+        "calls": 22,
+        "errors": 0,
+        "ms": 69427.0,
+        "timed": 22
+      }
+    }
+  },
+  "d094a574314d81019cdbeb06c45476d716b7625d6fa324be4afc8fea98d0f125": {
+    "agent_ms": 785100.0,
+    "cache": 539520,
+    "cost": 0.4735,
+    "input": 601738,
+    "output": 29512,
+    "phases": [
+      {
+        "end": 1793835079490.132,
+        "name": "environment_setup",
+        "start": 1793835078810.005
+      },
+      {
+        "end": 1793835131573.893,
+        "name": "agent_setup",
+        "start": 1793835079490.34
+      },
+      {
+        "end": 1793835916704.5032,
+        "name": "agent_execution",
+        "start": 1793835131574.248
+      },
+      {
+        "end": 1793835967528.176,
+        "name": "verifier",
+        "start": 1793835929434.275
+      }
+    ],
+    "provider_calls": 25,
+    "provider_errors": 0,
+    "provider_ms": 704532.421366,
+    "reward": 0.0,
+    "run_ms": 888800.0,
+    "started_at": "2026-11-04T23:31:18.740678Z",
+    "tool_calls": 24,
+    "tool_errors": 2,
+    "tool_ms": 62185.0,
+    "tools": {
+      "python_execution": {
+        "calls": 24,
+        "errors": 2,
+        "ms": 62185.0,
+        "timed": 24
+      }
+    }
+  },
+  "d281abe644db5dbc93f01c7e2392ab2457fd6fa4b56381331f9c02605a1a7cd6": {
+    "agent_ms": 7200500.0,
+    "cache": 5688832,
+    "cost": 15.8269,
+    "input": 12909334,
+    "output": 81349,
+    "phases": [
+      {
+        "end": 1793735706760.8298,
+        "name": "environment_setup",
+        "start": 1793735705937.9312
+      },
+      {
+        "end": 1793735756474.263,
+        "name": "agent_setup",
+        "start": 1793735706760.953
+      },
+      {
+        "end": 1793742956939.6812,
+        "name": "agent_execution",
+        "start": 1793735756474.64
+      },
+      {
+        "end": 1793743052718.437,
+        "name": "verifier",
+        "start": 1793742971087.05
+      }
+    ],
+    "provider_calls": 577,
+    "provider_errors": 0,
+    "provider_ms": 6091484,
+    "reward": 0.0,
+    "run_ms": 7346900.0,
+    "started_at": "2026-11-03T19:55:05.803735Z",
+    "tool_calls": 577,
+    "tool_errors": 109,
+    "tool_ms": null,
+    "tools": {
+      "__parse_error__": {
+        "calls": 1,
+        "errors": 1,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "__provider_error__": {
+        "calls": 60,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit_file": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "execution": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 28,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 472,
+        "errors": 108,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "split": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_file": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "d2efdc5724b1f6c88a68bf7b16668c4c05efd9abb97db7b5893a64e6d079f174": {
+    "agent_ms": 161700.0,
+    "cache": 82816,
+    "cost": 0.1373,
+    "input": 109060,
+    "output": 7652,
+    "phases": [
+      {
+        "end": 1793669147742.7869,
+        "name": "environment_setup",
+        "start": 1793669147030.384
+      },
+      {
+        "end": 1793669217607.848,
+        "name": "agent_setup",
+        "start": 1793669147742.972
+      },
+      {
+        "end": 1793669379299.563,
+        "name": "agent_execution",
+        "start": 1793669217608.272
+      },
+      {
+        "end": 1793669422485.458,
+        "name": "verifier",
+        "start": 1793669391790.7861
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 156160.89990234375,
+    "reward": 0.0,
+    "run_ms": 275500.0,
+    "started_at": "2026-11-03T01:25:46.947205Z",
+    "tool_calls": 15,
+    "tool_errors": 1,
+    "tool_ms": 3050.9990234375,
+    "tools": {
+      "bash": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 2777.571044921875,
+        "timed": 4
+      },
+      "edit": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 111.859130859375,
+        "timed": 7
+      },
+      "run_code": {
+        "calls": 2,
+        "errors": 1,
+        "ms": 140.545654296875,
+        "timed": 2
+      },
+      "write": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 21.023193359375,
+        "timed": 2
+      }
+    }
+  },
+  "d879e7d7e79dbdab6201ed58cea91e74e1389884edb966ac5943715adf96c940": {
+    "agent_ms": 168100.0,
+    "cache": 77696,
+    "cost": 0.0846,
+    "input": 93050,
+    "output": 5759,
+    "phases": [
+      {
+        "end": 1793795366821.7212,
+        "name": "environment_setup",
+        "start": 1793795365992.013
+      },
+      {
+        "end": 1793795559921.774,
+        "name": "agent_setup",
+        "start": 1793795366821.832
+      },
+      {
+        "end": 1793795728013.264,
+        "name": "agent_execution",
+        "start": 1793795559922.94
+      },
+      {
+        "end": 1793796070686.9421,
+        "name": "verifier",
+        "start": 1793795749647.882
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 73588.0,
+    "reward": 1.0,
+    "run_ms": 704800.0,
+    "started_at": "2026-11-04T12:29:25.877170Z",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 53787.0,
+    "tools": {
+      "patch": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 21115.0,
+        "timed": 2
+      },
+      "read": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 257.0,
+        "timed": 2
+      },
+      "shell": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 32415.0,
+        "timed": 4
+      }
+    }
+  },
+  "e319c3d71dd35587b1e8f5a856640938b968e5677058b718b8d5ba928b4f9981": {
+    "agent_ms": 199200.0,
+    "cache": 153728,
+    "cost": 0.104,
+    "input": 170203,
+    "output": 5566,
+    "phases": [
+      {
+        "end": 1793711208253.9639,
+        "name": "environment_setup",
+        "start": 1793711207412.393
+      },
+      {
+        "end": 1793711622565.099,
+        "name": "agent_setup",
+        "start": 1793711208254.079
+      },
+      {
+        "end": 1793711821730.963,
+        "name": "agent_execution",
+        "start": 1793711622567.8452
+      },
+      {
+        "end": 1793711945609.107,
+        "name": "verifier",
+        "start": 1793711853319.5852
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 170433.0,
+    "reward": 0.0,
+    "run_ms": 738300.0,
+    "started_at": "2026-11-03T13:06:47.295922Z",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 15500.0,
+    "tools": {
+      "exec": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 15500.0,
+        "timed": 8
+      }
+    }
+  },
+  "e6a8f5b43304bfc81cfbbe7f6228f16df0a24129756189270a46dee165d75926": {
+    "agent_ms": 2416300.0,
+    "cache": 12448128,
+    "cost": 1.784,
+    "input": 12586582,
+    "output": 58341,
+    "phases": [
+      {
+        "end": 1793790558835.3838,
+        "name": "environment_setup",
+        "start": 1793790555547.672
+      },
+      {
+        "end": 1793790723856.229,
+        "name": "agent_setup",
+        "start": 1793790577520.4028
+      },
+      {
+        "end": 1793793140148.294,
+        "name": "agent_execution",
+        "start": 1793790723856.848
+      },
+      {
+        "end": 1793793177453.891,
+        "name": "verifier",
+        "start": 1793793164219.964
+      }
+    ],
+    "provider_calls": 101,
+    "provider_errors": 0,
+    "provider_ms": 1745149.0,
+    "reward": 0.0,
+    "run_ms": 2622000.0,
+    "started_at": "2026-11-04T11:09:15.465806Z",
+    "tool_calls": 100,
+    "tool_errors": 0,
+    "tool_ms": 394393.0,
+    "tools": {
+      "patch": {
+        "calls": 25,
+        "errors": 0,
+        "ms": 100517.0,
+        "timed": 25
+      },
+      "shell": {
+        "calls": 75,
+        "errors": 0,
+        "ms": 293876.0,
+        "timed": 75
+      }
+    }
+  },
+  "e9c7114c8dedc8eed801f9b3c36f29be2ac074d28c268ee3c68f863c577e3fd9": {
+    "agent_ms": 7200300.0,
+    "cache": null,
+    "cost": 0.0,
+    "input": null,
+    "output": null,
+    "phases": [
+      {
+        "end": 1793738736859.638,
+        "name": "environment_setup",
+        "start": 1793738736171.895
+      },
+      {
+        "end": 1793738967743.692,
+        "name": "agent_setup",
+        "start": 1793738736859.782
+      },
+      {
+        "end": 1793746168024.638,
+        "name": "agent_execution",
+        "start": 1793738967744.995
+      },
+      {
+        "end": 1793746195541.717,
+        "name": "verifier",
+        "start": 1793746181438.489
+      }
+    ],
+    "provider_calls": 4,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 7459400.0,
+    "started_at": "2026-11-03T20:45:36.102595Z",
+    "tool_calls": 10,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "repo_overview": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "eb2670ad6a75a42666c26cce1ed673468f6c6b9b32a6ba6c910c7d78d502b6d7": {
+    "agent_ms": 260100.00000000003,
+    "cache": 156800,
+    "cost": 0.1379,
+    "input": 179848,
+    "output": 7610,
+    "phases": [
+      {
+        "end": 1793666236082.175,
+        "name": "environment_setup",
+        "start": 1793666235394.0898
+      },
+      {
+        "end": 1793666284681.23,
+        "name": "agent_setup",
+        "start": 1793666236082.343
+      },
+      {
+        "end": 1793666544800.635,
+        "name": "agent_execution",
+        "start": 1793666284681.596
+      },
+      {
+        "end": 1793666586436.6301,
+        "name": "verifier",
+        "start": 1793666557554.3352
+      }
+    ],
+    "provider_calls": 19,
+    "provider_errors": 0,
+    "provider_ms": 241899.578125,
+    "reward": 1.0,
+    "run_ms": 351100.0,
+    "started_at": "2026-11-03T00:37:15.326396Z",
+    "tool_calls": 21,
+    "tool_errors": 0,
+    "tool_ms": 15928.643310546875,
+    "tools": {
+      "bash": {
+        "calls": 14,
+        "errors": 0,
+        "ms": 15655.499755859375,
+        "timed": 14
+      },
+      "read": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 163.826416015625,
+        "timed": 4
+      },
+      "write": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 109.317138671875,
+        "timed": 3
+      }
+    }
+  },
+  "edadc88b3c76e43c3e8fd21556d6178e0175c8f946142e5e471c990e44cac7c6": {
+    "agent_ms": 2358200.0,
+    "cache": 2274944,
+    "cost": 4.105,
+    "input": 3970176,
+    "output": 42036,
+    "phases": [
+      {
+        "end": 1793722139936.535,
+        "name": "environment_setup",
+        "start": 1793722122419.3398
+      },
+      {
+        "end": 1793722214774.535,
+        "name": "agent_setup",
+        "start": 1793722139936.6492
+      },
+      {
+        "end": 1793724572993.492,
+        "name": "agent_execution",
+        "start": 1793722214775.866
+      },
+      {
+        "end": 1793724711770.998,
+        "name": "verifier",
+        "start": 1793724597622.4402
+      }
+    ],
+    "provider_calls": 228,
+    "provider_errors": 0,
+    "provider_ms": 2208272,
+    "reward": 0.0,
+    "run_ms": 2589400.0,
+    "started_at": "2026-11-03T16:08:42.330587Z",
+    "tool_calls": 228,
+    "tool_errors": 21,
+    "tool_ms": null,
+    "tools": {
+      "__provider_error__": {
+        "calls": 28,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "ask_human": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "fetch_turn": {
+        "calls": 24,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "plan": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_digest": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_file": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "resource": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "shell": {
+        "calls": 152,
+        "errors": 21,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "task": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "f0b5faeca45b15342fbd1da40da4f6d2200b5525ea5d995c11ac7e7afa01b6cc": {
+    "agent_ms": 1442700.0,
+    "cache": 691584,
+    "cost": 4.07,
+    "input": 2576417,
+    "output": 23113,
+    "phases": [
+      {
+        "end": 1793736472800.98,
+        "name": "environment_setup",
+        "start": 1793736470399.569
+      },
+      {
+        "end": 1793736527945.711,
+        "name": "agent_setup",
+        "start": 1793736472801.177
+      },
+      {
+        "end": 1793737970668.247,
+        "name": "agent_execution",
+        "start": 1793736527946.1228
+      },
+      {
+        "end": 1793738274888.9739,
+        "name": "verifier",
+        "start": 1793737987865.8708
+      }
+    ],
+    "provider_calls": 64,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": 0.0,
+    "run_ms": 1804600.0,
+    "started_at": "2026-11-03T20:07:50.281377Z",
+    "tool_calls": 86,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 20,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "bash_output": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 20,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 16,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "repo_overview": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 3,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write": {
+        "calls": 10,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 5,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "f3be153b3649bbfba73a4b349ed8cda6719c840f985c34f10288eab7c031ef89": {
+    "agent_ms": 114400.0,
+    "cache": 28288,
+    "cost": 0.0862,
+    "input": 55000,
+    "output": 2997,
+    "phases": [
+      {
+        "end": 1793667357764.935,
+        "name": "environment_setup",
+        "start": 1793667357059.8381
+      },
+      {
+        "end": 1793667404717.7,
+        "name": "agent_setup",
+        "start": 1793667357765.106
+      },
+      {
+        "end": 1793667519144.137,
+        "name": "agent_execution",
+        "start": 1793667404717.963
+      },
+      {
+        "end": 1793667757899.667,
+        "name": "verifier",
+        "start": 1793667535687.66
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 81572.8134765625,
+    "reward": 1.0,
+    "run_ms": 400900.0,
+    "started_at": "2026-11-03T00:55:56.986326Z",
+    "tool_calls": 8,
+    "tool_errors": 1,
+    "tool_ms": 30568.080322265625,
+    "tools": {
+      "bash": {
+        "calls": 3,
+        "errors": 1,
+        "ms": 30353.409423828125,
+        "timed": 3
+      },
+      "edit": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 51.303955078125,
+        "timed": 4
+      },
+      "run_code": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 163.366943359375,
+        "timed": 1
+      }
+    }
+  },
+  "f78a7658c5a8a4a716a4163c8edc755d3fa312485ba1db7768ea6c08ac79e5cb": {
+    "agent_ms": 334200.0,
+    "cache": 337792,
+    "cost": 0.1809,
+    "input": 356726,
+    "output": 10921,
+    "phases": [
+      {
+        "end": 1793831394265.824,
+        "name": "environment_setup",
+        "start": 1793831393502.885
+      },
+      {
+        "end": 1793831448109.507,
+        "name": "agent_setup",
+        "start": 1793831394266.009
+      },
+      {
+        "end": 1793831782296.271,
+        "name": "agent_execution",
+        "start": 1793831448109.7651
+      },
+      {
+        "end": 1793831823596.243,
+        "name": "verifier",
+        "start": 1793831795103.4292
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 291209.927945,
+    "reward": 0.0,
+    "run_ms": 430200.0,
+    "started_at": "2026-11-04T22:29:53.435230Z",
+    "tool_calls": 22,
+    "tool_errors": 0,
+    "tool_ms": 31502.0,
+    "tools": {
+      "python_execution": {
+        "calls": 22,
+        "errors": 0,
+        "ms": 31502.0,
+        "timed": 22
+      }
+    }
+  },
+  "f860a22cc807a6122b3df9743450d649a9d3a70fc80c20184a6f26ae0d68600e": {
+    "agent_ms": 280800.0,
+    "cache": 207616,
+    "cost": 0.6116,
+    "input": 470082,
+    "output": 6593,
+    "phases": [
+      {
+        "end": 1793732338566.9329,
+        "name": "environment_setup",
+        "start": 1793732337903.0781
+      },
+      {
+        "end": 1793732396576.3901,
+        "name": "agent_setup",
+        "start": 1793732338567.047
+      },
+      {
+        "end": 1793732677355.884,
+        "name": "agent_execution",
+        "start": 1793732396576.743
+      },
+      {
+        "end": 1793733611751.944,
+        "name": "verifier",
+        "start": 1793732693843.659
+      }
+    ],
+    "provider_calls": 18,
+    "provider_errors": 0,
+    "provider_ms": null,
+    "reward": null,
+    "run_ms": 1274000.0,
+    "started_at": "2026-11-03T18:58:57.801815Z",
+    "tool_calls": 35,
+    "tool_errors": null,
+    "tool_ms": null,
+    "tools": {
+      "bash": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "edit": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "glob": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "list_dir": {
+        "calls": 1,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read": {
+        "calls": 12,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "read_minified": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "skill": {
+        "calls": 2,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      },
+      "write_todo_list": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 0.0,
+        "timed": 0
+      }
+    }
+  },
+  "f92d9c1a4f8a666d50c6d04337ec18f9f6dfdca40e8f82523672ec050f875d9e": {
+    "agent_ms": 750500.0,
+    "cache": 538368,
+    "cost": 0.2248,
+    "input": 568450,
+    "output": 16593,
+    "phases": [
+      {
+        "end": 1793793179844.5972,
+        "name": "environment_setup",
+        "start": 1793793179183.661
+      },
+      {
+        "end": 1793793288335.259,
+        "name": "agent_setup",
+        "start": 1793793179844.84
+      },
+      {
+        "end": 1793794038797.988,
+        "name": "agent_execution",
+        "start": 1793793288335.791
+      },
+      {
+        "end": 1793794466678.3171,
+        "name": "verifier",
+        "start": 1793794084786.074
+      }
+    ],
+    "provider_calls": 33,
+    "provider_errors": 0,
+    "provider_ms": 261693.0,
+    "reward": 0.0,
+    "run_ms": 1287600.0,
+    "started_at": "2026-11-04T11:52:59.086924Z",
+    "tool_calls": 33,
+    "tool_errors": 0,
+    "tool_ms": 394780.0,
+    "tools": {
+      "patch": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 125609.0,
+        "timed": 6
+      },
+      "shell": {
+        "calls": 27,
+        "errors": 0,
+        "ms": 269171.0,
+        "timed": 27
+      }
+    }
+  }
+}

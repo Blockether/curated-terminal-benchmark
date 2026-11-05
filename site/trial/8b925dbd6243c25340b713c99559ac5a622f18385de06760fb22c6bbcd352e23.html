@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mvcc-lsm-compaction, vis-solo</title>
+<meta name="description" content="The vis-solo trial of mvcc-lsm-compaction: times, costs, tool errors and the transcript.">
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../report.css">
+<noscript><style>.diagram { display: none; }</style></noscript>
+<script src="../pele.global.js" defer></script>
+<script src="../report.js" defer></script>
+<script src="../viewer.js" defer></script></head>
+<body>
+<header class="topbar">
+<div class="container topbar-row">
+<a class="brand" href="../index.html"><img src="../logo.svg" alt="" width="25" height="28">
+<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
+<span class="brand-sep" aria-hidden="true">|</span>
+<span class="brand-name">CTB report</span></a>
+<nav aria-label="Sections"><a href="#timeline">Timeline</a><a href="#tools">Tools</a><a href="#errors">Errors</a><a href="#transcript">Transcript</a></nav>
+</div>
+</header>
+<main class="container">
+<section class="head">
+<p class="crumb"><a href="../index.html#trials">All trials</a></p>
+<h1>mvcc-lsm-compaction</h1>
+<div class="title-row"><span class="chip chip-passed">Passed</span></div>
+<dl class="facts facts-head"><div><dt>Task</dt><dd>mvcc-lsm-compaction</dd></div><div><dt>Agent</dt><dd>vis-solo</dd></div><div><dt>Version</dt><dd>0.5.3</dd></div><div><dt>Model</dt><dd>openai/gpt-6.1-sol</dd></div><div><dt>Round</dt><dd>gpt-vis-solo-053-6e1a71a</dd></div><div><dt>Started</dt><dd>2026-11-04 23:08 UTC</dd></div><div><dt>Reward</dt><dd>1</dd></div></dl>
+
+</section>
+<div class="panels readings"><div class="reading-cell"><p class="reading-label">Run time</p><p class="reading">8 min 15 s</p></div><div class="reading-cell"><p class="reading-label">Agent time</p><p class="reading">3 min 06 s</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">11</p><p class="reading-note">1 min 48 s in calls</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$0.0773</p><p class="reading-note">115,603 tokens</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">10</p><p class="reading-note">58.5 s in tools</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">0</p><p class="reading-note">0%</p></div></div>
+<section id="timeline" class="block">
+<h2>Run timeline</h2>
+<figure class="diagram"><figcaption>Run phases in UTC</figcaption><pre class="mermaid" role="img" aria-label="Run phases in UTC">gantt
+  dateFormat YYYY-MM-DD HH:mm:ss
+  axisFormat %H:%M:%S
+  Environment setup :p1, 2026-11-04 23:08:02, 2026-11-04 23:08:03
+  Agent setup :p2, 2026-11-04 23:08:03, 2026-11-04 23:08:55
+  Agent execution :p3, 2026-11-04 23:08:55, 2026-11-04 23:12:01
+  Verifier :p4, 2026-11-04 23:12:21, 2026-11-04 23:16:17</pre></figure><ul class="legend"><li>Environment setup <span class="mono">742 ms</span></li><li>Agent setup <span class="mono">52.2 s</span></li><li>Agent execution <span class="mono">3 min 06 s</span></li><li>Verifier <span class="mono">3 min 56 s</span></li></ul><p class="empty">Event times are not included in this normalized transcript view.</p>
+</section>
+<section id="provider" class="block">
+<h2>Calls</h2>
+<dl class="facts"><div><dt>Calls</dt><dd>11</dd></div><div><dt>Total time</dt><dd>1 min 48 s</dd></div><div><dt>Mean time</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Longest call</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Failed calls</dt><dd>0</dd></div><div><dt>Cost</dt><dd>$0.0773</dd></div><div><dt>Input tokens</dt><dd>111,406</dd></div><div><dt>Cached tokens</dt><dd>98,688</dd></div><div><dt>Output tokens</dt><dd>4,197</dd></div></dl>
+</section>
+<section id="tools" class="block">
+<h2>Tools</h2>
+<div class="scroll"><table class="data sortable"><thead><tr><th scope="col" data-type="text"><button type="button" class="sort">Tool</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Calls</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Errors</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Total time</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Mean time</button></th></tr></thead><tbody><tr><th scope="row" class="mono" data-v="python_execution">python_execution</th><td class="num" data-v="10">10</td><td class="num" data-v="0">0</td><td class="num" data-v="58462.0">58.5 s</td><td class="num" data-v="5846.2">5.8 s</td></tr></tbody></table></div>
+</section>
+
+<section id="errors" class="block">
+<h2>Errors</h2>
+<p class="empty">Event-level error details are not included in this normalized view.</p>
+</section>
+<section id="transcript" class="block" data-result-id="8b925dbd6243c25340b713c99559ac5a622f18385de06760fb22c6bbcd352e23"><h2>Transcript</h2><p class="hint">Credential-like values and local user paths are removed. This normalized text view is not a full raw log. Event timings and error flags are not included. One verified gzip file is downloaded for this trial.</p><nav class="chips" aria-label="Transcript filter"><a class="chip-link" href="?show=all#transcript" data-show="all">All</a><a class="chip-link" href="?show=messages#transcript" data-show="messages">Messages</a><a class="chip-link" href="?show=tools#transcript" data-show="tools">Tools</a><a class="chip-link" href="?show=calls#transcript" data-show="calls">Calls</a></nav><p id="status" class="count" role="status">Loading selected transcript…</p><p class="count" data-event-count aria-live="polite"></p><p class="empty" data-empty hidden>No events of this kind.</p><noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript><ol id="events" class="events" data-events></ol></section>
+</main>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>interleaved-vigenere, samizdat</title>
+<meta name="description" content="The samizdat trial of interleaved-vigenere: times, costs, tool errors and the transcript.">
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../report.css">
+<noscript><style>.diagram { display: none; }</style></noscript>
+<script src="../pele.global.js" defer></script>
+<script src="../report.js" defer></script>
+<script src="../viewer.js" defer></script></head>
+<body>
+<header class="topbar">
+<div class="container topbar-row">
+<a class="brand" href="../index.html"><img src="../logo.svg" alt="" width="25" height="28">
+<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
+<span class="brand-sep" aria-hidden="true">|</span>
+<span class="brand-name">CTB report</span></a>
+<nav aria-label="Sections"><a href="#timeline">Timeline</a><a href="#tools">Tools</a><a href="#errors">Errors</a><a href="#transcript">Transcript</a></nav>
+</div>
+</header>
+<main class="container">
+<section class="head">
+<p class="crumb"><a href="../index.html#trials">All trials</a></p>
+<h1>interleaved-vigenere</h1>
+<div class="title-row"><span class="chip chip-error" title="AgentTimeoutError">Error</span></div>
+<dl class="facts facts-head"><div><dt>Task</dt><dd>interleaved-vigenere</dd></div><div><dt>Agent</dt><dd>samizdat</dd></div><div><dt>Model</dt><dd>openai/gpt-6.1-sol</dd></div><div><dt>Round</dt><dd>gpt-sequential-c30ea7d</dd></div><div><dt>Started</dt><dd>2026-11-03 14:06 UTC</dd></div><div><dt>Reward</dt><dd>1</dd></div><div><dt>Exception</dt><dd>AgentTimeoutError</dd></div></dl>
+
+</section>
+<div class="panels readings"><div class="reading-cell"><p class="reading-label">Run time</p><p class="reading">2 h 02 min</p></div><div class="reading-cell"><p class="reading-label">Agent time</p><p class="reading">2 h 00 min</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">198</p><p class="reading-note">39 min 35 s in calls</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$2.94</p><p class="reading-note">3,101,516 tokens</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">198</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">14</p><p class="reading-note">7%</p></div></div>
+<section id="timeline" class="block">
+<h2>Run timeline</h2>
+<figure class="diagram"><figcaption>Run phases in UTC</figcaption><pre class="mermaid" role="img" aria-label="Run phases in UTC">gantt
+  dateFormat YYYY-MM-DD HH:mm:ss
+  axisFormat %H:%M
+  Environment setup :p1, 2026-11-03 14:06:09, 2026-11-03 14:06:13
+  Agent setup :p2, 2026-11-03 14:06:13, 2026-11-03 14:07:54
+  Agent execution :p3, 2026-11-03 14:07:54, 2026-11-03 16:07:55
+  Verifier :p4, 2026-11-03 16:08:09, 2026-11-03 16:08:37</pre></figure><ul class="legend"><li>Environment setup <span class="mono">4.0 s</span></li><li>Agent setup <span class="mono">1 min 41 s</span></li><li>Agent execution <span class="mono">2 h 00 min</span></li><li>Verifier <span class="mono">28.2 s</span></li></ul><p class="empty">Event times are not included in this normalized transcript view.</p>
+</section>
+<section id="provider" class="block">
+<h2>Calls</h2>
+<dl class="facts"><div><dt>Calls</dt><dd>198</dd></div><div><dt>Total time</dt><dd>39 min 35 s</dd></div><div><dt>Mean time</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Longest call</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Failed calls</dt><dd>0</dd></div><div><dt>Cost</dt><dd>$2.94</dd></div><div><dt>Input tokens</dt><dd>3,051,019</dd></div><div><dt>Cached tokens</dt><dd>1,933,184</dd></div><div><dt>Output tokens</dt><dd>50,497</dd></div></dl>
+</section>
+<section id="tools" class="block">
+<h2>Tools</h2>
+<div class="scroll"><table class="data sortable"><thead><tr><th scope="col" data-type="text"><button type="button" class="sort">Tool</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Calls</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Errors</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Total time</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Mean time</button></th></tr></thead><tbody><tr><th scope="row" class="mono" data-v="__no_call__">__no_call__</th><td class="num" data-v="1">1</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="__provider_error__">__provider_error__</th><td class="num" data-v="26">26</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="done">done</th><td class="num" data-v="46">46</td><td class="num bad" data-v="2">2</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="fetch_turn">fetch_turn</th><td class="num" data-v="5">5</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="glob">glob</th><td class="num" data-v="1">1</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="papercut">papercut</th><td class="num" data-v="1">1</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="plan">plan</th><td class="num" data-v="3">3</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="read_file">read_file</th><td class="num" data-v="6">6</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="resource">resource</th><td class="num" data-v="6">6</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="shell">shell</th><td class="num" data-v="69">69</td><td class="num bad" data-v="12">12</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="task">task</th><td class="num" data-v="31">31</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr><tr><th scope="row" class="mono" data-v="write_file">write_file</th><td class="num" data-v="3">3</td><td class="num" data-v="0">0</td><td class="num" data-v="-1"><span class="none">not recorded</span></td><td class="num" data-v="-1"><span class="none">not recorded</span></td></tr></tbody></table></div>
+</section>
+
+<section id="errors" class="block">
+<h2>Errors</h2>
+<p class="empty">Event-level error details are not included in this normalized view.</p>
+</section>
+<section id="transcript" class="block" data-result-id="6f0b0c926c8179ba94abd26db639a91bf182a845b6eeca99b43b24e5950485a3"><h2>Transcript</h2><p class="hint">Credential-like values and local user paths are removed. This normalized text view is not a full raw log. Event timings and error flags are not included. One verified gzip file is downloaded for this trial.</p><nav class="chips" aria-label="Transcript filter"><a class="chip-link" href="?show=all#transcript" data-show="all">All</a><a class="chip-link" href="?show=messages#transcript" data-show="messages">Messages</a><a class="chip-link" href="?show=tools#transcript" data-show="tools">Tools</a><a class="chip-link" href="?show=calls#transcript" data-show="calls">Calls</a></nav><p id="status" class="count" role="status">Loading selected transcript…</p><p class="count" data-event-count aria-live="polite"></p><p class="empty" data-empty hidden>No events of this kind.</p><noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript><ol id="events" class="events" data-events></ol></section>
+</main>
+</body>
+</html>
