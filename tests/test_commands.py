@@ -656,14 +656,26 @@ def test_opencode_without_a_session_export_keeps_the_json_line_totals(tmp_path):
     assert tokens(context) == (150, 50, 20)
 
 
-def test_task_fixes_install_the_requirements_that_the_interleaved_task_asks_for(tmp_path):
-    (tmp_path / "interleaved-vigenere" / "tests").mkdir(parents=True)
-    (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").write_text("pytest\n")
+def test_task_fixes_give_the_interleaved_verifier_what_the_agent_environment_has(tmp_path):
+    task = tmp_path / "interleaved-vigenere"
+    (task / "tests").mkdir(parents=True)
+    (task / "tests" / "test.sh").write_text("pytest\n")
+    (task / "task.toml").write_text('[environment]\ndocker_image = "upstream"\n')
 
     fixed = cli.apply_task_fixes(tmp_path)
 
-    assert fixed == ["interleaved-vigenere/tests/test.sh"]
-    script = (tmp_path / "interleaved-vigenere" / "tests" / "test.sh").read_text()
+    assert "interleaved-vigenere/tests/data/words.txt" in fixed
+    # Without a prebuilt image, Harbor builds both environments from the fixed Dockerfiles.
+    assert "docker_image" not in (task / "task.toml").read_text()
+    pin = next(
+        line
+        for line in (cli.SOURCE / "ctb" / "toolkit-requirements.txt").read_text().splitlines()
+        if line.startswith("numpy==")
+    )
+    for dockerfile in (task / "environment" / "Dockerfile", task / "tests" / "Dockerfile"):
+        assert f"pip install --no-cache-dir {pin}" in dockerfile.read_text()
+    script = (task / "tests" / "test.sh").read_text()
+    assert script.index("cp -R /tests/data /app/data") < script.index("pytest --ctrf")
     assert "pip install" in script and "/app/requirements.txt" in script
     assert script.index("pip install") < script.index("pytest --ctrf")
 

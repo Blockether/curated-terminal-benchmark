@@ -42,6 +42,18 @@ uv run python -m ctb.agents.vis pin RUN_ID
 uv run ctb fetch
 ```
 
+## Task fixes and the verifier
+
+All tasks verify in a separate environment. `task-fixes/` holds the tracked fixes; `ctb run` copies them over the dataset.
+For a task with a fixed `tests/` directory, Harbor uses the task's test script, not the copy in the bundled verifier image.
+The verifier of a task is the same for every agent. It must have each file and package that the agent environment gives to the solution:
+
+- `interleaved-vigenere`: both images add NumPy at the toolkit pin. The verifier restores `/app/data` from the environment image and installs `/app/requirements.txt`.
+- `photonic-waveguide-routing`: the verifier does not run the optional renderer, which can stop.
+
+To grade old trials again with the current verifier, use `harbor trials regrade TRIAL -p TASK -e ctb.environment:Podman --verifier harbor.verifier.verifier:Verifier`.
+The source trial does not change.
+
 ## Run the curated matrix
 
 Requires Python 3.12+, uv, a running Podman connection, and a valid Vis ChatGPT login.
