@@ -96,6 +96,8 @@ the same note about `ctb-python` and `ctb-pytest`. Task `python3` stays first on
 harness does not replace task-specific runtimes. The setup checks package versions before
 the agent runs and records `toolkit-inventory.json` and `python-resolution.txt` locally.
 These records are evidence, not public transcript payloads. Historical runs are not changed.
+Every new trial uses one verifier. It installs the same toolkit before the task tests and
+runs them with the same `PATH` as the agent commands.
 
 ## Agent selection
 

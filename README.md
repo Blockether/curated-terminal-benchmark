@@ -30,6 +30,7 @@ Every agent gets the same Python toolkit in `/installed-agent/ctb-python`:
 
 `ctb fetch` builds the toolkit once for linux/amd64 in Podman. Each agent setup unpacks it.
 Each agent command adds `ctb-python/bin` to the end of `PATH`. A Python of the task image still comes first.
+The verifier gets the same toolkit at the same path and `PATH` (see below).
 
 Vis also imports these packages in its sandbox through `VIS_PYTHON_PACKAGES`. Vis gets the `py` extension (`Blockether/vis-lang-python`), installed by `ctb fetch` with the pinned Vis build.
 Each Vis trial keeps its runtime files in `$HOME/.vis-runtime` through `VIS_RUNTIME_DIR`, away from the task workspace.
@@ -45,13 +46,20 @@ uv run ctb fetch
 ## Task fixes and the verifier
 
 All tasks verify in a separate environment. `task-fixes/` holds the tracked fixes; `ctb run` copies them over the dataset.
-For a task with a fixed `tests/` directory, Harbor uses the task's test script, not the copy in the bundled verifier image.
+Every trial uses one verifier, `ctb.verifier:Verifier`:
+
+- It runs the test script of the task directory, not the copy in the bundled verifier image.
+- Before the tests, it installs the agent toolkit in `/installed-agent/ctb-python` as root.
+  It records `toolkit-inventory.json` and `toolkit-install.json` (seconds) in the verifier logs.
+- The tests run with `ctb-python/bin` at the end of `PATH`, as each agent command does.
+- The install counts against the verifier timeout of the task.
+
 The verifier of a task is the same for every agent. It must have each file and package that the agent environment gives to the solution:
 
 - `interleaved-vigenere`: both images add NumPy at the toolkit pin. The verifier restores `/app/data` from the environment image and installs `/app/requirements.txt`.
 - `photonic-waveguide-routing`: the verifier does not run the optional renderer, which can stop.
 
-To grade old trials again with the current verifier, use `harbor trials regrade TRIAL -p TASK -e ctb.environment:Podman --verifier harbor.verifier.verifier:Verifier`.
+To grade old trials again with the current verifier, use `harbor trials regrade TRIAL -p TASK -e ctb.environment:Podman --verifier ctb.verifier:Verifier`.
 The source trial does not change.
 
 ## Run the curated matrix

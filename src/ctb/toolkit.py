@@ -93,18 +93,25 @@ def build(cpython: Path, target: Path | None = None) -> Path:
     return target
 
 
-async def install(agent, environment: BaseEnvironment) -> None:
-    """Unpack the toolkit into TOOLKIT, readable by the agent user. A repeat replaces it."""
-    await environment.upload_file(archive(), UPLOAD)
-    await agent.exec_as_root(
-        environment,
-        command=f"mkdir -p /installed-agent && rm -rf {TOOLKIT} && "
+def install_command(logs: str) -> str:
+    """Unpack the uploaded toolkit into TOOLKIT, readable by every user. A repeat replaces it.
+
+    The checked inventory goes to logs/toolkit-inventory.json. Agents and verifiers use it.
+    """
+    return (
+        f"mkdir -p /installed-agent && rm -rf {TOOLKIT} && "
         f"tar -xzf {UPLOAD} -C /installed-agent && chmod -R a+rX {TOOLKIT} && rm -f {UPLOAD} && "
         f"ln -sfn python3 {TOOLKIT}/bin/ctb-python && "
         f"printf '%s\\n' '#!/bin/sh' 'exec {TOOLKIT}/bin/python3 -m pytest \"$@\"' > {TOOLKIT}/bin/ctb-pytest && "
-        f"chmod a+rx {TOOLKIT}/bin/ctb-pytest && mkdir -p /logs/agent && "
-        f"{TOOLKIT}/bin/python3 -I -c {shlex.quote(inventory_script())} > /logs/agent/toolkit-inventory.json",
+        f"chmod a+rx {TOOLKIT}/bin/ctb-pytest && mkdir -p {logs} && "
+        f"{TOOLKIT}/bin/python3 -I -c {shlex.quote(inventory_script())} > {logs}/toolkit-inventory.json"
     )
+
+
+async def install(agent, environment: BaseEnvironment) -> None:
+    """Unpack the toolkit into TOOLKIT for the agent. A repeat replaces it."""
+    await environment.upload_file(archive(), UPLOAD)
+    await agent.exec_as_root(environment, command=install_command("/logs/agent"))
 
 
 class Toolkit:

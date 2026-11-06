@@ -43,6 +43,7 @@ DATASET = Path(os.environ.get("CTB_DATASET", ARTIFACTS / "datasets" / "terminal-
 COMPOSE = ARTIFACTS / "docker-compose"
 # Tracked verifier fixes, copied over the downloaded dataset before each run.
 TASK_FIXES = ROOT / "task-fixes"
+VERIFIER = "ctb.verifier:Verifier"
 # Pinned master commits. Dirge patches preserve provider token accounting.
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
 KMET_REPO, KMET_COMMIT = (
@@ -283,10 +284,10 @@ def harbor_command(trial: Trial, jobs: Path, multiplier: float) -> list[str]:
         str(SETUP_MULTIPLIER),
         "--plugin",
         privacy.REDACTOR,
+        # One verifier for every task: the task's own tests, with the toolkit of every agent.
+        "--verifier",
+        VERIFIER,
     ]
-    if (TASK_FIXES / trial.task / "tests").is_dir():
-        # Bundled verifier images otherwise ignore the tracked task fixes.
-        command += ["--verifier", "harbor.verifier.verifier:Verifier"]
     if trial.agent.effort_kwarg:
         command += ["--ak", f"reasoning_effort={EFFORT}"]
     for kwarg in trial.agent.agent_kwargs:
