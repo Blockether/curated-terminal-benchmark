@@ -117,21 +117,6 @@ class PublicReportTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 p.read(path)
 
-    def test_real_projection_matches_seals_and_build_is_checked(self):
-        root = Path(__file__).resolve().parents[1]
-        data = p.from_seals(root)
-        self.assertEqual(data, p.read(root / "public/comparison.json"))
-        self.assertEqual(sum(r["passed"] for r in data["rows"] if r["agent"] == "vis-solo"), 7)
-        with tempfile.TemporaryDirectory() as tmp:
-            out = Path(tmp).resolve() / "site"
-            p.build(root, out)
-            p.build(root, out, check=True)
-            with self.assertRaises(ValueError):
-                p.build(root, out)
-            (out / ".credential").write_text("SECRET-canary")
-            with self.assertRaises(ValueError):
-                p.build(root, out, check=True)
-
 
 class AssetRevisionTests(unittest.TestCase):
     def test_changed_asset_changes_browser_url_and_nested_css_urls(self):

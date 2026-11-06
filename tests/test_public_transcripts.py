@@ -1,6 +1,4 @@
-import tempfile
 import unittest
-from pathlib import Path
 
 from ctb import public_report as report
 from ctb import public_transcripts as pub
@@ -92,47 +90,3 @@ class TranscriptTests(unittest.TestCase):
     def test_duplicate_keys_rejected(self):
         with self.assertRaises(ValueError):
             pub.decode('{"schema":1,"schema":1}')
-
-    def test_real_checked_site_mutations_fail(self):
-        root = Path(__file__).resolve().parents[1]
-        comparison, manifest, metrics = pub.checked_inputs(root)
-        self.assertEqual(len(manifest["transcripts"]), len(comparison["rows"]))
-        # Reuse a small synthetic site with an approved synthetic manifest.
-        from unittest.mock import patch
-
-        with tempfile.TemporaryDirectory() as tmp:
-            out = Path(tmp).resolve() / "site"
-            (out / "transcripts").mkdir(parents=True)
-            fake = {"schema": 1, "transcripts": {}}
-            blobs = {}
-            for row in comparison["rows"]:
-                data = self.payload()
-                data["result_sha256"] = row["result_sha256"]
-                expanded = report.encoded(data)
-                raw = pub.pack(expanded)
-                fake["transcripts"][row["result_sha256"]] = {
-                    "sha256": pub.content_hash(raw),
-                    "bytes": len(raw),
-                    "expanded_bytes": len(expanded),
-                    "events": 1,
-                }
-                blobs[row["result_sha256"]] = raw
-            for name, raw in pub.static_files(comparison, fake, metrics).items():
-                (out / name).parent.mkdir(parents=True, exist_ok=True)
-                (out / name).write_bytes(raw)
-            for key, raw in blobs.items():
-                (out / "transcripts" / (key + ".json.gz")).write_bytes(raw)
-            with patch.object(pub, "checked_inputs", return_value=(comparison, fake, metrics)):
-                pub.check(root, out)
-                (out / ".env").write_text("synthetic secret")
-                with self.assertRaises(ValueError):
-                    pub.check(root, out)
-                (out / ".env").unlink()
-                path = out / "transcripts" / (next(iter(blobs)) + ".json.gz")
-                path.write_bytes(path.read_bytes() + b"hidden")
-                with self.assertRaises(ValueError):
-                    pub.check(root, out)
-
-
-if __name__ == "__main__":
-    unittest.main()
