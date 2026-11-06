@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis
+from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -51,6 +51,7 @@ KMET_REPO, KMET_COMMIT = (
     "b141b2bdf9ee26f6366552b94259ab8a4a40195b",
 )
 SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
+WISP_REPO = "https://github.com/xificurC/wisp.git"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
 BB_MIN = "1.13.225"
@@ -191,6 +192,15 @@ def fetch_samizdat() -> Path:
     return archive
 
 
+def fetch_wisp() -> Path:
+    """Pack the single-file wisp script at the pinned commit; a script needs no build."""
+    archive = wisp.Wisp.ARCHIVE
+    if not archive.is_file():
+        path = checkout(WISP_REPO, wisp.COMMIT, "wisp")
+        pack(path / "wisp" / "wisp", archive, "wisp")
+    return archive
+
+
 def fetch_toolkit() -> Path:
     """The Python toolkit of every agent, built from the pinned CPython and requirements."""
     target = toolkit.archive()
@@ -213,15 +223,15 @@ def fetch_kmet() -> Path:
 
 
 def fetch() -> None:
-    """Get everything for linux-amd64: the Python toolkit, native Vis, dirge, kmet and samizdat.
+    """Get everything for linux-amd64: the Python toolkit, Vis, dirge, kmet, samizdat and wisp.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
-    dirge and samizdat need Podman.
+    dirge and samizdat need Podman. wisp is one script from a pinned commit.
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat()]
+    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat(), fetch_wisp()]
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
@@ -515,6 +525,7 @@ def pins() -> dict:
         "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,
         "samizdat": samizdat.COMMIT,
+        "wisp": wisp.COMMIT,
         "jolt": samizdat.JOLT_VERSION,
         "harbor": metadata.version("harbor"),
         "harnesses": {
