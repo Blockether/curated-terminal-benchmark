@@ -211,6 +211,7 @@ def test_vis_installs_only_the_pinned_build(pinned):
     _, data = pinned
     solo = VisSolo(logs_dir=Path("/tmp/l"), model_name="openai/gpt-6.1-sol")
     solo.exec_as_root = AsyncMock()
+    solo.exec_as_agent = AsyncMock()
     solo._get_system_package_manager = AsyncMock(return_value="apt-get")
     environment = AsyncMock()
     with pytest.raises(FileNotFoundError, match="uv run ctb fetch"):
@@ -235,6 +236,10 @@ def test_vis_installs_only_the_pinned_build(pinned):
     assert extensions.parent == solo.ARCHIVE.parent
     command = solo.exec_as_root.await_args_list[-1].kwargs["command"]
     assert "mv /tmp/ctb-extensions.tar.gz /installed-agent/extras/vis-extensions.tar.gz" in command
+    # Setup unpacks the Vis home as the agent user, so the timed agent run does not pay for it.
+    unpack = solo.exec_as_agent.await_args_list[-1].kwargs["command"]
+    assert "tar -xzf /installed-agent/extras/vis-extensions.tar.gz -C /tmp/ctb-home/.vis" in unpack
+    assert "$HOME" not in unpack
 
 
 @pytest.mark.parametrize("release", [None, "v0.5.0"])
@@ -690,7 +695,9 @@ def test_vis_unpacks_its_extensions_and_keeps_its_runtime_apart(pinned):
     runtime = "$HOME/.vis-runtime"
     assert (
         "export VIS_HOME=$HOME/.vis && "
+        "{ [ -f $HOME/.vis/.ctb-extensions ] || { mkdir -p $HOME/.vis && "
         "tar -xzf /installed-agent/extras/vis-extensions.tar.gz -C $HOME/.vis && "
+        "touch $HOME/.vis/.ctb-extensions; }; } && "
         f"mkdir -m 700 -p {runtime} && mkdir -m 700 -p {runtime}/tmp && "
         f"export VIS_RUNTIME_DIR={runtime} TMPDIR={runtime}/tmp "
         "VIS_PYTHON_PACKAGES=/installed-agent/ctb-python/lib/python3.14/site-packages && "

@@ -17,6 +17,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials, toolkit
 from ctb.agents.base import (
+    AGENT_HOME,
     EFFORT,
     FAMILIES,
     VERBOSITY,
@@ -38,7 +39,7 @@ TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
 #: The extensions of every profile, from the Extension Center. Each build gets its own archive.
 EXTENSIONS = {"Blockether/vis-lang-python": "1.15.2"}
-#: The extensions archive waits here until the agent command unpacks it into $HOME/.vis.
+#: The extensions archive. Setup unpacks it into the agent home, outside the timed agent run.
 EXTRAS = "/installed-agent/extras"
 EXTENSIONS_UPLOAD = f"{EXTRAS}/vis-extensions.tar.gz"
 #: VIS_RUNTIME_DIR: worker sockets and temporary files of Vis, apart from the task's /tmp.
@@ -53,10 +54,29 @@ mkdir -p "$VIS_HOME"
 for spec in $EXTENSIONS; do
   /installed-agent/vis-agent extension install "${spec%@*}" --version "${spec#*@}" --global --trust
 done
-timeout 300 /installed-agent/vis-agent --db :memory -- x >/dev/null 2>&1 || true
+prepare() { timeout 300 /installed-agent/vis-agent --db :memory -- x >/dev/null 2>&1 || true; }
+prepare
+# The stamp of each environment digests the site-packages mtime in milliseconds, but a tar member
+# keeps whole seconds. Round the mtime down and prepare again, so the unpacked stamp still matches.
+for site in "$VIS_HOME"/extensions/*/*/.venv-*/lib/python*/site-packages; do
+  touch -m -d "@$(stat -c %Y "$site")" "$site"
+done
+prepare
+rm -rf "$VIS_HOME/logs"
+prepare
 grep -h 'loaded Python extension' "$VIS_HOME"/logs/*/*.log
-tar -czf "/x/$OUT" -C "$VIS_HOME" extensions
+# Fail the build if a start after the unpack would prepare an environment again.
+grep -h -A1 '::reload-phases' "$VIS_HOME"/logs/*/*.log \
+  | grep -o '{:phase :environment, :ms [0-9]*' | awk '{ print } $NF + 0 > 1000 { bad = 1 } END { exit bad }'
+tar -czf "/x/$OUT" -C "$VIS_HOME" extensions python/pycache
 """
+#: Unpack the extensions and their bytecode into the Vis home. The marker comes after a complete
+#: unpack, so a repeat skips the work and an interrupted unpack runs again.
+UNPACKED = "$HOME/.vis/.ctb-extensions"
+UNPACK = (
+    f"{{ [ -f {UNPACKED} ] || {{ mkdir -p $HOME/.vis && "
+    f"tar -xzf {EXTENSIONS_UPLOAD} -C $HOME/.vis && touch {UNPACKED}; }}; }}"
+)
 CHUNK = 1 << 20
 
 
@@ -240,12 +260,14 @@ class VisSolo(CuratedAgent):
             raise FileNotFoundError(f"Missing Vis extensions {extensions}; run `uv run ctb fetch`.")
         await super().install(environment)
         await environment.upload_file(extensions, "/tmp/ctb-extensions.tar.gz")
-        # clean() removes the agent home before the verifier, so the agent command unpacks it.
         await self.exec_as_root(
             environment,
             command=f"mkdir -p {EXTRAS} && "
             f"mv /tmp/ctb-extensions.tar.gz {EXTENSIONS_UPLOAD} && chmod a+r {EXTENSIONS_UPLOAD}",
         )
+        # Unpack as the agent user now, so the timed run does not pay for it. clean() removes the
+        # agent home before the verifier, so the agent command unpacks it again when it is missing.
+        await self.exec_as_agent(environment, command=UNPACK.replace("$HOME", AGENT_HOME))
 
     def secret_files(self) -> dict[str, str]:
         if self.family == "openai":
@@ -287,7 +309,7 @@ class VisSolo(CuratedAgent):
             flags.append(f"--extensions {shlex.quote(names)}")
         effort = self.profile.get("effort", EFFORT)
         setup = (
-            f"tar -xzf {EXTENSIONS_UPLOAD} -C $HOME/.vis && "
+            f"{UNPACK} && "
             f"mkdir -m 700 -p {RUNTIME} && mkdir -m 700 -p {RUNTIME}/tmp && "
             f"export VIS_RUNTIME_DIR={RUNTIME} TMPDIR={RUNTIME}/tmp "
             f"VIS_PYTHON_PACKAGES={toolkit.PACKAGES} && "
