@@ -539,6 +539,48 @@ def test_opencode_installs_the_pinned_opencode_2_package():
     assert "opencode-ai" not in commands[0]
 
 
+def test_opencode_setup_writes_its_config_and_database_without_a_login():
+    opencode = agent(OpenCode, "openai/gpt-6.1-sol")
+    calls = []
+
+    async def fake_exec(environment, command, env=None, **kwargs):
+        calls.append((command, env or {}))
+
+    opencode.ensure_system_dependencies = AsyncMock()
+    opencode.exec_as_agent = fake_exec
+    asyncio.run(opencode.install(None))
+    command, env = calls[-1]
+    assert "~/.config/opencode/opencode.json" in command
+    assert "opencode --standalone session list" in command
+    assert f"{LOCAL_DATA}/clean-db" in command
+    assert env["XDG_DATA_HOME"] == f"{LOCAL_DATA}/xdg-data"
+    assert not set(env) & set(opencode.model_connection.env)
+
+
+def test_opencode_run_only_imports_the_login_into_a_clean_database(monkeypatch):
+    # The timed run must not write the config again, and a second run after the database of the
+    # first run was deleted must start from the clean copy.
+    opencode = agent(OpenCode, "openai/gpt-6.1-sol")
+    commands = []
+
+    async def fake_exec(environment, command, env=None, **kwargs):
+        commands.append(command)
+
+    monkeypatch.setattr(credentials, "codex_vis", lambda minimum: credentials.Access("A", 1))
+    monkeypatch.setattr("ctb.agents.opencode.stage_files", AsyncMock())
+    monkeypatch.setattr(OpenCode, "_watch", AsyncMock())
+    opencode.exec_as_agent = fake_exec
+    opencode.exec_as_root = fake_exec
+    asyncio.run(opencode.run("x", None, AgentContext()))
+    data = f"{LOCAL_DATA}/xdg-data/opencode"
+    assert commands[0].startswith(f"[ -f {data}/opencode.db ] || ")
+    assert f"cp {LOCAL_DATA}/clean-db/* {data}/" in commands[0]
+    assert "auth import" in commands[0]
+    assert not any(".config/opencode" in command for command in commands)
+    assert any("opencode run --standalone" in command for command in commands)
+    assert f"rm -f {data}/opencode.db*" in commands[-1]
+
+
 def test_opencode_gets_the_instruction_verbatim_on_stdin():
     # OpenCode 2.2.0 reads the words after `--` twice and quotes each one that has a space.
     instruction = '--start\nSay "it\'s" and C:\\x'
@@ -713,7 +755,7 @@ def test_vis_keeps_its_logs_and_exit_status(pinned):
     )
 
 
-def test_opencode_deletes_its_login_when_a_setup_command_fails(monkeypatch, tmp_path):
+def test_opencode_deletes_its_login_when_the_login_import_fails(monkeypatch, tmp_path):
     from harbor.agents.installed.base import NonZeroAgentExitCodeError
 
     from ctb.agents import opencode as module
@@ -724,8 +766,8 @@ def test_opencode_deletes_its_login_when_a_setup_command_fails(monkeypatch, tmp_
     root = []
 
     async def fake_exec(environment, command, env=None, **kwargs):
-        if "opencode.json" in command:
-            raise NonZeroAgentExitCodeError("config failed")
+        if "auth import" in command:
+            raise NonZeroAgentExitCodeError("auth import failed")
 
     async def fake_root(environment, command, **kwargs):
         root.append(command)

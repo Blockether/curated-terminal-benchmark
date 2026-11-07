@@ -30,6 +30,14 @@ FINAL_GRACE_S = 120
 SESSION_FILE = "session.json"
 #: ~/.nvm is absent on musl images, where Node comes from apk.
 NVM = "[ -f ~/.nvm/nvm.sh ] && . ~/.nvm/nvm.sh; "
+#: OpenCode's database, with the login of a run, and its log.
+DATA = f"{LOCAL_DATA}/xdg-data/opencode"
+#: A migrated database without a login. Setup makes it, and each run starts from a copy.
+CLEAN_DB = f"{LOCAL_DATA}/clean-db"
+#: Put the clean database back after `_collect` deleted the database of an earlier run.
+RESTORE_DB = (
+    f"[ -f {DATA}/opencode.db ] || {{ mkdir -p {DATA} && cp {CLEAN_DB}/* {DATA}/ 2>/dev/null; }}; "
+)
 
 
 def stop_command(signal: str) -> str:
@@ -198,6 +206,31 @@ class OpenCode(Toolkit, HarborOpenCode):
                 "opencode --version"
             ),
         )
+        # The timed run then does not pay for these files or for the database migrations.
+        await self.exec_as_agent(environment, command=self.prepare_command(), env=self.setup_env())
+
+    def prepare_command(self) -> str:
+        """Write the skills and the config, then keep a migrated database without a login."""
+        files = [
+            f"{command}; "
+            for command in (
+                self._build_register_skills_command(),
+                self._build_register_config_command(),
+            )
+            if command
+        ]
+        # Not `set -u`: nvm.sh reads unset variables.
+        return (
+            f"set -e; {''.join(files)}{NVM}opencode --standalone session list > /dev/null; "
+            f"rm -rf {CLEAN_DB} {DATA}/log; mkdir -p {CLEAN_DB}; cp {DATA}/opencode.db* {CLEAN_DB}/"
+        )
+
+    def setup_env(self) -> dict[str, str]:
+        """The environment of OpenCode in setup: the data paths, without a model connection."""
+        connection = self.model_connection.env
+        return {
+            name: value for name, value in self.opencode_env().items() if name not in connection
+        }
 
     def opencode_env(self) -> dict[str, str]:
         """The environment of every OpenCode command, with its data off the host-mounted logs."""
@@ -267,15 +300,10 @@ class OpenCode(Toolkit, HarborOpenCode):
         try:
             await self.exec_as_agent(
                 environment,
-                command=f"{NVM}opencode --standalone auth import {login}; s=$?; rm -f {login}; exit $s",
+                command=f"{RESTORE_DB}{NVM}opencode --standalone auth import {login}; "
+                f"s=$?; rm -f {login}; exit $s",
                 env=env,
             )
-            for command in (
-                self._build_register_skills_command(),
-                self._build_register_config_command(),
-            ):
-                if command:
-                    await self.exec_as_agent(environment, command=command, env=env)
             watch = asyncio.create_task(self._watch(environment, stopped))
             await self.exec_as_agent(environment, command=self.run_command(instruction), env=env)
             if messages := self._error_messages():
