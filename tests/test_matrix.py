@@ -22,8 +22,16 @@ def test_two_vis_arms_run_task_major_in_one_round():
     ]
 
 
-def test_every_arm_is_in_the_default_matrix():
-    assert matrix.DEFAULT_AGENTS.split(",") == list(matrix.AGENTS)
+def test_paused_arms_stay_out_of_the_default_matrix():
+    assert matrix.DEFAULT_AGENTS.split(",") == [
+        "vis-solo",
+        "vis-team",
+        "codex",
+        "kmet",
+        "opencode",
+        "pi",
+    ]
+    assert [t.job for t in matrix.trials(["dirge"], ["openai"], ["x"])] == ["dirge__openai__x"]
 
 
 def test_task_selectors():

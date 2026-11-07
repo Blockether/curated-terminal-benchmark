@@ -23,6 +23,9 @@ class AgentSpec:
     version: str | None = None
     #: An experiment arm runs only when --agents names it, never in the default matrix.
     experiment: bool = False
+    #: A paused arm also runs only when --agents names it. Dirge and Samizdat are paused:
+    #: they used the most time and cost and passed 2 and 3 of 12 tasks.
+    paused: bool = False
 
 
 AGENTS = {
@@ -38,10 +41,10 @@ AGENTS = {
             agent_kwargs=(f"reasoning_summary={REASONING_SUMMARY}",),
             version="0.166.0",
         ),
-        AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",)),
+        AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",), paused=True),
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).
-        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True),
+        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True, paused=True),
         # GPT uses each harness's native subscription login.
         AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("openai",)),
         AgentSpec("pi", "ctb.agents.pi:Pi", ("openai",), effort_kwarg=True),
@@ -50,7 +53,9 @@ AGENTS = {
 
 
 #: The agents of a run or seal without --agents.
-DEFAULT_AGENTS = ",".join(name for name, spec in AGENTS.items() if not spec.experiment)
+DEFAULT_AGENTS = ",".join(
+    name for name, spec in AGENTS.items() if not (spec.experiment or spec.paused)
+)
 
 
 @dataclass(frozen=True)
