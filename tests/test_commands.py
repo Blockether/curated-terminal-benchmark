@@ -271,7 +271,7 @@ def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch, release):
     assert path.read_bytes() == data
     if not release:
         assert calls[-2][:4] == ["gh", "run", "download", "7"]
-    assert calls[-1][0] == "podman" and "EXTENSIONS=Blockether/vis-lang-python@1.16.6" in calls[-1]
+    assert calls[-1][0] == "podman" and "EXTENSIONS=Blockether/vis-lang-python@1.16.7" in calls[-1]
     assert vis.extensions_archive(build).read_bytes() == b"extensions"
     vis.fetch(build)
     assert len(calls) == 3

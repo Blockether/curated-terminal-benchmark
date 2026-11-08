@@ -38,7 +38,7 @@ TRACE = f"{LOGS}/vis-trace.jsonl"
 TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
 #: The extensions of every profile, from the Extension Center. Each build gets its own archive.
-EXTENSIONS = {"Blockether/vis-lang-python": "1.16.6"}
+EXTENSIONS = {"Blockether/vis-lang-python": "1.16.7"}
 #: The extensions archive. Setup unpacks it into the agent home, outside the timed agent run.
 EXTRAS = "/installed-agent/extras"
 EXTENSIONS_UPLOAD = f"{EXTRAS}/vis-extensions.tar.gz"

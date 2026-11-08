@@ -36,7 +36,7 @@ The verifier gets the same toolkit at the same path and `PATH` (see below).
 Vis also imports these packages in its sandbox through `VIS_PYTHON_PACKAGES`. Vis gets the `py` extension (`Blockether/vis-lang-python`), installed by `ctb fetch` with the pinned Vis build.
 Each Vis trial keeps its runtime files in `$HOME/.vis-runtime` through `VIS_RUNTIME_DIR`, away from the task workspace.
 
-The current pin uses Vis `v0.5.3`. Its release archive has a pinned commit and SHA-256.
+The current pin uses Vis `v0.5.7`. Its release archive has a pinned commit and SHA-256.
 To pin a workflow artifact instead, use a successful `native-release.yml` run of Blockether/vis:
 
 ```sh
