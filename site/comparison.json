@@ -85,6 +85,90 @@
       "task": "wal-recovery-ordering"
     },
     {
+      "agent": "kmet",
+      "error": null,
+      "passed": true,
+      "result_sha256": "b8695b088fae04544ac84f93235fa71ac9c75018b20e48c9bba4d3e041a6373b",
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "75abcc4c8799e75dea444b1010881fce2505db5cebb5b873ee80d9a31b6c3a1e",
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": true,
+      "result_sha256": "960523aa4d6e5d70cf9cae90e6610cf44a81d1aa57f0858dc96fc06a1720f12d",
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "adf27a7518634ff4093a31328ef77a5288fe7720426899df8b38a6dab237dd72",
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c789d787d4a3627e9a124e03191a0c51e8975d345b4366f1085ce13c6303401a",
+      "task": "music-harmony"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "403498b047917b34393c009afc9cd96c75c22d6d1a105e11cc955fb9c9a9d601",
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "48e283c47caa0e713a92f74460ed6cb262ac8c290ac6613231ee0b1d196bebf2",
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "b67d4a5c232e3bbb169251af18b6fd931a6a7cfc64a9544e2a872c3c603fb2db",
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": true,
+      "result_sha256": "73e25b3356eee0bd1f8b1ca9ceff373400852f64843547cdf4598a03ede6f48d",
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": true,
+      "result_sha256": "fef49f64a51e4c1f9b9b8b62d3e30b765869040e933159a5ffab7b24fc0c2aff",
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "a64b8bd026a1d2c11e3da7af9e983513fafd20af423ee4fa1a2212a46df2f7ef",
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "kmet",
+      "error": null,
+      "passed": false,
+      "result_sha256": "25a578fd2a987196790908665532e707762bb43d3e45c4d40a7decd89c6d0afc",
+      "task": "wal-recovery-ordering"
+    },
+    {
       "agent": "opencode",
       "error": null,
       "passed": false,
@@ -343,6 +427,11 @@
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
       "round": "gpt-bench-b2a4d4a",
       "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
+    },
+    "kmet": {
+      "harness_commit": "16bbdc8ae457a1280a14dee2360768150e06a438",
+      "round": "gpt-kmet-2-16bbdc8",
+      "seal_sha256": "41acb6f946d03407f9ec60d4bfe0f24feddde85bb724ec6c1c2e76c30a709ade"
     },
     "opencode": {
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
