@@ -1,630 +1,274 @@
 {
   "rows": [
     {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": false,
-      "result_sha256": "b298f2c6f726552f9bd8e2682cb5b0f09cbed5dc75669c1268b71dc58e738aec",
-      "task": "bun-sourcemap-leak"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "25a69e0c1f96b5b3e590f6e2f22dab1a78122fa120673903f65552162d3e022d",
-      "task": "html-js-filter"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": false,
-      "result_sha256": "f78a7658c5a8a4a716a4163c8edc755d3fa312485ba1db7768ea6c08ac79e5cb",
-      "task": "interleaved-vigenere"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "a09b5eb70180963427c891932023afe2a6f8369cde7f4d8572f107fc30e946e6",
-      "task": "kv-live-surgery"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": false,
-      "result_sha256": "153e6255e18eca93fc4436794f9c8a996ac6d6fa02cf7774453620be3d9be8b3",
-      "task": "music-harmony"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "8b925dbd6243c25340b713c99559ac5a622f18385de06760fb22c6bbcd352e23",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "8fc20bfd6c7d945b9358c6f4c5185f8339e44bcc341a83efd9e0c95be6e2df3b",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "9f6d5263eed36864b5d2dc519173196fd154cca771eec8739e9539615b3c49aa",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": false,
-      "result_sha256": "c8c70ef0540cafac039dd22baa54387440a301513424cc58c2db50af9cc90447",
-      "task": "react-lead-form"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "2521b6563ea7461b031ef8efbea99268104872a73fa05057ec19afbec195102a",
-      "task": "session-window-debug"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": false,
-      "result_sha256": "d094a574314d81019cdbeb06c45476d716b7625d6fa324be4afc8fea98d0f125",
-      "task": "vf2-speedup-networkx"
-    },
-    {
-      "agent": "vis-solo",
-      "error": null,
-      "passed": true,
-      "result_sha256": "9e0049348dddb322277439e843df8a0f90bdbde7d6afbd0d7fd22cb07e35be0f",
-      "task": "wal-recovery-ordering"
-    },
-    {
       "agent": "codex",
       "error": null,
       "passed": false,
-      "result_sha256": "e319c3d71dd35587b1e8f5a856640938b968e5677058b718b8d5ba928b4f9981",
+      "result_sha256": "9a9047342db68fd29406a6eefb54dd02ede2e4cb1be4814731aa4a959cc8c254",
       "task": "bun-sourcemap-leak"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "6c16a53ef4f5a4b8ecc4fae675efd2f82dad4bd7e54ecfb09ecb8d907da1d231",
+      "result_sha256": "ada5b72d5f565fe566b15f8c65ed8ef8d3c04af73abced29ae94ce7eb0a0114b",
       "task": "html-js-filter"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "a15c5d49abf601419bc06afb3707c69ea464b4ca7d5beb7628e60214508de118",
+      "result_sha256": "95040669c950d055ba22a9b19b02783b0a50648362d626b345c1c37e336cae0d",
       "task": "interleaved-vigenere"
     },
     {
       "agent": "codex",
       "error": null,
-      "passed": true,
-      "result_sha256": "a86953d07977b228a0b135e0f812602252d5425d6427352daa5d0508ed44b6f4",
+      "passed": false,
+      "result_sha256": "b1c9bea45a4bc45342730cc5b8dd5a5e513434b2532d713dc26443901264573d",
       "task": "kv-live-surgery"
     },
     {
       "agent": "codex",
       "error": null,
-      "passed": true,
-      "result_sha256": "c3a69c0c4bf20e337ba5fe191bbe0928005fcbeed751597a30a31be4ab4fe187",
+      "passed": false,
+      "result_sha256": "64370655d4f2f9869201149b07ed0e219b9b5ca2cf339f4ca5febd0ea27a24a2",
       "task": "music-harmony"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "302eb4ee635ab11def9b811c35117251da1d0db6ee943fad1b3502a5552e8847",
+      "result_sha256": "06a38e09e6f71169512c19468c4e8ede3fcda5a7c8bdd866bd5a46be3b7beca2",
       "task": "mvcc-lsm-compaction"
     },
     {
       "agent": "codex",
       "error": null,
-      "passed": false,
-      "result_sha256": "a65c5bfa50c6a82b83b6cb6d8c025cc9122038f54e3f23151c529630ac4408bf",
+      "passed": true,
+      "result_sha256": "6a07f92de1d21861289fe685014f0c9b329c9ebc46a85afc0b981282024d6540",
       "task": "payments-pipeline-fix"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "37eb4493909179e1cdb6c58baae726ae3ac28ab46c9090275c7e63a8c82074bc",
+      "result_sha256": "2ef8270ff9abe39cbc3b5249c4bc5693fe7bf5bfea8526d0bc931d5a989a8f40",
       "task": "photonic-waveguide-routing"
     },
     {
       "agent": "codex",
       "error": null,
-      "passed": false,
-      "result_sha256": "233f9c4283da2f4caf1af8730ab65c484fdda4fe707c39ee6f11ed9f0b9f667d",
+      "passed": true,
+      "result_sha256": "a1a2f0432f829b9e2dc949f7c99590f8baf5e2654c39074bc58f38b19ae43420",
       "task": "react-lead-form"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "28b0ea8922445c371f877a3b9fd1100d53b5ec91fdcd8debe679965dad305a14",
+      "result_sha256": "27354ea247311fa1bb7be7e9f33ef269a07c85b8d1ee1309a6b91956a0a335e1",
       "task": "session-window-debug"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": false,
-      "result_sha256": "bbc57d90d6139dca20ac70c01e62782a1b262d22d063331ec9970a16b43fe0ee",
+      "result_sha256": "cebb84ea76cc814e0a7ac372cd0c40dac8196102fc5fa95b58e915a6fe983370",
       "task": "vf2-speedup-networkx"
     },
     {
       "agent": "codex",
       "error": null,
       "passed": true,
-      "result_sha256": "54e2a8dacc90fab0cb77ffa10bc81fe1f74e45912b15e1606ac2e99a2b2ea3a4",
+      "result_sha256": "f87494e816b0d2593c729df4928583967f0276eb0ed15e76463718f0e6b3456f",
       "task": "wal-recovery-ordering"
     },
     {
-      "agent": "dirge",
+      "agent": "opencode",
       "error": null,
       "passed": false,
-      "result_sha256": "af8c88e84ee600df0a989a5db3e4ac50292a8f703576c7235865eebb675adea9",
+      "result_sha256": "679152c3f0ef6c4376a36a20a20b6873dbc7e7daf1feb0c9ad9f1fa5300f9554",
       "task": "bun-sourcemap-leak"
     },
     {
-      "agent": "dirge",
+      "agent": "opencode",
       "error": null,
-      "passed": false,
-      "result_sha256": "a4913c89d42abbf110ccfb57662e8d93496bdf9b62a795a0ccbf405a7b5b80ab",
+      "passed": true,
+      "result_sha256": "38687d8fb4e6e1f4657ff943fefe8b8d21acd2d96e3937daa058d24ab53f7b98",
       "task": "html-js-filter"
     },
     {
-      "agent": "dirge",
+      "agent": "opencode",
       "error": null,
-      "passed": false,
-      "result_sha256": "c51090db337bf07641215b841b7a1721427714e6c341a6c7c12de1a6074c2db4",
+      "passed": true,
+      "result_sha256": "dee1da38f723fbe1941a6014d1e76d036c441006712b7704b2162dc0034a7ec4",
       "task": "interleaved-vigenere"
     },
     {
-      "agent": "dirge",
-      "error": "RuntimeError",
-      "passed": false,
-      "result_sha256": "961fc9c15e738c8d7d78694ed41f52bbf02861c301c687f73abbb68494c98dfa",
+      "agent": "opencode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "eab4d709c1edebbb5091f4043b11afe3bcea0f917f14810e5b9ea9f51b62e592",
       "task": "kv-live-surgery"
     },
     {
-      "agent": "dirge",
+      "agent": "opencode",
       "error": null,
-      "passed": false,
-      "result_sha256": "beb19d77e4375efcf6ebd1afe8d15a5005575bf759dd7cee1ef7e5fadb9dc627",
+      "passed": true,
+      "result_sha256": "90e79bb4f991e92a4301f64d717822a70b6bbbaff55109246201f2c97fa74eaf",
       "task": "music-harmony"
     },
     {
-      "agent": "dirge",
+      "agent": "opencode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "262128fb759b382c4ae610ba0b11da8f4f2e04d4b61047055c5ab0f96427f31d",
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "ea087973e70d337df28176e07ce7ee0d5520893a7a526710208f3262e1567055",
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "eee96786eb43a1bb0d1251166ecfb77e6419994bd783f01a9d6704ec2aae42c4",
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "27300f5b54d2e7806270b0fcd6b633ddbba473831d9ec34c05040685047e6347",
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "68f3cd1c7a0a54038036de0dffdea8c40f43521cb41ebb2290ab3e54b2bc1ceb",
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "e3a8573f36cec9e36a07fe63537403d8a291e75b5ee9a2926c7b767bae0165bf",
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "opencode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "d1c8532fbf12b5830c82e24ff8fe84cfc205fae35025973c06f31f4fe148e596",
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "b87cc6f53b2fb4d6e5a8dff8fd5a4371216424d11f92406eb005630b80d36dc7",
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "83e0310df28e2dbebdce85d767f6c2f85aa465ebcfaf627f70ac4f51d21d9270",
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "1bf39288327afbf646d404ab894d7f9a29d70d11245cc57817214207053344d9",
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "f340ad827a07f68b02cf95123f557abdadbd9149145d471bfaceadc579945e88",
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": false,
+      "result_sha256": "f69cb6acb7d6eafad7180e26f00dc22dd9577af76a6c1ed35de47e0057e6ba97",
+      "task": "music-harmony"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "c9adc0cad7409907345c9f172f8a3affb3a6de0a1c11ecc549b3858424720167",
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "a80a493f07d75a968eaa6929dd2d065fbf2a7dc8340735d044af1e1dcd41ef41",
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "pi",
+      "error": null,
+      "passed": true,
+      "result_sha256": "1372ffb806484c19b8d6d9001035ec3be188b3bd81f4d35960c0b376f250b381",
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "pi",
       "error": "VerifierTimeoutError",
       "passed": false,
-      "result_sha256": "f860a22cc807a6122b3df9743450d649a9d3a70fc80c20184a6f26ae0d68600e",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "dirge",
-      "error": "AgentTimeoutError",
-      "passed": false,
-      "result_sha256": "687652aef94c5e17cd3842f46653afcc68667c5f94907f76bb8d667f673675ae",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "dirge",
-      "error": null,
-      "passed": true,
-      "result_sha256": "a318d15f594d7befd43ab8c702659eaa66c8e265d4749045b7482938fce4107c",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "dirge",
-      "error": null,
-      "passed": false,
-      "result_sha256": "f0b5faeca45b15342fbd1da40da4f6d2200b5525ea5d995c11ac7e7afa01b6cc",
-      "task": "react-lead-form"
-    },
-    {
-      "agent": "dirge",
-      "error": "AgentTimeoutError",
-      "passed": false,
-      "result_sha256": "e9c7114c8dedc8eed801f9b3c36f29be2ac074d28c268ee3c68f863c577e3fd9",
-      "task": "session-window-debug"
-    },
-    {
-      "agent": "dirge",
-      "error": null,
-      "passed": true,
-      "result_sha256": "c24e37d0e05e6e082631f760d95fb86723aee9c270231ebe81d7390141b95a21",
-      "task": "vf2-speedup-networkx"
-    },
-    {
-      "agent": "dirge",
-      "error": null,
-      "passed": false,
-      "result_sha256": "396b9fe7918588fa1572d1966075586d13d2e7f6beea8cebbb505e60bc5bd656",
-      "task": "wal-recovery-ordering"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "a01c8ca899cd130e0efade2f8ea11c7f693350e4b532e75a3286044ec051ff15",
-      "task": "bun-sourcemap-leak"
-    },
-    {
-      "agent": "opencode",
-      "error": "OpenCodeHangError",
-      "passed": true,
-      "result_sha256": "354826401bc53a40ef212121b5988918e5f7e29ea3aaaa0429fa8b6d5514bdda",
-      "task": "html-js-filter"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "a7ab26dbc00dfb92e1d2f8506b25a7c95bd2a39a93950674da9f8489dff2c819",
-      "task": "interleaved-vigenere"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "e6a8f5b43304bfc81cfbbe7f6228f16df0a24129756189270a46dee165d75926",
-      "task": "kv-live-surgery"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "0812a110bba2b60d33caf472a1b9c2dccd9d7df72896c076977a2b713c21b0a8",
-      "task": "music-harmony"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": true,
-      "result_sha256": "01df3c9af0cb2c87d0feda21e9dcef4bb5a7c007b4660cda3d58da8f6f4b1f49",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "81d3623cee6d501c4bf5430f262968a68fb2efb5c3a09bd85659faaf119fe9e4",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "opencode",
-      "error": "VerifierTimeoutError",
-      "passed": false,
-      "result_sha256": "364bea49b0aae287dc65ba451efb15d045bc7308ea49ba3d0f721c8a9d09f7f2",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "87ed61ef9d34c4f59d2d48bb26e78793360ae013bd1b8a96aa73d47cb5f328c1",
-      "task": "react-lead-form"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "4b32867fe6385615c2c32bea8fc48032de638f3ac980597b41de81d626af25e5",
-      "task": "session-window-debug"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": false,
-      "result_sha256": "f92d9c1a4f8a666d50c6d04337ec18f9f6dfdca40e8f82523672ec050f875d9e",
-      "task": "vf2-speedup-networkx"
-    },
-    {
-      "agent": "opencode",
-      "error": null,
-      "passed": true,
-      "result_sha256": "d879e7d7e79dbdab6201ed58cea91e74e1389884edb966ac5943715adf96c940",
-      "task": "wal-recovery-ordering"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "60673c08ce4c5a23995dc45886cb6410af52783b54b1dda36525023a5a11af39",
-      "task": "bun-sourcemap-leak"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "8bf443f108624a82eff77ff5d173ab80c87aa2ccb71569a8af238e863fc89051",
-      "task": "html-js-filter"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": true,
-      "result_sha256": "eb2670ad6a75a42666c26cce1ed673468f6c6b9b32a6ba6c910c7d78d502b6d7",
-      "task": "interleaved-vigenere"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "09b7de9cae266b21ca588baf9b5eb0f26287d2e87ba93508260bf01a64b38b3e",
-      "task": "kv-live-surgery"
-    },
-    {
-      "agent": "kmet",
-      "error": "NonZeroAgentExitCodeError",
-      "passed": false,
-      "result_sha256": "2fc62e7a72244c605dd062eedeb45821c5b33d4225f7329c679d9b90265e60d6",
-      "task": "music-harmony"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": true,
-      "result_sha256": "f3be153b3649bbfba73a4b349ed8cda6719c840f985c34f10288eab7c031ef89",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": true,
-      "result_sha256": "900c39fba45ccd2445669e7d3d407e19a2054279433fc2c30c1ee1a697d8a810",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "kmet",
-      "error": "NonZeroAgentExitCodeError",
-      "passed": false,
-      "result_sha256": "08bcf42eedfd7f983188b3f64aae6ba5922371734f39651d0deb626764ea59b8",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "bb69bf45e47dd0797cf27fad61e29a6a74092b82cf5badce9043f2a3c178711f",
-      "task": "react-lead-form"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "3aba1ec206407a5d1cc462e51c60b928301567c086468150df9f1563738f3e5c",
-      "task": "session-window-debug"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "9bb72c5b4b46202dd51cf9974d843623f6608cf0d3b459bc28781c916f01a9b1",
-      "task": "vf2-speedup-networkx"
-    },
-    {
-      "agent": "kmet",
-      "error": null,
-      "passed": false,
-      "result_sha256": "d2efdc5724b1f6c88a68bf7b16668c4c05efd9abb97db7b5893a64e6d079f174",
-      "task": "wal-recovery-ordering"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "7ccc99dee21e1ffb0a5a829c5b61d32dcbdd521383816710a47e94bd7df634b6",
-      "task": "bun-sourcemap-leak"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": true,
-      "result_sha256": "7c1ab265dff6c4de6991e249f0378280aad8d549db3331cdb771eb791005fa45",
-      "task": "html-js-filter"
-    },
-    {
-      "agent": "samizdat",
-      "error": "AgentTimeoutError",
-      "passed": true,
-      "result_sha256": "6f0b0c926c8179ba94abd26db639a91bf182a845b6eeca99b43b24e5950485a3",
-      "task": "interleaved-vigenere"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "44ef368f86d6d25b00e575bdeaf477bcd7983500932376298127f9eb8cd1c90f",
-      "task": "kv-live-surgery"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "1fc2d24ec803c7e3a127b02b96bb76ed7cb5e7cf9b467f0343a3f62e274b30eb",
-      "task": "music-harmony"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": true,
-      "result_sha256": "c4631da63dbf8fa0b69ed282a10604bcca05f8defd889b3deb33a4c8175d6bb1",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "edadc88b3c76e43c3e8fd21556d6178e0175c8f946142e5e471c990e44cac7c6",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "2fbc2f6d255b6d4bbfe077743a867b3d1db652060be245da93d7f9eaf7c5cf25",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "samizdat",
-      "error": "AgentTimeoutError",
-      "passed": false,
-      "result_sha256": "d281abe644db5dbc93f01c7e2392ab2457fd6fa4b56381331f9c02605a1a7cd6",
-      "task": "react-lead-form"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "c18008757d6ddee246b938e08a35deeb08d8e8cdc6e35d537f708365f5046f87",
-      "task": "session-window-debug"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "11fc7d910da7d772cdb33b34e3dfae1c43ca3220d4c7204f75e26c2e502aba90",
-      "task": "vf2-speedup-networkx"
-    },
-    {
-      "agent": "samizdat",
-      "error": null,
-      "passed": false,
-      "result_sha256": "17ca9a5ac88ef977fe7a9f3e570e83b6ba5367e8245544a03a1a33aea7785c92",
-      "task": "wal-recovery-ordering"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": false,
-      "result_sha256": "75c538d30a398521160841537c45fcbd0b98c48285ec89dec0a5a9e05a451d46",
-      "task": "bun-sourcemap-leak"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": false,
-      "result_sha256": "9111f9f43894d7a450d413d3be5698fc227eab204fac8c5afd58507aca08505b",
-      "task": "html-js-filter"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": true,
-      "result_sha256": "bb8a3b27120cbbfadcf011c503396622d930d31b9524197f04f26003e83fafbd",
-      "task": "interleaved-vigenere"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": true,
-      "result_sha256": "0308727f18e26cdf10738e805cb53f09b5a1342c47a403bfccda9719fba4cf18",
-      "task": "kv-live-surgery"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": false,
-      "result_sha256": "5508750b1cbfacf32039dbfa17ca9c26d394122fc2582a4d54fc3e5b166c0c5c",
-      "task": "music-harmony"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": true,
-      "result_sha256": "0603b69d3ef408d5468cd04ade54b6c373fd8d5f701cda433cd46bfbf8472dd4",
-      "task": "mvcc-lsm-compaction"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": true,
-      "result_sha256": "9a11fae7c28b2e776250979c66814c31c6f884010a4d7cfa668ede45ce340d53",
-      "task": "payments-pipeline-fix"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": true,
-      "result_sha256": "1d0b68c791ea6400d5dd8a19a21530fac8537d55405526fde59362dbd34bf679",
-      "task": "photonic-waveguide-routing"
-    },
-    {
-      "agent": "pi",
-      "error": null,
-      "passed": false,
-      "result_sha256": "259f7fee466a6ddd732bc50a9b8ce3fac87a303bf5312d247d0f5355d1d0745d",
+      "result_sha256": "dafb20dda1b8f6d7a6c5872b90d89d0e96fe32424be8c27b4a0724bbbe064a7b",
       "task": "react-lead-form"
     },
     {
       "agent": "pi",
       "error": null,
       "passed": false,
-      "result_sha256": "560a6506886097c6e466046d7b50fb4a29c57fcf172fab4541b35d2f0e51fdac",
+      "result_sha256": "34e77de76f82ee5e20030081c0a8cddd229e2d600ee1f6c4dcb7157392183904",
       "task": "session-window-debug"
     },
     {
       "agent": "pi",
       "error": null,
-      "passed": true,
-      "result_sha256": "b8dd8cae9db7fafb9d328d6a57302b41ab9854e0b2abcd5c4f46f33e99dc919a",
+      "passed": false,
+      "result_sha256": "8002a34fb4e462f48a8fa535b20a95e1480aca5da5169a44131923dbe9f0a72d",
       "task": "vf2-speedup-networkx"
     },
     {
       "agent": "pi",
       "error": null,
       "passed": true,
-      "result_sha256": "746103caf4ddf1e2e1b19690b31c5027145c1c49cc3a89e574e32299b8806920",
+      "result_sha256": "9a618f3d00f045783db3a92d8273ac8ace920bd50715b1a2d3f8abce5078d94c",
       "task": "wal-recovery-ordering"
     }
   ],
   "schema": 1,
   "sources": {
     "codex": {
-      "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
-      "round": "gpt-codex-dirge-c30ea7d",
-      "seal_sha256": "10c686e803f8b3511f8c3f03d2fdbc0fdbe3457978fe086fc1bf067a57ad0ff3"
-    },
-    "dirge": {
-      "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
-      "round": "gpt-codex-dirge-c30ea7d",
-      "seal_sha256": "10c686e803f8b3511f8c3f03d2fdbc0fdbe3457978fe086fc1bf067a57ad0ff3"
-    },
-    "kmet": {
-      "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
-      "round": "gpt-sequential-c30ea7d",
-      "seal_sha256": "377d3f42de96c09d4b25d627a9838087d4bd66a0c4a8368f979b74f8f106e710"
+      "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
+      "round": "gpt-bench-b2a4d4a",
+      "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     },
     "opencode": {
-      "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
-      "round": "gpt-opencode-03-c30ea7d",
-      "seal_sha256": "781893127962f8c95df82fd53946ed84afd9e8a93d69635d814ce54337517a4a"
+      "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
+      "round": "gpt-bench-b2a4d4a",
+      "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     },
     "pi": {
-      "harness_commit": "59a845e8bbde370acb856f9b7915e7788ad3d6f3",
-      "round": "gpt-pi-150-59a845e",
-      "seal_sha256": "91fccb1e46afb010de044fbb514a58b4232903e224fce1fc007ab2d11a947ee8"
-    },
-    "samizdat": {
-      "harness_commit": "c30ea7d09557529363e77e9808e0920be3d48494",
-      "round": "gpt-sequential-c30ea7d",
-      "seal_sha256": "377d3f42de96c09d4b25d627a9838087d4bd66a0c4a8368f979b74f8f106e710"
-    },
-    "vis-solo": {
-      "harness_commit": "6e1a71a69eeca2553507307342933412c292a83e",
-      "round": "gpt-vis-solo-053-6e1a71a",
-      "seal_sha256": "06071b2f5e000a0aaca6fa5b5c813e5a8949f4064de046ffaf5df32f09c68206"
+      "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
+      "round": "gpt-bench-b2a4d4a",
+      "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     }
   }
 }
