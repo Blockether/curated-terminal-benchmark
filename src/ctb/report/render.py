@@ -6,7 +6,6 @@ A value that a harness does not record shows as "not recorded", never as zero.
 """
 
 import html
-import json
 import math
 import os
 import re
@@ -15,11 +14,11 @@ import statistics
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from datetime import UTC, datetime
-from itertools import combinations, repeat
+from itertools import repeat
 from pathlib import Path
 
 from ctb.metrics import list_price
-from ctb.report.comparison import general_summary, selected_cohorts
+from ctb.report.comparison import cohorts
 
 STATIC = Path(__file__).parent / "static"
 ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
@@ -257,8 +256,8 @@ def diagram(source: str, caption: str) -> str:
     )
 
 
-def agent_charts(trials: list[dict]) -> str:
-    """Pass rate and cost of each agent as two bar charts."""
+def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
+    """Pass rate and cost of each agent as bar charts; on shared tasks only cost, as all passed."""
     by_agent: dict[str, list[dict]] = defaultdict(list)
     for trial in trials:
         by_agent[trial["agent"]].append(trial)
@@ -286,9 +285,14 @@ def agent_charts(trials: list[dict]) -> str:
     )
     return (
         '<div class="charts">'
-        + diagram(pass_chart, "Pass rate by agent")
+        + ("" if shared else diagram(pass_chart, "Pass rate by agent"))
         + (
-            diagram(cost_chart, "Total cost by agent (not task-normalized)")
+            diagram(
+                cost_chart,
+                "Cost by agent on the shared tasks"
+                if shared
+                else "Total cost by agent (not task-normalized)",
+            )
             if all(t["facts"]["cost"] is not None for t in trials)
             else '<p class="empty">Total cost chart omitted: some trials have no recorded cost.</p>'
         )
@@ -296,306 +300,56 @@ def agent_charts(trials: list[dict]) -> str:
     )
 
 
-def comparison_panel(group: dict, trials: list[dict]) -> str:
-    """Show resource means for tasks passed by every selected agent."""
-    agents = group["agents"]
-    basis_name = "jointly solved tasks"
-    rows = []
-    for agent in agents:
-        row = group["rows"][agent]
-        rows.append(
-            f'<tr><th scope="row">{esc(agent)}</th>'
-            + td(money(row["cost"]))
-            + td(duration(row["run_ms"]))
-            + td(duration(row["agent_ms"]))
-            + "</tr>"
-        )
-    mixed = len(group["setups"]) > 1 or "unknown" in group["setups"]
-    content = ""
-    if not group["strict"] and mixed:
-        content += (
-            '<p class="comparison-warning" role="note"><strong>Different setups.</strong> '
-            "This is not a controlled agent ranking. Normalizing tasks does not correct "
-            "different harness configurations. A matched setup run is needed.</p>"
-        )
-    content += table(
-        [
-            th("Agent", "text", False),
-            th("Mean cost", sortable=False),
-            th("Mean full trial time", sortable=False),
-            th("Mean agent time", sortable=False),
-        ],
-        rows,
-        empty="No matched outcomes.",
-    )
-    content += (
-        f'<p class="hint">Resource use: {basis_name}. '
-        f"Cost uses {len(group['metric_tasks']['cost'])} tasks; full trial time uses "
-        f"{len(group['metric_tasks']['run_ms'])}; agent time uses {len(group['metric_tasks']['agent_ms'])}. "
-        "Each metric uses the same tasks for every selected agent. "
-        "Full trial time includes setup and verification. "
-        "Only tasks passed by every selected agent are included. Pass rates are shown in General."
-        "</p>"
-    )
-    charts = []
-    names = ", ".join(f'"{mermaid_text(a)}"' for a in agents)
-    series = []
-    for metric, label, scale in (
-        ("cost", "Mean cost (USD)", 1),
-        ("run_ms", "Mean full trial time (minutes)", 60000),
-    ):
-        values = [group["rows"][a][metric] for a in agents]
-        if all(v is not None for v in values):
-            converted = [v / scale for v in values]
-            series.append(
-                (label + " · " + basis_name, label, converted, max(1, math.ceil(max(converted))))
-            )
-    for caption, axis, values, top in series:
-        source = (
-            f"xychart-beta horizontal\n  x-axis [{names}]\n"
-            f'  y-axis "{axis}" 0 --> {top}\n'
-            f"  bar [{', '.join(str(round(v, 4)) for v in values)}]"
-        )
-        charts.append(diagram(source, caption))
-    if charts:
-        content += '<div class="charts">' + "".join(charts) + "</div>"
-    if not group["solved"]:
-        content += (
-            '<p class="empty">No tasks were solved by every selected agent. '
-            "Choose General to see all attempts, including failures.</p>"
-        )
-    coverage = []
-    for agent in agents:
-        cells = [
+def normalized(trials: list[dict]) -> tuple[list[dict], list[str]]:
+    """The one attempt of each agent on each task that every agent of the same model passed."""
+    keep = []
+    for group in cohorts(trials, strict=False, basis="solved"):
+        solved, agents = set(group["solved"]), set(group["agents"])
+        keep += [
             t
             for t in trials
-            if t["agent"] == agent
-            and t.get("model") == group["model"]
-            and (not group["strict"] or t.get("setup") == group["setup"])
-            and t["task"] in group["solved"]
+            if t.get("model") == group["model"] and t["agent"] in agents and t["task"] in solved
         ]
-
-        def recorded(key, source, cells=cells):
-            return f"{sum(t.get(source, {}).get(key) is not None for t in cells)} / {len(cells)}"
-
-        coverage.append(
-            f'<tr><th scope="row">{esc(agent)}</th>'
-            + td(recorded("cost", "facts"))
-            + td(recorded("run_ms", "facts"))
-            + td(recorded("agent_ms", "facts"))
-            + td(recorded("provider_ms", "summary"))
-            + td(recorded("tool_ms", "summary"))
-            + "</tr>"
-        )
-    content += (
-        '<details class="comparison-details"><summary>Metric coverage and excluded tasks</summary>'
-    )
-    content += table(
-        [
-            th("Agent", "text", False),
-            th("Cost", sortable=False),
-            th("Full trial", sortable=False),
-            th("Agent time", sortable=False),
-            th("Provider time", sortable=False),
-            th("Tool time", sortable=False),
-        ],
-        coverage,
-        empty="No measurements.",
-    )
-    content += (
-        '<p class="hint">Coverage counts recorded measurements on shared successful tasks. '
-        "A missing value is not zero. Provider and tool time are optional agent-specific diagnostics; "
-        "the core comparison uses full trial time recorded by Harbor for every completed trial.</p>"
-    )
-    if "dirge" in agents:
-        content += (
-            '<p class="hint">Dirge records final usage for completed runs, but these logs lack '
-            "per-call usage and provider or tool times. Interrupted runs may lack final usage. "
-            "Full trial time is available independently of those logs.</p>"
-        )
-    for metric, label in (
-        ("cost", "Cost"),
-        ("run_ms", "Full trial time"),
-        ("agent_ms", "Agent time"),
-    ):
-        content += (
-            '<p class="hint">'
-            + label
-            + " tasks: "
-            + esc(", ".join(group["metric_tasks"][metric]) or "none")
-            + ".</p>"
-        )
-    content += (
-        f'<p class="hint">Excluded: {len(group["excluded"])} missing, '
-        f"{len(group['ambiguous'])} with retries, {len(group['mismatched'])} with different "
-        "or missing task checksums.</p>"
-    )
-    if group["mismatched"]:
-        content += (
-            '<p class="hint">Changed task content: ' + esc(", ".join(group["mismatched"])) + ".</p>"
-        )
-    for agent in agents:
-        sources = sorted(
-            {
-                (t.get("round") or "unknown", t.get("setup") or "unknown")
-                for t in trials
-                if t["agent"] == agent
-                and t.get("model") == group["model"]
-                and (not group["strict"] or t.get("setup") == group["setup"])
-            }
-        )
-        content += (
-            '<p class="hint">'
-            + esc(agent)
-            + ": "
-            + esc("; ".join(r + " / " + p for r, p in sources))
-            + "</p>"
-        )
-    content += "</details>"
-    key = esc(json.dumps(agents))
-    mode = "normalized"
-    return (
-        f'<div data-comparison-panel="{key}" data-mode="{mode}" hidden>'
-        f"<h3>{esc(' vs '.join(agents))}</h3>"
-        f'<p class="comparison-coverage">{len(group["solved"])} tasks passed by every selected agent.</p>'
-        + '<p class="hint">Included tasks: '
-        + esc(", ".join(group["solved"]) or "none")
-        + "</p>"
-        + content
-        + "</div>"
-    )
+    return keep, sorted({t["task"] for t in keep})
 
 
-def general_panel(trials, agents):
-    selected = [t for t in trials if t["agent"] in agents]
-    summary = general_summary(selected, agents)
-    rows, details = [], []
-    for agent, row in summary.items():
-        rows.append(
-            '<tr><th scope="row">'
-            + esc(agent)
-            + "</th>"
-            + td(number(row["attempts"]))
-            + td(number(row["passed"]))
-            + td(percent(row["passed"], row["attempts"]))
-            + td(money(row["cost"]))
-            + td(duration(row["run_ms"]))
-            + td(duration(row["agent_ms"]))
-            + "</tr>"
+def agent_view(trials: list[dict]) -> str:
+    """One agent table in two tabs: all attempts, and only the tasks that every agent passed."""
+    head = [
+        th("Agent", "text"),
+        th("Trials"),
+        th("Passed"),
+        th("Pass rate"),
+        th("Run time"),
+        th("Median run"),
+        th("Calls"),
+        th("Recorded call time"),
+        th("Cost"),
+        th("Tool calls"),
+        th("Tool errors"),
+        th("Error rate"),
+    ]
+    general = (
+        '<p class="hint">All attempts of each agent, failures included. These are totals, not an '
+        "efficiency ranking. Cost is the API list-price equivalent where token usage is recorded. "
+        "A dash marks a value that no trial of the agent records.</p>"
+        + agent_charts(trials)
+        + table(head, agent_rows(trials), cls="sortable", empty="No trials were found.")
+    )
+    shared, tasks = normalized(trials)
+    if tasks:
+        names = ", ".join(task_name(t) for t in tasks)
+        normal = (
+            f'<p class="hint">Only {"the task" if len(tasks) == 1 else f"the {len(tasks)} tasks"} '
+            f"that every agent passed, one attempt each, so cost and time compare on the same work: "
+            f"{esc(names)}.</p>"
+            + agent_charts(shared, shared=True)
+            + table(head, agent_rows(shared), cls="sortable", empty="No trials were found.")
         )
-        details.append(
-            '<p class="hint">'
-            + esc(agent)
-            + ": "
-            + esc(", ".join(row["tasks"]))
-            + ". Recorded cost: "
-            + str(row["cost_recorded"])
-            + "/"
-            + str(row["attempts"])
-            + "; full trial time: "
-            + str(row["run_ms_recorded"])
-            + "/"
-            + str(row["attempts"])
-            + "; agent time: "
-            + str(row["agent_ms_recorded"])
-            + "/"
-            + str(row["attempts"])
-            + ".</p>"
-        )
-    mixed = len({(t.get("model"), t.get("setup")) for t in selected}) != 1 or any(
-        not t.get("setup") for t in selected
-    )
-    warning = (
-        (
-            '<p class="comparison-warning"><strong>Different or unknown setups.</strong> '
-            "These historical totals are not a controlled agent ranking. Both views need the same "
-            "model, packages, limits and harness for a controlled comparison.</p>"
-        )
-        if mixed
-        else ""
-    )
-    content = table(
-        [
-            th(x, sortable=False)
-            for x in (
-                "Agent",
-                "Attempts",
-                "Passed",
-                "Pass rate",
-                "Total cost",
-                "Total full trial time",
-                "Total agent time",
-            )
-        ],
-        rows,
-        empty="No attempts.",
-    )
-    charts = []
-    names = ", ".join('"' + mermaid_text(a) + '"' for a in agents)
-    for metric, label, scale in (
-        (None, "Overall pass rate (%)", 1),
-        ("cost", "Total cost (USD)", 1),
-        ("run_ms", "Total full trial time (minutes)", 60000),
-    ):
-        values = [
-            100 * summary[a]["passed"] / summary[a]["attempts"]
-            if metric is None and summary[a]["attempts"]
-            else summary[a].get(metric)
-            for a in agents
-        ]
-        if all(v is not None for v in values):
-            values = [v / scale for v in values]
-            source = (
-                f"xychart-beta horizontal\n  x-axis [{names}]\n"
-                f'  y-axis "{label}" 0 --> {max(1, math.ceil(max(values)))}\n'
-                f"  bar [{', '.join(str(round(v, 4)) for v in values)}]"
-            )
-            charts.append(diagram(source, label))
-    return (
-        f'<div data-comparison-panel="{esc(json.dumps(list(agents)))}" data-mode="general" hidden>'
-        + "<h3>"
-        + esc(" vs ".join(agents))
-        + "</h3>"
-        + warning
-        + '<p class="hint">All attempts for each agent, including failures and extra tasks. '
-        "No task intersection or success filtering. A total is unavailable if any attempt lacks that measurement; "
-        "partial sums are not presented as totals.</p>"
-        + content
-        + '<div class="charts">'
-        + "".join(charts)
-        + "</div>"
-        + '<details class="comparison-details"><summary>Included tasks and metric coverage</summary>'
-        + "".join(details)
-        + "</details></div>"
-    )
-
-
-def matched_comparisons(trials: list[dict]) -> str:
-    """General includes all attempts; Normalized includes only shared successful tasks."""
-    agents = sorted({t["agent"] for t in trials})
-    panels = []
-    for size in range(2, len(agents) + 1):
-        for selection in combinations(agents, size):
-            panels.append(general_panel(trials, selection))
-            for group in selected_cohorts(trials, selection, strict=False, basis="solved"):
-                panels.append(comparison_panel(group, trials))
-    controls = "".join(
-        f'<label class="compare-choice"><input type="checkbox" name="compare" value="{esc(agent)}">'
-        f'<span class="compare-label"><span>{esc(agent)}</span><small>Select agent</small></span></label>'
-        for agent in agents
-    )
-    return (
-        '<section id="matched" class="block"><h2>Compare agents</h2>'
-        '<p class="hint">General: all attempts. Normalized: only tasks every selected agent passed.</p>'
-        '<fieldset class="compare-picker" data-compare-picker><legend>Agents to compare</legend>'
-        '<div class="compare-options">' + controls + "</div></fieldset>"
-        '<div class="comparison-modes"><label class="field"><span>View</span>'
-        '<select data-comparison-mode><option value="general">General</option>'
-        '<option value="normalized">Normalized</option></select></label></div>'
-        '<p class="comparison-status" data-comparison-status role="status">Loading comparison controls.</p>'
-        "<noscript><p>Enable JavaScript to select a comparison.</p></noscript>"
-        + "".join(panels)
-        + "</section>"
+    else:
+        normal = '<p class="empty">No task was passed by every agent.</p>'
+    return tabs(
+        [("general", "General", general), ("normalized", "Normalized", normal)], "Agent view"
     )
 
 
@@ -765,20 +519,6 @@ def index(trials: list[dict], generated: str, *, head: str | None = None) -> str
             ),
         ]
     )
-    agent_head = [
-        th("Agent", "text"),
-        th("Trials"),
-        th("Passed"),
-        th("Pass rate"),
-        th("Run time"),
-        th("Median run"),
-        th("Calls"),
-        th("Recorded call time"),
-        th("Cost"),
-        th("Tool calls"),
-        th("Tool errors"),
-        th("Error rate"),
-    ]
     error_head = [
         th("Agent", "text"),
         th("Tool", "text"),
@@ -820,13 +560,9 @@ def index(trials: list[dict], generated: str, *, head: str | None = None) -> str
         head = f'<section class="head">\n<h1>Benchmark runs</h1>\n<p class="lead">{esc(lead)}</p>\n</section>'
     body = f"""{head}
 {top}
-{matched_comparisons(trials)}
 <section id="agents" class="block">
-<h2>Agents: recorded run totals</h2>
-<p class="hint">These are unnormalized totals, not an efficiency ranking. Cost is the API list-price equivalent where token usage is recorded. A dash
-marks a value that no trial of the agent records.</p>
-{agent_charts(trials)}
-{table(agent_head, agent_rows(trials), cls="sortable", empty="No trials were found.")}
+<h2>Agents</h2>
+{agent_view(trials)}
 </section>
 <section id="tool-errors" class="block">
 <h2>Tool errors by tool</h2>
@@ -1130,6 +866,10 @@ def event_item(index: int, e: dict, base: float | None) -> str:
 
 
 VERIFY_KINDS = {"suite": "Suite", "test": "Test", "log": "Log"}
+VERIFY_HINT = (
+    '<p class="hint">What the verifier ran after the agent finished: the task tests, '
+    "their output and the logs of task services.</p>"
+)
 STATUS_CHIPS = {"passed": "chip-passed", "failed": "chip-error"}
 
 
@@ -1195,20 +935,16 @@ def verification_list(entries: list[dict]) -> str:
     return f'<ol class="events" data-verification>{"".join(items)}</ol>'
 
 
-def tabs(implementation: str, verification: str) -> str:
-    """The two phases of a trial. Without JavaScript both panels stay visible."""
+def tabs(panels: list[tuple[str, str, str]], label: str) -> str:
+    """Tab buttons and panels; the first tab starts selected. Without JavaScript all panels show."""
     buttons = "".join(
         f'<button type="button" role="tab" id="tab-{key}" aria-controls="{key}" '
-        f'aria-selected="{"true" if key == "implementation" else "false"}" data-tab="{key}">{label}</button>'
-        for key, label in (("implementation", "Implementation"), ("verification", "Verification"))
+        f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{key}">{esc(name)}</button>'
+        for i, (key, name, _) in enumerate(panels)
     )
-    return (
-        f'<div class="tabs" role="tablist" aria-label="Trial phase">{buttons}</div>'
-        f'<div id="implementation" role="tabpanel" aria-labelledby="tab-implementation" '
-        f'data-tab-panel="implementation">{implementation}</div>'
-        f'<div id="verification" role="tabpanel" aria-labelledby="tab-verification" '
-        f'data-tab-panel="verification"><p class="hint">What the verifier ran after the agent '
-        f"finished: the task tests, their output and the logs of task services.</p>{verification}</div>"
+    return f'<div class="tabs" role="tablist" aria-label="{esc(label)}">{buttons}</div>' + "".join(
+        f'<div id="{key}" role="tabpanel" aria-labelledby="tab-{key}" data-tab-panel="{key}">{html}</div>'
+        for key, _, html in panels
     )
 
 
@@ -1330,7 +1066,19 @@ def trial_page(trial: dict) -> str:
 </section>
 <section id="transcript" class="block">
 <h2>Transcript</h2>
-{tabs(implementation, verification_list(trial["verification"]))}
+{
+        tabs(
+            [
+                ("implementation", "Implementation", implementation),
+                (
+                    "verification",
+                    "Verification",
+                    VERIFY_HINT + verification_list(trial["verification"]),
+                ),
+            ],
+            "Trial phase",
+        )
+    }
 </section>"""
     description = (
         f"The {trial['agent']} trial of {task_name(trial['task'])}: times, costs, "

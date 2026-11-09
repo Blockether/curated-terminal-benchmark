@@ -80,22 +80,20 @@ log and exception evidence are still required, hashed and scanned. Incomplete au
 
 The workflow supports a manual run too. It does not automatically select new benchmark data.
 
-## Matched task comparisons
+## Agent tabs
 
-The selector has two views. **General** includes every attempt for each selected agent,
-including failures and extra tasks. It shows attempts, passes, overall pass rate and total
-cost and time. It does not intersect task sets. A total is unavailable if any attempt lacks
-that measurement; a partial sum is not a total.
+The agent table has two tabs. **General** is the default. It includes every attempt of each
+agent, including failures and extra tasks, and shows attempts, passes, pass rate and totals.
+It does not intersect task sets. A total is unavailable if any attempt lacks that
+measurement; a partial sum is not a total.
 
-**Normalized** includes only tasks that every selected agent completed successfully, with
-the same task checksum and model. Duplicate attempts are excluded, not selected by the best
-result. It shows mean cost and time on that shared successful set, not pass rates. Each
-metric requires measurements for every selected agent on the same tasks. The page lists
-those tasks and metric coverage. No shared successes means no normalized comparison.
+**Normalized** includes only the tasks that every agent passed, with one attempt each and the
+same model. A task with two attempts by one agent is excluded, not resolved by the best
+result. The tab lists those tasks. If no task was passed by every agent, it says so.
+The URL stores `tab=normalized`. Trial-list filters do not change these tabs.
 
-Setup consistency is a separate warning in both views. Equal task content does not make
-different harnesses, packages or limits equivalent. Recorded setup equality also does not
-prove equal host load or provider conditions. Trial-list filters do not change these views.
+Equal task content does not make different harnesses, packages or limits equivalent. It also
+does not prove equal host load or provider conditions.
 
 New trials use the same pinned Python archive and package inventory. Each agent receives
 the same note about `ctb-python` and `ctb-pytest`. Task `python3` stays first on PATH so the
@@ -105,15 +103,6 @@ These records are evidence, not public transcript payloads. Historical runs are 
 Every new trial uses one verifier. It installs the same toolkit before the task tests and
 runs them with the same `PATH` as the agent commands.
 
-## Agent selection
-
-The comparison selector accepts two or more agents. A URL with `compare=codex,pi`
-keeps the selection when the page reloads. Only the selected comparison is visible.
-An empty selection or one agent does not produce a comparison. Different setups show a warning.
-Open the metric coverage section to see which shared trials record each measurement.
-Provider time and tool time are not inferred from total agent time.
-Interrupted runs can lack a final usage record. Missing values stay missing.
-
 ## Asset updates
 
 All public styles, scripts, font files and nested CSS imports use one content-derived URL
@@ -121,12 +110,12 @@ revision. The revision changes when any approved UI asset changes. This prevents
 script or stylesheet from a previous deployment from controlling newer HTML. Transcript
 payloads keep their existing content hashes and are not changed by a layout update.
 
-## Comparison and metric coverage
+## Metric coverage
 
-General is the default view. The URL stores `mode=general` or `mode=normalized` and the
-selected agents. Missing values never become zero. Full trial time includes environment
-setup and verification; agent time is separate. A failed attempt can consume less without
-being better, so General resource totals must be read with the overall pass rate.
+Missing values never become zero. Provider time and tool time are not inferred from total
+agent time. Interrupted runs can lack a final usage record. Full trial time includes
+environment setup and verification; agent time is separate. A failed attempt can consume
+less without being better, so General resource totals must be read with the pass rate.
 
 Derived report totals use complete run records before partial call records. OpenCode session
 exports include visible output and reasoning output in the API list-price equivalent. Invalid

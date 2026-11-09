@@ -111,6 +111,9 @@ def test_build_writes_the_index_and_one_page_per_trial(tmp_path):
     assert "<script>x</script>" not in index and "<script>x</script>" not in page
     assert "&lt;script&gt;x&lt;/script&gt;" in index
     assert f'href="trial/{trial["id"]}.html"' in index
+    # One agent table in two tabs; with one agent, no task is shared by every agent.
+    assert 'aria-label="Agent view"' in index and 'data-tab-panel="normalized"' in index
+    assert "No task was passed by every agent." in index and "data-compare-picker" not in index
     # Every harness gets the same call facts; run totals fill tokens that no call records.
     calls = page[page.index('id="provider"') : page.index('id="tools"')]
     labels = re.findall(r"<dt>([^<]+)</dt>", calls)

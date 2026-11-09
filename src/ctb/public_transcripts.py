@@ -220,7 +220,16 @@ def transcript_body(result_hash=""):
         '<p id="status" class="count" role="status">Loading selected transcript…</p>'
         "<noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript>"
         + report.layout.tabs(
-            implementation, '<ol id="verification" class="events" data-verification></ol>'
+            [
+                ("implementation", "Implementation", implementation),
+                (
+                    "verification",
+                    "Verification",
+                    report.layout.VERIFY_HINT
+                    + '<ol id="verification" class="events" data-verification></ol>',
+                ),
+            ],
+            "Trial phase",
         )
         + "</section>"
     )

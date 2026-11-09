@@ -73,12 +73,26 @@ def test_unknown_provenance_and_extreme_ratios():
     assert group["rows"]["b"]["cost_ratio"] is None
 
 
-def test_pairwise_overlap_without_all_agent_overlap():
-    from ctb.report.render import matched_comparisons
+def test_normalized_view_keeps_only_tasks_that_every_agent_passed_once():
+    from ctb.report.render import normalized
 
-    html = matched_comparisons([trial("a", "x"), trial("b", "x"), trial("b", "y"), trial("c", "y")])
-    assert "a vs b" in html and "b vs c" in html
-    assert cohorts([trial("a", "x"), trial("b", "x")])[0]["solved"] == ["x"]
+    data = [
+        trial("a", "x"),
+        trial("b", "x"),
+        trial("c", "x"),
+        trial("a", "y"),
+        trial("b", "y", passed=False),
+        trial("c", "y"),
+        trial("a", "z"),
+        trial("b", "z"),
+        trial("c", "z"),
+        trial("c", "z"),
+        trial("a", "extra"),
+    ]
+    keep, tasks = normalized(data)
+    assert tasks == ["x"]
+    assert sorted(t["agent"] for t in keep) == ["a", "b", "c"]
+    assert normalized([trial("a", "x"), trial("b", "x", passed=False)]) == ([], [])
 
 
 def test_selection_requires_every_selected_agent_in_the_same_setup():

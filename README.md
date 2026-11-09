@@ -115,7 +115,7 @@ Run only one queue at a time. GPU-only tasks stay unattempted on the Podman mach
 
 ## Results
 
-[Open the comparison report](https://blockether.github.io/curated-terminal-benchmark/?compare=vis-solo,opencode&mode=general).
+[Open the comparison report](https://blockether.github.io/curated-terminal-benchmark/).
 Select Vis and one or more other agents. General shows all attempts and totals.
 Normalized shows means for tasks that every selected agent passed with the same task content and model.
 Missing measurements stay unavailable. Different setup versions produce a warning.
