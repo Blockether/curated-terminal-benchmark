@@ -92,6 +92,13 @@ def trial_metrics(result_path: Path) -> dict:
         cost, source = list_price(model, input_, cache, output), "list price"
     times = {phase: seconds(result.get(phase)) for phase in PHASES}
     times["total"] = seconds(result)
+    counts = trajectory_counts(result_path.parent / "agent" / "trajectory.json")
+    # An agent without an ATIF trajectory, such as Wisp, reports its subagents in its metadata.
+    counts["subagents"] += sum(
+        m.get("subagents") or 0
+        for m in (usage.get("metadata") or {}).values()
+        if isinstance(m, dict)
+    )
     return {
         "seconds": times,
         "input": input_,
@@ -99,7 +106,7 @@ def trial_metrics(result_path: Path) -> dict:
         "output": output,
         "cost_usd": None if cost is None else round(cost, 4),
         "cost_source": source if cost is not None else None,
-        **trajectory_counts(result_path.parent / "agent" / "trajectory.json"),
+        **counts,
         "resources": resources.summary(result_path.parent / "agent"),
     }
 

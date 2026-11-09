@@ -64,6 +64,16 @@ def test_subagent_tools_of_each_agent_count_as_subagents(tmp_path):
     assert row["cost_usd"] == 1.5 and row["cost_source"] == "agent"
 
 
+def test_agent_metadata_subagents_count_without_a_trajectory(tmp_path):
+    write_trial(tmp_path, "wisp__openai__x", cost=None, tools=[])
+    trial = tmp_path / "jobs/r/wisp__openai__x/t1"
+    (trial / "agent" / "trajectory.json").unlink()
+    result = json.loads((trial / "result.json").read_text())
+    result["agent_result"]["metadata"] = {"wisp": {"requests": 3, "subagents": 2}}
+    (trial / "result.json").write_text(json.dumps(result))
+    assert trial_metrics(trial / "result.json")["subagents"] == 2
+
+
 def test_vis_subagents_are_the_distinct_children_of_council_run(tmp_path):
     a, b = "1" * 8 + "-0000-0000-0000-" + "0" * 12, "2" * 8 + "-0000-0000-0000-" + "0" * 12
 

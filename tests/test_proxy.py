@@ -68,6 +68,30 @@ def test_codex_reports_a_stream_that_ends_without_a_response(monkeypatch):
     assert error.value.status == 502
 
 
+def test_codex_body_keeps_tool_result_images():
+    """Wisp sends a load_image result as a user message with image_url parts."""
+    image = "data:image/png;base64,iVBORw0KGgo="
+    call = {"id": "c1", "type": "function", "function": {"name": "load_image", "arguments": "{}"}}
+    messages = [
+        {"role": "user", "content": "Read the score."},
+        {"role": "assistant", "content": "", "tool_calls": [call]},
+        {"role": "tool", "tool_call_id": "c1", "content": "Loaded image: page0.png"},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Attached image(s) from tool result:"},
+                {"type": "image_url", "image_url": {"url": image}},
+            ],
+        },
+    ]
+    items = proxy.codex_body({"model": "gpt-6.1-sol", "messages": messages})["input"]
+    assert items[0]["content"] == [{"type": "input_text", "text": "Read the score."}]
+    assert items[-1]["content"] == [
+        {"type": "input_text", "text": "Attached image(s) from tool result:"},
+        {"type": "input_image", "image_url": image},
+    ]
+
+
 def test_a_streaming_client_gets_text_tool_calls_and_usage(monkeypatch, tmp_path):
     """Wisp always streams; the OpenAI SDK must read the proxy answer as a stream."""
     from openai import OpenAI

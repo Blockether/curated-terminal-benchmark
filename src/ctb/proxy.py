@@ -42,6 +42,28 @@ def _text(content) -> str:
     return "".join(p.get("text", "") for p in content if isinstance(p, dict))
 
 
+def _user_parts(content) -> list[dict]:
+    """User content as Responses input parts. Image parts stay images; text-only content stays one part."""
+    parts = content if isinstance(content, list) else []
+    if not any(isinstance(p, dict) and p.get("type") == "image_url" for p in parts):
+        return [{"type": "input_text", "text": _text(content)}]
+    out = []
+    for p in parts:
+        if not isinstance(p, dict):
+            continue
+        if p.get("type") == "image_url":
+            url = p.get("image_url")
+            out.append(
+                {
+                    "type": "input_image",
+                    "image_url": url.get("url") if isinstance(url, dict) else url,
+                }
+            )
+        elif p.get("text"):
+            out.append({"type": "input_text", "text": p["text"]})
+    return out
+
+
 def _tool_specs(tools) -> list[dict]:
     return [t["function"] for t in tools or [] if t.get("type") == "function"]
 
@@ -66,7 +88,7 @@ def codex_body(req: dict) -> dict:
                 {
                     "type": "message",
                     "role": "user",
-                    "content": [{"type": "input_text", "text": text}],
+                    "content": _user_parts(m.get("content")),
                 }
             )
         elif role == "assistant":

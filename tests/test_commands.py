@@ -31,6 +31,7 @@ from ctb.agents.opencode import (
 )
 from ctb.agents.pi import Pi, pi_auth_json
 from ctb.agents.vis import VisSolo, VisTeam
+from ctb.agents.wisp import Wisp
 from ctb.cli import harbor_command
 from ctb.matrix import AGENTS, Trial
 
@@ -510,6 +511,20 @@ def test_dirge_without_usage_leaves_tokens_unknown(tmp_path):
     context = AgentContext()
     agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
     assert tokens(context) == (None, None, None)
+
+
+def test_wisp_tokens_include_subagent_sessions(tmp_path):
+    sessions = tmp_path / "wisp-sessions"
+    usage = {"prompt_tokens": 100, "completion_tokens": 7}
+    usage["prompt_tokens_details"] = {"cached_tokens": 80}
+    for name, setup in (("ctb", {}), ("infer", {"parent": str(sessions / "ctb")})):
+        (sessions / name).mkdir(parents=True)
+        (sessions / name / "wisp.run.json").write_text(json.dumps(setup))
+        (sessions / name / "wisp.usage").write_text(json.dumps(usage) + "\n")
+    context = AgentContext()
+    agent(Wisp, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
+    assert tokens(context) == (200, 160, 14)
+    assert context.metadata["wisp"] == {"requests": 2, "subagents": 1}
 
 
 def test_kmet_tokens_come_from_completed_native_messages(tmp_path):
