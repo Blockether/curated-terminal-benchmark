@@ -2,7 +2,14 @@ import json
 import re
 
 from ctb.report import render
-from ctb.report.transcripts import event, read_dirge, read_opencode, read_verification, read_wisp
+from ctb.report.transcripts import (
+    event,
+    read_codex,
+    read_dirge,
+    read_opencode,
+    read_verification,
+    read_wisp,
+)
 from ctb.report.trials import clean_version, summarize
 
 
@@ -195,6 +202,61 @@ def test_event_header_labels_its_times_and_text_shows_markdown_bold():
     item = render.event_item(1, tool, 1_000)
     assert '<span class="fact-k">Took</span> <span class="mono">117 ms</span>' in item
     assert "+0:20" not in item
+
+
+def test_codex_exec_row_holds_the_commands_that_end_while_it_runs(tmp_path):
+    def record(second, kind, **payload):
+        stamp = f"2026-11-09T03:28:{second:02d}.000Z"
+        return {"timestamp": stamp, "type": kind, "payload": payload}
+
+    def ran(second, cmd, code):
+        item = {
+            "type": "CommandExecution",
+            "command": ["/bin/bash", "-lc", cmd],
+            "aggregated_output": f"{cmd} output",
+            "exit_code": code,
+            "status": "completed",
+            "duration": {"secs": 0, "nanos": 5_000_000},
+        }
+        return record(second, "event_msg", type="item_completed", item=item)
+
+    records = [
+        record(
+            1,
+            "response_item",
+            type="custom_tool_call",
+            call_id="c1",
+            name="exec",
+            input='text(await tools.exec_command({cmd:"ls"}))',
+        ),
+        ran(2, "ls", 0),
+        record(
+            3,
+            "response_item",
+            type="custom_tool_call_output",
+            call_id="c1",
+            output="Script completed\nWall time 0.4 seconds\nOutput:\n{...}",
+        ),
+        # A background command that ends after its exec call returned.
+        ran(9, "make test", 2),
+    ]
+    rollout = tmp_path / "sessions" / "2026" / "rollout-1.jsonl"
+    rollout.parent.mkdir(parents=True)
+    rollout.write_text("".join(json.dumps(r) + "\n" for r in records))
+    events = read_codex(tmp_path, "openai/gpt-6.1-sol")
+    assert [(e["kind"], e["name"]) for e in events] == [("tool", "exec"), ("command", "shell")]
+    exec_, background = events
+    assert [(c["input"], c["output"], c["error"]) for c in exec_["commands"]] == [
+        ("ls", "ls output", False)
+    ]
+    assert background["input"] == "make test" and background["error"] is True
+    summary = summarize(events)
+    assert summary["tool_calls"] == 1 and summary["command_calls"] == 2
+    assert summary["command_errors"] == 1
+    item = render.event_item(0, exec_, None)
+    assert item.count('<li class="ev-step') == 1
+    assert item.index("ls output") < item.index("<summary>Script ")
+    assert "<details><summary>Script " in item  # the script stays closed
 
 
 def test_verification_lists_test_runs_verifier_output_and_service_logs(tmp_path):

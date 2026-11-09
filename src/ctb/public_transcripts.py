@@ -17,11 +17,13 @@ from ctb import public_report as report
 STATIC = Path(__file__).with_name("publication_static")
 KINDS = {"user", "assistant", "reasoning", "call", "tool", "command", "result"}
 FIELDS = ("name", "text", "input", "output")
+# A command that a tool call ran, shown inside the row of that tool call.
+STEP_FIELDS = ("name", "input", "output")
 # What the verifier ran. The CI checker cannot import ctb.report, so these sets are local.
 VERIFY_KINDS = {"suite", "test", "log"}
 VERIFY_FIELDS = ("name", "status", "ms", "text")
 STATUSES = {"passed", "failed", "skipped", "pending", "other"}
-SCHEMA = 2
+SCHEMA = 3
 REDACTED = "[REDACTED]"
 MAX_GZIP = 2 * 1024**2
 MAX_EXPANDED = 16 * 1024**2
@@ -77,12 +79,16 @@ def validate_payload(data, result_hash, known=()):
     report.require(data["result_sha256"] == result_hash)
     report.require(type(data["events"]) is list and 0 < len(data["events"]) <= 20_000)
     for event in data["events"]:
-        report.keys(event, ("kind", *FIELDS))
+        report.keys(event, ("kind", *FIELDS, "commands"))
         report.require(type(event["kind"]) is str and event["kind"] in KINDS)
-        for key in FIELDS:
-            value = event[key]
-            report.require(value is None or type(value) is str and len(value) <= 1_000_000)
-            report.require(scrub(value, known) == value)
+        report.require(type(event["commands"]) is list and len(event["commands"]) <= 1_000)
+        for command in event["commands"]:
+            report.keys(command, STEP_FIELDS)
+        for part, names in ((event, FIELDS), *((c, STEP_FIELDS) for c in event["commands"])):
+            for key in names:
+                value = part[key]
+                report.require(value is None or type(value) is str and len(value) <= 1_000_000)
+                report.require(scrub(value, known) == value)
     report.require(type(data["verification"]) is list and len(data["verification"]) <= 20_000)
     for entry in data["verification"]:
         report.keys(entry, ("kind", *VERIFY_FIELDS))
@@ -300,7 +306,14 @@ def export(root, out):
             "schema": SCHEMA,
             "result_sha256": row["result_sha256"],
             "events": [
-                {"kind": e["kind"], **{k: scrub(e.get(k), known) for k in FIELDS}} for e in events
+                {
+                    "kind": e["kind"],
+                    **{k: scrub(e.get(k), known) for k in FIELDS},
+                    "commands": [
+                        {k: scrub(c[k], known) for k in STEP_FIELDS} for c in e.get("commands", [])
+                    ],
+                }
+                for e in events
             ],
             "verification": [
                 {**e, "name": scrub(e["name"], known), "text": scrub(e["text"], known)}

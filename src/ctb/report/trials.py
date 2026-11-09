@@ -50,7 +50,7 @@ def summarize(events: list[dict]) -> dict:
 
     def group(kind: str) -> dict:
         by_name: dict[str, dict] = {}
-        for e in events:
+        for e in (e for top in events for e in (top, *top["commands"])):
             if e["kind"] != kind:
                 continue
             row = by_name.setdefault(

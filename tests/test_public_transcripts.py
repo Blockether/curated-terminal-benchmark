@@ -7,10 +7,17 @@ from ctb import public_transcripts as pub
 class TranscriptTests(unittest.TestCase):
     def payload(self, text="A harmless tool result"):
         return {
-            "schema": 2,
+            "schema": 3,
             "result_sha256": "a" * 64,
             "events": [
-                {"kind": "tool", "name": "shell", "text": text, "input": None, "output": None}
+                {
+                    "kind": "tool",
+                    "name": "exec",
+                    "text": text,
+                    "input": None,
+                    "output": None,
+                    "commands": [{"name": "shell", "input": "ls", "output": "a.txt"}],
+                }
             ],
             "verification": [
                 {
@@ -81,6 +88,23 @@ class TranscriptTests(unittest.TestCase):
         raw = report.encoded(data)
         self.assertEqual(pub.unpack(pub.pack(raw)), raw)
         self.assertEqual(pub.validate_payload(pub.decode(raw), "a" * 64), data)
+
+    def test_nested_commands_are_scanned_and_have_a_closed_shape(self):
+        for change in (
+            {"output": "GITHUB_TOKEN=" + "Q" * 40},
+            {"input": "/Users/example/task"},
+            {"secret": "x"},
+            {"name": 1},
+        ):
+            data = self.payload()
+            data["events"][0]["commands"][0].update(change)
+            with self.assertRaises(ValueError):
+                pub.validate_payload(data, "a" * 64)
+        for commands in (None, "bad", [None], [{}]):
+            data = self.payload()
+            data["events"][0]["commands"] = commands
+            with self.assertRaises(ValueError):
+                pub.validate_payload(data, "a" * 64)
 
     def test_extra_fields_and_wrong_types_fail(self):
         for key, value in (("kind", "unknown"), ("name", {}), ("text", 1), ("secret", "x")):

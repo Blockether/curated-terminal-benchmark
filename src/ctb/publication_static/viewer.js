@@ -22,7 +22,7 @@
     const manifest = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(await limited(response.body, 65536)));
     const record = manifest.transcripts?.[id];
     const bounded = (n, max) => Number.isInteger(n) && n > 0 && n <= max;
-    if (manifest.schema !== 2 || !record || !bounded(record.bytes, 2097152) ||
+    if (manifest.schema !== 3 || !record || !bounded(record.bytes, 2097152) ||
         !bounded(record.expanded_bytes, 16777216) || !bounded(record.events, 20000) ||
         !(Number.isInteger(record.checks) && record.checks >= 0 && record.checks <= 20000) ||
         typeof record.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(record.sha256)) throw Error("Invalid manifest");
@@ -34,14 +34,15 @@
     const bytes = await limited(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("gzip")), Math.min(record.expanded_bytes, 16777216));
     if (bytes.length !== record.expanded_bytes) throw Error("Transcript size mismatch");
     const data = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
-    if (data.schema !== 2 || data.result_sha256 !== id || !Array.isArray(data.events) || data.events.length !== record.events ||
+    if (data.schema !== 3 || data.result_sha256 !== id || !Array.isArray(data.events) || data.events.length !== record.events ||
         !Array.isArray(data.verification) || data.verification.length !== record.checks) throw Error("Invalid transcript");
     const fragment = document.createDocumentFragment();
     data.events.forEach((event, i) => {
       if (!event || !["user", "assistant", "reasoning", "call", "tool", "command", "result"].includes(event.kind)) throw Error("Invalid event");
-      for (const key of ["name", "text", "input", "output"]) {
-        if (event[key] !== null && (typeof event[key] !== "string" || event[key].length > 1000000)) throw Error("Invalid event text");
-      }
+      const text = value => value === null || (typeof value === "string" && value.length <= 1000000);
+      if (!["name", "text", "input", "output"].every(key => text(event[key]))) throw Error("Invalid event text");
+      if (!Array.isArray(event.commands) || event.commands.length > 1000 ||
+          !event.commands.every(c => c && ["name", "input", "output"].every(key => text(c[key])))) throw Error("Invalid event commands");
       const item = document.createElement("li");
       item.id = `e-${i}`;
       item.className = `ev ev-${event.kind}`;
@@ -55,6 +56,27 @@
       head.append(link);
       item.append(head);
       const body = document.createElement("section"); body.className = "ev-body";
+      const block = (label, value, open) => {
+        const detail = document.createElement("details"); detail.open = open && value.length <= 1200;
+        const summary = document.createElement("summary"); summary.textContent = label;
+        const pre = document.createElement("pre"); pre.textContent = value;
+        detail.append(summary, pre); return detail;
+      };
+      // Commands that this tool call ran come first; the script and its raw result stay closed.
+      const nested = event.commands.length > 0;
+      if (nested) {
+        const steps = document.createElement("ol"); steps.className = "ev-steps";
+        for (const c of event.commands) {
+          const step = document.createElement("li"); step.className = "ev-step";
+          const stepHead = document.createElement("div"); stepHead.className = "ev-head";
+          const name = document.createElement("span"); name.className = "ev-kind mono"; name.textContent = c.name || "Command";
+          stepHead.append(name); step.append(stepHead);
+          if (c.input !== null && c.input !== "") step.append(block("Command", c.input, true));
+          if (c.output !== null && c.output !== "") step.append(block("Output", c.output, true));
+          steps.append(step);
+        }
+        body.append(steps);
+      }
       for (const key of ["text", "input", "output"]) {
         if (event[key] !== null) {
           const pre = document.createElement("pre"); pre.textContent = event[key];
@@ -67,9 +89,8 @@
             }
             pre.append(event.text.slice(last)); body.append(pre);
           } else {
-            const detail = document.createElement("details"); detail.open = event[key].length <= 1200;
-            const summary = document.createElement("summary"); summary.textContent = key === "input" ? "Input" : "Output";
-            detail.append(summary, pre); body.append(detail);
+            const label = key === "input" ? (nested ? "Script" : "Input") : (nested ? "Script output" : "Output");
+            body.append(block(label, event[key], !nested));
           }
         }
       }

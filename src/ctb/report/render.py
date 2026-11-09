@@ -915,7 +915,7 @@ def run_timeline(trial: dict) -> str:
             rows["call"][column] += 1
         elif e["kind"] in ("tool", "command"):
             rows["tool"][column] += 1
-        if e["error"]:
+        if e["error"] or any(c["error"] for c in e["commands"]):
             rows["error"][column] += 1
     labels = {"call": "Calls", "tool": "Tools", "error": "Errors"}
     lines = []
@@ -1017,10 +1017,10 @@ def provider_list(trial: dict) -> str:
     )
 
 
-def body_block(label: str, text: str | None, *, error: bool = False) -> str:
+def body_block(label: str, text: str | None, *, error: bool = False, closed: bool = False) -> str:
     if text is None or text == "":
         return ""
-    is_open = " open" if error or len(text) <= OPEN_LIMIT else ""
+    is_open = " open" if error or not closed and len(text) <= OPEN_LIMIT else ""
     cls = ' class="is-error"' if error else ""
     return (
         f'<details{is_open}{cls}><summary>{esc(label)} <span class="size">'
@@ -1043,6 +1043,26 @@ BOLD = re.compile(r"\*\*([^\n]+?)\*\*")
 def rich_text(text: str) -> str:
     """Escaped text with Markdown **bold** as bold, as model messages and summaries write it."""
     return BOLD.sub(r"<strong>\1</strong>", esc_text(text))
+
+
+def command_step(c: dict) -> str:
+    """One command that a tool call ran, inside the row of that tool call."""
+    meta = []
+    if c["ms"] is not None:
+        source = "derived from neighbouring events" if c["ms_source"] == "derived" else "recorded"
+        meta.append(
+            fact("Took", duration(c["ms"]), f"How long this command ran, {source}", "duration")
+        )
+    if c["error"]:
+        meta.append('<span class="chip chip-error">Error</span>')
+    return (
+        f'<li class="ev-step{" ev-error" if c["error"] else ""}"><div class="ev-head">'
+        f'<span class="ev-kind mono" title="{KINDS[c["kind"]]}">{esc(c["name"] or KINDS[c["kind"]])}</span>'
+        f'<span class="ev-meta">{"".join(meta)}</span></div>'
+        + body_block("Command", c["input"])
+        + body_block("Output", c["output"], error=bool(c["error"]))
+        + "</li>"
+    )
 
 
 def event_item(index: int, e: dict, base: float | None) -> str:
@@ -1084,13 +1104,24 @@ def event_item(index: int, e: dict, base: float | None) -> str:
     content = []
     if e["text"]:
         content.append(f'<pre class="ev-text">{rich_text(e["text"])}</pre>')
-    content.append(body_block("Input", e["input"]))
-    content.append(body_block("Output", e["output"], error=bool(e["error"])))
+    if e["commands"]:
+        # The commands come first; the script that started them and its raw result stay closed.
+        content.append(
+            f'<ol class="ev-steps">{"".join(command_step(c) for c in e["commands"])}</ol>'
+        )
+        content.append(body_block("Script", e["input"], closed=True))
+        content.append(
+            body_block("Script output", e["output"], error=bool(e["error"]), closed=True)
+        )
+    else:
+        content.append(body_block("Input", e["input"]))
+        content.append(body_block("Output", e["output"], error=bool(e["error"])))
     inner = "".join(content)
-    cls = f"ev ev-{kind}" + (" ev-error" if e["error"] else "")
+    failed = bool(e["error"]) or any(c["error"] for c in e["commands"])
+    cls = f"ev ev-{kind}" + (" ev-error" if failed else "")
     return (
         f'<li id="e-{index}" class="{cls}" data-group="{group}" '
-        f'data-error="{"1" if e["error"] else "0"}">'
+        f'data-error="{"1" if failed else "0"}">'
         f'<div class="ev-head"><a class="ev-kind{mono}" href="#e-{index}" title="{KINDS[kind]}">{label}</a>'
         f'<span class="ev-meta">{"".join(meta)}</span></div>'
         + (f'<section class="ev-body">{inner}</section>' if inner else "")
@@ -1183,9 +1214,11 @@ def tabs(implementation: str, verification: str) -> str:
 
 def error_list(events: list[dict]) -> str:
     items = []
-    for index, e in enumerate(events):
-        if not e["error"]:
-            continue
+    # A failed command links to the row of the tool call that ran it.
+    failed = (
+        (index, x) for index, e in enumerate(events) for x in (e, *e["commands"]) if x["error"]
+    )
+    for index, e in failed:
         excerpt = (e["output"] or e["text"] or "").strip().splitlines()
         first = excerpt[0][:160] if excerpt else "No error text was recorded."
         items.append(

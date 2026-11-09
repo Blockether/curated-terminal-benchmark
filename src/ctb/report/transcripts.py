@@ -74,6 +74,8 @@ def event(kind: str, **fields: object) -> dict:
         "tokens": None,
         "cost": None,
         "cost_source": None,
+        # Commands that this tool call ran, for example the shell commands of a Codex exec script.
+        "commands": [],
     }
     base.update(fields)
     for key in ("input", "output", "text"):
@@ -376,6 +378,9 @@ def read_codex(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     pending: dict = {}
     anchor: float | None = None
+    # The exec call that is running. Commands that end while it runs belong to it; a
+    # background command that ends later stays a separate event.
+    running: dict | None = None
     for path in sorted((agent / "sessions").rglob("rollout-*.jsonl")):
         for record in jsonl(path):
             payload = record.get("payload") or {}
@@ -420,10 +425,13 @@ def read_codex(agent: Path, model: str) -> list[dict]:
                 )
                 pending[payload.get("call_id")] = tool
                 events.append(tool)
+                running = tool
             elif kind in ("custom_tool_call_output", "function_call_output"):
                 output = payload.get("output")
                 text = text_of(output) if isinstance(output, list) else str(output or "")
                 target = pending.get(payload.get("call_id"))
+                if target is running:
+                    running = None
                 wall = WALL_TIME.search(text or "")
                 if wall:
                     ms, source = float(wall.group(1)) * 1000, "recorded"
@@ -442,12 +450,13 @@ def read_codex(agent: Path, model: str) -> list[dict]:
                 anchor = at
             elif kind == "item_completed":
                 item = payload.get("item") or {}
+                into = running["commands"] if running is not None else events
                 if item.get("type") == "CommandExecution":
                     command = item.get("command") or []
                     shown = command[-1] if command[:1] == ["/bin/bash"] else " ".join(command)
                     took = item.get("duration") or {}
                     ms = (took.get("secs") or 0) * 1000 + (took.get("nanos") or 0) / 1e6
-                    events.append(
+                    into.append(
                         event(
                             "command",
                             at=at,
@@ -462,7 +471,7 @@ def read_codex(agent: Path, model: str) -> list[dict]:
                     )
                 elif item.get("type") == "FileChange":
                     changes = item.get("changes") or {}
-                    events.append(
+                    into.append(
                         event(
                             "command",
                             at=at,
