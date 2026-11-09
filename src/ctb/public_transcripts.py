@@ -226,7 +226,7 @@ def transcript_body(result_hash=""):
                     "verification",
                     "Verification",
                     report.layout.VERIFY_HINT
-                    + '<ol id="verification" class="events" data-verification></ol>',
+                    + '<ol id="checks" class="events" data-verification></ol>',
                 ),
             ],
             "Trial phase",
