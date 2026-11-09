@@ -134,7 +134,10 @@ class AssetRevisionTests(unittest.TestCase):
             self.assertNotEqual(first, second)
             revision = p.asset_revision()
             self.assertIn("report.js?v=" + revision, second)
-            self.assertIn(("tokens.css?v=" + revision).encode(), p.assets()["report.css"])
+            linked = p.public_page(
+                '<meta charset="utf-8"><link rel="stylesheet" href="tokens.css">'
+            )
+            self.assertIn("tokens.css?v=" + revision, linked)
             self.assertIn(("inter-latin.woff2?v=" + revision).encode(), p.assets()["fonts.css"])
             nested = p.version_assets('<script src="../viewer.js"></script>')
             self.assertIn("../viewer.js?v=" + revision, nested)

@@ -159,6 +159,16 @@ def manifest_check(manifest, comparison):
     report.require(sum(r["expanded_bytes"] for r in manifest["transcripts"].values()) <= MAX_TOTAL)
 
 
+def viewer_scripts(up, trial_id):
+    """Scripts of a transcript page, with its data preloaded before the viewer asks for it."""
+    data = [up + "transcripts.json"] + ([f"{up}transcripts/{trial_id}.json.gz"] if trial_id else [])
+    return (
+        "".join(f'<link rel="preload" href="{href}" as="fetch" crossorigin>\n' for href in data)
+        + f'<script src="{up}report.js" defer></script>\n'
+        + f'<script src="{up}viewer.js" defer></script>'
+    )
+
+
 def static_files(comparison, manifest, metrics):
     fixed = report.expected(comparison, metrics)
     fixed["index.html"] = report.render(comparison, metrics, transcripts=True)
@@ -174,7 +184,7 @@ def static_files(comparison, manifest, metrics):
                     description="A sanitized transcript, loaded on demand.",
                 )
             )
-            .replace("</head>", '<script src="viewer.js" defer></script></head>')
+            .replace('<script src="report.js" defer></script>', viewer_scripts("", None))
             .encode(),
             "viewer.js": (STATIC / "viewer.js").read_bytes(),
         }
@@ -192,7 +202,9 @@ def static_files(comparison, manifest, metrics):
             "No errors were recorded in this transcript.",
             "Event-level error details are not included in this normalized view.",
         )
-        text = text.replace("</head>", '<script src="../viewer.js" defer></script></head>')
+        text = text.replace(
+            '<script src="../report.js" defer></script>', viewer_scripts("../", trial["id"])
+        )
         fixed["trial/" + trial["id"] + ".html"] = report.public_page(text).encode()
     return {
         name: report.version_assets(raw.decode()).encode() if name.endswith(".html") else raw

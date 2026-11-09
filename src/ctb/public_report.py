@@ -381,11 +381,11 @@ INTRO = (
     "GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning."
 )
 EMULATION = (
-    "All tasks are linux/amd64 containers. They ran under emulation, Rosetta in a Podman VM on "
-    "an Apple Silicon Mac, so times and CPU values include the emulation overhead. "
-    "Machine: MacBook Pro with Apple M4 Max (14 cores, 36 GB memory), macOS 26.6. "
-    "The Podman 6.0 VM had 12 CPUs and 24 GiB of memory. One trial ran at a time."
+    "Run one trial at a time as linux/amd64 containers under Rosetta emulation (Podman 6.0 VM: "
+    "12 CPUs, 24 GiB) on a MacBook Pro M4 Max (14 cores, 36 GB, macOS 26.6). Times and CPU "
+    "values include the emulation overhead."
 )
+FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
 
 def head():
@@ -403,12 +403,16 @@ def head():
 
 def public_page(text):
     # Keep the original layout. Use only local assets and inert transcript text.
-    text = text.replace('<link rel="preconnect" href="https://fonts.googleapis.com">\n', "")
+    up = "../" if 'href="../report.css"' in text else ""
+    text = re.sub(r'<link rel="preconnect" [^>]*>\n', "", text)
+    # Preload the fonts: the browser finds them in fonts.css only after it parses that file.
     text = text.replace(
         f'<link rel="stylesheet" href="{layout.FONTS}">',
-        '<link rel="stylesheet" href="'
-        + ("../" if 'href="../report.css"' in text else "")
-        + 'fonts.css">',
+        "".join(
+            f'<link rel="preload" href="{up}{name}" as="font" type="font/woff2" crossorigin>\n'
+            for name in FONT_FILES
+        )
+        + f'<link rel="stylesheet" href="{up}fonts.css">',
     )
     policy = "default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'"
     return version_assets(

@@ -197,6 +197,12 @@ def chip(outcome: str, title: str | None = None) -> str:
 
 def page(title: str, body: str, *, depth: int, description: str) -> str:
     up = "../" * depth
+    # The diagram library is large: only pages with a diagram load it, after report.js.
+    diagrams = (
+        f'<script src="{up}pele.global.js" defer data-diagrams></script>\n'
+        if 'class="mermaid"' in body
+        else ""
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -205,12 +211,14 @@ def page(title: str, body: str, *, depth: int, description: str) -> str:
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(description)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}">
+<link rel="stylesheet" href="{up}tokens.css">
+<link rel="stylesheet" href="{up}base.css">
 <link rel="stylesheet" href="{up}report.css">
 <noscript><style>.diagram {{ display: none; }}</style></noscript>
-<script src="{up}pele.global.js" defer></script>
 <script src="{up}report.js" defer></script>
-</head>
+{diagrams}</head>
 <body>
 <header class="topbar">
 <div class="container topbar-row">

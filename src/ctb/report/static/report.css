@@ -5,9 +5,6 @@
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: E, the trials table is fourteen columns wide, so it scrolls inside its own pane with the task pinned and the page never scrolls sideways */
 /* Hallmark · waive 72 · every flagged box is a details element; in Chrome no open one overflows (732 open, 0 over) and a closed one is 42px high · a closed body is not painted until a person opens it */
 /* Hallmark · answered F25 · the column that names the row is pinned with position: sticky and the pane scrolls on its own */
-@import url("./tokens.css");
-@import url("./base.css");
-
 :root { --container: 1280px; --gutter: 40px; --control: 40px; --hit: 44px; }
 
 html { scrollbar-color: var(--color-scroll) transparent; }
@@ -37,7 +34,7 @@ h3 { color: var(--color-ink); font-weight: 700; letter-spacing: -0.01em; }
 .agent-list { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-md); margin: 0; padding: 0; list-style: none; font-family: var(--font-outlier); font-size: var(--text-sm); color: var(--color-ink); }
 .agent-list a { color: inherit; }
 .agent-list .agent-paused { color: var(--color-ink-2); opacity: 0.55; }
-.head-note { color: var(--color-ink-2); font-size: var(--text-sm); line-height: 1.5; max-width: 60ch; }
+.head-note { color: var(--color-ink-2); font-size: var(--text-sm); line-height: 1.5; max-width: none; }
 .footer { border-top: var(--rule-hair) solid var(--color-rule); color: var(--color-ink-2); font-family: var(--font-outlier); font-size: var(--text-sm); }
 .footer .container { padding-block: var(--space-lg); }
 .footer a { color: var(--color-ink); }
