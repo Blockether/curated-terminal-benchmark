@@ -413,6 +413,12 @@ def test_kmet_eval_only_selects_only_the_eval_tool():
     assert eval_only.replace("--tools eval ", "", 1) == kmet
 
 
+def test_kmet_eval_only_uses_the_kmet_install_without_harbor_kwargs():
+    command = harbor_command(Trial(AGENTS["kmet-eval-only"], "openai", "t"), Path("/j"), 0.25)
+    assert command[command.index("-a") + 1] == "ctb.agents.kmet:KmetEvalOnly"
+    assert "--ak" not in command
+
+
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():
     command = harbor_command(Trial(AGENTS["codex"], "openai", "t"), Path("/j"), 0.25)
     assert command[command.index("-a") + 1] == "ctb.agents.codex:Codex"
