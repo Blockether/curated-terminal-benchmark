@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terminal-Bench 4.0</title>
 <meta name="description" content="60 trials from 5 agents in 3 rounds. Generated from sealed results.">
-<link rel="stylesheet" href="fonts.css?v=40bc357040a1d7fc1383">
-<link rel="stylesheet" href="report.css?v=40bc357040a1d7fc1383">
+<link rel="stylesheet" href="fonts.css?v=bb4ef1683f8543e54f20">
+<link rel="stylesheet" href="report.css?v=bb4ef1683f8543e54f20">
 <noscript><style>.diagram { display: none; }</style></noscript>
-<script src="pele.global.js?v=40bc357040a1d7fc1383" defer></script>
-<script src="report.js?v=40bc357040a1d7fc1383" defer></script>
+<script src="pele.global.js?v=bb4ef1683f8543e54f20" defer></script>
+<script src="report.js?v=bb4ef1683f8543e54f20" defer></script>
 </head>
 <body>
 <header class="topbar">
 <div class="container topbar-row">
-<a class="brand" href="index.html"><img src="logo.svg?v=40bc357040a1d7fc1383" alt="" width="25" height="28">
+<a class="brand" href="index.html"><img src="logo.svg?v=bb4ef1683f8543e54f20" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span></a>
 <span class="brand-name">Terminal-Bench 4.0</span>
 </div>
@@ -24,12 +24,11 @@
 <section class="head">
 <p class="lead">A curated benchmark that measures how Vis performs against other coding agents on GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning.</p>
 <ul class="agent-list" aria-label="Agents"><li><a href="https://github.com/Blockether/vis">Vis</a></li><li><a href="https://github.com/openai/codex">Codex</a></li><li><a href="https://github.com/anomalyco/opencode">OpenCode</a></li><li><a href="https://github.com/earendil-works/pi">Pi</a></li><li><a href="https://github.com/kmetia/kmet-agent">Kmet</a></li><li><a href="https://github.com/xificurC/wisp">Wisp</a></li><li class="agent-paused" title="Paused"><a href="https://github.com/dirge-code/dirge">Dirge</a></li><li class="agent-paused" title="Paused"><a href="https://github.com/samizdat-code/samizdat">Samizdat</a></li></ul>
-<p class="head-note">All tasks are linux/amd64 containers. They ran under emulation, Rosetta in a Podman VM on an Apple Silicon Mac, so times and CPU values include the emulation overhead.</p>
+<p class="head-note">All tasks are linux/amd64 containers. They ran under emulation, Rosetta in a Podman VM on an Apple Silicon Mac, so times and CPU values include the emulation overhead. Machine: MacBook Pro with Apple M4 Max (14 cores, 36 GB memory), macOS 26.6. The Podman 6.0 VM had 12 CPUs and 24 GiB of memory. One trial ran at a time.</p>
 </section>
 <div class="panels readings"><div class="reading-cell"><p class="reading-label">Trials</p><p class="reading">60</p><p class="reading-note">32 passed</p></div><div class="reading-cell"><p class="reading-label">Pass rate</p><p class="reading">53%</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">1,431</p><p class="reading-note">8 h 19 min recorded</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$18.34</p><p class="reading-note">60 of 60 trials</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">1,567</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">73</p><p class="reading-note">5% of the calls that mark errors</p></div></div>
-<section id="agents" class="block">
-<h2>Agents</h2>
-<div class="tabs" role="tablist" aria-label="Agent view"><button type="button" role="tab" id="tab-general" aria-controls="general" aria-selected="true" data-tab="general">General</button><button type="button" role="tab" id="tab-normalized" aria-controls="normalized" aria-selected="false" data-tab="normalized">Normalized</button></div><div id="general" role="tabpanel" aria-labelledby="tab-general" data-tab-panel="general"><p class="hint">All attempts of each agent, failures included. These are totals, not an efficiency ranking. Cost is the API list-price equivalent where token usage is recorded. A dash marks a value that no trial of the agent records.</p><div class="charts"><figure class="diagram"><figcaption>Pass rate by agent</figcaption><pre class="mermaid" role="img" aria-label="Pass rate by agent">---
+<section id="agents" class="block" aria-label="Agents">
+<div class="tabs" role="tablist" aria-label="Agent view"><button type="button" role="tab" id="tab-general" aria-controls="general" aria-selected="true" data-tab="general"><span class="tab-name">General</span><small>All attempts, failures included</small></button><button type="button" role="tab" id="tab-normalized" aria-controls="normalized" aria-selected="false" data-tab="normalized"><span class="tab-name">Normalized</span><small>Only the tasks that every agent passed</small></button></div><div id="general" role="tabpanel" aria-labelledby="tab-general" data-tab-panel="general"><p class="hint">These are totals, not an efficiency ranking. Cost is the API list-price equivalent where token usage is recorded. A dash marks a value that no trial of the agent records.</p><div class="charts"><figure class="diagram"><figcaption>Pass rate by agent</figcaption><pre class="mermaid" role="img" aria-label="Pass rate by agent">---
 config:
   xyChart:
     showDataLabel: true
