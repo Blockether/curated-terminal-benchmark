@@ -19,6 +19,8 @@ ARCHIVE_NAME = "kmet-e2f9684f-linux-amd64.tar.gz"
 class Kmet(CuratedAgent):
     ARCHIVE = ARTIFACTS / ARCHIVE_NAME
     FOOTPRINT = files_footprint(package=(KMET,))
+    #: Session tool selection passed as `--tools`; empty keeps kmet's defaults.
+    TOOLS = ""
 
     @staticmethod
     def name() -> str:
@@ -33,10 +35,11 @@ class Kmet(CuratedAgent):
 
     def command(self, instruction: str) -> str:
         model = f"openai-codex/{self.model}"
+        tools = f"--tools {self.TOOLS} " if self.TOOLS else ""
         # A native Babashka binary takes user.home from passwd, not from $HOME.
         return (
             "export KMET_CODING_AGENT_DIR=$HOME/.kmet/agent; "
-            f"{KMET} --mode edn --session-dir /logs/agent/kmet-sessions "
+            f"{KMET} --mode edn --session-dir /logs/agent/kmet-sessions {tools}"
             f"--model {model} --thinking {EFFORT} {shlex.quote(instruction)} "
             f"> /logs/agent/{STREAM} 2> /logs/agent/kmet-stderr.log"
         )
@@ -73,3 +76,13 @@ class Kmet(CuratedAgent):
             context.n_input_tokens = totals["input"]
             context.n_cache_tokens = totals["cache-read"]
             context.n_output_tokens = totals["output"]
+
+
+class KmetEvalOnly(Kmet):
+    """kmet with only the eval tool selected (`--tools eval`), everything else as kmet."""
+
+    TOOLS = "eval"
+
+    @staticmethod
+    def name() -> str:
+        return "kmet-eval-only"

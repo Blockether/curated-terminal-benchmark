@@ -16,7 +16,7 @@ from harbor.models.agent.context import AgentContext
 from ctb import cli, credentials
 from ctb.agents import vis
 from ctb.agents.dirge import Dirge
-from ctb.agents.kmet import Kmet
+from ctb.agents.kmet import Kmet, KmetEvalOnly
 from ctb.agents.opencode import (
     LOCAL_DATA,
     OpenCode,
@@ -363,6 +363,14 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
     assert "--model openai-codex/gpt-6.1-sol --thinking medium" in kmet
     assert "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent" in kmet
     assert "--mode edn --session-dir /logs/agent/kmet-sessions" in kmet
+
+
+def test_kmet_eval_only_selects_only_the_eval_tool():
+    kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
+    eval_only = agent(KmetEvalOnly, "openai/gpt-6.1-sol").command("x")
+    assert KmetEvalOnly.name() == "kmet-eval-only"
+    assert "--tools eval " in eval_only
+    assert eval_only.replace("--tools eval ", "", 1) == kmet
 
 
 def test_builtin_agents_get_effort_and_a_pinned_version_as_harbor_kwargs():

@@ -34,6 +34,16 @@ def test_paused_arms_stay_out_of_the_default_matrix():
     ]
 
 
+def test_kmet_eval_only_is_an_experiment_arm():
+    spec = matrix.AGENTS["kmet-eval-only"]
+    assert spec.experiment
+    assert spec.families == ("openai",)
+    assert "kmet-eval-only" not in matrix.DEFAULT_AGENTS.split(",")
+    assert [t.job for t in matrix.trials(["kmet-eval-only"], ["openai"], ["x"])] == [
+        "kmet-eval-only__openai__x"
+    ]
+
+
 def test_the_public_agent_list_names_every_harness_and_its_pause():
     from ctb import public_report
 
