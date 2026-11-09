@@ -163,13 +163,10 @@ button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-all
 .ev:target { border-color: var(--color-ink-2); box-shadow: 4px 4px 0 0 var(--color-accent); }
 .ev-user { border-left: 3px solid var(--color-accent); }
 .ev-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-sm); padding: var(--space-2xs) var(--space-sm); min-height: 40px; }
-.ev-kind { font-size: var(--text-sm); font-weight: 700; color: var(--color-ink); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
-.ev-reasoning .ev-kind, .ev-call .ev-kind { color: var(--color-ink-2); font-weight: 500; }
-.ev-name { font-size: var(--text-sm); color: var(--color-ink); overflow-wrap: anywhere; min-width: 0; }
+.ev-kind { font-size: var(--text-sm); font-weight: 700; color: var(--color-ink); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; overflow-wrap: anywhere; min-width: 0; }
+.ev-kind.mono { font-weight: 500; }
 .ev-meta { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); margin-inline-start: auto; font-size: var(--text-sm); color: var(--color-muted); }
 .ev-meta .duration { color: var(--color-ink); font-weight: 500; }
-.ev-call { background: var(--color-paper); border-style: dashed; }
-.ev-call .ev-head { min-height: 32px; }
 .ev-error { border-color: var(--color-bad); }
 .ev-body { padding: 0 var(--space-sm) var(--space-sm); display: grid; gap: var(--space-xs); min-width: 0; }
 pre.ev-text { margin: 0; padding: 0; border: 0; font-family: var(--font-body); font-size: var(--text-md); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink); max-width: 90ch; font-variant-ligatures: none; font-feature-settings: "calt" 0; }

@@ -232,15 +232,28 @@ def opencode_messages(agent: Path) -> dict[str, dict]:
 
 
 def opencode_step(
-    model: str, start: float, end: float | None, tools_ms: float, used: dict, cost
+    model: str, at: float | None, message: dict | None, tools: list, used: dict, cost
 ) -> dict:
-    """A finished OpenCode step as a call, without the time of its tools."""
+    """A finished OpenCode step as a call, without the time of its tools.
+
+    OpenCode writes step_start when the output starts to stream, so the stream events cannot time
+    the call. The session export records when the request started and when its stream ended.
+    Tools can run before the stream ends; that overlap is tool time, not model time.
+    """
+    times = (message or {}).get("time") or {}
+    created, streamed = times.get("created"), times.get("streamed")
+    timed = all(type(t) in (int, float) for t in (created, streamed)) and streamed >= created
+    busy, reach = 0.0, created
+    for start, end in sorted(tools) if timed else []:
+        start, end = max(start, reach), min(end, streamed)
+        if end > start:
+            busy, reach = busy + end - start, end
     cache = (used.get("cache") or {}).get("read") or 0
     return call(
         model,
-        start,
-        max(0.0, (end or start) - start - tools_ms),
-        "derived",
+        created if timed else at,
+        streamed - created - busy if timed else None,
+        "recorded",
         tokens(
             (used.get("input") or 0) + cache,
             cache,
@@ -253,26 +266,31 @@ def opencode_step(
 def read_opencode(agent: Path, model: str) -> list[dict]:
     events: list[dict] = []
     step: dict | None = None
-    step_start = 0.0
-    step_tools = 0.0
     step_message: str | None = None
+    step_tools: list[tuple[float, float]] = []
     observed_messages: set[str | None] = set()
+    messages = opencode_messages(agent)
     # OpenCode 2 omits the step_finish of the last step; its session export still has the usage.
-    unfinished: list[tuple[dict, str | None, float, float]] = []
+    unfinished: list[tuple[dict, str | None, list]] = []
     path = agent / "opencode.txt"
     for record in jsonl(path) if path.is_file() else []:
         kind, part, at = record.get("type"), record.get("part") or {}, record.get("timestamp")
         if kind == "step_start":
             if step is not None:
-                unfinished.append((step, step_message, step_start, step_tools))
-            step, step_start, step_tools = call(model, at, None, None, None), at or 0, 0.0
+                unfinished.append((step, step_message, step_tools))
+            step, step_tools = call(model, at, None, None, None), []
             step_message = part.get("messageID")
             observed_messages.add(step_message)
             events.append(step)
         elif kind == "step_finish" and step is not None:
             step.update(
                 opencode_step(
-                    model, step_start, at, step_tools, part.get("tokens") or {}, part.get("cost")
+                    model,
+                    step["at"],
+                    messages.get(step_message or ""),
+                    step_tools,
+                    part.get("tokens") or {},
+                    part.get("cost"),
                 )
             )
             step = None
@@ -283,7 +301,8 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
             state = part.get("state") or {}
             time = state.get("time") or {}
             ms = time["end"] - time["start"] if time.get("end") and time.get("start") else None
-            step_tools += ms or 0
+            if ms is not None:
+                step_tools.append((time["start"], time["end"]))
             failed = state.get("status") == "error"
             events.append(
                 event(
@@ -298,13 +317,13 @@ def read_opencode(agent: Path, model: str) -> list[dict]:
                 )
             )
     if step is not None:
-        unfinished.append((step, step_message, step_start, step_tools))
-    messages = opencode_messages(agent)
-    for open_step, message_id, start, tools_ms in unfinished:
+        unfinished.append((step, step_message, step_tools))
+    for open_step, message_id, tools_run in unfinished:
         if message := messages.get(message_id or ""):
-            end = (message.get("time") or {}).get("completed")
             used = message.get("tokens") or {}
-            open_step.update(opencode_step(model, start, end, tools_ms, used, message.get("cost")))
+            open_step.update(
+                opencode_step(model, open_step["at"], message, tools_run, used, message.get("cost"))
+            )
 
     # The export includes the final call that can be absent from the stream.
     def recorded_usage(message):

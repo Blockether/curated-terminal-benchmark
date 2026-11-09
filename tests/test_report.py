@@ -173,6 +173,9 @@ def test_trial_page_opens_error_output_and_links_each_error():
     page = render.trial_page(trial)
     assert '<a class="mono" href="#e-1">bash</a>' in page
     assert "No verifier output was recorded." in page
+    # Each row has one label: the tool name, with the kind only as its title.
+    assert '<a class="ev-kind mono" href="#e-1" title="Tool">bash</a>' in page
+    assert '<a class="ev-kind" href="#e-0" title="Prompt">Prompt</a>' in page
     assert '<details open class="is-error">' in page
     # The two short inputs and the error output open; the long output without an error stays closed.
     assert page.count("<details open") == 3
@@ -272,6 +275,7 @@ def test_trial_page_puts_verification_in_its_own_tab(tmp_path):
     assert 'role="tablist"' in page
     assert 'id="implementation"' in page and 'id="verification"' in page
     assert "test_&lt;order&gt;" in page and "expected &lt;1&gt;" in page
+    assert 'title="Suite">Test run</a>' in page and ">Suite<" not in page
     assert (
         page.index('id="implementation"') < page.index("Fix it.") < page.index('id="verification"')
     )
@@ -326,9 +330,16 @@ def test_tokens_come_from_the_run_totals_or_harbor_when_no_call_records_them(tmp
 
 
 def test_opencode_2_last_step_takes_its_usage_from_the_session_export(tmp_path):
-    # OpenCode 2 ends a run without the step_finish of its last step.
+    # OpenCode 2 ends a run without the step_finish of its last step. It writes step_start only
+    # when output starts to stream, so the call time comes from the export: created to streamed.
     lines = [
-        {"type": "step_start", "timestamp": 1000, "part": {"messageID": "msg_1"}},
+        {"type": "step_start", "timestamp": 2900, "part": {"messageID": "msg_1"}},
+        # The tool starts before the stream ends; its overlap is tool time, not model time.
+        {
+            "type": "tool_use",
+            "timestamp": 3000,
+            "part": {"tool": "read", "state": {"time": {"start": 2920, "end": 2990}}},
+        },
         {
             "type": "step_finish",
             "timestamp": 3000,
@@ -341,8 +352,18 @@ def test_opencode_2_last_step_takes_its_usage_from_the_session_export(tmp_path):
     used = {"input": 7, "output": 3, "reasoning": 1, "cache": {"read": 90}}
     exported = {
         "messages": [
-            {"type": "assistant", "id": "msg_1", "tokens": {"input": 10, "output": 2}},
-            {"type": "assistant", "id": "msg_2", "time": {"completed": 5000}, "tokens": used},
+            {
+                "type": "assistant",
+                "id": "msg_1",
+                "time": {"created": 500, "streamed": 2950, "completed": 3000},
+                "tokens": {"input": 10, "output": 2},
+            },
+            {
+                "type": "assistant",
+                "id": "msg_2",
+                "time": {"created": 3100, "streamed": 4900, "completed": 5000},
+                "tokens": used,
+            },
         ]
     }
     (tmp_path / "opencode").mkdir()
@@ -352,11 +373,15 @@ def test_opencode_2_last_step_takes_its_usage_from_the_session_export(tmp_path):
         {"input": 10, "cache": 0, "output": 2},
         {"input": 97, "cache": 90, "output": 4},
     ]
-    assert [c["ms"] for c in calls] == [2000, 1000]
-    # Without the export, the last call keeps no usage.
+    assert [(c["at"], c["ms"], c["ms_source"]) for c in calls] == [
+        (500, 2420, "recorded"),
+        (3100, 1800, "recorded"),
+    ]
+    # Without the export, the last call keeps no usage and no call has a time.
     (tmp_path / "opencode" / "session.json").unlink()
-    last = [e for e in read_opencode(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"][-1]
-    assert last["tokens"] is None
+    calls = [e for e in read_opencode(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]
+    assert calls[-1]["tokens"] is None
+    assert [c["ms"] for c in calls] == [None, None]
 
 
 def test_run_usage_includes_side_calls_missing_from_turn_events():

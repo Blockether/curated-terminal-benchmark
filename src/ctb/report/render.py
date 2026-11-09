@@ -35,7 +35,7 @@ KINDS = {
     "user": "Prompt",
     "assistant": "Assistant",
     "reasoning": "Reasoning",
-    "call": "Provider call",
+    "call": "Model call",
     "tool": "Tool",
     "command": "Command",
     "result": "Run result",
@@ -1068,7 +1068,9 @@ def event_item(index: int, e: dict, base: float | None) -> str:
         meta.append(f'<span class="mono">{esc(money(e["cost"]))}</span>')
     if e["error"]:
         meta.append('<span class="chip chip-error">Error</span>')
-    name = f'<span class="ev-name mono">{esc(e["name"])}</span>' if e["name"] else ""
+    # One label: the tool or record name when there is one, else the kind.
+    label = esc(e["name"] or KINDS[kind])
+    mono = " mono" if e["name"] and kind in ("tool", "command") else ""
     content = []
     if e["text"]:
         content.append(f'<pre class="ev-text">{esc_text(e["text"])}</pre>')
@@ -1079,7 +1081,7 @@ def event_item(index: int, e: dict, base: float | None) -> str:
     return (
         f'<li id="e-{index}" class="{cls}" data-group="{group}" '
         f'data-error="{"1" if e["error"] else "0"}">'
-        f'<div class="ev-head"><a class="ev-kind" href="#e-{index}">{KINDS[kind]}</a>{name}'
+        f'<div class="ev-head"><a class="ev-kind{mono}" href="#e-{index}" title="{KINDS[kind]}">{label}</a>'
         f'<span class="ev-meta">{"".join(meta)}</span></div>'
         + (f'<section class="ev-body">{inner}</section>' if inner else "")
         + "</li>"
@@ -1110,8 +1112,8 @@ def verification_item(index: int, e: dict) -> str:
         inner = body_block(label, e["text"], error=failed)
     return (
         f'<li id="v-{index}" class="ev ev-{e["kind"]}{" ev-error" if failed else ""}">'
-        f'<div class="ev-head"><a class="ev-kind" href="#v-{index}">{VERIFY_KINDS[e["kind"]]}</a>'
-        f'<span class="ev-name mono">{esc(e["name"])}</span>'
+        f'<div class="ev-head"><a class="ev-kind{"" if e["kind"] == "suite" else " mono"}" '
+        f'href="#v-{index}" title="{VERIFY_KINDS[e["kind"]]}">{esc(e["name"])}</a>'
         f'<span class="ev-meta">{"".join(meta)}</span></div>'
         + (f'<section class="ev-body">{inner}</section>' if inner else "")
         + "</li>"
