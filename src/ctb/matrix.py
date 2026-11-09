@@ -43,6 +43,13 @@ AGENTS = {
         ),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",), paused=True),
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
+        # The same kmet arm with only the eval tool selected; run it by name.
+        AgentSpec(
+            "kmet-eval-only",
+            "ctb.agents.kmet:KmetEvalOnly",
+            ("openai",),
+            experiment=True,
+        ),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).
         AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True, paused=True),
         # Wisp cannot refresh a ChatGPT token, so it also uses the host proxy.
