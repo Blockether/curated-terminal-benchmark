@@ -285,8 +285,8 @@ def export(root, out):
         source = next(s for s in seals[name]["rows"] if s["result_sha256"] == row["result_sha256"])
         result_path = root / source["result"]
         report.require(content_hash(result_path.read_bytes()) == row["result_sha256"])
-        events = transcripts.READERS[transcripts.harness(row["agent"])](
-            result_path.parent / "agent", "openai/gpt-6.1-sol"
+        events = transcripts.read_events(
+            transcripts.harness(row["agent"]), result_path.parent / "agent", "openai/gpt-6.1-sol"
         )
         if not events:
             result = report.read(result_path)

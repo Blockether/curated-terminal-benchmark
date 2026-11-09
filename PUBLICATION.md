@@ -20,6 +20,7 @@ Each event has a fixed schema with text fields only. This normalized view is not
 A trial that failed before its agent started has an explicit status event, not a made-up trace.
 A tool call holds the commands that it ran, for example the shell commands of a Codex exec script.
 The page shows them inside the row of that tool call, not as separate rows.
+Reasoning summaries with no other event between them are one reasoning event.
 Each transcript (schema 3) also holds what the verifier ran: CTRF test runs, the verifier output
 and the logs of task services from the artifact manifest. Repeat runs list only failed tests.
 The trial page shows these entries in a Verification tab next to the Implementation tab.

@@ -4,6 +4,7 @@ import re
 from ctb.report import render
 from ctb.report.transcripts import (
     event,
+    merge_reasoning,
     read_codex,
     read_dirge,
     read_opencode,
@@ -202,6 +203,26 @@ def test_event_header_labels_its_times_and_text_shows_markdown_bold():
     item = render.event_item(1, tool, 1_000)
     assert '<span class="fact-k">Took</span> <span class="mono">117 ms</span>' in item
     assert "+0:20" not in item
+
+
+def test_a_run_of_reasoning_summaries_becomes_one_reasoning_event():
+    events = [
+        event("reasoning", at=1.0, text="**Analyzing net08 topology**"),
+        event("reasoning", at=2.0, text="**Checking net08 routing**"),
+        event("reasoning", at=3.0, text=None),
+        event("tool", at=4.0, name="bash", input="ls"),
+        event("reasoning", at=5.0, text="**Planning lower corridor routes**"),
+        event("assistant", at=6.0, text="Done."),
+    ]
+    merged = merge_reasoning(events)
+    assert [(e["kind"], e["at"], e["text"]) for e in merged] == [
+        ("reasoning", 1.0, "**Analyzing net08 topology**\n\n**Checking net08 routing**"),
+        ("tool", 4.0, None),
+        ("reasoning", 5.0, "**Planning lower corridor routes**"),
+        ("assistant", 6.0, "Done."),
+    ]
+    assert events[0]["text"] == "**Analyzing net08 topology**"  # the reader's events stay unchanged
+    assert merge_reasoning(merged) == merged
 
 
 def test_codex_exec_row_holds_the_commands_that_end_while_it_runs(tmp_path):

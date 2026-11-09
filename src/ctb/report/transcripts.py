@@ -1003,6 +1003,26 @@ def harness(name: str) -> str | None:
     return next((key for key in READERS if name.startswith(key)), None)
 
 
+def merge_reasoning(events: list[dict]) -> list[dict]:
+    """One reasoning event for each run of reasoning events with nothing between them.
+
+    Harnesses write each reasoning summary part as its own record, often one short heading.
+    """
+    merged: list[dict] = []
+    for e in events:
+        last = merged[-1] if merged else None
+        if last is not None and e["kind"] == last["kind"] == "reasoning":
+            last["text"] = clip("\n\n".join(t for t in (last["text"], e["text"]) if t))
+        else:
+            merged.append(dict(e) if e["kind"] == "reasoning" else e)
+    return merged
+
+
+def read_events(key: str, agent: Path, model: str) -> list[dict]:
+    """The transcript events of one trial, read by the reader of harness `key`."""
+    return merge_reasoning(READERS[key](agent, model))
+
+
 def instruction(trial: Path, result: dict) -> str | None:
     """The task prompt: the first user step of the trajectory, else the task's instruction.md."""
     path = trial / "agent" / "trajectory.json"

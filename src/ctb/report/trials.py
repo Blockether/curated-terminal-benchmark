@@ -8,11 +8,11 @@ from pathlib import Path
 from ctb.metrics import PHASES, trial_metrics
 from ctb.report.comparison import setup_id
 from ctb.report.transcripts import (
-    READERS,
     epoch_ms,
     event,
     harness,
     instruction,
+    read_events,
     read_verification,
 )
 
@@ -101,7 +101,7 @@ def load(trial: Path, jobs: Path) -> dict:
     parts = trial.relative_to(jobs).parts
     round_ = parts[0] if parts[0] != "suite" else f"suite/{parts[2]}"
     key = harness(info.get("name") or "")
-    events = READERS[key](trial / "agent", model) if key else []
+    events = read_events(key, trial / "agent", model) if key else []
     if not any(e["kind"] == "user" for e in events):
         prompt = instruction(trial, result)
         if prompt:
