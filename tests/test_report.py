@@ -41,6 +41,13 @@ def write_vis_trial(jobs, name="t1", task="terminal-bench/demo", model="zai/glm-
     return trial
 
 
+def test_kmet_eval_only_reads_kmet_transcripts():
+    from ctb.report import transcripts
+
+    assert transcripts.harness("kmet-eval-only") == "kmet"
+    assert transcripts.READERS[transcripts.harness("kmet-eval-only")] is transcripts.read_kmet
+
+
 def test_formats_values_for_a_person():
     assert render.duration(None) is None
     assert render.duration(850) == "850 ms"
