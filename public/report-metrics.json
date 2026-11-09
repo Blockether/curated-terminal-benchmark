@@ -48,6 +48,55 @@
       }
     }
   },
+  "04c2e63647d546b30ff7e0bcaa2ebbfc90b9e4429e0fa05314fffbe66bb5a341": {
+    "agent_ms": 182000.0,
+    "cache": 105600,
+    "cost": 0.1008,
+    "input": 121136,
+    "output": 5918,
+    "phases": [
+      {
+        "end": 1794258528303.955,
+        "name": "environment_setup",
+        "start": 1794258527663.388
+      },
+      {
+        "end": 1794258597419.686,
+        "name": "agent_setup",
+        "start": 1794258528304.135
+      },
+      {
+        "end": 1794258779375.736,
+        "name": "agent_execution",
+        "start": 1794258597421.197
+      },
+      {
+        "end": 1794258818711.89,
+        "name": "verifier",
+        "start": 1794258791893.572
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 164774.228433,
+    "provider_timed": 12,
+    "reward": 0.0,
+    "run_ms": 291100.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T21:08:47.586267Z",
+    "task_checksum": "9623bde8b8df64f044ba142496347ceb058d393e1a2319669250312e8799783f",
+    "tool_calls": 11,
+    "tool_errors": 0,
+    "tool_ms": 8735.0,
+    "tools": {
+      "python_execution": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 8735.0,
+        "timed": 11
+      }
+    }
+  },
   "06a38e09e6f71169512c19468c4e8ede3fcda5a7c8bdd866bd5a46be3b7beca2": {
     "agent_ms": 154600.0,
     "cache": 216448,
@@ -94,6 +143,55 @@
         "errors": 0,
         "ms": 14800.0,
         "timed": 10
+      }
+    }
+  },
+  "0a9981c96a6b297518b2810e7b39ded459606f0973ad7907c5b2772da4655060": {
+    "agent_ms": 1351700.0,
+    "cache": 1883264,
+    "cost": 0.6621,
+    "input": 1931226,
+    "output": 37781,
+    "phases": [
+      {
+        "end": 1794260504507.4612,
+        "name": "environment_setup",
+        "start": 1794260487572.667
+      },
+      {
+        "end": 1794260568855.624,
+        "name": "agent_setup",
+        "start": 1794260504507.6548
+      },
+      {
+        "end": 1794261920517.145,
+        "name": "agent_execution",
+        "start": 1794260568856.3381
+      },
+      {
+        "end": 1794262085654.554,
+        "name": "verifier",
+        "start": 1794261958462.676
+      }
+    ],
+    "provider_calls": 53,
+    "provider_errors": 0,
+    "provider_ms": 1125363.440688,
+    "provider_timed": 53,
+    "reward": 1.0,
+    "run_ms": 1598200.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T21:41:27.483702Z",
+    "task_checksum": "80b19b18f9138fdcefdc2c69d66c1b69c698679de75b7dc3e80fb771b3ec5b9d",
+    "tool_calls": 52,
+    "tool_errors": 1,
+    "tool_ms": 218635.0,
+    "tools": {
+      "python_execution": {
+        "calls": 52,
+        "errors": 1,
+        "ms": 218635.0,
+        "timed": 52
       }
     }
   },
@@ -222,6 +320,55 @@
         "errors": 0,
         "ms": 8.0,
         "timed": 4
+      }
+    }
+  },
+  "1faa28b4f8b9136c7abc7b13101ff5988c9bc283b99994c264046e70345243d2": {
+    "agent_ms": 814400.0,
+    "cache": 353664,
+    "cost": 0.2496,
+    "input": 371211,
+    "output": 17917,
+    "phases": [
+      {
+        "end": 1794263066704.557,
+        "name": "environment_setup",
+        "start": 1794263066008.5298
+      },
+      {
+        "end": 1794263117517.428,
+        "name": "agent_setup",
+        "start": 1794263066704.674
+      },
+      {
+        "end": 1794263931931.8982,
+        "name": "agent_execution",
+        "start": 1794263117518.237
+      },
+      {
+        "end": 1794263994859.577,
+        "name": "verifier",
+        "start": 1794263945255.854
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 465457.481425,
+    "provider_timed": 23,
+    "reward": 0.0,
+    "run_ms": 928900.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T22:24:25.924243Z",
+    "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+    "tool_calls": 22,
+    "tool_errors": 0,
+    "tool_ms": 339082.0,
+    "tools": {
+      "python_execution": {
+        "calls": 22,
+        "errors": 0,
+        "ms": 339082.0,
+        "timed": 22
       }
     }
   },
@@ -805,6 +952,55 @@
       }
     }
   },
+  "4305124bcd0db0c62d37411363a57faadd7395b9b9ef9d43733f19129ae56c5b": {
+    "agent_ms": 393600.0,
+    "cache": 280832,
+    "cost": 0.1932,
+    "input": 308934,
+    "output": 10889,
+    "phases": [
+      {
+        "end": 1794255859814.061,
+        "name": "environment_setup",
+        "start": 1794255859034.222
+      },
+      {
+        "end": 1794255924156.3562,
+        "name": "agent_setup",
+        "start": 1794255859814.313
+      },
+      {
+        "end": 1794256317793.9429,
+        "name": "agent_execution",
+        "start": 1794255924156.7832
+      },
+      {
+        "end": 1794256594795.69,
+        "name": "verifier",
+        "start": 1794256330205.3462
+      }
+    ],
+    "provider_calls": 19,
+    "provider_errors": 0,
+    "provider_ms": 337578.750098,
+    "provider_timed": 19,
+    "reward": 0.0,
+    "run_ms": 735800.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T20:24:18.960736Z",
+    "task_checksum": "f9e9f9f97cc4ed197e51c0f79218cba93a9dac01e736e1c1076d7ac91f41f1c7",
+    "tool_calls": 18,
+    "tool_errors": 2,
+    "tool_ms": 49548.0,
+    "tools": {
+      "python_execution": {
+        "calls": 18,
+        "errors": 2,
+        "ms": 49548.0,
+        "timed": 18
+      }
+    }
+  },
   "4381ccc4d80e42aec3543fd294360be8b4841b15acc7374d1bfca520d8aeed97": {
     "agent_ms": 364400.0,
     "cache": 145024,
@@ -857,6 +1053,104 @@
         "errors": 0,
         "ms": 12.0,
         "timed": 9
+      }
+    }
+  },
+  "4460ed39dbd37728ca446a676f19711be402f3a561f2fda65e36c73dc69f7954": {
+    "agent_ms": 244300.0,
+    "cache": 176000,
+    "cost": 0.1594,
+    "input": 198052,
+    "output": 9773,
+    "phases": [
+      {
+        "end": 1794265043069.7888,
+        "name": "environment_setup",
+        "start": 1794265042351.414
+      },
+      {
+        "end": 1794265103411.386,
+        "name": "agent_setup",
+        "start": 1794265043069.989
+      },
+      {
+        "end": 1794265347749.681,
+        "name": "agent_execution",
+        "start": 1794265103411.649
+      },
+      {
+        "end": 1794265615477.5132,
+        "name": "verifier",
+        "start": 1794265360027.184
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": 226528.429037,
+    "provider_timed": 13,
+    "reward": 1.0,
+    "run_ms": 573200.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T22:57:22.266285Z",
+    "task_checksum": "87c1857047d53ede4128554c889cc9457248e4a3356d152362d8f91db6161b35",
+    "tool_calls": 12,
+    "tool_errors": 0,
+    "tool_ms": 11822.0,
+    "tools": {
+      "python_execution": {
+        "calls": 12,
+        "errors": 0,
+        "ms": 11822.0,
+        "timed": 12
+      }
+    }
+  },
+  "4789d1405678bf589dfbbde844a686c5f1a4de9f57043effb8246fd74bdef258": {
+    "agent_ms": 323300.0,
+    "cache": 208256,
+    "cost": 0.1949,
+    "input": 238380,
+    "output": 11384,
+    "phases": [
+      {
+        "end": 1794265617676.392,
+        "name": "environment_setup",
+        "start": 1794265616969.461
+      },
+      {
+        "end": 1794265685770.484,
+        "name": "agent_setup",
+        "start": 1794265617676.574
+      },
+      {
+        "end": 1794266009105.368,
+        "name": "agent_execution",
+        "start": 1794265685770.952
+      },
+      {
+        "end": 1794266044509.014,
+        "name": "verifier",
+        "start": 1794266021367.27
+      }
+    ],
+    "provider_calls": 16,
+    "provider_errors": 0,
+    "provider_ms": 309575.115636,
+    "provider_timed": 16,
+    "reward": 1.0,
+    "run_ms": 427600.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T23:06:56.910450Z",
+    "task_checksum": "7fea45f6992c6c8e98eea01a60e555f65b035bead587ecc0761c2714f76b900f",
+    "tool_calls": 15,
+    "tool_errors": 0,
+    "tool_ms": 7836.0,
+    "tools": {
+      "python_execution": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 7836.0,
+        "timed": 15
       }
     }
   },
@@ -924,6 +1218,55 @@
         "errors": 0,
         "ms": 60.220458984375,
         "timed": 4
+      }
+    }
+  },
+  "49ee3e9a797c96f35e7daf36b502f49a40968145e41478f06e18a6504562b443": {
+    "agent_ms": 1103500.0,
+    "cache": 709632,
+    "cost": 0.4572,
+    "input": 732594,
+    "output": 34030,
+    "phases": [
+      {
+        "end": 1794258821072.948,
+        "name": "environment_setup",
+        "start": 1794258820362.163
+      },
+      {
+        "end": 1794258867081.276,
+        "name": "agent_setup",
+        "start": 1794258821073.071
+      },
+      {
+        "end": 1794259970558.563,
+        "name": "agent_execution",
+        "start": 1794258867081.5989
+      },
+      {
+        "end": 1794260026239.286,
+        "name": "verifier",
+        "start": 1794259984332.745
+      }
+    ],
+    "provider_calls": 28,
+    "provider_errors": 0,
+    "provider_ms": 941307.906961,
+    "provider_timed": 28,
+    "reward": 1.0,
+    "run_ms": 1206000.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T21:13:40.253518Z",
+    "task_checksum": "2ad60b49c1539ee2326512ead3c93bced3be83f8dc6ca2c14aaa952124ff1b23",
+    "tool_calls": 27,
+    "tool_errors": 0,
+    "tool_ms": 155274.0,
+    "tools": {
+      "python_execution": {
+        "calls": 27,
+        "errors": 0,
+        "ms": 155274.0,
+        "timed": 27
       }
     }
   },
@@ -1684,6 +2027,55 @@
       }
     }
   },
+  "96f331c3b00811b41d78cb70d95f8d7d6f26d24974e56ac8e9813c3db4d25688": {
+    "agent_ms": 152400.0,
+    "cache": 86528,
+    "cost": 0.0786,
+    "input": 101206,
+    "output": 4056,
+    "phases": [
+      {
+        "end": 1794262087990.976,
+        "name": "environment_setup",
+        "start": 1794262087282.6172
+      },
+      {
+        "end": 1794262140554.634,
+        "name": "agent_setup",
+        "start": 1794262087991.099
+      },
+      {
+        "end": 1794262292962.925,
+        "name": "agent_execution",
+        "start": 1794262140555.0808
+      },
+      {
+        "end": 1794262538071.898,
+        "name": "verifier",
+        "start": 1794262308973.1902
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 93269.074789,
+    "provider_timed": 9,
+    "reward": 1.0,
+    "run_ms": 450900.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T22:08:07.199952Z",
+    "task_checksum": "c9fd621d15a4f381c15cefb4b289cb9140b2f0e74b8feecb350e5a53ec47cfa7",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 52885.0,
+    "tools": {
+      "python_execution": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 52885.0,
+        "timed": 8
+      }
+    }
+  },
   "9a618f3d00f045783db3a92d8273ac8ace920bd50715b1a2d3f8abce5078d94c": {
     "agent_ms": 183200.0,
     "cache": 139392,
@@ -2234,6 +2626,55 @@
       }
     }
   },
+  "b4605bc4ba646a34c5a39e1c7a655725d1d5fd9ee683717e4061782ba10fa2c0": {
+    "agent_ms": 1795200.0,
+    "cache": 1054592,
+    "cost": 0.6379,
+    "input": 1073876,
+    "output": 49383,
+    "phases": [
+      {
+        "end": 1794256596781.675,
+        "name": "environment_setup",
+        "start": 1794256596092.4749
+      },
+      {
+        "end": 1794256656732.723,
+        "name": "agent_setup",
+        "start": 1794256596781.7832
+      },
+      {
+        "end": 1794258451981.635,
+        "name": "agent_execution",
+        "start": 1794256656734.395
+      },
+      {
+        "end": 1794258526239.1711,
+        "name": "verifier",
+        "start": 1794258464586.2998
+      }
+    ],
+    "provider_calls": 26,
+    "provider_errors": 0,
+    "provider_ms": 1644461.749262,
+    "provider_timed": 26,
+    "reward": 1.0,
+    "run_ms": 1930200.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T20:36:36.019024Z",
+    "task_checksum": "fd5e651014b9ef4b13ce162f8a5d7d0eac31d34f818e49d18458e716cd816edf",
+    "tool_calls": 25,
+    "tool_errors": 1,
+    "tool_ms": 142797.0,
+    "tools": {
+      "python_execution": {
+        "calls": 25,
+        "errors": 1,
+        "ms": 142797.0,
+        "timed": 25
+      }
+    }
+  },
   "b67d4a5c232e3bbb169251af18b6fd931a6a7cfc64a9544e2a872c3c603fb2db": {
     "agent_ms": 827000.0,
     "cache": 331904,
@@ -2432,6 +2873,55 @@
         "errors": 0,
         "ms": 5.0,
         "timed": 3
+      }
+    }
+  },
+  "c16880fa9d22ebe0164101ed211b071af2249251b94c3fabeba9c19a0cd440be": {
+    "agent_ms": 888800.0,
+    "cache": 809344,
+    "cost": 0.4947,
+    "input": 846093,
+    "output": 34030,
+    "phases": [
+      {
+        "end": 1794263999336.7778,
+        "name": "environment_setup",
+        "start": 1794263998565.5662
+      },
+      {
+        "end": 1794264048540.078,
+        "name": "agent_setup",
+        "start": 1794263999336.9292
+      },
+      {
+        "end": 1794264937338.792,
+        "name": "agent_execution",
+        "start": 1794264048540.393
+      },
+      {
+        "end": 1794265040769.1418,
+        "name": "verifier",
+        "start": 1794264951198.093
+      }
+    ],
+    "provider_calls": 26,
+    "provider_errors": 0,
+    "provider_ms": 809094.078619,
+    "provider_timed": 26,
+    "reward": 0.0,
+    "run_ms": 1042300.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T22:39:58.475457Z",
+    "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+    "tool_calls": 25,
+    "tool_errors": 1,
+    "tool_ms": 73425.0,
+    "tools": {
+      "python_execution": {
+        "calls": 25,
+        "errors": 1,
+        "ms": 73425.0,
+        "timed": 25
       }
     }
   },
@@ -3427,6 +3917,104 @@
         "errors": 0,
         "ms": 2800.0,
         "timed": 7
+      }
+    }
+  },
+  "fa4304232113fd549231b7a1195f71aec8e969df8581f584891e3cc8cc662140": {
+    "agent_ms": 385700.0,
+    "cache": 971008,
+    "cost": 0.2791,
+    "input": 1020165,
+    "output": 8364,
+    "phases": [
+      {
+        "end": 1794262543529.769,
+        "name": "environment_setup",
+        "start": 1794262539717.856
+      },
+      {
+        "end": 1794262633083.955,
+        "name": "agent_setup",
+        "start": 1794262561910.117
+      },
+      {
+        "end": 1794263018742.5078,
+        "name": "agent_execution",
+        "start": 1794262633084.413
+      },
+      {
+        "end": 1794263064537.0332,
+        "name": "verifier",
+        "start": 1794263041860.764
+      }
+    ],
+    "provider_calls": 33,
+    "provider_errors": 0,
+    "provider_ms": 343193.72123,
+    "provider_timed": 33,
+    "reward": 0.0,
+    "run_ms": 524900.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T22:15:39.645636Z",
+    "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+    "tool_calls": 32,
+    "tool_errors": 5,
+    "tool_ms": 21995.0,
+    "tools": {
+      "python_execution": {
+        "calls": 32,
+        "errors": 5,
+        "ms": 21995.0,
+        "timed": 31
+      }
+    }
+  },
+  "fae899b135d7da1716a72c914f617bd90982132e9164a4e55471f877ca41f5a2": {
+    "agent_ms": 326600.0,
+    "cache": 302208,
+    "cost": 0.1653,
+    "input": 322308,
+    "output": 9490,
+    "phases": [
+      {
+        "end": 1794260038725.013,
+        "name": "environment_setup",
+        "start": 1794260028218.205
+      },
+      {
+        "end": 1794260098928.0068,
+        "name": "agent_setup",
+        "start": 1794260038725.207
+      },
+      {
+        "end": 1794260425559.205,
+        "name": "agent_execution",
+        "start": 1794260098928.394
+      },
+      {
+        "end": 1794260485610.634,
+        "name": "verifier",
+        "start": 1794260438513.603
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 281821.577258,
+    "provider_timed": 23,
+    "reward": 1.0,
+    "run_ms": 457500.0,
+    "setup": "3978d0a2c6e4c399ae0f1468527fe512021cc7653a82704561769be03771fb37",
+    "started_at": "2026-11-09T21:33:48.087881Z",
+    "task_checksum": "e8aeea1219ab26b94f02814eecb9e512646c81c407dedc8abd09cc9f0f4d7e72",
+    "tool_calls": 22,
+    "tool_errors": 1,
+    "tool_ms": 37692.0,
+    "tools": {
+      "python_execution": {
+        "calls": 22,
+        "errors": 1,
+        "ms": 37692.0,
+        "timed": 22
       }
     }
   },

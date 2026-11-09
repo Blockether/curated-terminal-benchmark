@@ -2,14 +2,14 @@
 
 `main` holds source code, result seals, evidence manifests and public transcript hashes.
 `gh-pages` holds only the Pages workflow and `site/`: the original report layout, a text viewer, manifests,
-and 60 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
+and 72 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
 artifacts, or the local HTML report. The public export is a different directory.
 
 ## Data boundary
 
 `public_report.py` projects a closed set of agents, tasks, errors, outcomes and hashes.
 `public/report-metrics.json` holds reviewed numeric measurements, phase times and known tool
-labels for the same 60 result hashes. Unknown fields and tool names are refused. Rewards and
+labels for the same 72 result hashes. Unknown fields and tool names are refused. Rewards and
 start times must match the seals. The Pages checker does not read source logs.
 The public pages use `ctb.report.render` and the original report assets. Fonts are local,
 with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
@@ -46,8 +46,8 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
-Three full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
-of five agents: Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
+Four full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
+of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
 that recorded hashes did not change, not fairness or correctness. All selected rounds ran the
 linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro

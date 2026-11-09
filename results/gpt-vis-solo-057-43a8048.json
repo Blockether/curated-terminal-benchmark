@@ -1,0 +1,300 @@
+{
+  "round": "gpt-vis-solo-057-43a8048",
+  "sealed_at": "2026-11-09T23:29:02Z",
+  "runs": [
+    {
+      "started_at": "2026-11-09T20:24:17Z",
+      "commit": "43a804886818958f9dbe476a175f6a0b597905de",
+      "dirty": false,
+      "pins": {
+        "python_toolkit": {
+          "cpython": "3.14.7+20260825",
+          "requirements_sha256": "b2206a0ac8af1e701d37fa5e4d55d7ee1d99afc809573e14f431a249e756925d",
+          "setup_note_sha256": "151ac2d2977186178456ed690b2f827311001fd654d61f27634166f5ccb6757c",
+          "inventory_schema": 1
+        },
+        "dirge": "45377633",
+        "kmet": "6221f8dd86f515630a7a42a1133bac52453e9aba",
+        "samizdat": "9411f00c87d5ddb725f46eb8794e0d93a479835f",
+        "jolt": "v0.8.23",
+        "wisp": "e0d468f792fb12ba2a31ab873c7f54190a92b753",
+        "harbor": "0.24.0",
+        "harnesses": {
+          "codex": "0.166.0",
+          "opencode": "2.2.5",
+          "pi": "1.5.0"
+        },
+        "models": {
+          "openai": "openai/gpt-6.1-sol"
+        },
+        "effort": "medium",
+        "task_fixes": [
+          "bun-sourcemap-leak/instruction.md",
+          "interleaved-vigenere/environment/Dockerfile",
+          "interleaved-vigenere/task.toml",
+          "interleaved-vigenere/tests/Dockerfile",
+          "interleaved-vigenere/tests/data/english_bigrams.json",
+          "interleaved-vigenere/tests/data/english_unigrams.json",
+          "interleaved-vigenere/tests/data/sample_ciphertext.txt",
+          "interleaved-vigenere/tests/data/sample_plaintext.txt",
+          "interleaved-vigenere/tests/data/words.txt",
+          "interleaved-vigenere/tests/test.sh",
+          "photonic-waveguide-routing/tests/test.sh",
+          "react-lead-form/tests/test_outputs.mjs"
+        ]
+      },
+      "artifacts": {
+        "cpython-3.14.7+20260825-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz": "a0f39e822fd3b96a2605f30f954acf9a2cdf91faa1385a13e24bc407a41e05ea",
+        "ctb-python-3.14.7-b2206a0ac8af.tar.gz": "b689f13d6a863cbf1c611c9595330a92b49e5a0443786f09a729b86d7b2ed8f8",
+        "dirge-45377633-tools-v4-x86_64-unknown-linux-musl.tar.gz": "31d1b8e1e6f62d64b8f45b3b75093444e9e7da4adaf34808abab1783129f30ef",
+        "dirge-45377633-usage-v3-x86_64-unknown-linux-musl.tar.gz": "7942a1cb39fd3250d287bfc2d59f3dc8db83ff0429438adb9358a81a63f2d8ee",
+        "jolt-v0.8.20-x86_64-linux.tar.gz": "5400ed3c46d704ce30693b68edaa7998c248023f07b9df727447883343fcd050",
+        "kmet-6221f8dd-linux-amd64.tar.gz": "a143596b607760fc529a10c0e3407cdd1b16b3364c041a26c7bc001cd8167a2b",
+        "kmet-d7e1c024-linux-amd64.tar.gz": "678eddb6502977fd562f1cbb4f6cb796142b30b85fde207e75b47bd860b5bfed",
+        "kmet-e2f9684f-linux-amd64.tar.gz": "c9f0df050bff5b84c3fa34fadc49201b97fe8867dc4b008f86c7e3f48afbe43f",
+        "kmet-f249f0bf-linux-amd64.tar.gz": "58d499443706baa30b3309d6a9b2c29ded3c4759c93a0caf21fbe65aa1669b0e",
+        "samizdat-9411f00c-x86_64-linux.tar.gz": "78e59342c1f21d9fc07b9bf4e55f5fa1514c8489ccd10df2360fa6c1e59614a2",
+        "samizdat-97727796-x86_64-linux.tar.gz": "20d6c3456eef2ed291cb710b0f7273bab1d857f9580533abdcc6c95f6a398679",
+        "samizdat-v0.1.0-x86_64-linux.tar.gz": "20b3f392489cd6f729194a220bf34f49ea29ca8154a75b9c860eea5de4950a80",
+        "wisp-e0d468f7-18f3f123.tar.gz": "8aa0e1b3cdb8f983dbaa7e434f913edfd7893358e8665ddcb0a212cd2b0078db"
+      },
+      "agents": "vis-solo",
+      "models": "openai",
+      "tasks": "all",
+      "parallel": 1,
+      "timeout_multiplier": 0.25,
+      "engine": {
+        "arch": "arm64",
+        "emulated": true
+      },
+      "vis": {
+        "build": {
+          "repo": "Blockether/vis",
+          "run_id": 42516373705,
+          "commit": "89ebf81cd4feb2299c2cf6f5bca861cc216d38b7",
+          "sha256": "3f076ea76f704e26e7809712ab5a35bda1b68b125bd23c1e4b7b3382c39913dd"
+        },
+        "extensions": {
+          "Blockether/vis-lang-python": "1.16.7"
+        },
+        "extensions_sha256": {
+          "42516373705": "9c4e49b20fa93b6a6ac4c26b916fc91ae00ce9c238f52e7620011231c6680eef"
+        },
+        "profiles": {
+          "vis-solo": {
+            "name": "solo",
+            "toggles": {
+              "council": false,
+              "draft_backend": "off"
+            },
+            "effort": "medium",
+            "persist": false,
+            "config": {
+              "python": {
+                "environment": "shared"
+              }
+            },
+            "path": [
+              "/installed-agent"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/bun-sourcemap-leak",
+      "reward": 1.0,
+      "error": null,
+      "input": 732594,
+      "cache": 709632,
+      "output": 34030,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "2ad60b49c1539ee2326512ead3c93bced3be83f8dc6ca2c14aaa952124ff1b23",
+      "started_at": "2026-11-09T21:13:40.253518Z",
+      "finished_at": "2026-11-09T21:33:46.239329Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__h9Wk3zP/result.json",
+      "result_sha256": "49ee3e9a797c96f35e7daf36b502f49a40968145e41478f06e18a6504562b443"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/html-js-filter",
+      "reward": 0.0,
+      "error": null,
+      "input": 308934,
+      "cache": 280832,
+      "output": 10889,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "f9e9f9f97cc4ed197e51c0f79218cba93a9dac01e736e1c1076d7ac91f41f1c7",
+      "started_at": "2026-11-09T20:24:18.960736Z",
+      "finished_at": "2026-11-09T20:36:34.795727Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__html-js-filter/html-js-filter__g6M4mSY/result.json",
+      "result_sha256": "4305124bcd0db0c62d37411363a57faadd7395b9b9ef9d43733f19129ae56c5b"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/interleaved-vigenere",
+      "reward": 1.0,
+      "error": null,
+      "input": 322308,
+      "cache": 302208,
+      "output": 9490,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "e8aeea1219ab26b94f02814eecb9e512646c81c407dedc8abd09cc9f0f4d7e72",
+      "started_at": "2026-11-09T21:33:48.087881Z",
+      "finished_at": "2026-11-09T21:41:25.610672Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__YhbxFig/result.json",
+      "result_sha256": "fae899b135d7da1716a72c914f617bd90982132e9164a4e55471f877ca41f5a2"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 0.0,
+      "error": "NonZeroAgentExitCodeError",
+      "input": 1020165,
+      "cache": 971008,
+      "output": 8364,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+      "started_at": "2026-11-09T22:15:39.645636Z",
+      "finished_at": "2026-11-09T22:24:24.537102Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__kv-live-surgery/kv-live-surgery__xm7XEFw/result.json",
+      "result_sha256": "fa4304232113fd549231b7a1195f71aec8e969df8581f584891e3cc8cc662140"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/music-harmony",
+      "reward": 0.0,
+      "error": null,
+      "input": 121136,
+      "cache": 105600,
+      "output": 5918,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "9623bde8b8df64f044ba142496347ceb058d393e1a2319669250312e8799783f",
+      "started_at": "2026-11-09T21:08:47.586267Z",
+      "finished_at": "2026-11-09T21:13:38.711972Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__music-harmony/music-harmony__DLxJ2AF/result.json",
+      "result_sha256": "04c2e63647d546b30ff7e0bcaa2ebbfc90b9e4429e0fa05314fffbe66bb5a341"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/mvcc-lsm-compaction",
+      "reward": 1.0,
+      "error": null,
+      "input": 101206,
+      "cache": 86528,
+      "output": 4056,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "c9fd621d15a4f381c15cefb4b289cb9140b2f0e74b8feecb350e5a53ec47cfa7",
+      "started_at": "2026-11-09T22:08:07.199952Z",
+      "finished_at": "2026-11-09T22:15:38.071989Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__RrEqRWP/result.json",
+      "result_sha256": "96f331c3b00811b41d78cb70d95f8d7d6f26d24974e56ac8e9813c3db4d25688"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/payments-pipeline-fix",
+      "reward": 1.0,
+      "error": null,
+      "input": 1931226,
+      "cache": 1883264,
+      "output": 37781,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "80b19b18f9138fdcefdc2c69d66c1b69c698679de75b7dc3e80fb771b3ec5b9d",
+      "started_at": "2026-11-09T21:41:27.483702Z",
+      "finished_at": "2026-11-09T22:08:05.654706Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__Mh99Nfy/result.json",
+      "result_sha256": "0a9981c96a6b297518b2810e7b39ded459606f0973ad7907c5b2772da4655060"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/photonic-waveguide-routing",
+      "reward": 1.0,
+      "error": null,
+      "input": 1073876,
+      "cache": 1054592,
+      "output": 49383,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "fd5e651014b9ef4b13ce162f8a5d7d0eac31d34f818e49d18458e716cd816edf",
+      "started_at": "2026-11-09T20:36:36.019024Z",
+      "finished_at": "2026-11-09T21:08:46.239222Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__YhXbwfC/result.json",
+      "result_sha256": "b4605bc4ba646a34c5a39e1c7a655725d1d5fd9ee683717e4061782ba10fa2c0"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 0.0,
+      "error": null,
+      "input": 846093,
+      "cache": 809344,
+      "output": 34030,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+      "started_at": "2026-11-09T22:39:58.475457Z",
+      "finished_at": "2026-11-09T22:57:20.769176Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__react-lead-form/react-lead-form__quw8STi/result.json",
+      "result_sha256": "c16880fa9d22ebe0164101ed211b071af2249251b94c3fabeba9c19a0cd440be"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/session-window-debug",
+      "reward": 1.0,
+      "error": null,
+      "input": 238380,
+      "cache": 208256,
+      "output": 11384,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "7fea45f6992c6c8e98eea01a60e555f65b035bead587ecc0761c2714f76b900f",
+      "started_at": "2026-11-09T23:06:56.910450Z",
+      "finished_at": "2026-11-09T23:14:04.509064Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__session-window-debug/session-window-debug__iEazQmM/result.json",
+      "result_sha256": "4789d1405678bf589dfbbde844a686c5f1a4de9f57043effb8246fd74bdef258"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 0.0,
+      "error": null,
+      "input": 371211,
+      "cache": 353664,
+      "output": 17917,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+      "started_at": "2026-11-09T22:24:25.924243Z",
+      "finished_at": "2026-11-09T22:39:54.859809Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__hYib2qL/result.json",
+      "result_sha256": "1faa28b4f8b9136c7abc7b13101ff5988c9bc283b99994c264046e70345243d2"
+    },
+    {
+      "agent": "vis-solo",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/wal-recovery-ordering",
+      "reward": 1.0,
+      "error": null,
+      "input": 198052,
+      "cache": 176000,
+      "output": 9773,
+      "agent_version": "vis-agent 0.5.7",
+      "task_checksum": "87c1857047d53ede4128554c889cc9457248e4a3356d152362d8f91db6161b35",
+      "started_at": "2026-11-09T22:57:22.266285Z",
+      "finished_at": "2026-11-09T23:06:55.477569Z",
+      "result": "jobs/gpt-vis-solo-057-43a8048/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__qnZCfuz/result.json",
+      "result_sha256": "4460ed39dbd37728ca446a676f19711be402f3a561f2fda65e36c73dc69f7954"
+    }
+  ],
+  "digest": "9d319989aea617f436b2b61483ac1a4f248a553467f7404045072dd237789185"
+}

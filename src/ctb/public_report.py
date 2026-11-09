@@ -16,6 +16,7 @@ SELECTION = {
     "kmet": "gpt-kmet-2-16bbdc8",
     "opencode": "gpt-bench-b2a4d4a",
     "pi": "gpt-bench-b2a4d4a",
+    "vis-solo": "gpt-vis-solo-057-43a8048",
     "wisp": "gpt-wisp-62106d1",
 }
 TASKS = (
