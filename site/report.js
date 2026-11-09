@@ -154,6 +154,7 @@
     var tabs = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
     var panels = Array.prototype.slice.call(document.querySelectorAll("[data-tab-panel]"));
     if (!tabs.length) return;
+    var first = tabs[0].getAttribute("data-tab");
 
     function select(key, focus) {
       tabs.forEach(function (tab) {
@@ -163,13 +164,14 @@
         if (on && focus) tab.focus();
       });
       panels.forEach(function (panel) { panel.hidden = panel.getAttribute("data-tab-panel") !== key; });
+      setupDiagrams();
     }
 
     tabs.forEach(function (tab, i) {
       tab.addEventListener("click", function () {
         var key = tab.getAttribute("data-tab");
         select(key, false);
-        setParams({ tab: key === "implementation" ? "" : key });
+        setParams({ tab: key === first ? "" : key });
       });
       tab.addEventListener("keydown", function (event) {
         var step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
@@ -177,7 +179,7 @@
         event.preventDefault();
         var next = tabs[(i + step + tabs.length) % tabs.length];
         select(next.getAttribute("data-tab"), true);
-        setParams({ tab: next.getAttribute("data-tab") === "implementation" ? "" : next.getAttribute("data-tab") });
+        setParams({ tab: next.getAttribute("data-tab") === first ? "" : next.getAttribute("data-tab") });
       });
     });
     var key = new URLSearchParams(window.location.search).get("tab");
@@ -185,52 +187,8 @@
     var holder = target && target.closest && target.closest("[data-tab-panel]");
     if (holder) key = holder.getAttribute("data-tab-panel");
     var known = tabs.some(function (t) { return t.getAttribute("data-tab") === key; });
-    select(known ? key : "implementation", false);
+    select(known ? key : first, false);
     if (holder) target.scrollIntoView();
-  }
-
-  function setupComparison() {
-    var picker = document.querySelector("[data-compare-picker]");
-    if (!picker) return;
-    var inputs = Array.from(picker.querySelectorAll("input[name=compare]"));
-    var panels = Array.from(document.querySelectorAll("[data-comparison-panel]"));
-    var status = document.querySelector("[data-comparison-status]");
-    var mode = document.querySelector("[data-comparison-mode]");
-    var params = new URLSearchParams(location.search);
-    var requested = params.has("compare") ? params.get("compare").split(",")
-      : panels.length ? JSON.parse(panels[0].dataset.comparisonPanel) : [];
-    inputs.forEach(function (input) { input.checked = requested.includes(input.value); });
-    mode.value = params.get("mode") === "normalized" || params.get("basis") === "solved" ? "normalized" : "general";
-    function apply() {
-      var selected = inputs.filter(function (input) { return input.checked; }).map(function (input) { return input.value; }).sort();
-      var key = JSON.stringify(selected), shown = 0;
-      panels.forEach(function (panel) {
-        panel.hidden = JSON.stringify(JSON.parse(panel.dataset.comparisonPanel)) !== key || panel.dataset.mode !== mode.value;
-        if (!panel.hidden) shown += 1;
-      });
-      status.textContent = selected.length < 2 ? "Choose at least two agents to compare."
-        : !shown ? "No shared successful tasks with matching task content and model for this selection."
-        : "Comparing " + selected.length + " agents · " + (mode.value === "general"
-          ? "General: all attempts, including failures and extra tasks."
-          : "Normalized: only tasks every selected agent passed.");
-      status.dataset.state = selected.length < 2 ? "idle" : shown ? "ready" : "unmatched";
-      var url = new URL(location.href);
-      url.searchParams.set("compare", selected.join(","));
-      url.searchParams.set("mode", mode.value);
-      url.searchParams.delete("basis");
-      history.replaceState(null, "", url);
-      setupDiagrams();
-    }
-    picker.addEventListener("change", apply);
-    mode.addEventListener("change", apply);
-    window.addEventListener("popstate", function () {
-      var values = (new URLSearchParams(location.search).get("compare") || "").split(",");
-      inputs.forEach(function (input) { input.checked = values.includes(input.value); });
-      var restored = new URLSearchParams(location.search);
-      mode.value = restored.get("mode") === "normalized" || restored.get("basis") === "solved" ? "normalized" : "general";
-      apply();
-    });
-    apply();
   }
 
   function setupDiagrams() {
@@ -250,7 +208,6 @@
     });
   }
 
-  setupComparison();
   setupSorting();
   setupFilters();
   setupTranscript();

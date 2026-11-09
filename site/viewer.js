@@ -167,7 +167,7 @@
       const empty = document.createElement("p"); empty.className = "empty"; empty.textContent = "No verifier output was recorded.";
       checks.append(empty);
     }
-    document.getElementById("verification").replaceChildren(checks);
+    document.getElementById("checks").replaceChildren(checks);
     document.dispatchEvent(new Event("ctb:transcript-loaded"));
     status.textContent = `${data.events.length} events · ${data.verification.length} checks · ${(compressed.length / 1024).toFixed(0)} KB downloaded`;
   } catch (_) { status.textContent = "Transcript could not be verified or loaded. Use a current browser with gzip streaming support."; }
