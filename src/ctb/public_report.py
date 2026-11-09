@@ -12,13 +12,9 @@ from ctb.report import render as layout
 from ctb.report.comparison import setup_id
 
 SELECTION = {
-    "vis-solo": "gpt-vis-solo-053-6e1a71a",
-    "codex": "gpt-codex-dirge-c30ea7d",
-    "dirge": "gpt-codex-dirge-c30ea7d",
-    "opencode": "gpt-opencode-03-c30ea7d",
-    "kmet": "gpt-sequential-c30ea7d",
-    "samizdat": "gpt-sequential-c30ea7d",
-    "pi": "gpt-pi-150-59a845e",
+    "codex": "gpt-bench-b2a4d4a",
+    "opencode": "gpt-bench-b2a4d4a",
+    "pi": "gpt-bench-b2a4d4a",
 }
 TASKS = (
     "bun-sourcemap-leak",
@@ -344,7 +340,7 @@ def public_trials(data, metrics):
                 "round": data["sources"][r["agent"]]["round"],
                 "reward": m["reward"],
                 "started_at": m["started_at"],
-                "version": "0.5.3" if r["agent"] == "vis-solo" else None,
+                "version": None,
                 "error_message": None,
                 "events": [],
                 "phases": m["phases"],

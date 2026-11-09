@@ -2,14 +2,14 @@
 
 `main` holds source code, result seals, evidence manifests and public transcript hashes.
 `gh-pages` holds only the Pages workflow and `site/`: the original report layout, a text viewer, manifests,
-and 72 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
+and 36 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
 artifacts, or the local HTML report. The public export is a different directory.
 
 ## Data boundary
 
 `public_report.py` projects a closed set of agents, tasks, errors, outcomes and hashes.
 `public/report-metrics.json` holds reviewed numeric measurements, phase times and known tool
-labels for the same 72 result hashes. Unknown fields and tool names are refused. Rewards and
+labels for the same 36 result hashes. Unknown fields and tool names are refused. Rewards and
 start times must match the seals. The Pages checker does not read source logs.
 The public pages use `ctb.report.render` and the original report assets. Fonts are local,
 with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
@@ -40,10 +40,9 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
-Five original full rounds are sealed. The comparison selects 12 tasks for each of seven agents.
-Older rounds and recovery trials are not substituted. A seal proves that recorded hashes did
-not change, not fairness or correctness. Vis used newer verifier and health-check fixes;
-the public page states this difference.
+One full round is sealed after the evidence reset. The comparison selects 12 tasks for each
+of three agents: Codex, OpenCode and Pi. Recovery trials are not substituted. A seal proves
+that recorded hashes did not change, not fairness or correctness.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.
 Each round is audited and committed separately within the same expansion budget. No evidence
@@ -101,12 +100,11 @@ runs them with the same `PATH` as the agent commands.
 
 ## Agent selection
 
-The comparison selector accepts two or more agents. A URL with `compare=codex,dirge`
+The comparison selector accepts two or more agents. A URL with `compare=codex,pi`
 keeps the selection when the page reloads. Only the selected comparison is visible.
 An empty selection or one agent does not produce a comparison. Different setups show a warning.
 Open the metric coverage section to see which shared trials record each measurement.
-Provider time and tool time are not inferred from total agent time. The selected Dirge
-logs record final usage for completed runs but no per-call usage or event timing.
+Provider time and tool time are not inferred from total agent time.
 Interrupted runs can lack a final usage record. Missing values stay missing.
 
 ## Asset updates
