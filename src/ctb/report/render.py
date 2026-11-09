@@ -329,26 +329,25 @@ def agent_view(trials: list[dict]) -> str:
         th("Tool errors"),
         th("Error rate"),
     ]
-    general = (
-        '<p class="hint">These are totals, not an efficiency ranking. Cost is the API list-price '
-        "equivalent where token usage is recorded. A dash marks a value that no trial of the agent "
-        "records.</p>"
-        + agent_charts(trials)
-        + table(head, agent_rows(trials), cls="sortable", empty="No trials were found.")
+    general = agent_charts(trials) + table(
+        head, agent_rows(trials), cls="sortable", empty="No trials were found."
     )
     shared, tasks = normalized(trials)
     if tasks:
         names = ", ".join(task_name(t) for t in tasks)
         normal = (
-            f'<p class="hint">Only {"the task" if len(tasks) == 1 else f"the {len(tasks)} tasks"} '
-            f"that every agent passed, one attempt each, so cost and time compare on the same work: "
-            f"{esc(names)}.</p>"
+            f'<p class="hint">Tasks passed by every agent, one attempt each: {esc(names)}.</p>'
             + agent_charts(shared, shared=True)
             + table(head, agent_rows(shared), cls="sortable", empty="No trials were found.")
         )
     else:
         normal = '<p class="empty">No task was passed by every agent.</p>'
-    return tabs(
+    # One note for both tabs, on one line where the page is wide enough.
+    note = (
+        '<p class="hint hint-line">Totals, not an efficiency ranking. Cost is the API list-price '
+        "equivalent where token usage is recorded; a dash means that no trial records the value.</p>"
+    )
+    return note + tabs(
         [
             ("general", "General", "All attempts, failures included", general),
             ("normalized", "Normalized", "Only the tasks that every agent passed", normal),
