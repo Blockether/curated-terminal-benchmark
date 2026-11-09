@@ -382,7 +382,9 @@ INTRO = (
 )
 EMULATION = (
     "All tasks are linux/amd64 containers. They ran under emulation, Rosetta in a Podman VM on "
-    "an Apple Silicon Mac, so times and CPU values include the emulation overhead."
+    "an Apple Silicon Mac, so times and CPU values include the emulation overhead. "
+    "Machine: MacBook Pro with Apple M4 Max (14 cores, 36 GB memory), macOS 26.6. "
+    "The Podman 6.0 VM had 12 CPUs and 24 GiB of memory. One trial ran at a time."
 )
 
 

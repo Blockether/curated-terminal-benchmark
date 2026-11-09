@@ -50,8 +50,8 @@ Three full rounds are sealed after the evidence reset. The comparison selects 12
 of five agents: Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
 that recorded hashes did not change, not fairness or correctness. All selected rounds ran the
-linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac. The page states
-this. New rounds on that host need `--allow-emulation`.
+linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro
+with Apple M4 Max (14 cores, 36 GB) and a VM with 12 CPUs and 24 GiB. The page states this. New rounds on that host need `--allow-emulation`.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.
 Each round is audited and committed separately within the same expansion budget. No evidence
