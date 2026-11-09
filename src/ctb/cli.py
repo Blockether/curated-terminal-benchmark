@@ -688,6 +688,27 @@ def metrics(args: argparse.Namespace) -> None:
             f"{t['median_agent_minutes']:>6} {cost:>8} {per_pass:>8} {t['input']:>10} "
             f"{t['output']:>8} {t['steps']:>5} {t['tool_calls']:>5} {t['subagents']:>9}"
         )
+    print(
+        f"\n{'agent':15} {'sampled':>7} {'rss_min':>8} {'rss_max':>8} {'median':>8} "
+        f"{'cpu%':>6} {'box_cpu%':>8} {'package':>8} {'runtime':>8}   (MiB; % of one core)"
+    )
+    for t in body["agents"]:
+        mib = {
+            k: "-" if t[k] is None else f"{t[k] / 2**20:.0f}"
+            for k in (
+                "agent_rss_min",
+                "agent_rss_max",
+                "median_agent_rss_max",
+                "package_bytes",
+                "runtime_bytes",
+            )
+        }
+        pct = {k: "-" if t[k] is None else t[k] for k in ("agent_cpu_pct", "container_cpu_pct")}
+        print(
+            f"{t['agent']:15} {t['resource_trials']:>2}/{t['trials']:<4} {mib['agent_rss_min']:>8} "
+            f"{mib['agent_rss_max']:>8} {mib['median_agent_rss_max']:>8} {pct['agent_cpu_pct']:>6} "
+            f"{pct['container_cpu_pct']:>8} {mib['package_bytes']:>8} {mib['runtime_bytes']:>8}"
+        )
     print(f"wrote {out.relative_to(ROOT)}")
 
 

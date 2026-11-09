@@ -12,6 +12,7 @@ from pathlib import Path
 
 from harbor.environments.base import BaseEnvironment
 
+from ctb import resources
 from ctb.paths import ARTIFACTS
 
 # The CPython build that vis-python-runtime embeds (.cpython-version), so Vis and the toolkit
@@ -130,9 +131,11 @@ class Toolkit:
             command="{ command -v python3 || true; python3 --version 2>&1 || true; "
             "command -v ctb-python; ctb-python --version; } > /logs/agent/python-resolution.txt",
         )
+        await resources.footprint(self, environment)
 
     async def run(self, instruction, environment, context):
-        return await super().run(shared_instruction(instruction), environment, context)
+        async with resources.measured(self, environment):
+            return await super().run(shared_instruction(instruction), environment, context)
 
     async def exec_as_agent(self, environment: BaseEnvironment, command: str, *args, **kwargs):
         return await super().exec_as_agent(environment, PATH_SETUP + command, *args, **kwargs)

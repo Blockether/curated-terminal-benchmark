@@ -14,7 +14,7 @@ from harbor.agents.installed.opencode import OpenCode as HarborOpenCode
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb import credentials
+from ctb import credentials, resources
 from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
 from ctb.toolkit import Toolkit, shared_instruction
 
@@ -176,6 +176,9 @@ def opencode_auth_json(access: credentials.Access) -> str:
 class OpenCode(Toolkit, HarborOpenCode):
     """Run the benchmark model with medium effort, the subscription login and the toolkit."""
 
+    # The npm bin is the native build of a platform package; it does not run on Node.
+    FOOTPRINT = resources.npm_footprint("@opencode/cli*", runtime=False)
+
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("variant", EFFORT)
         super().__init__(*args, version=version or OPENCODE_VERSION, **kwargs)
@@ -305,7 +308,10 @@ class OpenCode(Toolkit, HarborOpenCode):
                 env=env,
             )
             watch = asyncio.create_task(self._watch(environment, stopped))
-            await self.exec_as_agent(environment, command=self.run_command(instruction), env=env)
+            async with resources.measured(self, environment):
+                await self.exec_as_agent(
+                    environment, command=self.run_command(instruction), env=env
+                )
             if messages := self._error_messages():
                 raise NonZeroAgentExitCodeError(
                     "OpenCode emitted error event(s): " + "; ".join(messages[:3])

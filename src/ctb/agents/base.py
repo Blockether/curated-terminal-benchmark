@@ -10,6 +10,7 @@ from harbor.agents.installed.base import BaseInstalledAgent, PackageSpec, with_p
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
+from ctb import resources
 from ctb.toolkit import Toolkit, shared_instruction
 
 EFFORT = "medium"
@@ -135,10 +136,11 @@ class CuratedAgent(Toolkit, BaseInstalledAgent):
         try:
             await self.stage(environment, self.secret_files())
             # Tokens stay in the process environment, never in a command argument.
-            await self.exec_as_agent(
-                environment,
-                command=f"export HOME={AGENT_HOME}; " + self.command(instruction),
-                env=self.secret_env(),
-            )
+            async with resources.measured(self, environment):
+                await self.exec_as_agent(
+                    environment,
+                    command=f"export HOME={AGENT_HOME}; " + self.command(instruction),
+                    env=self.secret_env(),
+                )
         finally:
             await self.clean(environment)

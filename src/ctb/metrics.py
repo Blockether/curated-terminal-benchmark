@@ -1,4 +1,4 @@
-"""Cost, time, token, step, tool and subagent metrics of the trials of a sealed round."""
+"""Cost, time, token, step, tool, subagent and resource metrics of the trials of a sealed round."""
 
 import hashlib
 import json
@@ -7,6 +7,8 @@ import statistics
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+
+from ctb import resources
 
 #: Tools that start a subagent: Codex spawn_agent and OpenCode task.
 SUBAGENT_TOOLS = frozenset({"spawn_agent", "task"})
@@ -98,6 +100,7 @@ def trial_metrics(result_path: Path) -> dict:
         "cost_usd": None if cost is None else round(cost, 4),
         "cost_source": source if cost is not None else None,
         **trajectory_counts(result_path.parent / "agent" / "trajectory.json"),
+        "resources": resources.summary(result_path.parent / "agent"),
     }
 
 
@@ -134,7 +137,24 @@ def totals(rows: list[dict]) -> list[dict]:
     for row in rows:
         groups.setdefault((row["agent"], row["model"]), []).append(row)
     out = []
+
+    def known(items, key):
+        return [r["resources"][key] for r in items if r["resources"].get(key) is not None]
+
+    def share(items, key):
+        """CPU seconds over sampled seconds of the trials that have both, in percent of a core."""
+        pairs = [
+            (r["resources"][key], r["resources"]["seconds_sampled"])
+            for r in items
+            if r["resources"].get(key) is not None and r["resources"].get("seconds_sampled")
+        ]
+        span = sum(s for _, s in pairs)
+        return round(100 * sum(c for c, _ in pairs) / span, 1) if span else None
+
     for (agent, model), items in sorted(groups.items()):
+        items = [{**r, "resources": r.get("resources") or {}} for r in items]
+        rss_max, rss_min = known(items, "agent_rss_max"), known(items, "agent_rss_min")
+        sizes = {k: known(items, k) for k in ("package_bytes", "runtime_bytes")}
         passed = sum(1 for r in items if (r["reward"] or 0) >= 1)
         agent_s = [r["seconds"]["agent_execution"] or 0 for r in items]
         costs = [r["cost_usd"] for r in items if r["cost_usd"] is not None]
@@ -159,6 +179,13 @@ def totals(rows: list[dict]) -> list[dict]:
                 "steps": sum(r["steps"] for r in items),
                 "tool_calls": sum(r["tool_calls"] for r in items),
                 "subagents": sum(r["subagents"] for r in items),
+                "resource_trials": len(rss_max),
+                "agent_rss_min": min(rss_min) if rss_min else None,
+                "agent_rss_max": max(rss_max) if rss_max else None,
+                "median_agent_rss_max": statistics.median(rss_max) if rss_max else None,
+                "agent_cpu_pct": share(items, "agent_cpu_s"),
+                "container_cpu_pct": share(items, "container_cpu_s"),
+                **{k: max(v) if v else None for k, v in sizes.items()},
             }
         )
     return out

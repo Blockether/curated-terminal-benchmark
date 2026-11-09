@@ -129,6 +129,9 @@ def test_shared_instruction_is_the_same_for_all_agents():
         async def run(self, instruction, environment, context):
             return instruction
 
+        async def exec_as_root(self, environment, command):
+            pass
+
     class Shared(toolkit.Toolkit, RunRecorder):
         pass
 

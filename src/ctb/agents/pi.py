@@ -12,6 +12,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials
 from ctb.agents.base import EFFORT, agent_home, min_token_seconds, split_model, stage_files
+from ctb.resources import npm_footprint
 from ctb.toolkit import TOOLKIT, Toolkit
 
 PI_VERSION = "1.5.0"
@@ -50,6 +51,8 @@ def validate_completion(text: str) -> str:
 
 class Pi(Toolkit, HarborPi):
     """Run the benchmark model with medium effort, the subscription login and the toolkit."""
+
+    FOOTPRINT = npm_footprint("@earendil-works/pi-coding-agent")
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("reasoning_effort", EFFORT)

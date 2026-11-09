@@ -26,6 +26,7 @@ from ctb.agents.base import (
     split_model,
 )
 from ctb.paths import ARTIFACTS, ROOT
+from ctb.resources import files_footprint
 
 #: Vis providers of the benchmark families. They use the subscription token files.
 PROVIDERS = {"openai": "openai-codex"}
@@ -230,6 +231,12 @@ class VisSolo(CuratedAgent):
     """
 
     PROFILE = "solo"
+    # The launcher and the engine binary, without a web app; its embedded Python is the runtime.
+    FOOTPRINT = files_footprint(
+        package=(VIS, f"{VIS}-native"),
+        runtime=(f"{VIS}-python",),
+        extensions=(f"{AGENT_HOME}/.vis/extensions",),
+    )
 
     def __init__(self, *args, profile: str | None = None, **kwargs) -> None:
         # CuratedAgent.__init__ accepts only the two benchmark models. Vis also runs

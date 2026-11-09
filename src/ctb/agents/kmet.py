@@ -9,6 +9,7 @@ from harbor.models.agent.context import AgentContext
 from ctb import credentials
 from ctb.agents.base import EFFORT, CuratedAgent, min_token_seconds
 from ctb.paths import ARTIFACTS
+from ctb.resources import files_footprint
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
@@ -17,6 +18,7 @@ ARCHIVE_NAME = "kmet-e2f9684f-linux-amd64.tar.gz"
 
 class Kmet(CuratedAgent):
     ARCHIVE = ARTIFACTS / ARCHIVE_NAME
+    FOOTPRINT = files_footprint(package=(KMET,))
 
     @staticmethod
     def name() -> str:

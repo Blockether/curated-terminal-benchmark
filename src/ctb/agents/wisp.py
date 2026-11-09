@@ -7,6 +7,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb.agents.base import EFFORT, CuratedAgent, proxy_env
 from ctb.paths import ARTIFACTS
+from ctb.resources import files_footprint
 
 REPO = "https://github.com/FolderFile/wisp-cli.git"
 # The newest main commit (package version 0.3.0); the repository has no release tags.
@@ -22,6 +23,12 @@ STREAM = "wisp.jsonl"
 
 class Wisp(CuratedAgent):
     ARCHIVE = ARTIFACTS / ARCHIVE_NAME
+    FOOTPRINT = files_footprint(
+        package=tuple(
+            f"/installed-agent/wisp/{p}" for p in ("dist", "node_modules", "package.json")
+        ),
+        runtime=("/installed-agent/wisp/node", "/installed-agent/wisp/lib"),
+    )
 
     @staticmethod
     def name() -> str:
