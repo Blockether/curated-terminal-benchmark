@@ -17,7 +17,7 @@
       }
       return new Uint8Array(await new Blob(chunks).arrayBuffer());
     }
-    const response = await fetch(new URL("transcripts.json", root), {credentials: "omit"});
+    const response = await fetch(new URL("transcripts.json", root), {credentials: "same-origin"});
     if (!response.ok) throw Error("Manifest unavailable");
     const manifest = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(await limited(response.body, 65536)));
     const record = manifest.transcripts?.[id];
@@ -26,7 +26,7 @@
         !bounded(record.expanded_bytes, 16777216) || !bounded(record.events, 20000) ||
         !(Number.isInteger(record.checks) && record.checks >= 0 && record.checks <= 20000) ||
         typeof record.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(record.sha256)) throw Error("Invalid manifest");
-    const trialResponse = await fetch(new URL(`transcripts/${id}.json.gz`, root), {credentials: "omit"});
+    const trialResponse = await fetch(new URL(`transcripts/${id}.json.gz`, root), {credentials: "same-origin"});
     if (!trialResponse.ok) throw Error("Transcript unavailable");
     const compressed = await limited(trialResponse.body, Math.min(record.bytes, 2097152));
     const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", compressed)), b => b.toString(16).padStart(2, "0")).join("");

@@ -213,5 +213,8 @@
   setupTranscript();
   setupTabs();
   document.addEventListener("ctb:transcript-loaded", setupTranscript);
-  setupDiagrams();
+  // The diagram library loads after this script; draw when it arrives.
+  var diagrams = document.querySelector("script[data-diagrams]");
+  if (window.pele) setupDiagrams();
+  else if (diagrams) diagrams.addEventListener("load", setupDiagrams);
 })();
