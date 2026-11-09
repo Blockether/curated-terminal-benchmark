@@ -5,8 +5,8 @@
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: E, the trials table is fourteen columns wide, so it scrolls inside its own pane with the task pinned and the page never scrolls sideways */
 /* Hallmark · waive 72 · every flagged box is a details element; in Chrome no open one overflows (732 open, 0 over) and a closed one is 42px high · a closed body is not painted until a person opens it */
 /* Hallmark · answered F25 · the column that names the row is pinned with position: sticky and the pane scrolls on its own */
-@import url("./tokens.css?v=9a9f59e24510784191a2");
-@import url("./base.css?v=9a9f59e24510784191a2");
+@import url("./tokens.css?v=16a17dd3f76a66dc8b5e");
+@import url("./base.css?v=16a17dd3f76a66dc8b5e");
 
 :root { --container: 1280px; --gutter: 40px; --control: 40px; --hit: 44px; }
 
@@ -163,13 +163,10 @@ button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-all
 .ev:target { border-color: var(--color-ink-2); box-shadow: 4px 4px 0 0 var(--color-accent); }
 .ev-user { border-left: 3px solid var(--color-accent); }
 .ev-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-sm); padding: var(--space-2xs) var(--space-sm); min-height: 40px; }
-.ev-kind { font-size: var(--text-sm); font-weight: 700; color: var(--color-ink); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
-.ev-reasoning .ev-kind, .ev-call .ev-kind { color: var(--color-ink-2); font-weight: 500; }
-.ev-name { font-size: var(--text-sm); color: var(--color-ink); overflow-wrap: anywhere; min-width: 0; }
+.ev-kind { font-size: var(--text-sm); font-weight: 700; color: var(--color-ink); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; overflow-wrap: anywhere; min-width: 0; }
+.ev-kind.mono { font-weight: 500; }
 .ev-meta { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); margin-inline-start: auto; font-size: var(--text-sm); color: var(--color-muted); }
 .ev-meta .duration { color: var(--color-ink); font-weight: 500; }
-.ev-call { background: var(--color-paper); border-style: dashed; }
-.ev-call .ev-head { min-height: 32px; }
 .ev-error { border-color: var(--color-bad); }
 .ev-body { padding: 0 var(--space-sm) var(--space-sm); display: grid; gap: var(--space-xs); min-width: 0; }
 pre.ev-text { margin: 0; padding: 0; border: 0; font-family: var(--font-body); font-size: var(--text-md); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink); max-width: 90ch; font-variant-ligatures: none; font-feature-settings: "calt" 0; }

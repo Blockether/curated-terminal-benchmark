@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mvcc-lsm-compaction, opencode</title>
 <meta name="description" content="The opencode trial of mvcc-lsm-compaction: times, costs, tool errors, the transcript and the verifier results.">
-<link rel="stylesheet" href="../fonts.css?v=9a9f59e24510784191a2">
-<link rel="stylesheet" href="../report.css?v=9a9f59e24510784191a2">
+<link rel="stylesheet" href="../fonts.css?v=16a17dd3f76a66dc8b5e">
+<link rel="stylesheet" href="../report.css?v=16a17dd3f76a66dc8b5e">
 <noscript><style>.diagram { display: none; }</style></noscript>
-<script src="../pele.global.js?v=9a9f59e24510784191a2" defer></script>
-<script src="../report.js?v=9a9f59e24510784191a2" defer></script>
-<script src="../viewer.js?v=9a9f59e24510784191a2" defer></script></head>
+<script src="../pele.global.js?v=16a17dd3f76a66dc8b5e" defer></script>
+<script src="../report.js?v=16a17dd3f76a66dc8b5e" defer></script>
+<script src="../viewer.js?v=16a17dd3f76a66dc8b5e" defer></script></head>
 <body>
 <header class="topbar">
 <div class="container topbar-row">
-<a class="brand" href="../index.html"><img src="../logo.svg?v=9a9f59e24510784191a2" alt="" width="25" height="28">
+<a class="brand" href="../index.html"><img src="../logo.svg?v=16a17dd3f76a66dc8b5e" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
 <span class="brand-sep" aria-hidden="true">|</span>
 <span class="brand-name">Terminal-Bench 4.0 — Curated Tasks</span></a>
@@ -30,7 +30,7 @@
 <dl class="facts facts-head"><div><dt>Task</dt><dd>mvcc-lsm-compaction</dd></div><div><dt>Agent</dt><dd>opencode</dd></div><div><dt>Model</dt><dd>openai/gpt-6.1-sol</dd></div><div><dt>Round</dt><dd>gpt-bench-b2a4d4a</dd></div><div><dt>Started</dt><dd>2026-11-09 05:35 UTC</dd></div><div><dt>Reward</dt><dd>1</dd></div></dl>
 
 </section>
-<div class="panels readings"><div class="reading-cell"><p class="reading-label">Run time</p><p class="reading">8 min 35 s</p></div><div class="reading-cell"><p class="reading-label">Agent time</p><p class="reading">2 min 17 s</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">10</p><p class="reading-note">26.1 s in calls</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$0.0942</p><p class="reading-note">105,725 tokens</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">24</p><p class="reading-note">1 min 21 s in tools</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">1</p><p class="reading-note">4%</p></div></div>
+<div class="panels readings"><div class="reading-cell"><p class="reading-label">Run time</p><p class="reading">8 min 35 s</p></div><div class="reading-cell"><p class="reading-label">Agent time</p><p class="reading">2 min 17 s</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">10</p><p class="reading-note">56.7 s in calls</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$0.0942</p><p class="reading-note">105,725 tokens</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">24</p><p class="reading-note">1 min 21 s in tools</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">1</p><p class="reading-note">4%</p></div></div>
 <section id="timeline" class="block">
 <h2>Run timeline</h2>
 <figure class="diagram"><figcaption>Run phases in UTC</figcaption><pre class="mermaid" role="img" aria-label="Run phases in UTC">gantt
@@ -43,7 +43,7 @@
 </section>
 <section id="provider" class="block">
 <h2>Calls</h2>
-<dl class="facts"><div><dt>Calls</dt><dd>10</dd></div><div><dt>Recorded call time</dt><dd>26.1 s</dd></div><div><dt>Mean time</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Longest call</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Failed calls</dt><dd>0</dd></div><div><dt>Cost</dt><dd>$0.0942</dd></div><div><dt>Input tokens</dt><dd>102,077</dd></div><div><dt>Cached tokens</dt><dd>77,056</dd></div><div><dt>Output tokens</dt><dd>3,648</dd></div></dl><p class="hint">Call timing coverage: 10 / 10. Recorded time is a partial sum when any call lacks timing. Token counts use run totals when available.</p>
+<dl class="facts"><div><dt>Calls</dt><dd>10</dd></div><div><dt>Recorded call time</dt><dd>56.7 s</dd></div><div><dt>Mean time</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Longest call</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Failed calls</dt><dd>0</dd></div><div><dt>Cost</dt><dd>$0.0942</dd></div><div><dt>Input tokens</dt><dd>102,077</dd></div><div><dt>Cached tokens</dt><dd>77,056</dd></div><div><dt>Output tokens</dt><dd>3,648</dd></div></dl><p class="hint">Call timing coverage: 10 / 10. Recorded time is a partial sum when any call lacks timing. Token counts use run totals when available.</p>
 </section>
 <section id="tools" class="block">
 <h2>Tools</h2>

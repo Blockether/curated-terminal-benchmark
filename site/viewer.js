@@ -48,12 +48,11 @@
       item.dataset.group = ["tool", "command"].includes(event.kind) ? "tools" : event.kind === "call" ? "calls" : "messages";
       const head = document.createElement("div"); head.className = "ev-head";
       const link = document.createElement("a"); link.className = "ev-kind"; link.href = `#e-${i}`;
-      link.textContent = {user: "Prompt", assistant: "Assistant", reasoning: "Reasoning", call: "Provider call", tool: "Tool", command: "Command", result: "Run result"}[event.kind];
+      // One label: the tool or record name when there is one, else the kind.
+      const kind = {user: "Prompt", assistant: "Assistant", reasoning: "Reasoning", call: "Model call", tool: "Tool", command: "Command", result: "Run result"}[event.kind];
+      link.textContent = event.name || kind; link.title = kind;
+      if (event.name && ["tool", "command"].includes(event.kind)) link.classList.add("mono");
       head.append(link);
-      if (event.name) {
-        const name = document.createElement("span"); name.className = "ev-name mono";
-        name.textContent = event.name; head.append(name);
-      }
       item.append(head);
       const body = document.createElement("section"); body.className = "ev-body";
       for (const key of ["text", "input", "output"]) {
@@ -67,7 +66,8 @@
           }
         }
       }
-      item.append(body); fragment.append(item);
+      if (body.childElementCount) item.append(body);
+      fragment.append(item);
     });
     document.getElementById("events").replaceChildren(fragment);
     const statuses = ["passed", "failed", "skipped", "pending", "other"];
@@ -109,12 +109,12 @@
       item.id = `v-${i}`; item.className = `ev ev-${entry.kind}${failed ? " ev-error" : ""}`;
       const head = document.createElement("div"); head.className = "ev-head";
       const link = document.createElement("a"); link.className = "ev-kind"; link.href = `#v-${i}`;
-      link.textContent = {suite: "Suite", test: "Test", log: "Log"}[entry.kind];
-      const name = document.createElement("span"); name.className = "ev-name mono"; name.textContent = entry.name;
+      link.textContent = entry.name; link.title = {suite: "Suite", test: "Test", log: "Log"}[entry.kind];
+      if (entry.kind !== "suite") link.classList.add("mono");
       const meta = document.createElement("span"); meta.className = "ev-meta";
       if (entry.status !== null) meta.append(chip(entry.status));
       if (entry.ms !== null) meta.append(time(entry.ms));
-      head.append(link, name, meta); item.append(head);
+      head.append(link, meta); item.append(head);
       if (entry.text !== null) {
         const body = document.createElement("section"); body.className = "ev-body";
         const pre = document.createElement("pre"); pre.textContent = entry.text;
