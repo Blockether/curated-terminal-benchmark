@@ -116,8 +116,15 @@ def test_round_directories_are_private(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "ROOT", tmp_path)
     monkeypatch.setattr(cli, "trials", lambda *_: [])
     monkeypatch.setattr(cli, "record_run", lambda *_: None)
+    monkeypatch.setattr(cli, "engine_arch", lambda env=None: "amd64")
     args = argparse.Namespace(
-        round="r", agents="codex", models="openai", tasks="all", parallel=1, timeout_multiplier=1.0
+        round="r",
+        agents="codex",
+        models="openai",
+        tasks="all",
+        parallel=1,
+        timeout_multiplier=1.0,
+        allow_emulation=False,
     )
     cli.run(args)
     for path in (tmp_path / "jobs" / "r", tmp_path / "runs" / "r"):

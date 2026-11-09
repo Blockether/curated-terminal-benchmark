@@ -329,6 +329,40 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
     assert "vis" not in second
 
 
+def test_run_refuses_an_emulated_engine_unless_allowed(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli, "ROOT", tmp_path)
+    monkeypatch.setattr(cli, "trials", lambda *_: [])
+    monkeypatch.setattr(cli, "engine_arch", lambda env=None: "arm64")
+    engines = []
+    monkeypatch.setattr(cli, "record_run", lambda jobs, args, engine=None: engines.append(engine))
+    args = argparse.Namespace(
+        round="r",
+        agents="codex",
+        models="openai",
+        tasks="all",
+        parallel=1,
+        timeout_multiplier=1.0,
+        allow_emulation=False,
+    )
+    with pytest.raises(SystemExit, match="emulation"):
+        cli.run(args)
+    assert engines == []
+    cli.run(argparse.Namespace(**{**vars(args), "allow_emulation": True}))
+    assert engines == [{"arch": "arm64", "emulated": True}]
+
+
+def test_run_record_holds_the_engine(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli, "git_state", lambda: {"commit": "c", "dirty": False})
+    monkeypatch.setattr(cli, "pins", dict)
+    monkeypatch.setattr(cli, "ARTIFACTS", tmp_path / "none")
+    args = argparse.Namespace(
+        agents="codex", models="m", tasks="all", parallel=1, timeout_multiplier=1.0
+    )
+    cli.record_run(tmp_path, args, {"arch": "amd64", "emulated": False})
+    (record,) = json.loads((tmp_path / "ctb-runs.json").read_text())
+    assert record["engine"] == {"arch": "amd64", "emulated": False}
+
+
 def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
         "codex": "0.166.0",

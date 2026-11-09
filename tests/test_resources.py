@@ -125,6 +125,35 @@ def test_summary_without_samples_keeps_only_the_sizes(tmp_path):
     }
 
 
+def test_sampler_process_arguments_do_not_hold_its_source(tmp_path, monkeypatch):
+    from ctb import toolkit
+
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    (bin_dir / "setsid").write_text('#!/bin/sh\nexec "$@"\n')
+    # The fake interpreter records its arguments and writes the pid file like the sampler.
+    fake = (
+        '#!/bin/sh\nprintf "%s\\n" "$@" > "$0.argv"\nfor a; do last=$a; done\necho $$ > "$last"\n'
+    )
+    (bin_dir / "python3").write_text(fake)
+    for f in bin_dir.iterdir():
+        f.chmod(0o755)
+    monkeypatch.setattr(toolkit, "TOOLKIT", str(tmp_path))
+    monkeypatch.setattr(resources, "SAMPLER_DIR", str(tmp_path / "libexec"), raising=False)
+    monkeypatch.setattr(
+        resources, "SAMPLER_FILE", str(tmp_path / "libexec" / "procstat"), raising=False
+    )
+    monkeypatch.setattr(resources, "PIDFILE", str(tmp_path / "libexec" / "pid"))
+    env = {**os.environ, "PATH": f"{bin_dir}:{os.environ['PATH']}"}
+    (tmp_path / "libexec").mkdir()
+    command = resources.start_command()
+    subprocess.run(["bash", "-c", command], env=env, cwd=tmp_path, check=True, timeout=10)
+    argv = (bin_dir / "python3.argv").read_text()
+    assert "import" not in argv
+    assert argv.splitlines()[:2] == ["-I", resources.SAMPLER_FILE]
+    assert (tmp_path / "libexec" / "procstat").read_text() == resources.SAMPLER
+
+
 def test_footprint_counts_each_kind_and_a_hard_link_once(tmp_path):
     package = tmp_path / "pkg"
     (package / "bin").mkdir(parents=True)

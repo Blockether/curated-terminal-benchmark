@@ -73,6 +73,10 @@ The source trial does not change.
 
 Requires Python 3.12+, uv, a running Podman connection, and a valid Vis ChatGPT login.
 Runs consume subscription quota. Configure `CONTAINER_CONNECTION` and `DOCKER_HOST` for your Podman machine.
+The tasks are linux/amd64 images. On another Podman host, such as an Apple Silicon VM with Rosetta,
+the tasks run under emulation. `run` stops there unless you give `--allow-emulation`. Each run record
+and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
+in the task container shows its path and not its source.
 
 ```sh
 uv sync

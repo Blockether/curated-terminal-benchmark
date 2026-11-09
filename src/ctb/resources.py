@@ -8,7 +8,10 @@ from pathlib import Path
 
 SAMPLES = "/logs/agent/resources.jsonl"
 FOOTPRINT = "/logs/agent/footprint.json"
-PIDFILE = "/tmp/ctb-sampler.pid"
+#: The sampler runs from a file, so a process list shows a path and not its source text.
+SAMPLER_DIR = "/usr/local/libexec/procstat"
+SAMPLER_FILE = f"{SAMPLER_DIR}/procstat"
+PIDFILE = f"{SAMPLER_DIR}/pid"
 INTERVAL = 1.0
 SHELLS = frozenset({"ash", "bash", "busybox", "dash", "sh", "zsh"})
 
@@ -138,11 +141,15 @@ def footprint_command(lines: str) -> str:
 
 
 def start_command() -> str:
-    """Start the sampler in the background. It writes its own process id to PIDFILE."""
+    """Start the sampler in the background. It writes its own process id to PIDFILE.
+
+    The shell builtin printf writes SAMPLER_FILE, so no process argument holds the source.
+    """
     from ctb.toolkit import TOOLKIT
 
     return (
-        f"rm -f {PIDFILE}; setsid nohup {TOOLKIT}/bin/python3 -I -c {shlex.quote(SAMPLER)} "
+        f"rm -f {PIDFILE}; mkdir -p -m 700 {SAMPLER_DIR} && printf '%s' {shlex.quote(SAMPLER)} > {SAMPLER_FILE}; "
+        f"setsid nohup {TOOLKIT}/bin/python3 -I {SAMPLER_FILE} "
         f"{SAMPLES} {INTERVAL} {PIDFILE} > /dev/null 2>&1 < /dev/null & "
         f"for _ in $(seq 50); do [ -s {PIDFILE} ] && break; sleep 0.1; done; true"
     )

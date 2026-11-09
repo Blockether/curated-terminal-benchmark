@@ -402,18 +402,24 @@ class PodmanDown(RuntimeError):
     """The container VM is not reachable, so no trial can run."""
 
 
-def podman_ready(env: dict[str, str] | None = None) -> bool:
+def engine_arch(env: dict[str, str] | None = None) -> str | None:
+    """CPU architecture of the Podman host, or None when Podman is not reachable."""
     try:
         probe = subprocess.run(
             ["podman", "info", "--format", "{{.Host.Arch}}"],
             env=env,
             capture_output=True,
+            text=True,
             check=False,
             timeout=60,
         )
     except (OSError, subprocess.TimeoutExpired):
-        return False
-    return probe.returncode == 0
+        return None
+    return probe.stdout.strip() or None if probe.returncode == 0 else None
+
+
+def podman_ready(env: dict[str, str] | None = None) -> bool:
+    return engine_arch(env) is not None
 
 
 def run_trial(
@@ -482,6 +488,14 @@ def apply_task_fixes(dataset: Path | None = None) -> list[str]:
 
 
 def run(args: argparse.Namespace) -> None:
+    # The tasks are linux/amd64 images. Another host runs them through a translator, such as
+    # Rosetta, which changes what tasks that read machine code or ptrace other processes see.
+    arch = engine_arch()
+    if arch is not None and arch != "amd64" and not args.allow_emulation:
+        raise SystemExit(
+            f"The Podman host is {arch}, so the linux/amd64 tasks run under emulation. "
+            "Run on an amd64 host, or give --allow-emulation to record an emulated round."
+        )
     jobs = ROOT / "jobs" / args.round
     logs = ROOT / "runs" / args.round
     privacy.private_dir(jobs)
@@ -492,7 +506,7 @@ def run(args: argparse.Namespace) -> None:
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
     for fixed in apply_task_fixes():
         print(f"task fix {fixed}", flush=True)
-    record_run(jobs, args)
+    record_run(jobs, args, {"arch": arch, "emulated": arch != "amd64"})
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
     try:
@@ -545,7 +559,7 @@ def pins() -> dict:
     }
 
 
-def record_run(jobs: Path, args: argparse.Namespace) -> None:
+def record_run(jobs: Path, args: argparse.Namespace, engine: dict | None = None) -> None:
     """Append the harness state of one `run` call to the round; `seal` copies it."""
     path = jobs / "ctb-runs.json"
     record = {
@@ -558,6 +572,7 @@ def record_run(jobs: Path, args: argparse.Namespace) -> None:
         "tasks": args.tasks,
         "parallel": args.parallel,
         "timeout_multiplier": args.timeout_multiplier,
+        "engine": engine,
     }
     vis_agents = [name for name in args.agents.split(",") if name in vis.AGENT_PROFILES]
     if vis_agents:
@@ -724,6 +739,11 @@ def main(argv: list[str] | None = None) -> None:
     run_parser.add_argument("--parallel", type=int, default=1)
     run_parser.add_argument(
         "--timeout-multiplier", type=float, default=0.25, help="of the 8 h task timeout; 0.25 = 2 h"
+    )
+    run_parser.add_argument(
+        "--allow-emulation",
+        action="store_true",
+        help="run on a host that is not amd64; the run record marks the round as emulated",
     )
     summary_parser = sub.add_parser("summary", help="PASS table of one round")
     summary_parser.add_argument("--round", required=True)
