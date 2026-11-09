@@ -22,8 +22,9 @@
     const manifest = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(await limited(response.body, 65536)));
     const record = manifest.transcripts?.[id];
     const bounded = (n, max) => Number.isInteger(n) && n > 0 && n <= max;
-    if (manifest.schema !== 1 || !record || !bounded(record.bytes, 2097152) ||
+    if (manifest.schema !== 2 || !record || !bounded(record.bytes, 2097152) ||
         !bounded(record.expanded_bytes, 16777216) || !bounded(record.events, 20000) ||
+        !(Number.isInteger(record.checks) && record.checks >= 0 && record.checks <= 20000) ||
         typeof record.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(record.sha256)) throw Error("Invalid manifest");
     const trialResponse = await fetch(new URL(`transcripts/${id}.json.gz`, root), {credentials: "omit"});
     if (!trialResponse.ok) throw Error("Transcript unavailable");
@@ -33,7 +34,8 @@
     const bytes = await limited(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("gzip")), Math.min(record.expanded_bytes, 16777216));
     if (bytes.length !== record.expanded_bytes) throw Error("Transcript size mismatch");
     const data = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
-    if (data.schema !== 1 || data.result_sha256 !== id || !Array.isArray(data.events) || data.events.length !== record.events) throw Error("Invalid transcript");
+    if (data.schema !== 2 || data.result_sha256 !== id || !Array.isArray(data.events) || data.events.length !== record.events ||
+        !Array.isArray(data.verification) || data.verification.length !== record.checks) throw Error("Invalid transcript");
     const fragment = document.createDocumentFragment();
     data.events.forEach((event, i) => {
       if (!event || !["user", "assistant", "reasoning", "call", "tool", "command", "result"].includes(event.kind)) throw Error("Invalid event");
@@ -68,7 +70,73 @@
       item.append(body); fragment.append(item);
     });
     document.getElementById("events").replaceChildren(fragment);
+    const statuses = ["passed", "failed", "skipped", "pending", "other"];
+    const duration = ms => ms < 1000 ? `${ms.toFixed(0)} ms` : ms < 60000 ? `${(ms / 1000).toFixed(1)} s`
+      : (t => t < 3600 ? `${Math.floor(t / 60)} min ${String(t % 60).padStart(2, "0")} s`
+        : `${Math.floor(t / 3600)} h ${String(Math.floor(t % 3600 / 60)).padStart(2, "0")} min`)(Math.round(ms / 1000));
+    const chip = status => {
+      const span = document.createElement("span");
+      span.className = `chip ${status === "passed" ? "chip-passed" : status === "failed" ? "chip-error" : "chip-failed"}`;
+      span.textContent = status.charAt(0).toUpperCase() + status.slice(1); return span;
+    };
+    const time = ms => { const span = document.createElement("span"); span.className = "mono duration"; span.textContent = duration(ms); return span; };
+    const checks = document.createDocumentFragment();
+    let quiet = [];
+    const flush = () => {
+      if (!quiet.length) return;
+      const item = document.createElement("li"); item.className = "ev ev-tests";
+      const detail = document.createElement("details"); const summary = document.createElement("summary");
+      summary.textContent = `${quiet.length.toLocaleString("en")} tests without a failure`;
+      const list = document.createElement("ul"); list.className = "test-names";
+      for (const test of quiet) {
+        const row = document.createElement("li"); const name = document.createElement("span");
+        name.className = "mono"; name.textContent = test.name; row.append(name, " ", chip(test.status));
+        if (test.ms !== null) row.append(" ", time(test.ms));
+        list.append(row);
+      }
+      detail.append(summary, list); item.append(detail); checks.append(item); quiet = [];
+    };
+    data.verification.forEach((entry, i) => {
+      if (!entry || !["suite", "test", "log"].includes(entry.kind)) throw Error("Invalid check");
+      if (typeof entry.name !== "string" || !entry.name || entry.name.length > 10000) throw Error("Invalid check name");
+      if (entry.text !== null && (typeof entry.text !== "string" || entry.text.length > 1000000)) throw Error("Invalid check text");
+      if (entry.kind === "log" ? entry.status !== null : !statuses.includes(entry.status)) throw Error("Invalid check status");
+      if (entry.ms !== null && !(Number.isInteger(entry.ms) && entry.ms >= 0 && entry.ms <= 1e9)) throw Error("Invalid check time");
+      if (entry.kind === "test" && entry.status !== "failed") { quiet.push(entry); return; }
+      if (entry.kind !== "test") flush();
+      const failed = entry.status === "failed";
+      const item = document.createElement("li");
+      item.id = `v-${i}`; item.className = `ev ev-${entry.kind}${failed ? " ev-error" : ""}`;
+      const head = document.createElement("div"); head.className = "ev-head";
+      const link = document.createElement("a"); link.className = "ev-kind"; link.href = `#v-${i}`;
+      link.textContent = {suite: "Suite", test: "Test", log: "Log"}[entry.kind];
+      const name = document.createElement("span"); name.className = "ev-name mono"; name.textContent = entry.name;
+      const meta = document.createElement("span"); meta.className = "ev-meta";
+      if (entry.status !== null) meta.append(chip(entry.status));
+      if (entry.ms !== null) meta.append(time(entry.ms));
+      head.append(link, name, meta); item.append(head);
+      if (entry.text !== null) {
+        const body = document.createElement("section"); body.className = "ev-body";
+        const pre = document.createElement("pre"); pre.textContent = entry.text;
+        if (entry.kind === "suite") { pre.className = "ev-text"; body.append(pre); }
+        else {
+          const detail = document.createElement("details"); detail.open = failed || entry.text.length <= 1200;
+          if (failed) detail.className = "is-error";
+          const summary = document.createElement("summary");
+          summary.textContent = entry.kind === "log" ? "Output" : failed ? "Failure" : "Details";
+          detail.append(summary, pre); body.append(detail);
+        }
+        item.append(body);
+      }
+      checks.append(item);
+    });
+    flush();
+    if (!data.verification.length) {
+      const empty = document.createElement("p"); empty.className = "empty"; empty.textContent = "No verifier output was recorded.";
+      checks.append(empty);
+    }
+    document.getElementById("verification").replaceChildren(checks);
     document.dispatchEvent(new Event("ctb:transcript-loaded"));
-    status.textContent = `${data.events.length} events · ${(compressed.length / 1024).toFixed(0)} KB downloaded`;
+    status.textContent = `${data.events.length} events · ${data.verification.length} checks · ${(compressed.length / 1024).toFixed(0)} KB downloaded`;
   } catch (_) { status.textContent = "Transcript could not be verified or loaded. Use a current browser with gzip streaming support."; }
 })();

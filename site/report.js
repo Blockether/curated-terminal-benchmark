@@ -150,6 +150,45 @@
     if (target && target.hidden) { show("all"); target.scrollIntoView(); }
   }
 
+  function setupTabs() {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
+    var panels = Array.prototype.slice.call(document.querySelectorAll("[data-tab-panel]"));
+    if (!tabs.length) return;
+
+    function select(key, focus) {
+      tabs.forEach(function (tab) {
+        var on = tab.getAttribute("data-tab") === key;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      panels.forEach(function (panel) { panel.hidden = panel.getAttribute("data-tab-panel") !== key; });
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener("click", function () {
+        var key = tab.getAttribute("data-tab");
+        select(key, false);
+        setParams({ tab: key === "implementation" ? "" : key });
+      });
+      tab.addEventListener("keydown", function (event) {
+        var step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+        if (!step) return;
+        event.preventDefault();
+        var next = tabs[(i + step + tabs.length) % tabs.length];
+        select(next.getAttribute("data-tab"), true);
+        setParams({ tab: next.getAttribute("data-tab") === "implementation" ? "" : next.getAttribute("data-tab") });
+      });
+    });
+    var key = new URLSearchParams(window.location.search).get("tab");
+    var target = window.location.hash && document.getElementById(window.location.hash.slice(1));
+    var holder = target && target.closest && target.closest("[data-tab-panel]");
+    if (holder) key = holder.getAttribute("data-tab-panel");
+    var known = tabs.some(function (t) { return t.getAttribute("data-tab") === key; });
+    select(known ? key : "implementation", false);
+    if (holder) target.scrollIntoView();
+  }
+
   function setupComparison() {
     var picker = document.querySelector("[data-compare-picker]");
     if (!picker) return;
@@ -215,6 +254,7 @@
   setupSorting();
   setupFilters();
   setupTranscript();
+  setupTabs();
   document.addEventListener("ctb:transcript-loaded", setupTranscript);
   setupDiagrams();
 })();
