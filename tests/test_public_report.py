@@ -1,4 +1,5 @@
 import copy
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -30,7 +31,9 @@ class PublicReportTests(unittest.TestCase):
         self.assertIn(f"{len(p.SELECTION) * len(p.TASKS)} trials", text)
         self.assertIn("100%", text)
         self.assertIn("photonic-waveguide-routing", text)
-        self.assertNotIn("https://", text)
+        loads = re.findall(r'<(?:link|script|img|iframe)\b[^>]*\b(?:src|href)="([^"]*)"', text)
+        self.assertTrue(loads)
+        self.assertFalse([u for u in loads if "//" in u or ":" in u])
         self.assertIn('src="report.js?v=', text)
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):

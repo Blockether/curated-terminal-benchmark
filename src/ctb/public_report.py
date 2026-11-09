@@ -359,17 +359,17 @@ def public_trials(data, metrics):
     return trials
 
 
-#: Every harness of ctb.matrix, by display name; True marks a paused one.
+#: Every harness of ctb.matrix: display name, True for a paused one, project page.
 #: The publication check runs without Harbor, so it cannot import ctb.matrix.
 AGENTS = {
-    "vis": ("Vis", False),
-    "codex": ("Codex", False),
-    "opencode": ("OpenCode", False),
-    "pi": ("Pi", False),
-    "kmet": ("Kmet", False),
-    "wisp": ("Wisp", False),
-    "dirge": ("Dirge", True),
-    "samizdat": ("Samizdat", True),
+    "vis": ("Vis", False, "https://github.com/Blockether/vis"),
+    "codex": ("Codex", False, "https://github.com/openai/codex"),
+    "opencode": ("OpenCode", False, "https://github.com/anomalyco/opencode"),
+    "pi": ("Pi", False, "https://github.com/earendil-works/pi"),
+    "kmet": ("Kmet", False, "https://github.com/kmetia/kmet-agent"),
+    "wisp": ("Wisp", False, "https://github.com/FolderFile/wisp-cli"),
+    "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
+    "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
 }
 INTRO = (
     "A curated benchmark that measures how Vis performs against other coding agents on "
@@ -378,9 +378,10 @@ INTRO = (
 
 
 def head():
+    paused_attrs = ' class="agent-paused" title="Paused"'
     items = "".join(
-        f'<li class="agent-paused" title="Paused">{label}</li>' if paused else f"<li>{label}</li>"
-        for label, paused in AGENTS.values()
+        f'<li{paused_attrs if paused else ""}><a href="{url}">{label}</a></li>'
+        for label, paused, url in AGENTS.values()
     )
     return (
         f'<section class="head">\n<p class="lead">{INTRO}</p>\n'

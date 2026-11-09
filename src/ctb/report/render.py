@@ -225,6 +225,9 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <main class="container">
 {body}
 </main>
+<footer class="footer">
+<div class="container">A benchmark by <a href="https://blockether.com">Blockether</a></div>
+</footer>
 </body>
 </html>
 """
