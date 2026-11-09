@@ -173,8 +173,13 @@ button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-all
 .ev-step { display: grid; gap: var(--space-xs); padding-block-end: var(--space-xs); border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper); min-width: 0; }
 .ev-step > details { margin-inline: var(--space-sm); }
 pre.ev-text { margin: 0; padding: 0; border: 0; font-family: var(--font-body); font-size: var(--text-sm); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink); max-width: 90ch; font-variant-ligatures: none; font-feature-settings: "calt" 0; }
-.ev-reasoning pre.ev-text { color: var(--color-ink-2); }
 pre.ev-text strong { color: var(--color-ink); font-weight: 600; }
+/* Reasoning is a quiet aside: small italic text, no bold, tight spacing */
+.ev-reasoning .ev-head { min-height: 0; padding-block: var(--space-2xs) 0; }
+.ev-reasoning .ev-kind { min-height: 0; font-size: var(--text-xs); }
+.ev-reasoning .ev-body { padding: 0 var(--space-sm) var(--space-2xs); }
+.ev-reasoning pre.ev-text { color: var(--color-ink-2); font-size: var(--text-xs); line-height: 1.4; font-style: italic; }
+.ev-reasoning pre.ev-text strong { color: inherit; font-weight: 400; }
 details { min-width: 0; border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper-3); }
 details.is-error { border-color: var(--color-bad); }
 summary { cursor: pointer; display: flex; align-items: center; gap: var(--space-xs); min-height: var(--control); padding: 0 var(--space-sm); font-size: var(--text-sm); font-weight: 700; color: var(--color-ink-2); }
