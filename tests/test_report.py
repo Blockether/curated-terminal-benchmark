@@ -173,6 +173,8 @@ def test_trial_page_opens_error_output_and_links_each_error():
     page = render.trial_page(trial)
     assert '<a class="mono" href="#e-1">bash</a>' in page
     assert "No verifier output was recorded." in page
+    # The trial page header has no section links, only the brand and the report name.
+    assert '<nav aria-label="Sections">' not in page and "Timeline</a>" not in page
     # Each row has one label: the tool name, with the kind only as its title.
     assert '<a class="ev-kind mono" href="#e-1" title="Tool">bash</a>' in page
     assert '<a class="ev-kind" href="#e-0" title="Prompt">Prompt</a>' in page
@@ -181,6 +183,18 @@ def test_trial_page_opens_error_output_and_links_each_error():
     assert page.count("<details open") == 3
     assert "<details><summary>Output" in page
     assert "Harbor recorded no phase times" in page
+
+
+def test_event_header_labels_its_times_and_text_shows_markdown_bold():
+    e = event("reasoning", at=21_000, text="**Discovering <services>**\n\nA* search, *not* bold")
+    item = render.event_item(0, e, 1_000)
+    assert '<span class="fact-k">Started</span> <span class="mono">0:20</span>' in item
+    assert "<strong>Discovering &lt;services&gt;</strong>" in item and "**" not in item
+    assert "A* search, *not* bold" in item
+    tool = event("tool", name="bash", at=21_000, ms=117, ms_source="recorded")
+    item = render.event_item(1, tool, 1_000)
+    assert '<span class="fact-k">Took</span> <span class="mono">117 ms</span>' in item
+    assert "+0:20" not in item
 
 
 def test_verification_lists_test_runs_verifier_output_and_service_logs(tmp_path):

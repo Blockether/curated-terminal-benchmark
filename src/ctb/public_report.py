@@ -455,7 +455,7 @@ def assets():
 
 
 def render(data, metrics, *, transcripts=False):
-    text = layout.index(public_trials(data, metrics), "from sealed results", head=head(), nav=False)
+    text = layout.index(public_trials(data, metrics), "from sealed results", head=head())
     if not transcripts:
         text = re.sub(r'<a href="trial/[0-9a-f]{64}\.html">([^<]+)</a>', r"\1", text)
     return public_page(text).encode()

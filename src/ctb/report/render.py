@@ -196,7 +196,7 @@ def chip(outcome: str, title: str | None = None) -> str:
     return f'<span class="chip chip-{outcome}"{extra}>{label}</span>'
 
 
-def page(title: str, body: str, *, depth: int, nav: str, description: str) -> str:
+def page(title: str, body: str, *, depth: int, description: str) -> str:
     up = "../" * depth
     return f"""<!doctype html>
 <html lang="en">
@@ -216,10 +216,8 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <header class="topbar">
 <div class="container topbar-row">
 <a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
-<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
-<span class="brand-sep" aria-hidden="true">|</span>
-<span class="brand-name">Terminal-Bench 4.0 — Curated Tasks</span></a>
-{f'<nav aria-label="Sections">{nav}</nav>' if nav else ""}
+<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span></a>
+<span class="brand-name">Terminal-Bench 4.0 — Curated Tasks</span>
 </div>
 </header>
 <main class="container">
@@ -739,8 +737,8 @@ def options(name: str, label: str, values: list[str]) -> str:
     )
 
 
-def index(trials: list[dict], generated: str, *, head: str | None = None, nav: bool = True) -> str:
-    """The trial overview; head replaces the default heading, and nav=False drops the section links."""
+def index(trials: list[dict], generated: str, *, head: str | None = None) -> str:
+    """The trial overview; head replaces the default heading."""
     agents = sorted({t["agent"] for t in trials})
     rounds = sorted({t["round"] for t in trials})
     passed = sum(t["passed"] for t in trials)
@@ -854,15 +852,10 @@ marks a value that no trial of the agent records.</p>
         )
     }
 </section>"""
-    links = (
-        '<a href="#matched">Matched tasks</a><a href="#agents">Agents</a><a href="#tool-errors">Tool errors</a>'
-        '<a href="#trials">Trials</a>'
-    )
     return page(
         "Terminal-Bench 4.0 — Curated Tasks",
         body,
         depth=0,
-        nav=links if nav else "",
         description=lead,
     )
 
@@ -875,9 +868,7 @@ def offset(at: float | None, base: float | None) -> str | None:
         return None
     seconds = max(0, round((at - base) / 1000))
     hours, rest = divmod(seconds, 3600)
-    return (
-        f"+{hours}:{rest // 60:02d}:{rest % 60:02d}" if hours else f"+{rest // 60}:{rest % 60:02d}"
-    )
+    return f"{hours}:{rest // 60:02d}:{rest % 60:02d}" if hours else f"{rest // 60}:{rest % 60:02d}"
 
 
 def gantt_time(ms: float) -> str:
@@ -1037,6 +1028,23 @@ def body_block(label: str, text: str | None, *, error: bool = False) -> str:
     )
 
 
+def fact(label: str, value: str, title: str, cls: str = "") -> str:
+    """One labelled value in an event header, for example "Took 4.8 s"."""
+    return (
+        f'<span class="{f"fact {cls}".strip()}" title="{esc(title)}">'
+        f'<span class="fact-k">{label}</span> '
+        f'<span class="mono">{esc(value)}</span></span>'
+    )
+
+
+BOLD = re.compile(r"\*\*([^\n]+?)\*\*")
+
+
+def rich_text(text: str) -> str:
+    """Escaped text with Markdown **bold** as bold, as model messages and summaries write it."""
+    return BOLD.sub(r"<strong>\1</strong>", esc_text(text))
+
+
 def event_item(index: int, e: dict, base: float | None) -> str:
     kind = e["kind"]
     group = {
@@ -1051,21 +1059,23 @@ def event_item(index: int, e: dict, base: float | None) -> str:
     meta = []
     when = offset(e["at"], base)
     if when:
-        meta.append(f'<span class="mono" title="Time from the agent start">{esc(when)}</span>')
+        meta.append(fact("Started", when, "Time since the agent started (minutes:seconds)"))
     if e["ms"] is not None:
         source = "derived from neighbouring events" if e["ms_source"] == "derived" else "recorded"
         meta.append(
-            f'<span class="mono duration" title="Duration, {source}">'
-            f"{esc(duration(e['ms']))}</span>"
+            fact("Took", duration(e["ms"]), f"How long this step ran, {source}", "duration")
         )
     if e["tokens"]:
         t = e["tokens"]
         meta.append(
-            f'<span class="mono" title="Input, cached and output tokens">'
-            f"{t['input']:,} in, {t['cache']:,} cached, {t['output']:,} out</span>"
+            fact(
+                "Tokens",
+                f"{t['input']:,} in · {t['cache']:,} cached · {t['output']:,} out",
+                "Input, cached and output tokens",
+            )
         )
     if e["cost"] is not None:
-        meta.append(f'<span class="mono">{esc(money(e["cost"]))}</span>')
+        meta.append(fact("Cost", money(e["cost"]), "Cost of this call"))
     if e["error"]:
         meta.append('<span class="chip chip-error">Error</span>')
     # One label: the tool or record name when there is one, else the kind.
@@ -1073,7 +1083,7 @@ def event_item(index: int, e: dict, base: float | None) -> str:
     mono = " mono" if e["name"] and kind in ("tool", "command") else ""
     content = []
     if e["text"]:
-        content.append(f'<pre class="ev-text">{esc_text(e["text"])}</pre>')
+        content.append(f'<pre class="ev-text">{rich_text(e["text"])}</pre>')
     content.append(body_block("Input", e["input"]))
     content.append(body_block("Output", e["output"], error=bool(e["error"])))
     inner = "".join(content)
@@ -1102,9 +1112,7 @@ def verification_item(index: int, e: dict) -> str:
     failed = e["status"] == "failed"
     meta = [status_chip(e["status"])]
     if e["ms"] is not None:
-        meta.append(
-            f'<span class="mono duration" title="Duration, recorded">{esc(duration(e["ms"]))}</span>'
-        )
+        meta.append(fact("Took", duration(e["ms"]), "How long this ran, recorded", "duration"))
     if e["kind"] == "suite":
         inner = f'<pre class="ev-text">{esc_text(e["text"])}</pre>' if e["text"] else ""
     else:
@@ -1250,6 +1258,8 @@ def trial_page(trial: dict) -> str:
     transcript = "".join(event_item(i, e, base) for i, e in enumerate(events))
     implementation = (
         f'<nav class="chips" aria-label="Transcript filter">{chips}</nav>'
+        '<p class="hint">Started: minutes and seconds after the agent started. '
+        "Took: how long that step ran.</p>"
         f'<p class="count" aria-live="polite" data-event-count>{len(events):,} events</p>'
         '<p class="empty" data-empty hidden>No events of this kind.</p>'
         '<ol class="events" data-events>'
@@ -1289,10 +1299,6 @@ def trial_page(trial: dict) -> str:
 <h2>Transcript</h2>
 {tabs(implementation, verification_list(trial["verification"]))}
 </section>"""
-    nav = (
-        '<a href="#timeline">Timeline</a><a href="#tools">Tools</a><a href="#errors">Errors</a>'
-        '<a href="#transcript">Transcript</a>'
-    )
     description = (
         f"The {trial['agent']} trial of {task_name(trial['task'])}: times, costs, "
         "tool errors, the transcript and the verifier results."
@@ -1301,7 +1307,6 @@ def trial_page(trial: dict) -> str:
         f"{task_name(trial['task'])}, {trial['agent']}",
         body,
         depth=1,
-        nav=nav,
         description=description,
     )
 

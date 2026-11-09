@@ -1,6 +1,6 @@
 /* Hallmark · shape: app screen · genre: modern-minimal · theme: brand (Blockether, blockether.com src/index.css:4-17, BlogLayout.tsx:11-26)
  * paper: oklch(96.7% 0.013 71) · accent: oklch(85.0% 0.168 86) · display: Inter · body: Inter, JetBrains Mono for what was measured
- * nav: top bar, the Blockether mark and the report name at the left, three section links · signature: the run timeline, the Harbor phase bar over an activity strip of calls, tools and errors · states: empty, error, full (static pages, no loading state)
+ * nav: top bar, the Blockether mark at the left and the report name at the right, no section links · signature: the run timeline, the Harbor phase bar over an activity strip of calls, tools and errors · states: empty, error, full (static pages, no loading state)
  * axes: light/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · copy: verbatim · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: E, the trials table is fourteen columns wide, so it scrolls inside its own pane with the task pinned and the page never scrolls sideways */
 /* Hallmark · waive 72 · every flagged box is a details element; in Chrome no open one overflows (732 open, 0 over) and a closed one is 42px high · a closed body is not painted until a person opens it */
@@ -26,11 +26,7 @@ a:hover { text-decoration-color: var(--color-accent-deep); text-decoration-thick
 .brand { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: var(--hit); color: var(--color-ink); text-decoration: none; font-size: var(--text-lg); font-weight: 900; letter-spacing: -0.025em; white-space: nowrap; }
 .brand img { width: auto; height: 28px; }
 .brand-dot { color: var(--color-accent-deep); }
-.brand-sep { font-weight: 400; color: var(--color-rule-2); }
-.brand-name { font-weight: 500; color: var(--color-ink-2); letter-spacing: -0.01em; }
-.topbar nav { display: flex; gap: var(--space-2xs); overflow-x: auto; font-family: var(--font-outlier); font-size: var(--text-sm); }
-.topbar nav a { display: inline-flex; align-items: center; min-height: var(--hit); padding-inline: var(--space-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-bottom: var(--rule-bold) solid transparent; }
-.topbar nav a:hover { color: var(--color-ink); border-bottom-color: var(--color-accent); }
+.brand-name { font-size: var(--text-lg); font-weight: 500; color: var(--color-ink-2); letter-spacing: -0.01em; text-align: right; }
 
 /* Heads */
 .head { padding-block: var(--space-xl) var(--space-lg); display: grid; gap: var(--space-sm); }
@@ -166,11 +162,15 @@ button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: not-all
 .ev-kind { font-size: var(--text-sm); font-weight: 700; color: var(--color-ink); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; overflow-wrap: anywhere; min-width: 0; }
 .ev-kind.mono { font-weight: 500; }
 .ev-meta { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); margin-inline-start: auto; font-size: var(--text-sm); color: var(--color-muted); }
-.ev-meta .duration { color: var(--color-ink); font-weight: 500; }
+.fact { display: inline-flex; align-items: baseline; gap: var(--space-3xs); white-space: nowrap; }
+.fact-k { font-size: var(--text-xs); color: var(--color-muted); }
+.fact .mono { color: var(--color-ink-2); }
+.ev-meta .duration .mono { color: var(--color-ink); font-weight: 500; }
 .ev-error { border-color: var(--color-bad); }
 .ev-body { padding: 0 var(--space-sm) var(--space-sm); display: grid; gap: var(--space-xs); min-width: 0; }
 pre.ev-text { margin: 0; padding: 0; border: 0; font-family: var(--font-body); font-size: var(--text-md); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink); max-width: 90ch; font-variant-ligatures: none; font-feature-settings: "calt" 0; }
-.ev-reasoning pre.ev-text { color: var(--color-muted); font-style: italic; }
+.ev-reasoning pre.ev-text { color: var(--color-ink-2); }
+pre.ev-text strong { color: var(--color-ink); font-weight: 600; }
 details { min-width: 0; border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper-3); }
 details.is-error { border-color: var(--color-bad); }
 summary { cursor: pointer; display: flex; align-items: center; gap: var(--space-xs); min-height: var(--control); padding: 0 var(--space-sm); font-size: var(--text-sm); font-weight: 700; color: var(--color-ink-2); }
@@ -191,12 +191,10 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
   .facts, .facts-head { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) var(--space-md); }
   .topbar .container { padding-inline: 0; }
   .topbar-row { flex-wrap: wrap; gap: 0; min-height: 0; }
-  .brand { min-height: 48px; padding: var(--space-xs) var(--gutter); font-size: var(--text-md); flex-wrap: wrap; }
-  .brand-sep { display: none; }
-  .brand-name { flex-basis: 100%; white-space: normal; }
+  .brand { flex: none; min-height: 48px; padding: var(--space-xs) var(--gutter); font-size: var(--text-md); }
+  .topbar-row { flex-wrap: nowrap; }
+  .brand-name { padding-inline-end: var(--gutter); font-size: var(--text-sm); }
   .brand img { height: 24px; }
-  .topbar nav { flex: 1 0 100%; gap: 0; border-top: var(--rule-hair) solid var(--color-rule); font-size: var(--text-xs); }
-  .topbar nav a { flex: 1 1 auto; justify-content: center; padding-inline: var(--space-2xs); }
   .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "q q" "agent outcome" "round round"; }
   .errors li { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
   .strip-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }

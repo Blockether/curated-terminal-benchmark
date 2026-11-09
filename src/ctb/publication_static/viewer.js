@@ -58,8 +58,15 @@
       for (const key of ["text", "input", "output"]) {
         if (event[key] !== null) {
           const pre = document.createElement("pre"); pre.textContent = event[key];
-          if (key === "text") { pre.className = "ev-text"; body.append(pre); }
-          else {
+          if (key === "text") {
+            // Markdown **bold**, as model messages and summaries write it; the rest stays plain text.
+            pre.className = "ev-text"; pre.textContent = ""; let last = 0;
+            for (const match of event.text.matchAll(/\*\*([^\n]+?)\*\*/g)) {
+              const strong = document.createElement("strong"); strong.textContent = match[1];
+              pre.append(event.text.slice(last, match.index), strong); last = match.index + match[0].length;
+            }
+            pre.append(event.text.slice(last)); body.append(pre);
+          } else {
             const detail = document.createElement("details"); detail.open = event[key].length <= 1200;
             const summary = document.createElement("summary"); summary.textContent = key === "input" ? "Input" : "Output";
             detail.append(summary, pre); body.append(detail);
@@ -113,7 +120,11 @@
       if (entry.kind !== "suite") link.classList.add("mono");
       const meta = document.createElement("span"); meta.className = "ev-meta";
       if (entry.status !== null) meta.append(chip(entry.status));
-      if (entry.ms !== null) meta.append(time(entry.ms));
+      if (entry.ms !== null) {
+        const took = document.createElement("span"); took.className = "fact duration"; took.title = "How long this ran, recorded";
+        const label = document.createElement("span"); label.className = "fact-k"; label.textContent = "Took";
+        const value = time(entry.ms); value.className = "mono"; took.append(label, " ", value); meta.append(took);
+      }
       head.append(link, meta); item.append(head);
       if (entry.text !== null) {
         const body = document.createElement("section"); body.className = "ev-body";

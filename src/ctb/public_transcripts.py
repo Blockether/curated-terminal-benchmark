@@ -165,7 +165,6 @@ def static_files(comparison, manifest, metrics):
                     '<section class="head"><h1>Sanitized transcript</h1></section>'
                     + transcript_body(),
                     depth=0,
-                    nav='<a href="index.html">Comparison</a>',
                     description="A sanitized transcript, loaded on demand.",
                 )
             )
