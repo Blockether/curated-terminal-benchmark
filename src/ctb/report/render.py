@@ -316,6 +316,25 @@ def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
                 f"{label} by agent {scope}{note}",
             )
         )
+    # Input includes cached tokens, so the cached share of input is the cache hit rate.
+    if any(None in used[id(t)][:2] for t in trials):
+        charts.append(
+            '<p class="empty">Cache chart omitted: some trials have no recorded tokens.</p>'
+        )
+    else:
+        rates = []
+        for group in groups:
+            given = sum(used[id(t)][0] for t in group)
+            rates.append(round(100 * sum(used[id(t)][1] for t in group) / given) if given else 0)
+        charts.append(
+            bar_chart(
+                names,
+                rates,
+                "Cached share of input (%)",
+                f"Cache hit rate by agent {scope}",
+                top=100,
+            )
+        )
     return '<div class="charts">' + "".join(charts) + "</div>"
 
 
