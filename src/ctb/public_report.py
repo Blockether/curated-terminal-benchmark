@@ -13,6 +13,7 @@ from ctb.report.comparison import setup_id
 
 SELECTION = {
     "codex": "gpt-bench-b2a4d4a",
+    "kmet": "gpt-kmet-2-16bbdc8",
     "opencode": "gpt-bench-b2a4d4a",
     "pi": "gpt-bench-b2a4d4a",
     "wisp": "gpt-wisp-62106d1",
