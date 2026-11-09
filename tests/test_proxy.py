@@ -66,3 +66,40 @@ def test_codex_reports_a_stream_that_ends_without_a_response(monkeypatch):
     with pytest.raises(proxy.UpstreamError, match="without a response") as error:
         proxy.call_codex({"model": "gpt-6.1-sol", "messages": []})
     assert error.value.status == 502
+
+
+def test_a_streaming_client_gets_text_tool_calls_and_usage(monkeypatch, tmp_path):
+    """Wisp always streams; the OpenAI SDK must read the proxy answer as a stream."""
+    from openai import OpenAI
+
+    call = {
+        "id": "call_1",
+        "type": "function",
+        "function": {"name": "bash", "arguments": '{"c":1}'},
+    }
+    usage = {"prompt_tokens": 10, "completion_tokens": 3, "total_tokens": 13}
+    usage["prompt_tokens_details"] = {"cached_tokens": 4}
+    reply = {"message": {"role": "assistant", "content": "Hi", "tool_calls": [call]}}
+    reply |= {"finish_reason": "tool_calls", "model": "gpt-6.1-sol"}
+    monkeypatch.setattr(proxy, "call_codex", lambda req: (dict(reply), usage))
+    server = proxy.Proxy(tmp_path / "proxy.jsonl").start()
+    try:
+        client = OpenAI(api_key=server.key, base_url=f"http://127.0.0.1:{server.port}/v1")
+        chunks = list(
+            client.chat.completions.create(
+                model="gpt-6.1-sol",
+                messages=[{"role": "user", "content": "x"}],
+                stream=True,
+                stream_options={"include_usage": True},
+            )
+        )
+    finally:
+        server.stop()
+    deltas = [c.choices[0] for c in chunks if c.choices]
+    assert "".join(d.delta.content or "" for d in deltas) == "Hi"
+    calls = [t for d in deltas for t in d.delta.tool_calls or []]
+    assert [(t.index, t.id, t.function.name, t.function.arguments) for t in calls] == [
+        (0, "call_1", "bash", '{"c":1}')
+    ]
+    assert deltas[-1].finish_reason == "tool_calls"
+    assert chunks[-1].usage.prompt_tokens_details.cached_tokens == 4

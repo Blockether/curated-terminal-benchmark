@@ -219,7 +219,7 @@ def page(title: str, body: str, *, depth: int, nav: str, description: str) -> st
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span>
 <span class="brand-sep" aria-hidden="true">|</span>
 <span class="brand-name">Terminal-Bench 4.0 — Curated Tasks</span></a>
-<nav aria-label="Sections">{nav}</nav>
+{f'<nav aria-label="Sections">{nav}</nav>' if nav else ""}
 </div>
 </header>
 <main class="container">
@@ -736,7 +736,8 @@ def options(name: str, label: str, values: list[str]) -> str:
     )
 
 
-def index(trials: list[dict], generated: str) -> str:
+def index(trials: list[dict], generated: str, *, head: str | None = None, nav: bool = True) -> str:
+    """The trial overview; head replaces the default heading, and nav=False drops the section links."""
     agents = sorted({t["agent"] for t in trials})
     rounds = sorted({t["round"] for t in trials})
     passed = sum(t["passed"] for t in trials)
@@ -814,10 +815,9 @@ def index(trials: list[dict], generated: str) -> str:
 <div class="count-row"><p class="count" aria-live="polite" data-count>{len(trials)} trials</p>
 <a class="clear" href="index.html#trials" data-clear hidden>Clear filters</a></div>
 <p class="empty" data-empty hidden>No trials match these filters.</p>"""
-    body = f"""<section class="head">
-<h1>Benchmark runs</h1>
-<p class="lead">{esc(lead)}</p>
-</section>
+    if head is None:
+        head = f'<section class="head">\n<h1>Benchmark runs</h1>\n<p class="lead">{esc(lead)}</p>\n</section>'
+    body = f"""{head}
 {top}
 {matched_comparisons(trials)}
 <section id="agents" class="block">
@@ -851,11 +851,17 @@ marks a value that no trial of the agent records.</p>
         )
     }
 </section>"""
-    nav = (
+    links = (
         '<a href="#matched">Matched tasks</a><a href="#agents">Agents</a><a href="#tool-errors">Tool errors</a>'
         '<a href="#trials">Trials</a>'
     )
-    return page("Terminal-Bench 4.0 — Curated Tasks", body, depth=0, nav=nav, description=lead)
+    return page(
+        "Terminal-Bench 4.0 — Curated Tasks",
+        body,
+        depth=0,
+        nav=links if nav else "",
+        description=lead,
+    )
 
 
 # Trial page

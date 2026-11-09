@@ -1,7 +1,6 @@
 """Samizdat built from a pinned commit, through its HTTP API, with full transcript export."""
 
 import json
-import os
 import shlex
 from pathlib import Path
 from typing import ClassVar
@@ -10,7 +9,7 @@ from harbor.agents.installed.base import PackageSpec
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb.agents.base import EFFORT, CuratedAgent
+from ctb.agents.base import EFFORT, CuratedAgent, proxy_env
 from ctb.paths import ARTIFACTS
 
 # The newest main commit; v0.1.0 is the only release and is 100 commits older.
@@ -22,16 +21,6 @@ ARCHIVE_NAME = f"samizdat-{VERSION}-x86_64-linux.tar.gz"
 SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
 RUN_LOG = "samizdat-run.json"
 FEATURES = ":native-tool-choice :reasoning-effort"
-
-
-def proxy_env() -> tuple[str, str]:
-    """The proxy URL as a container sees it, and its key; `ctb run` sets both."""
-    url, key = os.environ.get("CTB_PROXY_URL"), os.environ.get("CTB_PROXY_KEY")
-    if not url or not key:
-        raise RuntimeError(
-            "samizdat needs CTB_PROXY_URL and CTB_PROXY_KEY; start it with `ctb run`"
-        )
-    return url, key
 
 
 class Samizdat(CuratedAgent):

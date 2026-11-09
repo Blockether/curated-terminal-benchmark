@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis
+from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -48,12 +48,12 @@ VERIFIER = "ctb.verifier:Verifier"
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
 KMET_REPO, KMET_COMMIT = (
     "https://github.com/kmetia/kmet-agent.git",
-    "b141b2bdf9ee26f6366552b94259ab8a4a40195b",
+    "d7e1c0249cb2cf5b6bb8e7acc7b73cf2cb9326d4",
 )
 SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 # Task containers reach the host proxy here (Podman's name for the host).
 PROXY_HOST = "host.containers.internal"
-BB_MIN = "1.13.225"
+BB_MIN = "1.13.229"
 SRC = ARTIFACTS / "src"
 DIRGE_BUILD = (
     "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
@@ -73,6 +73,13 @@ SAMIZDAT_BUILD = (
     "jolt tui-native && "
     'LD_PRELOAD="$(g++ -print-file-name=libstdc++.so)" '
     "jolt -A:tui build -m samizdat.main -o samizdat"
+)
+# Production dependencies only; Wisp's dependencies are plain JavaScript.
+# Node needs libatomic, which slim task images do not have.
+WISP_BUILD = (
+    "npm ci --no-audit --no-fund && npm run build && npm prune --omit=dev --no-audit --no-fund && "
+    'cp "$(command -v node)" node && rm -rf lib && mkdir lib && '
+    "cp -L /usr/lib/x86_64-linux-gnu/libatomic.so.1 lib/"
 )
 
 
@@ -212,16 +219,33 @@ def fetch_kmet() -> Path:
     return archive
 
 
+def fetch_wisp() -> Path:
+    """Build Wisp at wisp.COMMIT in an amd64 Node container, and pack it with that Node."""
+    archive = wisp.Wisp.ARCHIVE
+    if not archive.is_file():
+        path = checkout(wisp.REPO, wisp.COMMIT, "wisp-cli")
+        sh(
+            ["podman", "run", "--rm", "--platform", "linux/amd64"]
+            + ["-v", f"{path}:/src", "-w", "/src", wisp.NODE_IMAGE, "bash", "-c", WISP_BUILD]
+        )
+        partial = archive.with_name(archive.name + ".partial")
+        with tarfile.open(partial, "w:gz") as out:
+            for name in ("node", "lib", "package.json", "dist", "node_modules"):
+                out.add(path / name, arcname=f"wisp/{name}")
+        partial.replace(archive)
+    return archive
+
+
 def fetch() -> None:
-    """Get everything for linux-amd64: the Python toolkit, native Vis, dirge, kmet and samizdat.
+    """Get everything for linux-amd64: the Python toolkit, native Vis, dirge, kmet, samizdat, Wisp.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
-    dirge and samizdat need Podman.
+    dirge, samizdat and Wisp need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat()]
+    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat(), fetch_wisp()]
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
@@ -516,6 +540,8 @@ def pins() -> dict:
         "kmet": KMET_COMMIT,
         "samizdat": samizdat.COMMIT,
         "jolt": samizdat.JOLT_VERSION,
+        "wisp": wisp.COMMIT,
+        "node": wisp.NODE_IMAGE,
         "harbor": metadata.version("harbor"),
         "harnesses": {
             "codex": AGENTS["codex"].version,

@@ -28,9 +28,19 @@ def test_paused_arms_stay_out_of_the_default_matrix():
         "vis-team",
         "codex",
         "kmet",
+        "wisp",
         "opencode",
         "pi",
     ]
+
+
+def test_the_public_agent_list_names_every_harness_and_its_pause():
+    from ctb import public_report
+
+    harnesses = {}
+    for name, spec in matrix.AGENTS.items():
+        harnesses[name.split("-")[0]] = spec.paused
+    assert {k: v[1] for k, v in public_report.AGENTS.items()} == harnesses
     assert [t.job for t in matrix.trials(["dirge"], ["openai"], ["x"])] == ["dirge__openai__x"]
 
 

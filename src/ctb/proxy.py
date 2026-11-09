@@ -1,7 +1,7 @@
 """OpenAI Chat Completions proxy for agents that only speak that wire.
 
-samizdat reaches models only through an OpenAI-compatible endpoint. This proxy
-runs on the host. It sends `gpt-*` models to the ChatGPT Codex Responses API,
+samizdat and Wisp reach models only through an OpenAI-compatible endpoint. This
+proxy runs on the host. It sends `gpt-*` models to the ChatGPT Codex Responses API,
 with the subscription access token that Vis keeps. The container gets only a
 random proxy key.
 """
@@ -166,13 +166,18 @@ def codex_reply(events: list[dict]) -> tuple[dict, dict]:
 
 def call_codex(req: dict) -> tuple[dict, dict]:
     access = credentials.codex_vis(TOKEN_MIN_S)
+    body = codex_body(req)
     headers = {
         "Authorization": f"Bearer {access.token}",
         "chatgpt-account-id": access.account_id or "",
         "accept": "text/event-stream",
+        # Codex and Pi send the conversation id here too; the backend routes a
+        # conversation to its cached prefix by these headers, not by the body key alone.
+        "session_id": body["prompt_cache_key"],
+        "x-client-request-id": body["prompt_cache_key"],
     }
     events = []
-    with _open(CODEX_URL, codex_body(req), headers) as resp:
+    with _open(CODEX_URL, body, headers) as resp:
         for raw in resp:
             line = raw.decode("utf-8", "replace").strip()
             if line.startswith("data:") and line[5:].strip() not in ("", "[DONE]"):
@@ -206,8 +211,6 @@ def _open(url: str, body: dict, headers: dict):
 
 def complete(req: dict) -> dict:
     """One OpenAI chat completion, answered by the upstream of its model."""
-    if req.get("stream"):
-        raise UpstreamError(400, "stream is not supported; remove :stream from the features")
     model = str(req.get("model") or "")
     choice, usage = call_codex(req)
     return {
@@ -218,6 +221,24 @@ def complete(req: dict) -> dict:
         "choices": [{"index": 0, **choice}],
         "usage": usage,
     }
+
+
+def stream_chunks(out: dict, usage: bool) -> list[dict]:
+    """A finished completion as the chunks of a Chat Completions stream."""
+    choice = out["choices"][0]
+    message = choice["message"]
+    delta = {"role": "assistant", "content": message.get("content") or ""}
+    if message.get("tool_calls"):
+        delta["tool_calls"] = [{"index": i, **c} for i, c in enumerate(message["tool_calls"])]
+    head = {key: out[key] for key in ("id", "created", "model")} | {
+        "object": "chat.completion.chunk"
+    }
+    chunks = [
+        head | {"choices": [{"index": 0, "delta": delta, "finish_reason": choice["finish_reason"]}]}
+    ]
+    if usage:
+        chunks.append(head | {"choices": [], "usage": out["usage"]})
+    return chunks
 
 
 class Proxy:
@@ -240,6 +261,16 @@ class Proxy:
                 self.send_header("content-length", str(len(data)))
                 self.end_headers()
                 self.wfile.write(data)
+
+            def _stream(self, chunks: list[dict]) -> None:
+                self.send_response(200)
+                self.send_header("content-type", "text/event-stream")
+                self.send_header("cache-control", "no-cache")
+                self.end_headers()
+                for chunk in chunks:
+                    self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
+                self.wfile.write(b"data: [DONE]\n\n")
+                self.close_connection = True
 
             def _authorized(self) -> bool:
                 if self.headers.get("Authorization") == f"Bearer {proxy.key}":
@@ -274,7 +305,11 @@ class Proxy:
                     out = {"error": {"message": repr(e), "type": "proxy_error"}}
                     status, usage, error = 502, {}, repr(e)[:300]
                 proxy.record(req.get("model"), status, usage, time.monotonic() - started, error)
-                self._send(status, out)
+                if status == 200 and req.get("stream"):
+                    include = bool((req.get("stream_options") or {}).get("include_usage"))
+                    self._stream(stream_chunks(out, include))
+                else:
+                    self._send(status, out)
 
         self.server = ThreadingHTTPServer((host, port), Handler)
         self.server.daemon_threads = True

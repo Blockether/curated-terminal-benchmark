@@ -363,17 +363,33 @@ def public_trials(data, metrics):
     return trials
 
 
-SCOPE = """<section class="block" id="scope"><h2>Comparison scope</h2>
-<p class="hint">Vis 0.5.3 solo · GPT-6.1-sol · medium effort · 12 tasks per agent · 2 hours per task.
-Latest complete round per agent. The source results are sealed, not certified as fair or error-free.
-Vis used a newer harness with verifier upload, photonic rendering and health-check fixes.
-Pi 1.5.0 used the newer shared Python toolkit and setup note.
-The other agents used c30ea7d. Recovery trials and older rounds are not substituted.
-This comparison does not use one identical harness revision.</p>
-<p class="hint">A trial can pass and still record an exception. Check its reward as well as its outcome.
-Transcripts are sanitized, normalized text views, not complete raw logs.
-Only the selected transcript is downloaded. Raw logs and task artifacts stay local.</p>
-<p><a href="comparison.json">Result data and seal hashes</a> · <a href="report-metrics.json">Report metrics</a></p></section>"""
+#: Every harness of ctb.matrix, by display name; True marks a paused one.
+#: The publication check runs without Harbor, so it cannot import ctb.matrix.
+AGENTS = {
+    "vis": ("Vis", False),
+    "codex": ("Codex", False),
+    "opencode": ("OpenCode", False),
+    "pi": ("Pi", False),
+    "kmet": ("Kmet", False),
+    "wisp": ("Wisp", False),
+    "dirge": ("Dirge", True),
+    "samizdat": ("Samizdat", True),
+}
+INTRO = (
+    "A curated benchmark that measures how Vis performs against other coding agents on "
+    "GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning."
+)
+
+
+def head():
+    items = "".join(
+        f'<li class="agent-paused" title="Paused">{label}</li>' if paused else f"<li>{label}</li>"
+        for label, paused in AGENTS.values()
+    )
+    return (
+        f'<section class="head">\n<p class="lead">{INTRO}</p>\n'
+        f'<ul class="agent-list" aria-label="Agents">{items}</ul>\n</section>'
+    )
 
 
 def public_page(text):
@@ -438,12 +454,7 @@ def assets():
 
 
 def render(data, metrics, *, transcripts=False):
-    text = layout.index(public_trials(data, metrics), "from sealed results")
-    text = text.replace(
-        '</section>\n<div class="panels readings">',
-        "</section>\n" + SCOPE + '\n<div class="panels readings">',
-        1,
-    )
+    text = layout.index(public_trials(data, metrics), "from sealed results", head=head(), nav=False)
     if not transcripts:
         text = re.sub(r'<a href="trial/[0-9a-f]{64}\.html">([^<]+)</a>', r"\1", text)
     return public_page(text).encode()

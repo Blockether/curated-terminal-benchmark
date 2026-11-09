@@ -3,7 +3,8 @@
 Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
-Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Vis solo and Vis team.
+Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Wisp, Vis solo and Vis team.
+Samizdat and Wisp speak only OpenAI Chat Completions. They reach GPT through the host proxy in `src/ctb/proxy.py`.
 Dirge and Samizdat are paused: a run without `--agents` skips them, and `--agents dirge` still runs Dirge.
 
 ## Layout
@@ -67,7 +68,6 @@ Two fixes correct task text or fixtures that no agent could pass:
 
 To grade old trials again with the current verifier, use `harbor trials regrade TRIAL -p TASK -e ctb.environment:Podman --verifier ctb.verifier:Verifier`.
 The source trial does not change.
-`results/regrade-9edb0cc.json` records the regrade of the published trials with this verifier.
 
 ## Run the curated matrix
 

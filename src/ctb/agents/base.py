@@ -25,6 +25,16 @@ def min_token_seconds() -> int:
     return int(os.environ.get("CTB_MIN_TOKEN_S", "7500"))
 
 
+def proxy_env() -> tuple[str, str]:
+    """The proxy URL as a container sees it, and its key; `ctb run` sets both for proxy agents."""
+    url, key = os.environ.get("CTB_PROXY_URL"), os.environ.get("CTB_PROXY_KEY")
+    if not url or not key:
+        raise RuntimeError(
+            "This agent needs CTB_PROXY_URL and CTB_PROXY_KEY; start it with `ctb run`"
+        )
+    return url, key
+
+
 def split_model(model_name: str | None) -> tuple[str, str]:
     """Accept only the model of this benchmark: `openai/gpt-6.1-sol`."""
     family, _, model = (model_name or "").partition("/")
