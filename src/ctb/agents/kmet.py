@@ -13,7 +13,7 @@ from ctb.resources import files_footprint
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = "kmet-e2f9684f-linux-amd64.tar.gz"
+ARCHIVE_NAME = "kmet-6221f8dd-linux-amd64.tar.gz"
 
 
 class Kmet(CuratedAgent):
