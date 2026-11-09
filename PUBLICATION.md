@@ -49,7 +49,9 @@ restrict who can modify Actions settings. Repository writers can change these co
 Three full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
 of five agents: Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
-that recorded hashes did not change, not fairness or correctness.
+that recorded hashes did not change, not fairness or correctness. All selected rounds ran the
+linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac. The page states
+this. New rounds on that host need `--allow-emulation`.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.
 Each round is audited and committed separately within the same expansion budget. No evidence

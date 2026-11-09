@@ -380,6 +380,10 @@ INTRO = (
     "A curated benchmark that measures how Vis performs against other coding agents on "
     "GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning."
 )
+EMULATION = (
+    "All tasks are linux/amd64 containers. They ran under emulation, Rosetta in a Podman VM on "
+    "an Apple Silicon Mac, so times and CPU values include the emulation overhead."
+)
 
 
 def head():
@@ -390,7 +394,8 @@ def head():
     )
     return (
         f'<section class="head">\n<p class="lead">{INTRO}</p>\n'
-        f'<ul class="agent-list" aria-label="Agents">{items}</ul>\n</section>'
+        f'<ul class="agent-list" aria-label="Agents">{items}</ul>\n'
+        f'<p class="head-note">{EMULATION}</p>\n</section>'
     )
 
 
