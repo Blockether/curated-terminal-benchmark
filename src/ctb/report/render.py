@@ -330,9 +330,9 @@ def agent_view(trials: list[dict]) -> str:
         th("Error rate"),
     ]
     general = (
-        '<p class="hint">All attempts of each agent, failures included. These are totals, not an '
-        "efficiency ranking. Cost is the API list-price equivalent where token usage is recorded. "
-        "A dash marks a value that no trial of the agent records.</p>"
+        '<p class="hint">These are totals, not an efficiency ranking. Cost is the API list-price '
+        "equivalent where token usage is recorded. A dash marks a value that no trial of the agent "
+        "records.</p>"
         + agent_charts(trials)
         + table(head, agent_rows(trials), cls="sortable", empty="No trials were found.")
     )
@@ -349,7 +349,11 @@ def agent_view(trials: list[dict]) -> str:
     else:
         normal = '<p class="empty">No task was passed by every agent.</p>'
     return tabs(
-        [("general", "General", general), ("normalized", "Normalized", normal)], "Agent view"
+        [
+            ("general", "General", "All attempts, failures included", general),
+            ("normalized", "Normalized", "Only the tasks that every agent passed", normal),
+        ],
+        "Agent view",
     )
 
 
@@ -560,8 +564,7 @@ def index(trials: list[dict], generated: str, *, head: str | None = None) -> str
         head = f'<section class="head">\n<h1>Benchmark runs</h1>\n<p class="lead">{esc(lead)}</p>\n</section>'
     body = f"""{head}
 {top}
-<section id="agents" class="block">
-<h2>Agents</h2>
+<section id="agents" class="block" aria-label="Agents">
 {agent_view(trials)}
 </section>
 <section id="tool-errors" class="block">
@@ -935,16 +938,19 @@ def verification_list(entries: list[dict]) -> str:
     return f'<ol class="events" data-verification>{"".join(items)}</ol>'
 
 
-def tabs(panels: list[tuple[str, str, str]], label: str) -> str:
-    """Tab buttons and panels; the first tab starts selected. Without JavaScript all panels show."""
+def tabs(panels: list[tuple[str, str, str, str]], label: str) -> str:
+    """Tab cards with a label and a short note, and their panels; the first tab starts selected.
+
+    Without JavaScript all panels show."""
     buttons = "".join(
         f'<button type="button" role="tab" id="tab-{key}" aria-controls="{key}" '
-        f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{key}">{esc(name)}</button>'
-        for i, (key, name, _) in enumerate(panels)
+        f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{key}">'
+        f'<span class="tab-name">{esc(name)}</span><small>{esc(note)}</small></button>'
+        for i, (key, name, note, _) in enumerate(panels)
     )
     return f'<div class="tabs" role="tablist" aria-label="{esc(label)}">{buttons}</div>' + "".join(
         f'<div id="{key}" role="tabpanel" aria-labelledby="tab-{key}" data-tab-panel="{key}">{html}</div>'
-        for key, _, html in panels
+        for key, _, _, html in panels
     )
 
 
@@ -1069,10 +1075,11 @@ def trial_page(trial: dict) -> str:
 {
         tabs(
             [
-                ("implementation", "Implementation", implementation),
+                ("implementation", "Implementation", "The agent's transcript", implementation),
                 (
                     "verification",
                     "Verification",
+                    "Tests and logs after the run",
                     VERIFY_HINT + verification_list(trial["verification"]),
                 ),
             ],

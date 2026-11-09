@@ -221,10 +221,11 @@ def transcript_body(result_hash=""):
         "<noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript>"
         + report.layout.tabs(
             [
-                ("implementation", "Implementation", implementation),
+                ("implementation", "Implementation", "The agent's transcript", implementation),
                 (
                     "verification",
                     "Verification",
+                    "Tests and logs after the run",
                     report.layout.VERIFY_HINT
                     + '<ol id="checks" class="events" data-verification></ol>',
                 ),
