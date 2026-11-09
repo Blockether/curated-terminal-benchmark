@@ -346,6 +346,7 @@ def public_trials(data, metrics):
                 "version": None,
                 "error_message": None,
                 "events": [],
+                "verification": [],
                 "phases": m["phases"],
                 "harbor": {k: m[k] for k in ("input", "cache", "output")},
                 "facts": {

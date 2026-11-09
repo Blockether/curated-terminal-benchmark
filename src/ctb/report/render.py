@@ -1086,6 +1086,91 @@ def event_item(index: int, e: dict, base: float | None) -> str:
     )
 
 
+VERIFY_KINDS = {"suite": "Suite", "test": "Test", "log": "Log"}
+STATUS_CHIPS = {"passed": "chip-passed", "failed": "chip-error"}
+
+
+def status_chip(status: str | None) -> str:
+    if not status:
+        return ""
+    return f'<span class="chip {STATUS_CHIPS.get(status, "chip-failed")}">{esc(status.capitalize())}</span>'
+
+
+def verification_item(index: int, e: dict) -> str:
+    failed = e["status"] == "failed"
+    meta = [status_chip(e["status"])]
+    if e["ms"] is not None:
+        meta.append(
+            f'<span class="mono duration" title="Duration, recorded">{esc(duration(e["ms"]))}</span>'
+        )
+    if e["kind"] == "suite":
+        inner = f'<pre class="ev-text">{esc_text(e["text"])}</pre>' if e["text"] else ""
+    else:
+        label = "Output" if e["kind"] == "log" else "Failure" if failed else "Details"
+        inner = body_block(label, e["text"], error=failed)
+    return (
+        f'<li id="v-{index}" class="ev ev-{e["kind"]}{" ev-error" if failed else ""}">'
+        f'<div class="ev-head"><a class="ev-kind" href="#v-{index}">{VERIFY_KINDS[e["kind"]]}</a>'
+        f'<span class="ev-name mono">{esc(e["name"])}</span>'
+        f'<span class="ev-meta">{"".join(meta)}</span></div>'
+        + (f'<section class="ev-body">{inner}</section>' if inner else "")
+        + "</li>"
+    )
+
+
+def passed_tests(tests: list[dict]) -> str:
+    """Tests without a failure, in one closed list."""
+    rows = "".join(
+        f'<li><span class="mono">{esc(t["name"])}</span> {status_chip(t["status"])}'
+        + (
+            f' <span class="mono duration">{esc(duration(t["ms"]))}</span>'
+            if t["ms"] is not None
+            else ""
+        )
+        + "</li>"
+        for t in tests
+    )
+    return (
+        f'<li class="ev ev-tests"><details><summary>{len(tests):,} tests without a failure</summary>'
+        f'<ul class="test-names">{rows}</ul></details></li>'
+    )
+
+
+def verification_list(entries: list[dict]) -> str:
+    """Runs, their failed tests and logs; the other tests of a run collapse into one list."""
+    if not entries:
+        return '<p class="empty">No verifier output was recorded.</p>'
+    items, quiet = [], []
+    for index, e in enumerate(entries):
+        if e["kind"] == "test" and e["status"] != "failed":
+            quiet.append(e)
+            continue
+        if quiet and e["kind"] != "test":
+            items.append(passed_tests(quiet))
+            quiet = []
+        items.append(verification_item(index, e))
+    if quiet:
+        items.append(passed_tests(quiet))
+    return f'<ol class="events" data-verification>{"".join(items)}</ol>'
+
+
+def tabs(implementation: str, verification: str) -> str:
+    """The two phases of a trial. Without JavaScript both panels stay visible."""
+    buttons = "".join(
+        f'<button type="button" role="tab" id="tab-{key}" aria-controls="{key}" '
+        f'aria-selected="{"true" if key == "implementation" else "false"}" data-tab="{key}">{label}</button>'
+        for key, label in (("implementation", "Implementation"), ("verification", "Verification"))
+    )
+    return (
+        f'<div class="tabs" role="tablist" aria-label="Trial phase">{buttons}</div>'
+        f'<div id="implementation" role="tabpanel" aria-labelledby="tab-implementation" '
+        f'data-tab-panel="implementation">{implementation}</div>'
+        f'<div id="verification" role="tabpanel" aria-labelledby="tab-verification" '
+        f'data-tab-panel="verification"><p class="hint">What the verifier ran after the agent '
+        f"finished: the task tests, their output and the logs of task services.</p>{verification}</div>"
+    )
+
+
 def error_list(events: list[dict]) -> str:
     items = []
     for index, e in enumerate(events):
@@ -1161,6 +1246,14 @@ def trial_page(trial: dict) -> str:
         for key, label in SHOW
     )
     transcript = "".join(event_item(i, e, base) for i, e in enumerate(events))
+    implementation = (
+        f'<nav class="chips" aria-label="Transcript filter">{chips}</nav>'
+        f'<p class="count" aria-live="polite" data-event-count>{len(events):,} events</p>'
+        '<p class="empty" data-empty hidden>No events of this kind.</p>'
+        '<ol class="events" data-events>'
+        + (transcript or '<li class="empty">No transcript was found.</li>')
+        + "</ol>"
+    )
     body = f"""<section class="head">
 <p class="crumb"><a href="../index.html#trials">All trials</a></p>
 <h1>{esc(task_name(trial["task"]))}</h1>
@@ -1192,12 +1285,7 @@ def trial_page(trial: dict) -> str:
 </section>
 <section id="transcript" class="block">
 <h2>Transcript</h2>
-<nav class="chips" aria-label="Transcript filter">{chips}</nav>
-<p class="count" aria-live="polite" data-event-count>{len(events):,} events</p>
-<p class="empty" data-empty hidden>No events of this kind.</p>
-<ol class="events" data-events>{
-        transcript or '<li class="empty">No transcript was found.</li>'
-    }</ol>
+{tabs(implementation, verification_list(trial["verification"]))}
 </section>"""
     nav = (
         '<a href="#timeline">Timeline</a><a href="#tools">Tools</a><a href="#errors">Errors</a>'
@@ -1205,7 +1293,7 @@ def trial_page(trial: dict) -> str:
     )
     description = (
         f"The {trial['agent']} trial of {task_name(trial['task'])}: times, costs, "
-        "tool errors and the transcript."
+        "tool errors, the transcript and the verifier results."
     )
     return page(
         f"{task_name(trial['task'])}, {trial['agent']}",

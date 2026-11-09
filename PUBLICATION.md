@@ -18,6 +18,9 @@ credential values and their common encodings, credential-like patterns, opaque c
 fields and local user paths before compression. It does not clip text before the scan.
 Each event has a fixed schema with text fields only. This normalized view is not a full raw log.
 A trial that failed before its agent started has an explicit status event, not a made-up trace.
+Each transcript (schema 2) also holds what the verifier ran: CTRF test runs, the verifier output
+and the logs of task services from the artifact manifest. Repeat runs list only failed tests.
+The trial page shows these entries in a Verification tab next to the Implementation tab.
 
 The export records gzip hashes in `public/transcript-hashes.json` on main. The CI checker
 uses that approved manifest, not one supplied by the publication branch. Changed hashes,

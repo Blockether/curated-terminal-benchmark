@@ -7,7 +7,14 @@ from pathlib import Path
 
 from ctb.metrics import PHASES, trial_metrics
 from ctb.report.comparison import setup_id
-from ctb.report.transcripts import READERS, epoch_ms, event, harness, instruction
+from ctb.report.transcripts import (
+    READERS,
+    epoch_ms,
+    event,
+    harness,
+    instruction,
+    read_verification,
+)
 
 
 def find(jobs: Path) -> list[Path]:
@@ -131,4 +138,5 @@ def load(trial: Path, jobs: Path) -> dict:
         ],
         "events": events,
         "summary": summarize(events),
+        "verification": read_verification(trial),
     }

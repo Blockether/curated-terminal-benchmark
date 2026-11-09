@@ -7,10 +7,33 @@ from ctb import public_transcripts as pub
 class TranscriptTests(unittest.TestCase):
     def payload(self, text="A harmless tool result"):
         return {
-            "schema": 1,
+            "schema": 2,
             "result_sha256": "a" * 64,
             "events": [
                 {"kind": "tool", "name": "shell", "text": text, "input": None, "output": None}
+            ],
+            "verification": [
+                {
+                    "kind": "suite",
+                    "name": "Test run",
+                    "status": "failed",
+                    "ms": 900,
+                    "text": "2 tests",
+                },
+                {
+                    "kind": "test",
+                    "name": "test_a",
+                    "status": "failed",
+                    "ms": 12,
+                    "text": "assert 1",
+                },
+                {
+                    "kind": "log",
+                    "name": "Verifier output",
+                    "status": None,
+                    "ms": None,
+                    "text": "ok",
+                },
             ],
         }
 
@@ -70,6 +93,27 @@ class TranscriptTests(unittest.TestCase):
             data["events"] = events
             with self.assertRaises(ValueError):
                 pub.validate_payload(data, "a" * 64)
+
+    def test_verification_entries_have_a_closed_shape(self):
+        for index, key, value in (
+            (0, "kind", "stdout"),
+            (1, "status", "broken"),
+            (1, "status", None),
+            (2, "status", "passed"),
+            (1, "ms", -1),
+            (1, "ms", 1.5),
+            (1, "name", ""),
+            (2, "text", "token=" + "Q" * 40),
+            (1, "secret", "x"),
+        ):
+            data = self.payload()
+            data["verification"][index][key] = value
+            with self.assertRaises(ValueError):
+                pub.validate_payload(data, "a" * 64)
+        data = self.payload()
+        del data["verification"]
+        with self.assertRaises(ValueError):
+            pub.validate_payload(data, "a" * 64)
 
     def test_gzip_trailing_data_extra_members_and_bomb_fail(self):
         raw = pub.pack(report.encoded(self.payload()))

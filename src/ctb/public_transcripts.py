@@ -17,6 +17,11 @@ from ctb import public_report as report
 STATIC = Path(__file__).with_name("publication_static")
 KINDS = {"user", "assistant", "reasoning", "call", "tool", "command", "result"}
 FIELDS = ("name", "text", "input", "output")
+# What the verifier ran. The CI checker cannot import ctb.report, so these sets are local.
+VERIFY_KINDS = {"suite", "test", "log"}
+VERIFY_FIELDS = ("name", "status", "ms", "text")
+STATUSES = {"passed", "failed", "skipped", "pending", "other"}
+SCHEMA = 2
 REDACTED = "[REDACTED]"
 MAX_GZIP = 2 * 1024**2
 MAX_EXPANDED = 16 * 1024**2
@@ -67,8 +72,8 @@ def scrub(text, known=()):
 
 
 def validate_payload(data, result_hash, known=()):
-    report.keys(data, ("schema", "result_sha256", "events"))
-    report.require(type(data["schema"]) is int and data["schema"] == 1)
+    report.keys(data, ("schema", "result_sha256", "events", "verification"))
+    report.require(type(data["schema"]) is int and data["schema"] == SCHEMA)
     report.require(data["result_sha256"] == result_hash)
     report.require(type(data["events"]) is list and 0 < len(data["events"]) <= 20_000)
     for event in data["events"]:
@@ -78,6 +83,23 @@ def validate_payload(data, result_hash, known=()):
             value = event[key]
             report.require(value is None or type(value) is str and len(value) <= 1_000_000)
             report.require(scrub(value, known) == value)
+    report.require(type(data["verification"]) is list and len(data["verification"]) <= 20_000)
+    for entry in data["verification"]:
+        report.keys(entry, ("kind", *VERIFY_FIELDS))
+        report.require(type(entry["kind"]) is str and entry["kind"] in VERIFY_KINDS)
+        # A test or a run has a status; a log has none.
+        status = entry["status"]
+        report.require(
+            status is None if entry["kind"] == "log" else type(status) is str and status in STATUSES
+        )
+        ms = entry["ms"]
+        report.require(ms is None or type(ms) is int and 0 <= ms <= 10**9)
+        report.require(type(entry["name"]) is str and 0 < len(entry["name"]) <= 10_000)
+        report.require(
+            entry["text"] is None or type(entry["text"]) is str and len(entry["text"]) <= 1_000_000
+        )
+        for key in ("name", "text"):
+            report.require(scrub(entry[key], known) == entry[key])
     return data
 
 
@@ -115,12 +137,13 @@ def content_hash(raw):
 
 def manifest_check(manifest, comparison):
     report.keys(manifest, ("schema", "transcripts"))
-    report.require(type(manifest["schema"]) is int and manifest["schema"] == 1)
+    report.require(type(manifest["schema"]) is int and manifest["schema"] == SCHEMA)
     expected = {r["result_sha256"] for r in comparison["rows"]}
     report.keys(manifest["transcripts"], expected)
     for record in manifest["transcripts"].values():
-        report.keys(record, ("sha256", "bytes", "expanded_bytes", "events"))
+        report.keys(record, ("sha256", "bytes", "expanded_bytes", "events", "checks"))
         report.sha(record["sha256"])
+        report.require(type(record["checks"]) is int and 0 <= record["checks"] <= 20_000)
         for key, maximum in (
             ("bytes", MAX_GZIP),
             ("expanded_bytes", MAX_EXPANDED),
@@ -178,17 +201,23 @@ def transcript_body(result_hash=""):
         for key, label in report.layout.SHOW
         if key != "errors"
     )
+    implementation = (
+        '<nav class="chips" aria-label="Transcript filter">' + chips + "</nav>"
+        '<p class="count" data-event-count aria-live="polite"></p>'
+        '<p class="empty" data-empty hidden>No events of this kind.</p>'
+        '<ol id="events" class="events" data-events></ol>'
+    )
     return (
         '<section id="transcript" class="block" data-result-id="' + result_hash + '">'
         '<h2>Transcript</h2><p class="hint">Credential-like values and local user paths are removed. '
         "This normalized text view is not a full raw log. Event timings and error flags are not included. "
         "One verified gzip file is downloaded for this trial.</p>"
-        '<nav class="chips" aria-label="Transcript filter">' + chips + "</nav>"
         '<p id="status" class="count" role="status">Loading selected transcript…</p>'
-        '<p class="count" data-event-count aria-live="polite"></p>'
-        '<p class="empty" data-empty hidden>No events of this kind.</p>'
         "<noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript>"
-        '<ol id="events" class="events" data-events></ol></section>'
+        + report.layout.tabs(
+            implementation, '<ol id="verification" class="events" data-verification></ol>'
+        )
+        + "</section>"
     )
 
 
@@ -224,6 +253,7 @@ def check(root, out, known=()):
         report.require(len(expanded) == row["expanded_bytes"])
         data = validate_payload(decode(expanded), result_hash, known)
         report.require(len(data["events"]) == row["events"])
+        report.require(len(data["verification"]) == row["checks"])
         # No gzip filename, timestamp or trailing payload can hide data outside the JSON.
         report.require(expanded == report.encoded(data))
 
@@ -239,7 +269,7 @@ def export(root, out):
     known = secret_variants(secret_values())
     report.require(not out.exists() and not any(p.is_symlink() for p in out.parents))
     (out / "transcripts").mkdir(parents=True)
-    manifest = {"schema": 1, "transcripts": {}}
+    manifest = {"schema": SCHEMA, "transcripts": {}}
     seals = {
         r: report.read(root / "results" / (r + ".json")) for r in set(report.SELECTION.values())
     }
@@ -266,11 +296,16 @@ def export(root, out):
                     "text": "The agent did not start. The original trial failed during environment setup.",
                 }
             ]
+        verification = transcripts.read_verification(result_path.parent)
         payload = {
-            "schema": 1,
+            "schema": SCHEMA,
             "result_sha256": row["result_sha256"],
             "events": [
                 {"kind": e["kind"], **{k: scrub(e.get(k), known) for k in FIELDS}} for e in events
+            ],
+            "verification": [
+                {**e, "name": scrub(e["name"], known), "text": scrub(e["text"], known)}
+                for e in verification
             ],
         }
         validate_payload(payload, row["result_sha256"], known)
@@ -284,6 +319,7 @@ def export(root, out):
             "bytes": len(raw),
             "expanded_bytes": len(expanded),
             "events": len(events),
+            "checks": len(verification),
         }
     manifest_check(manifest, comparison)
     # The caller stages this hash-only manifest on main after the local audit.

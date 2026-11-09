@@ -2,7 +2,7 @@ import json
 import re
 
 from ctb.report import render
-from ctb.report.transcripts import event, read_dirge, read_opencode, read_wisp
+from ctb.report.transcripts import event, read_dirge, read_opencode, read_verification, read_wisp
 from ctb.report.trials import clean_version, summarize
 
 
@@ -165,17 +165,116 @@ def test_trial_page_opens_error_output_and_links_each_error():
         },
         "phases": [],
         "events": events,
+        "verification": [],
         "notes": [],
         "summary": summarize(events),
     }
     trial["facts"] = render.facts(trial)
     page = render.trial_page(trial)
     assert '<a class="mono" href="#e-1">bash</a>' in page
+    assert "No verifier output was recorded." in page
     assert '<details open class="is-error">' in page
     # The two short inputs and the error output open; the long output without an error stays closed.
     assert page.count("<details open") == 3
     assert "<details><summary>Output" in page
     assert "Harbor recorded no phase times" in page
+
+
+def test_verification_lists_test_runs_verifier_output_and_service_logs(tmp_path):
+    verifier = tmp_path / "verifier"
+    verifier.mkdir()
+    test = {"name": "test_ok", "status": "passed", "duration": 5}
+    failed = {"name": "test_order", "status": "failed", "duration": 7, "message": "expected 1"}
+    run = {"summary": {"start": 100, "stop": 160}, "tests": [test, failed]}
+    (verifier / "ctrf.json").write_text(json.dumps({"results": run}))
+    (verifier / "ctrf_2.json").write_text(json.dumps({"results": run}))
+    (verifier / "test-stdout.txt").write_text("2 tests ran")
+    artifacts = tmp_path / "artifacts"
+    (artifacts / "app").mkdir(parents=True)
+    (artifacts / "load.log").write_text("p99 3.2 s")
+    (artifacts / "app" / "out.txt").write_text("agent file")
+    manifest = [
+        {
+            "service": "loadgen",
+            "source": "/var/log/load.log",
+            "destination": "artifacts/load.log",
+            "type": "file",
+            "status": "ok",
+        },
+        {
+            "service": None,
+            "source": "/app/out.txt",
+            "destination": "artifacts/app/out.txt",
+            "type": "file",
+            "status": "ok",
+        },
+    ]
+    (artifacts / "manifest.json").write_text(json.dumps(manifest))
+    entries = read_verification(tmp_path)
+    assert [(e["kind"], e["name"], e["status"]) for e in entries] == [
+        ("suite", "Test run", "failed"),
+        ("test", "test_ok", "passed"),
+        ("test", "test_order", "failed"),
+        ("suite", "Repeat run 2", "failed"),
+        ("test", "test_order", "failed"),
+        ("log", "Verifier output", None),
+        ("log", "loadgen: /var/log/load.log", None),
+    ]
+    assert entries[0]["ms"] == 60 and entries[0]["text"] == "2 tests: 1 passed, 1 failed"
+    assert entries[2]["text"] == "expected 1"
+    assert entries[-1]["text"] == "p99 3.2 s"
+    assert read_verification(tmp_path / "missing") == []
+
+
+def test_trial_page_puts_verification_in_its_own_tab(tmp_path):
+    trial = {
+        "id": "t",
+        "round": "r",
+        "agent": "pi",
+        "harness": "pi",
+        "version": "1",
+        "model": "m",
+        "task": "terminal-bench/demo",
+        "reward": 0.0,
+        "passed": False,
+        "error": None,
+        "error_message": None,
+        "started_at": None,
+        "path": "p",
+        "harbor": {
+            "seconds": {"total": None, "agent_execution": None},
+            "cost_usd": None,
+            "cost_source": None,
+        },
+        "phases": [],
+        "events": [event("user", text="Fix it.")],
+        "notes": [],
+        "verification": [
+            {
+                "kind": "suite",
+                "name": "Test run",
+                "status": "failed",
+                "ms": 60,
+                "text": "1 tests: 0 passed, 1 failed",
+            },
+            {
+                "kind": "test",
+                "name": "test_<order>",
+                "status": "failed",
+                "ms": 7,
+                "text": "expected <1>",
+            },
+        ],
+    }
+    trial["summary"] = summarize(trial["events"])
+    trial["facts"] = render.facts(trial)
+    page = render.trial_page(trial)
+    assert 'role="tablist"' in page
+    assert 'id="implementation"' in page and 'id="verification"' in page
+    assert "test_&lt;order&gt;" in page and "expected &lt;1&gt;" in page
+    assert (
+        page.index('id="implementation"') < page.index("Fix it.") < page.index('id="verification"')
+    )
 
 
 def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):

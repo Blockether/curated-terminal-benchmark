@@ -20,6 +20,7 @@ import gzip
 import io
 import json
 import re
+from collections import Counter
 from collections.abc import Iterator, Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
@@ -841,6 +842,120 @@ def read_wisp(agent: Path, model: str) -> list[dict]:
                     ms_source="recorded" if ms is not None else None,
                 )
     return events
+
+
+#: CTRF test statuses; any other value is shown as "other".
+TEST_STATUSES = ("passed", "failed", "skipped", "pending", "other")
+#: The largest service artifact that the verification view reads as text.
+MAX_ARTIFACT = 1_000_000
+CTRF = re.compile(r"ctrf(?:_(\d+))?\.json")
+
+
+def ctrf_run(path: Path, label: str, *, failed_only: bool) -> list[dict]:
+    """One run summary and its tests from a CTRF report. A repeat run lists only failed tests."""
+    try:
+        results = json.loads(path.read_text(encoding="utf-8")).get("results") or {}
+    except (OSError, ValueError):
+        return [
+            {
+                "kind": "suite",
+                "name": label,
+                "status": "other",
+                "ms": None,
+                "text": f"{path.name} is not a readable CTRF report.",
+            }
+        ]
+    summary = results.get("summary") or {}
+    tests = [t for t in results.get("tests") or [] if isinstance(t, dict)]
+
+    def status(value: object) -> str:
+        return value if value in TEST_STATUSES else "other"
+
+    counts = Counter(status(t.get("status")) for t in tests)
+    start, stop = summary.get("start"), summary.get("stop")
+    entries = [
+        {
+            "kind": "suite",
+            "name": label,
+            "status": "failed" if counts["failed"] else "passed" if tests else "other",
+            "ms": stop - start if isinstance(start, int) and isinstance(stop, int) else None,
+            "text": f"{len(tests)} tests: "
+            + ", ".join(
+                f"{counts[s]} {s}" for s in TEST_STATUSES if counts[s] or s in ("passed", "failed")
+            ),
+        }
+    ]
+    for test in tests:
+        if failed_only and status(test.get("status")) != "failed":
+            continue
+        detail = "\n\n".join(str(test[k]) for k in ("message", "trace") if test.get(k))
+        duration = test.get("duration")
+        entries.append(
+            {
+                "kind": "test",
+                "name": str(test.get("name") or "unnamed test"),
+                "status": status(test.get("status")),
+                "ms": int(duration) if isinstance(duration, (int, float)) else None,
+                "text": clip(detail or None),
+            }
+        )
+    return entries
+
+
+def read_verification(trial: Path) -> list[dict]:
+    """What the verifier ran: CTRF test runs, its output and the logs of task services."""
+    verifier = trial / "verifier"
+    entries: list[dict] = []
+    # ctrf.json is the scored run; ctrf_<n>.json are repeat runs of tasks that check determinism.
+    runs = sorted(
+        (int(m[1] or 0), p) for p in verifier.glob("ctrf*.json") if (m := CTRF.fullmatch(p.name))
+    )
+    for number, path in runs:
+        label = f"Repeat run {number}" if number else "Test run"
+        entries.extend(ctrf_run(path, label, failed_only=bool(number)))
+    stdout = verifier / "test-stdout.txt"
+    if stdout.is_file():
+        text = stdout.read_text(encoding="utf-8", errors="replace")
+        entries.append(
+            {
+                "kind": "log",
+                "name": "Verifier output",
+                "status": None,
+                "ms": None,
+                "text": clip(text) or None,
+            }
+        )
+    manifest = trial / "artifacts" / "manifest.json"
+    try:
+        artifacts = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else []
+    except ValueError:
+        artifacts = []
+    for item in artifacts if isinstance(artifacts, list) else []:
+        # Only logs of task services; the agent's own files are not verification output.
+        if not isinstance(item, dict) or not item.get("service") or item.get("type") != "file":
+            continue
+        destination = str(item.get("destination") or "")
+        path = trial / destination
+        if (
+            item.get("status") != "ok"
+            or not destination.startswith("artifacts/")
+            or ".." in Path(destination).parts
+            or not path.is_file()
+            or path.is_symlink()
+            or path.stat().st_size > MAX_ARTIFACT
+        ):
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        entries.append(
+            {
+                "kind": "log",
+                "name": f"{item['service']}: {item.get('source')}",
+                "status": None,
+                "ms": None,
+                "text": clip(text) or None,
+            }
+        )
+    return entries
 
 
 READERS = {
