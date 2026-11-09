@@ -251,6 +251,90 @@
       "passed": true,
       "result_sha256": "9a618f3d00f045783db3a92d8273ac8ace920bd50715b1a2d3f8abce5078d94c",
       "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "70794c59ba1dd13b9ecd0810500c5288d5f2b556c0a6868a462ef435c2f419a6",
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "e1da23fa68a95b701f244ae93800e4fec90a08c2218cec5d8c049e403de4c9d5",
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "c2617f8b0d9f100e0c28ffb50c57d60cbe9453c601e81a6c7d3a159a48ac693d",
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "20edb5fa262ef51aa44474860568cfae4b0056e2280d402529132fc5c4a3c9c3",
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "4381ccc4d80e42aec3543fd294360be8b4841b15acc7374d1bfca520d8aeed97",
+      "task": "music-harmony"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "d5457941084abc1c4aa60f523855aec6149580b9b6627c3cb80127c0fe38f592",
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "dcdadd599374c9546027271d9051b2f1df53105e91cd44bf3a8f6f5dd4046517",
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "759cdde8c1eba6897ddcc0366d089015703702ff5a220578cb2a7a61569d2cf1",
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "a73c9e0df6d44881e2241576ac12c9a328379b2069004ed4d8f25f3f74df3b88",
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "aa66ea1bf384b3f3d3020bdb0482107a5f9152a9d274b01dbf8ba59277d636cc",
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "33e46f6a7a3c2e48619cc8fbb8d23de46decf70f5ddeb098d3de1ec42907b280",
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "02a57a3c8c12c8d25d0e487f479e2e232fe4515c322edacecf3befd368e02e96",
+      "task": "wal-recovery-ordering"
     }
   ],
   "schema": 1,
@@ -269,6 +353,11 @@
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
       "round": "gpt-bench-b2a4d4a",
       "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
+    },
+    "wisp": {
+      "harness_commit": "62106d15082bb77e5c7bdb246e7460ef63fa3fcb",
+      "round": "gpt-wisp-62106d1",
+      "seal_sha256": "bd92ca71714581af309c8353c8ad3c4743f646ec7096ec9e77d756c7693c3560"
     }
   }
 }

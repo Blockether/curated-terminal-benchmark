@@ -2,7 +2,7 @@ import json
 import re
 
 from ctb.report import render
-from ctb.report.transcripts import event, read_dirge, read_opencode
+from ctb.report.transcripts import event, read_dirge, read_opencode, read_wisp
 from ctb.report.trials import clean_version, summarize
 
 
@@ -455,3 +455,63 @@ def test_dirge_unpaired_result_is_not_a_tool_call(tmp_path):
     assert len(tools) == 1 and tools[0]["output"] is None and tools[0]["ms"] is None
     assert events[-1]["name"] == "Unpaired tool result"
     assert events[-1]["text"] == "unpaired"
+
+
+def test_wisp_transcript_pairs_tools_and_takes_times_from_the_log(tmp_path):
+    session = tmp_path / "wisp-sessions" / "ctb"
+    session.mkdir(parents=True)
+    usage = {
+        "prompt_tokens": 120,
+        "completion_tokens": 9,
+        "prompt_tokens_details": {"cached_tokens": 64},
+    }
+    records = [
+        {"type": "system", "content": "harness"},
+        {"type": "user", "content": "Fix it."},
+        {
+            "type": "assistant",
+            "output": [
+                {"type": "text", "text": "Looking."},
+                {"type": "tool_call", "id": "c1", "name": "bash", "arguments": '{"command":"ls"}'},
+                {
+                    "type": "tool_call",
+                    "id": "c2",
+                    "name": "python3",
+                    "arguments": '{"command":"x"}',
+                },
+            ],
+            "finish_reason": "tool_calls",
+            "usage": [usage],
+        },
+        {"type": "tool", "call_id": "c1", "name": "bash", "content": "app.py", "exit": 0},
+        {"type": "tool", "call_id": "c2", "name": "python3", "content": "boom", "exit": 1},
+        {"type": "assistant", "output": [{"type": "text", "text": "Done."}], "usage": [usage]},
+    ]
+    (session / "wisp.jsonl").write_text("\n".join(json.dumps(r) for r in records) + "\n")
+    (session / "wisp.log").write_text(
+        "1000 request model=gpt-6.1-sol round=1\n"
+        "1250 http_done url=x lines=6 payloads=2 ms=240 status=200\n"
+        "1260 tool end name=bash call_id=c1 exit=0 ms=60 bytes=6\n"
+        "1300 tool end name=python3 call_id=c2 exit=1 ms=35 bytes=4\n"
+        "1400 request model=gpt-6.1-sol round=2\n"
+        "1500 http_done url=x lines=6 payloads=2 ms=90 status=200\n"
+    )
+    events = read_wisp(tmp_path, "openai/gpt-6.1-sol")
+    assert [e["kind"] for e in events] == [
+        "user",
+        "call",
+        "assistant",
+        "tool",
+        "tool",
+        "call",
+        "assistant",
+    ]
+    calls = [e for e in events if e["kind"] == "call"]
+    assert [(c["at"], c["ms"]) for c in calls] == [(1000, 240), (1400, 90)]
+    assert calls[0]["tokens"] == {"input": 120, "cache": 64, "output": 9}
+    tools = [e for e in events if e["kind"] == "tool"]
+    assert [(t["name"], t["output"], t["error"], t["ms"]) for t in tools] == [
+        ("bash", "app.py", False, 60),
+        ("python3", "boom", True, 35),
+    ]
+    assert read_wisp(tmp_path / "missing", "openai/gpt-6.1-sol") == []

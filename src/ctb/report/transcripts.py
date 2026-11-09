@@ -763,6 +763,86 @@ def read_vis(agent: Path, model: str) -> list[dict]:
     return events
 
 
+def wisp_log(path: Path) -> tuple[list[list], dict[str, float]]:
+    """Start time and HTTP milliseconds of each request round, and milliseconds of each tool call."""
+    rounds: list[list] = []
+    tools: dict[str, float] = {}
+    if not path.is_file():
+        return rounds, tools
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        stamp, _, rest = line.partition(" ")
+        fields = dict(f.split("=", 1) for f in rest.split() if "=" in f)
+        try:
+            if rest.startswith("request "):
+                rounds.append([float(stamp), None])
+            elif rest.startswith("http_done ") and rounds:
+                rounds[-1][1] = float(fields["ms"])
+            elif rest.startswith("tool end "):
+                tools[fields["call_id"]] = float(fields["ms"])
+        except (KeyError, ValueError):
+            continue
+    return rounds, tools
+
+
+def read_wisp(agent: Path, model: str) -> list[dict]:
+    events: list[dict] = []
+    for session in sorted(p for p in (agent / "wisp-sessions").glob("*") if p.is_dir()):
+        path = session / "wisp.jsonl"
+        if not path.is_file():
+            continue
+        # wisp.jsonl has no times; wisp.log has one request round for each assistant record.
+        rounds, tool_ms = wisp_log(session / "wisp.log")
+        pending: dict = {}
+        turn = 0
+        for record in jsonl(path):
+            kind = record.get("type")
+            if kind == "user":
+                events.append(event("user", text=text_of(record.get("content"))))
+            elif kind == "assistant":
+                at, ms = rounds[turn] if turn < len(rounds) else (None, None)
+                turn += 1
+                used = [u for u in record.get("usage") or [] if isinstance(u, dict)]
+                events.append(
+                    call(
+                        model,
+                        at,
+                        ms,
+                        "recorded",
+                        tokens(
+                            sum(u.get("prompt_tokens") or 0 for u in used),
+                            sum(
+                                (u.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
+                                for u in used
+                            ),
+                            sum(u.get("completion_tokens") or 0 for u in used),
+                        )
+                        if used
+                        else None,
+                    )
+                )
+                for item in record.get("output") or []:
+                    if item.get("type") == "text" and item.get("text"):
+                        events.append(event("assistant", at=at, text=item["text"]))
+                    elif item.get("type") == "tool_call":
+                        tool = event(
+                            "tool", at=at, name=item.get("name"), input=item.get("arguments")
+                        )
+                        pending[item.get("id")] = tool
+                        events.append(tool)
+            elif kind == "tool":
+                key = record.get("call_id")
+                ms = tool_ms.get(key)
+                pair(
+                    pending,
+                    key,
+                    output=text_of(record.get("content")),
+                    error=record.get("exit") not in (0, None),
+                    ms=ms,
+                    ms_source="recorded" if ms is not None else None,
+                )
+    return events
+
+
 READERS = {
     "pi": read_pi,
     "opencode": read_opencode,
@@ -771,6 +851,7 @@ READERS = {
     "kmet": read_kmet,
     "samizdat": read_samizdat,
     "vis": read_vis,
+    "wisp": read_wisp,
 }
 
 

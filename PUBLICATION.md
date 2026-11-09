@@ -2,14 +2,14 @@
 
 `main` holds source code, result seals, evidence manifests and public transcript hashes.
 `gh-pages` holds only the Pages workflow and `site/`: the original report layout, a text viewer, manifests,
-and 36 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
+and 48 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
 artifacts, or the local HTML report. The public export is a different directory.
 
 ## Data boundary
 
 `public_report.py` projects a closed set of agents, tasks, errors, outcomes and hashes.
 `public/report-metrics.json` holds reviewed numeric measurements, phase times and known tool
-labels for the same 36 result hashes. Unknown fields and tool names are refused. Rewards and
+labels for the same 48 result hashes. Unknown fields and tool names are refused. Rewards and
 start times must match the seals. The Pages checker does not read source logs.
 The public pages use `ctb.report.render` and the original report assets. Fonts are local,
 with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
@@ -40,8 +40,8 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
-One full round is sealed after the evidence reset. The comparison selects 12 tasks for each
-of three agents: Codex, OpenCode and Pi. Recovery trials are not substituted. A seal proves
+Two full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
+of four agents: Codex, OpenCode, Pi and Wisp. Recovery trials are not substituted. A seal proves
 that recorded hashes did not change, not fairness or correctness.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.

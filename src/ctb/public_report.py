@@ -15,6 +15,7 @@ SELECTION = {
     "codex": "gpt-bench-b2a4d4a",
     "opencode": "gpt-bench-b2a4d4a",
     "pi": "gpt-bench-b2a4d4a",
+    "wisp": "gpt-wisp-62106d1",
 }
 TASKS = (
     "bun-sourcemap-leak",
@@ -157,10 +158,12 @@ TOOLS = frozenset(
         "grep",
         "kill_shell",
         "list_dir",
+        "load_image",
         "message",
         "papercut",
         "patch",
         "plan",
+        "python3",
         "python_execution",
         "read",
         "read_digest",
