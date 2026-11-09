@@ -209,16 +209,26 @@ def test_a_run_of_reasoning_summaries_becomes_one_reasoning_event():
     events = [
         event("reasoning", at=1.0, text="**Analyzing net08 topology**"),
         event("reasoning", at=2.0, text="**Checking net08 routing**"),
+        event("reasoning", at=2.5, text="**Plan**\n\nRoute net08 below."),
         event("reasoning", at=3.0, text=None),
         event("tool", at=4.0, name="bash", input="ls"),
-        event("reasoning", at=5.0, text="**Planning lower corridor routes**"),
+        event(
+            "reasoning", at=5.0, text="**Planning lower corridor routes**\n\n**Checking clearance**"
+        ),
         event("assistant", at=6.0, text="Done."),
     ]
     merged = merge_reasoning(events)
     assert [(e["kind"], e["at"], e["text"]) for e in merged] == [
-        ("reasoning", 1.0, "**Analyzing net08 topology**\n\n**Checking net08 routing**"),
+        (
+            "reasoning",
+            1.0,
+            (
+                "**Analyzing net08 topology**\n**Checking net08 routing**"
+                "\n**Plan**\n\nRoute net08 below."
+            ),
+        ),
         ("tool", 4.0, None),
-        ("reasoning", 5.0, "**Planning lower corridor routes**"),
+        ("reasoning", 5.0, "**Planning lower corridor routes**\n**Checking clearance**"),
         ("assistant", 6.0, "Done."),
     ]
     assert events[0]["text"] == "**Analyzing net08 topology**"  # the reader's events stay unchanged
