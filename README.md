@@ -4,7 +4,7 @@ Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
 Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Wisp, Vis solo and Vis team.
-Samizdat and Wisp speak only OpenAI Chat Completions. They reach GPT through the host proxy in `src/ctb/proxy.py`.
+Samizdat speaks only OpenAI Chat Completions, and Wisp cannot refresh a ChatGPT token. They reach GPT through the host proxy in `src/ctb/proxy.py`.
 Dirge and Samizdat are paused: a run without `--agents` skips them, and `--agents dirge` still runs Dirge.
 
 ## Layout

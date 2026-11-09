@@ -367,7 +367,7 @@ AGENTS = {
     "opencode": ("OpenCode", False, "https://github.com/anomalyco/opencode"),
     "pi": ("Pi", False, "https://github.com/earendil-works/pi"),
     "kmet": ("Kmet", False, "https://github.com/kmetia/kmet-agent"),
-    "wisp": ("Wisp", False, "https://github.com/FolderFile/wisp-cli"),
+    "wisp": ("Wisp", False, "https://github.com/xificurC/wisp"),
     "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
     "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
 }

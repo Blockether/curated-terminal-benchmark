@@ -177,6 +177,12 @@ def owned(exe: str | None, paths: list[str]) -> bool:
     return bool(exe) and any(exe == p or exe.startswith(p.rstrip("/") + "/") for p in paths)
 
 
+def runs_agent(proc: dict, paths: list[str]) -> bool:
+    """The process runs from the install paths, or an interpreter runs a script from them."""
+    argv = proc.get("argv") or []
+    return owned(proc["exe"], paths) or (len(argv) > 1 and owned(argv[1], paths))
+
+
 def summary(agent_dir: Path) -> dict:
     """RAM, CPU and install size of one trial, from its sampler and footprint files.
 
@@ -210,9 +216,9 @@ def summary(agent_dir: Path) -> dict:
             # An agent process runs a tool through a shell or another program. A worker from the
             # install paths, such as the Python worker of Vis, stays part of the agent.
             name = os.path.basename(exe or "")
-            kinds[index] = "agent" if owned(exe, paths) and name not in SHELLS else "tool"
+            kinds[index] = "agent" if runs_agent(proc, paths) and name not in SHELLS else "tool"
         else:
-            kinds[index] = "agent" if owned(exe, paths) else "wrapper"
+            kinds[index] = "agent" if runs_agent(proc, paths) else "wrapper"
         return kinds[index]
 
     for line in path.read_text().split("\n"):

@@ -74,13 +74,6 @@ SAMIZDAT_BUILD = (
     'LD_PRELOAD="$(g++ -print-file-name=libstdc++.so)" '
     "jolt -A:tui build -m samizdat.main -o samizdat"
 )
-# Production dependencies only; Wisp's dependencies are plain JavaScript.
-# Node needs libatomic, which slim task images do not have.
-WISP_BUILD = (
-    "npm ci --no-audit --no-fund && npm run build && npm prune --omit=dev --no-audit --no-fund && "
-    'cp "$(command -v node)" node && rm -rf lib && mkdir lib && '
-    "cp -L /usr/lib/x86_64-linux-gnu/libatomic.so.1 lib/"
-)
 
 
 def sh(command: list[str], cwd: Path | None = None, env: dict | None = None) -> None:
@@ -220,18 +213,15 @@ def fetch_kmet() -> Path:
 
 
 def fetch_wisp() -> Path:
-    """Build Wisp at wisp.COMMIT in an amd64 Node container, and pack it with that Node."""
+    """Pack the Wisp script and its license at wisp.COMMIT. Wisp needs no build."""
     archive = wisp.Wisp.ARCHIVE
     if not archive.is_file():
-        path = checkout(wisp.REPO, wisp.COMMIT, "wisp-cli")
-        sh(
-            ["podman", "run", "--rm", "--platform", "linux/amd64"]
-            + ["-v", f"{path}:/src", "-w", "/src", wisp.NODE_IMAGE, "bash", "-c", WISP_BUILD]
-        )
+        path = checkout(wisp.REPO, wisp.COMMIT, "wisp")
+        apply_patches(path, *wisp.PATCHES)
         partial = archive.with_name(archive.name + ".partial")
         with tarfile.open(partial, "w:gz") as out:
-            for name in ("node", "lib", "package.json", "dist", "node_modules"):
-                out.add(path / name, arcname=f"wisp/{name}")
+            for name in ("wisp/wisp", "LICENSE"):
+                out.add(path / name, arcname=f"wisp/{name.rpartition('/')[2]}")
         partial.replace(archive)
     return archive
 
@@ -241,7 +231,7 @@ def fetch() -> None:
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
-    dirge, samizdat and Wisp need Podman.
+    dirge and samizdat need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
@@ -541,7 +531,6 @@ def pins() -> dict:
         "samizdat": samizdat.COMMIT,
         "jolt": samizdat.JOLT_VERSION,
         "wisp": wisp.COMMIT,
-        "node": wisp.NODE_IMAGE,
         "harbor": metadata.version("harbor"),
         "harnesses": {
             "codex": AGENTS["codex"].version,

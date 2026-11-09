@@ -1,0 +1,13 @@
+diff --git a/wisp/wisp b/wisp/wisp
+index 6994fee..507f815 100755
+--- a/wisp/wisp
++++ b/wisp/wisp
+@@ -2466,6 +2466,8 @@ class Executor:
+             proc = subprocess.run(argv, capture_output=True, text=True, timeout=seconds)
+         except subprocess.TimeoutExpired:
+             return 124, ""
++        except FileNotFoundError:
++            return 127, ""
+         return proc.returncode, proc.stdout or ""
+ 
+     def run(self, argv: list, seconds: int, cap_bytes: int, spill_path_of: Callable) -> tuple:

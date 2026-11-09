@@ -10,7 +10,7 @@ This audit does not change pins or frozen benchmark inputs.
 | Pi | `@earendil-works/pi-coding-agent` 1.5.0 | 1.5.0 | Keep. Requires Node 22.19 or later. |
 | Dirge | `453776330d4f44a6b07ab21974f8534c1318d596` with local patches | 0.26.1, `7eb18de27eaf5775a00220e74ee5b2c40375c706` | Update candidate. Tool logging still needs the local patch. |
 | Kmet | `e2f9684f006a4b8b8e9d705c51db97ce5ce741da` | 0.2.0 | Pinned to development HEAD on 9 November 2026. The build needs Babashka 1.13.229 or later. |
-| Wisp | `01b850ef05fd40038d6b27a15908b92566ed91c5` | none | Development HEAD, package version 0.3.0. The repository has no release tags. It runs on Node 26.13.0. |
+| Wisp | `e0d468f792fb12ba2a31ab873c7f54190a92b753` | none | Development HEAD of `xificurC/wisp`. The repository has no release tags. It is one Python script and runs on the toolkit Python. The local `wisp-missing-git` patch lets it start in task images without git. |
 | Samizdat | `9411f00c87d5ddb725f46eb8794e0d93a479835f` | 0.1.0 | Current pin equals development HEAD. |
 | Vis | 0.5.3 | 0.5.4, `7681f3685de40521f2a864a15378f261020d29d3` | Update candidate. Pin the commit, Linux x64 archive and checksum together. |
 

@@ -88,6 +88,35 @@ def test_summary_splits_agent_from_its_tools_and_reads_the_container(tmp_path):
     assert (out["container_mem_min"], out["container_mem_max"]) == (50 * mib, 400 * mib)
 
 
+def test_summary_counts_a_script_agent_on_a_shared_interpreter(tmp_path):
+    # Wisp is a script in its package that runs on the toolkit Python.
+    (tmp_path / "footprint.json").write_text(
+        json.dumps({"package": {"paths": ["/opt/wisp"], "bytes": 3, "files": 1}})
+    )
+    python = "/opt/toolkit/bin/python3"
+    mib = 2**20
+    write(
+        tmp_path / "resources.jsonl",
+        [
+            {"kind": "start", "epoch": 0, "interval": 1, "tick": 100},
+            proc(10, 0, "/usr/bin/bash"),
+            {**proc(11, 10, python), "argv": [python, "/opt/wisp/wisp", "run"]},
+            {**proc(12, 11, python), "argv": ["python3", "-c", "print(1)"]},  # its python3 tool
+            {
+                "kind": "sample",
+                "t": 0,
+                "cpu_usec": 0,
+                "mem": mib,
+                "procs": [[10, mib, 0], [11, 40 * mib, 10], [12, 90 * mib, 300]],
+            },
+            {"kind": "sample", "t": 10, "cpu_usec": 0, "mem": mib, "procs": [[11, 50 * mib, 30]]},
+        ],
+    )
+    out = resources.summary(tmp_path)
+    assert (out["agent_rss_min"], out["agent_rss_max"]) == (40 * mib, 50 * mib)
+    assert out["agent_cpu_s"] == 0.3
+
+
 def test_summary_without_samples_keeps_only_the_sizes(tmp_path):
     assert resources.summary(tmp_path) == {
         "package_bytes": None,

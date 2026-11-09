@@ -1,34 +1,37 @@
-"""Wisp (github.com/FolderFile/wisp-cli) in one-shot JSON mode, through the host proxy."""
+"""Wisp (github.com/xificurC/wisp) on the toolkit Python, through the host proxy."""
 
+import hashlib
 import json
 import shlex
 
 from harbor.models.agent.context import AgentContext
 
 from ctb.agents.base import EFFORT, CuratedAgent, proxy_env
-from ctb.paths import ARTIFACTS
+from ctb.paths import ARTIFACTS, ROOT
 from ctb.resources import files_footprint
+from ctb.toolkit import TOOLKIT
 
-REPO = "https://github.com/FolderFile/wisp-cli.git"
-# The newest main commit (package version 0.3.0); the repository has no release tags.
-COMMIT = "01b850ef05fd40038d6b27a15908b92566ed91c5"
+REPO = "https://github.com/xificurC/wisp.git"
+# The newest main commit; the repository has no release tags.
+COMMIT = "e0d468f792fb12ba2a31ab873c7f54190a92b753"
 VERSION = COMMIT[:8]
-# The current Node LTS; Wisp needs Node 22 or later.
-NODE_IMAGE = "docker.io/library/node:26.13.0-bookworm-slim"
-ARCHIVE_NAME = f"wisp-{VERSION}-linux-amd64.tar.gz"
-NODE = "LD_LIBRARY_PATH=/installed-agent/wisp/lib /installed-agent/wisp/node"
-WISP = "/installed-agent/wisp/dist/index.js"
-STREAM = "wisp.jsonl"
+# Upstream Wisp stops when the task image has no git; the patch treats a missing program as a
+# failed command. It changes nothing else.
+PATCHES = ("wisp-missing-git.patch",)
+PATCH_SHA = hashlib.sha256(b"".join((ROOT / "patches" / p).read_bytes() for p in PATCHES))
+ARCHIVE_NAME = f"wisp-{VERSION}-{PATCH_SHA.hexdigest()[:8]}.tar.gz"
+HOME = "/installed-agent/wisp"
+# Wisp is one Python 3 script without dependencies. Task images can have an old python3 or
+# none, so it runs on the toolkit Python. Its bash and python3 tools use the task PATH.
+WISP = f"{TOOLKIT}/bin/python3 {HOME}/wisp"
+SESSIONS = "/logs/agent/wisp-sessions"
+STREAM = "wisp.stream"
 
 
 class Wisp(CuratedAgent):
     ARCHIVE = ARTIFACTS / ARCHIVE_NAME
-    FOOTPRINT = files_footprint(
-        package=tuple(
-            f"/installed-agent/wisp/{p}" for p in ("dist", "node_modules", "package.json")
-        ),
-        runtime=("/installed-agent/wisp/node", "/installed-agent/wisp/lib"),
-    )
+    # The interpreter is the toolkit Python that every agent gets, so it is not Wisp's runtime.
+    FOOTPRINT = files_footprint(package=(HOME,))
 
     @staticmethod
     def name() -> str:
@@ -37,55 +40,41 @@ class Wisp(CuratedAgent):
     def get_version_command(self) -> str:
         return f"printf %s {VERSION}"
 
-    def settings(self) -> str:
-        # Wisp knows only gpt-5 models; an unknown model gets no thinking levels.
-        # The window and output limit are the ones that Samizdat uses for this model.
-        model = {
-            "provider": "openai",
-            "id": self.model,
-            "name": self.model,
-            "contextWindow": 1_000_000,
-            "maxOutput": 128_000,
-            "thinking": ["off", "low", "medium", "high"],
-            "images": True,
-        }
-        return json.dumps({"models": [model]})
-
-    def secret_files(self) -> dict[str, str]:
-        return {".wisp/settings.json": self.settings()}
-
     def secret_env(self) -> dict[str, str]:
-        return {"OPENAI_API_KEY": proxy_env()[1]}
+        return {"WISP_LLM_API_KEY": proxy_env()[1]}
 
     def command(self, instruction: str) -> str:
+        # The README setup: one session with the wisp block, AGENTS.md files and skills.
         url, _ = proxy_env()
         return (
-            f"export WISP_HOME=$HOME/.wisp WISP_SESSION_DIR=/logs/agent/wisp-sessions "
-            f"OPENAI_BASE_URL={shlex.quote(url + '/v1')}; "
-            f"{NODE} {WISP} --json --yes --model openai/{self.model} --thinking {EFFORT} "
-            f"-- {shlex.quote(instruction)} < /dev/null "
-            f"> /logs/agent/{STREAM} 2> /logs/agent/wisp-stderr.log"
+            f"export WISP_LLM_URL={shlex.quote(url + '/v1/chat/completions')} "
+            f"WISP_LLM_API=openai-chat WISP_SESSIONS_ROOT={SESSIONS} && "
+            f"{{ WISP_SESSION_DIR=$({WISP} new --name ctb -m {self.model} -t {EFFORT} "
+            f"--env-in-system-prompt -s <({WISP} build-system-prompt --wisp --skills --agents-md "
+            f"< /dev/null)) && export WISP_SESSION_DIR && "
+            f"printf %s {shlex.quote(instruction)} | {WISP} run > /logs/agent/{STREAM}; "
+            f"}} 2> /logs/agent/wisp-stderr.log"
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
-        path = self.logs_dir / STREAM
-        if not path.is_file():
-            return
-        totals = {"input": 0, "cacheRead": 0, "output": 0}
-        turns, error = 0, None
-        for line in path.read_text().split("\n"):
-            if not line.startswith("{"):
-                continue
-            event = json.loads(line)
-            if event.get("type") == "assistant_message":
+        totals = {"prompt": 0, "cached": 0, "completion": 0}
+        turns = 0
+        for path in sorted((self.logs_dir / "wisp-sessions").glob("*/wisp.usage")):
+            for line in path.read_text().split("\n"):
+                line = line.removeprefix("data: ")
+                if not line.startswith("{"):
+                    continue
+                chunk = json.loads(line)
+                usage = chunk["usage"] if isinstance(chunk.get("usage"), dict) else chunk
                 turns += 1
-                for key in totals:
-                    totals[key] += event.get("usage", {}).get(key) or 0
-            elif event.get("type") == "turn_end" and event.get("error"):
-                error = str(event["error"])
+                totals["prompt"] += usage.get("prompt_tokens") or 0
+                totals["cached"] += (usage.get("prompt_tokens_details") or {}).get(
+                    "cached_tokens"
+                ) or 0
+                totals["completion"] += usage.get("completion_tokens") or 0
         if turns:
-            # Wisp counts uncached input apart from cache reads.
-            context.n_input_tokens = totals["input"] + totals["cacheRead"]
-            context.n_cache_tokens = totals["cacheRead"]
-            context.n_output_tokens = totals["output"]
-        context.metadata = {"wisp": {"requests": turns, "error": error}}
+            # prompt_tokens includes the cached tokens.
+            context.n_input_tokens = totals["prompt"]
+            context.n_cache_tokens = totals["cached"]
+            context.n_output_tokens = totals["completion"]
+        context.metadata = {"wisp": {"requests": turns}}
