@@ -391,6 +391,30 @@ def test_trial_page_puts_verification_in_its_own_tab(tmp_path):
     )
 
 
+def test_agent_charts_total_tokens_and_omit_a_partial_sum():
+    def trial(agent, tokens_in, tokens_out):
+        harbor = {"input": tokens_in, "cache": 0, "output": tokens_out}
+        facts = {"cost": 1.0}
+        return {
+            "agent": agent,
+            "passed": True,
+            "events": [],
+            "summary": {},
+            "facts": facts,
+            "harbor": harbor,
+        }
+
+    html = render.agent_charts(
+        [trial("a", 2_000_000, 3000), trial("a", 1_500_000, 1000), trial("b", 500_000, 500)]
+    )
+    assert "Input tokens (millions)" in html and "bar [3.5, 0.5]" in html
+    assert "Output tokens (thousands)" in html and "bar [4.0, 0.5]" in html
+    assert 'y-axis "Pass rate (%)" 0 --&gt; 100' in html
+    # Harbor writes 0 for counts that the agent did not report, so b has no tokens.
+    html = render.agent_charts([trial("a", 2_000_000, 3000), trial("b", 0, 0)])
+    assert "Input tokens chart omitted" in html and "Output tokens chart omitted" in html
+
+
 def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):
     jobs, out = tmp_path / "jobs", tmp_path / "report"
     write_vis_trial(jobs, name="t1")

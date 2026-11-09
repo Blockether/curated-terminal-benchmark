@@ -256,48 +256,59 @@ def diagram(source: str, caption: str) -> str:
     )
 
 
+def bar_chart(
+    names: str, values: list[float], axis: str, caption: str, *, top: float | None = None
+) -> str:
+    """One horizontal bar chart; without `top` the axis ends at a round value above the data."""
+    top = top or max(values) or 1
+    scale = 10 ** max(0, math.floor(math.log10(top)))
+    source = (
+        "---\nconfig:\n  xyChart:\n    showDataLabel: true\n---\nxychart-beta horizontal\n"
+        f'  x-axis [{names}]\n  y-axis "{axis}" 0 --> {math.ceil(top / scale) * scale}\n'
+        f"  bar [{', '.join(map(str, values))}]"
+    )
+    return diagram(source, caption)
+
+
 def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
-    """Pass rate and cost of each agent as bar charts; on shared tasks only cost, as all passed."""
+    """Pass rate, cost and tokens of each agent as bar charts; on shared tasks no pass rate."""
     by_agent: dict[str, list[dict]] = defaultdict(list)
     for trial in trials:
         by_agent[trial["agent"]].append(trial)
     if not by_agent:
         return ""
+    groups = [group for _, group in sorted(by_agent.items())]
     names = ", ".join(f'"{mermaid_text(agent)}"' for agent in sorted(by_agent))
-    rates = [
-        round(100 * sum(t["passed"] for t in group) / len(group))
-        for _, group in sorted(by_agent.items())
-    ]
-    costs = [
-        round(sum(t["facts"]["cost"] or 0 for t in group), 2)
-        for _, group in sorted(by_agent.items())
-    ]
-    top = max(costs) or 1
-    scale = 10 ** max(0, math.floor(math.log10(top)))
-    head = "---\nconfig:\n  xyChart:\n    showDataLabel: true\n---\nxychart-beta horizontal\n"
-    pass_chart = (
-        f'{head}  x-axis [{names}]\n  y-axis "Pass rate (%)" 0 --> 100\n'
-        f"  bar [{', '.join(map(str, rates))}]"
-    )
-    cost_chart = (
-        f'{head}  x-axis [{names}]\n  y-axis "Cost (USD)" 0 --> {math.ceil(top / scale) * scale}\n'
-        f"  bar [{', '.join(map(str, costs))}]"
-    )
-    return (
-        '<div class="charts">'
-        + ("" if shared else diagram(pass_chart, "Pass rate by agent"))
-        + (
-            diagram(
-                cost_chart,
-                "Cost by agent on the shared tasks"
-                if shared
-                else "Total cost by agent (not task-normalized)",
+    scope = "on the shared tasks" if shared else "(not task-normalized)"
+    charts = []
+    if not shared:
+        rates = [round(100 * sum(t["passed"] for t in group) / len(group)) for group in groups]
+        charts.append(bar_chart(names, rates, "Pass rate (%)", "Pass rate by agent", top=100))
+    # A total needs a value from every trial; a partial sum is not a total.
+    if all(t["facts"]["cost"] is not None for t in trials):
+        costs = [round(sum(t["facts"]["cost"] for t in group), 2) for group in groups]
+        charts.append(bar_chart(names, costs, "Cost (USD)", f"Total cost by agent {scope}"))
+    else:
+        charts.append('<p class="empty">Cost chart omitted: some trials have no recorded cost.</p>')
+    used = {id(t): usage(t) for t in trials}
+    for index, label in ((0, "Input tokens"), (2, "Output tokens")):
+        if any(used[id(t)][index] is None for t in trials):
+            charts.append(
+                f'<p class="empty">{label} chart omitted: some trials have no recorded tokens.</p>'
             )
-            if all(t["facts"]["cost"] is not None for t in trials)
-            else '<p class="empty">Total cost chart omitted: some trials have no recorded cost.</p>'
+            continue
+        totals = [sum(used[id(t)][index] for t in group) for group in groups]
+        unit, size = ("millions", 1e6) if max(totals) >= 1e6 else ("thousands", 1e3)
+        note = ", cached included" if index == 0 else ""
+        charts.append(
+            bar_chart(
+                names,
+                [round(v / size, 1) for v in totals],
+                f"{label} ({unit})",
+                f"{label} by agent {scope}{note}",
+            )
         )
-        + "</div>"
-    )
+    return '<div class="charts">' + "".join(charts) + "</div>"
 
 
 def normalized(trials: list[dict]) -> tuple[list[dict], list[str]]:
