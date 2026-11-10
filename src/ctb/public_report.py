@@ -397,9 +397,8 @@ LINKS = (
     ("Source on GitHub", "https://github.com/Blockether/curated-terminal-benchmark"),
 )
 EMULATION = (
-    "Trials ran one at a time as linux/amd64 containers under Rosetta emulation (Podman 6.0 VM: "
-    "12 CPUs, 24 GiB) on a MacBook Pro M4 Max (14 cores, 36 GB, macOS 26.6). Times and CPU "
-    "values include the emulation overhead."
+    "Run under Rosetta emulation on a MacBook Pro M4 Max (Podman VM, 12 CPUs, 24 GiB). "
+    "Times include its overhead."
 )
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
@@ -426,10 +425,9 @@ def head():
     )
     links = " · ".join(f'<a href="{url}">{label}{layout.ARROW}</a>' for label, url in LINKS)
     intro = (
-        f'A curated benchmark by <a href="{BLOCKETHER}">Blockether</a>. It compares Vis, our coding '
-        f"agent, with other coding agents on {len(TASKS)} CPU-only tasks from "
-        f'<a href="{LINKS[0][1]}">Terminal-Bench 4.0</a>. Every agent uses GPT-6.1-sol with medium '
-        f'reasoning. <a href="{LINKS[2][1]}">Harbor</a> runs each trial, and the results are sealed.'
+        f"Our agent Vis vs. other coding agents on {len(TASKS)} CPU-only "
+        f'<a href="{LINKS[0][1]}">Terminal-Bench 4.0</a> tasks.<br>'
+        "All on GPT-6.1-sol, medium reasoning."
     )
     return (
         f'<section class="head">\n<h1>{SITE_NAME}</h1>\n<p class="lead">{intro}</p>\n'
