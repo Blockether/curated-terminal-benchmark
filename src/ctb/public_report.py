@@ -424,9 +424,7 @@ def head():
         f'<li{paused_attrs if paused else ""}><a href="{url}">{label}</a></li>'
         for label, paused, url in AGENTS.values()
     )
-    links = " · ".join(
-        f'<a href="{url}">{label} <span aria-hidden="true">↗</span></a>' for label, url in LINKS
-    )
+    links = " · ".join(f'<a href="{url}">{label}{layout.ARROW}</a>' for label, url in LINKS)
     intro = (
         f'A curated benchmark by <a href="{BLOCKETHER}">Blockether</a>. It compares Vis, our coding '
         f"agent, with other coding agents on {len(TASKS)} CPU-only tasks from "

@@ -53,22 +53,27 @@ SHOW = (
     ("errors", "Errors"),
 )
 NONE = '<span class="none">not recorded</span>'
+#: An outside-link arrow. The fonts have no U+2197 glyph, so a fallback font would set its spacing.
+ARROW = (
+    '<svg class="arrow" viewBox="0 0 10 10" aria-hidden="true" focusable="false">'
+    '<path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4"/></svg>'
+)
 #: The footer of blockether.com (src/components/Footer.tsx), with a call to action above it.
 #: The year is fixed so that a later check of the same site gives the same bytes.
-FOOTER = """<footer class="footer">
+FOOTER = f"""<footer class="footer">
 <div class="container">
 <div class="footer-cta">
 <p><strong>A benchmark by Blockether.</strong> We build Vis and deliver software engineering for regulated industries:
 Clojure, product engineering, data and agentic AI with evaluations.</p>
-<p class="footer-actions"><a class="footer-button" href="https://blockether.com/">Visit blockether.com <span aria-hidden="true">↗</span></a>
-<a href="https://blockether.com/contact">Contact us <span aria-hidden="true">↗</span></a></p>
+<p class="footer-actions"><a class="footer-button" href="https://blockether.com/">Visit blockether.com{ARROW}</a>
+<a href="https://blockether.com/contact">Contact us{ARROW}</a></p>
 </div>
 <div class="footer-main">
 <div><p class="footer-name">BLOCKETHER sp. z o.o.</p>
 <address>Aleja Pokoju 28/117<br>31-564 Cracow, Poland</address></div>
 <ul class="footer-list">
-<li><a href="https://github.com/Blockether">GitHub <span aria-hidden="true">↗</span></a></li>
-<li><a href="https://www.linkedin.com/company/blockether">LinkedIn <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://github.com/Blockether">GitHub{ARROW}</a></li>
+<li><a href="https://www.linkedin.com/company/blockether">LinkedIn{ARROW}</a></li>
 </ul>
 </div>
 <div class="footer-legal">
@@ -257,7 +262,7 @@ def page(title: str, body: str, *, depth: int, description: str) -> str:
 <div class="container topbar-row">
 <a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span></a>
-<span class="brand-name">Terminal-Bench 4.0</span>
+<a class="brand-name" href="https://www.tbench.ai/">Terminal-Bench 4.0{ARROW}</a>
 </div>
 </header>
 <main class="container">
