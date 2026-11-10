@@ -383,8 +383,40 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
+class VisExpBase(VisSolo):
+    """Reasoning A/B: the experiment build with no switch."""
+
+    PROFILE = "exp-base"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-base"
+
+
+class VisExpNoReplay(VisSolo):
+    """Reasoning A/B: earlier steps go back without provider reasoning."""
+
+    PROFILE = "exp-noreplay"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-noreplay"
+
+
+class VisExpLean(VisSolo):
+    """Reasoning A/B: REPRODUCE and CHECK without their verification rules."""
+
+    PROFILE = "exp-lean"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-lean"
+
+
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam)}
+AGENT_PROFILES = {
+    cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam, VisExpBase, VisExpNoReplay, VisExpLean)
+}
 
 
 def builds() -> list[dict]:

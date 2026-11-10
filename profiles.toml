@@ -44,3 +44,31 @@ persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.
 config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
 path = ["/installed-agent"]
+
+# Reasoning A/B on one experiment build (Vis branch exp/reasoning-ab). Only `env` differs.
+[profiles.exp-base]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = {}
+build = { release = "", run_id = 42790672112, commit = "cade484d91a68c88c62722b6f6238cc104ea62c1", sha256 = "d277c08754afdb41108ee81f7631473b8470a5ab9490fea2c5ff026b854d5082" }
+
+[profiles.exp-noreplay]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = { VIS_EXP_NO_REASONING_REPLAY = "1" }
+build = { release = "", run_id = 42790672112, commit = "cade484d91a68c88c62722b6f6238cc104ea62c1", sha256 = "d277c08754afdb41108ee81f7631473b8470a5ab9490fea2c5ff026b854d5082" }
+
+[profiles.exp-lean]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = { VIS_EXP_LEAN_PROMPT = "1" }
+build = { release = "", run_id = 42790672112, commit = "cade484d91a68c88c62722b6f6238cc104ea62c1", sha256 = "d277c08754afdb41108ee81f7631473b8470a5ab9490fea2c5ff026b854d5082" }

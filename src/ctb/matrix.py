@@ -33,6 +33,9 @@ AGENTS = {
     for spec in (
         AgentSpec("vis-solo", "ctb.agents.vis:VisSolo", ("openai",)),
         AgentSpec("vis-team", "ctb.agents.vis:VisTeam", ("openai",)),
+        AgentSpec("vis-exp-base", "ctb.agents.vis:VisExpBase", ("openai",), experiment=True),
+        AgentSpec("vis-exp-noreplay", "ctb.agents.vis:VisExpNoReplay", ("openai",), experiment=True),
+        AgentSpec("vis-exp-lean", "ctb.agents.vis:VisExpLean", ("openai",), experiment=True),
         AgentSpec(
             "codex",
             "ctb.agents.codex:Codex",
