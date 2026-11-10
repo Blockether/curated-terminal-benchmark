@@ -13,6 +13,8 @@ labels for the same 72 result hashes. Unknown fields and tool names are refused.
 start times must match the seals. The Pages checker does not read source logs.
 The public pages use `ctb.report.render` and the original report assets. Fonts are local,
 with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
+Each public page has a canonical address, link preview tags and schema.org data that names
+Blockether. `sitemap.xml` lists the index and the trial pages. The transcript viewer page is not indexed.
 `public_transcripts.py export` reads the selected local transcripts. It removes current known
 credential values and their common encodings, credential-like patterns, opaque credential
 fields and local user paths before compression. It does not clip text before the scan.

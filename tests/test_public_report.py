@@ -31,7 +31,11 @@ class PublicReportTests(unittest.TestCase):
         self.assertIn(f"{len(p.SELECTION) * len(p.TASKS)} trials", text)
         self.assertIn("100%", text)
         self.assertIn("photonic-waveguide-routing", text)
-        loads = re.findall(r'<(?:link|script|img|iframe)\b[^>]*\b(?:src|href)="([^"]*)"', text)
+        # A canonical link names the page address; the browser does not load it.
+        loads = re.findall(
+            r'<(?:link(?![^>]*rel="canonical")|script|img|iframe)\b[^>]*\b(?:src|href)="([^"]*)"',
+            text,
+        )
         self.assertTrue(loads)
         self.assertFalse([u for u in loads if "//" in u or ":" in u])
         self.assertIn('src="report.js?v=', text)

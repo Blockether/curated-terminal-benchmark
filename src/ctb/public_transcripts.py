@@ -172,6 +172,8 @@ def viewer_scripts(up, trial_id):
 def static_files(comparison, manifest, metrics):
     fixed = report.expected(comparison, metrics)
     fixed["index.html"] = report.render(comparison, metrics, transcripts=True)
+    trials = report.public_trials(comparison, metrics)
+    fixed["sitemap.xml"] = report.sitemap(["", *(f"trial/{t['id']}.html" for t in trials)])
     fixed.update(
         {
             "transcripts.json": report.encoded(manifest),
@@ -189,7 +191,7 @@ def static_files(comparison, manifest, metrics):
             "viewer.js": (STATIC / "viewer.js").read_bytes(),
         }
     )
-    for trial in report.public_trials(comparison, metrics):
+    for trial in trials:
         text = report.layout.trial_page(trial)
         start = text.index('<section id="transcript"')
         end = text.index("</section>", start) + len("</section>")
@@ -205,7 +207,8 @@ def static_files(comparison, manifest, metrics):
         text = text.replace(
             '<script src="../report.js" defer></script>', viewer_scripts("../", trial["id"])
         )
-        fixed["trial/" + trial["id"] + ".html"] = report.public_page(text).encode()
+        path = "trial/" + trial["id"] + ".html"
+        fixed[path] = report.public_page(text, path).encode()
     return {
         name: report.version_assets(raw.decode()).encode() if name.endswith(".html") else raw
         for name, raw in fixed.items()

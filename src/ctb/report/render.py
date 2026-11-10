@@ -53,6 +53,39 @@ SHOW = (
     ("errors", "Errors"),
 )
 NONE = '<span class="none">not recorded</span>'
+#: The footer of blockether.com (src/components/Footer.tsx), with a call to action above it.
+#: The year is fixed so that a later check of the same site gives the same bytes.
+FOOTER = """<footer class="footer">
+<div class="container">
+<div class="footer-cta">
+<p><strong>A benchmark by Blockether.</strong> We build Vis and deliver software engineering for regulated industries:
+Clojure, product engineering, data and agentic AI with evaluations.</p>
+<p class="footer-actions"><a class="footer-button" href="https://blockether.com/">Visit blockether.com <span aria-hidden="true">↗</span></a>
+<a href="https://blockether.com/contact">Contact us <span aria-hidden="true">↗</span></a></p>
+</div>
+<div class="footer-main">
+<div><p class="footer-name">BLOCKETHER sp. z o.o.</p>
+<address>Aleja Pokoju 28/117<br>31-564 Cracow, Poland</address></div>
+<ul class="footer-list">
+<li><a href="https://github.com/Blockether">GitHub <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://www.linkedin.com/company/blockether">LinkedIn <span aria-hidden="true">↗</span></a></li>
+</ul>
+</div>
+<div class="footer-legal">
+<dl><div><dt>VAT-ID:</dt> <dd>PL6751813221</dd></div><div><dt>KRS:</dt> <dd>0001171097</dd></div></dl>
+<ul class="footer-list footer-contact">
+<li><a href="tel:+48123002331">+48 123 002 331</a></li>
+<li><a href="mailto:contact@blockether.com">contact@blockether.com</a></li>
+</ul>
+<ul class="footer-links">
+<li><a href="https://blockether.com/developers">Developers</a></li>
+<li><a href="https://blockether.com/legal">Legal Notice</a></li>
+<li><a href="https://blockether.com/sitemap.xml">Sitemap</a></li>
+</ul>
+<p class="footer-copy">&copy; 2026 BLOCKETHER sp. z o.o. <span>All rights reserved.</span></p>
+</div>
+</div>
+</footer>"""
 
 
 def esc(value: object) -> str:
@@ -230,9 +263,7 @@ def page(title: str, body: str, *, depth: int, description: str) -> str:
 <main class="container">
 {body}
 </main>
-<footer class="footer">
-<div class="container">A benchmark by <a href="https://blockether.com">Blockether</a></div>
-</footer>
+{FOOTER}
 </body>
 </html>
 """
@@ -532,8 +563,15 @@ def options(name: str, label: str, values: list[str]) -> str:
     )
 
 
-def index(trials: list[dict], generated: str, *, head: str | None = None) -> str:
-    """The trial overview; head replaces the default heading."""
+def index(
+    trials: list[dict],
+    generated: str,
+    *,
+    head: str | None = None,
+    title: str = "Terminal-Bench 4.0",
+    description: str | None = None,
+) -> str:
+    """The trial overview; head replaces the default heading and description the lead."""
     agents = sorted({t["agent"] for t in trials})
     rounds = sorted({t["round"] for t in trials})
     passed = sum(t["passed"] for t in trials)
@@ -628,12 +666,7 @@ def index(trials: list[dict], generated: str, *, head: str | None = None) -> str
         )
     }
 </section>"""
-    return page(
-        "Terminal-Bench 4.0",
-        body,
-        depth=0,
-        description=lead,
-    )
+    return page(title, body, depth=0, description=description or lead)
 
 
 # Trial page

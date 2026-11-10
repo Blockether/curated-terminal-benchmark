@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import html
 import json
 import math
 import re
@@ -377,9 +378,23 @@ AGENTS = {
     "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
     "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
 }
-INTRO = (
-    "A curated benchmark that measures how Vis performs against other coding agents on "
-    "GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning."
+#: The public address of the site, and the site name in titles and link previews.
+SITE_URL = "https://blockether.github.io/curated-terminal-benchmark/"
+SITE_NAME = "Curated Terminal-Bench 4.0"
+TITLE = SITE_NAME + ": coding agent benchmark | Blockether"
+BLOCKETHER = "https://blockether.com/"
+ORGANIZATION = BLOCKETHER + "#organization"
+#: The link preview image of blockether.com (src/root.tsx).
+PREVIEW_IMAGE = BLOCKETHER + "og-image.png"
+#: The sources that the page names: label and address.
+LINKS = (
+    ("Terminal-Bench 4.0", "https://tbench.ai/news/terminal-bench-4-0"),
+    (
+        "Tasks on Harbor Hub",
+        "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4",
+    ),
+    ("Harbor", "https://www.harborframework.com/"),
+    ("Source on GitHub", "https://github.com/Blockether/curated-terminal-benchmark"),
 )
 EMULATION = (
     "Trials ran one at a time as linux/amd64 containers under Rosetta emulation (Podman 6.0 VM: "
@@ -389,21 +404,157 @@ EMULATION = (
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
 
+def agent_names():
+    """The display names of the selected agents, in the order of AGENTS."""
+    chosen = {name.split("-")[0] for name in SELECTION}
+    return [label for key, (label, _, _) in AGENTS.items() if key in chosen]
+
+
+def description():
+    names = agent_names()
+    return (
+        f"{', '.join(names[:-1])} and {names[-1]} on {len(TASKS)} CPU-only Terminal-Bench 4.0 "
+        "tasks with GPT-6.1-sol: pass rates, cost, tokens, run time and sanitized transcripts."
+    )
+
+
 def head():
     paused_attrs = ' class="agent-paused" title="Paused"'
     items = "".join(
         f'<li{paused_attrs if paused else ""}><a href="{url}">{label}</a></li>'
         for label, paused, url in AGENTS.values()
     )
+    links = " · ".join(
+        f'<a href="{url}">{label} <span aria-hidden="true">↗</span></a>' for label, url in LINKS
+    )
+    intro = (
+        f'A curated benchmark by <a href="{BLOCKETHER}">Blockether</a>. It compares Vis, our coding '
+        f"agent, with other coding agents on {len(TASKS)} CPU-only tasks from "
+        f'<a href="{LINKS[0][1]}">Terminal-Bench 4.0</a>. Every agent uses GPT-6.1-sol with medium '
+        f'reasoning. <a href="{LINKS[2][1]}">Harbor</a> runs each trial, and the results are sealed.'
+    )
     return (
-        f'<section class="head">\n<p class="lead">{INTRO}</p>\n'
+        f'<section class="head">\n<h1>{SITE_NAME}</h1>\n<p class="lead">{intro}</p>\n'
         f'<ul class="agent-list" aria-label="Agents">{items}</ul>\n'
+        f'<p class="head-links">{links}</p>\n'
         f'<p class="head-note">{EMULATION}</p>\n</section>'
     )
 
 
-def public_page(text):
-    # Keep the original layout. Use only local assets and inert transcript text.
+def structured_data(path, title, summary):
+    """Schema.org data that joins the page to the Blockether organization of blockether.com."""
+    url = SITE_URL + path
+    graph = [
+        {
+            "@type": "Organization",
+            "@id": ORGANIZATION,
+            "name": "Blockether",
+            "legalName": "BLOCKETHER sp. z o.o.",
+            "url": BLOCKETHER,
+            "logo": BLOCKETHER + "icon-512.png",
+            "sameAs": [
+                "https://www.linkedin.com/company/blockether",
+                "https://github.com/Blockether",
+            ],
+        },
+        {
+            "@type": "WebSite",
+            "@id": SITE_URL + "#website",
+            "url": SITE_URL,
+            "name": SITE_NAME,
+            "inLanguage": "en",
+            "publisher": {"@id": ORGANIZATION},
+        },
+        {
+            "@type": "WebPage",
+            "@id": url,
+            "url": url,
+            "name": title,
+            "description": summary,
+            "inLanguage": "en",
+            "isPartOf": {"@id": SITE_URL + "#website"},
+            "publisher": {"@id": ORGANIZATION},
+        },
+    ]
+    if not path:
+        graph.append(
+            {
+                "@type": "Dataset",
+                "@id": SITE_URL + "#dataset",
+                "name": SITE_NAME + " results",
+                "description": summary,
+                "url": SITE_URL,
+                "creator": {"@id": ORGANIZATION},
+                "publisher": {"@id": ORGANIZATION},
+                "isBasedOn": LINKS[0][1],
+                "isAccessibleForFree": True,
+                "keywords": [
+                    "Terminal-Bench",
+                    "coding agents",
+                    "AI agent benchmark",
+                    *agent_names(),
+                ],
+                "distribution": [
+                    {
+                        "@type": "DataDownload",
+                        "encodingFormat": "application/json",
+                        "contentUrl": SITE_URL + name,
+                    }
+                    for name in ("comparison.json", "report-metrics.json")
+                ],
+            }
+        )
+    raw = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
+    return raw.replace("<", "\\u003c")
+
+
+def search_tags(text, path):
+    """Search and link preview tags. A page without a path is a viewer shell: it stays out of the index."""
+    if path is None:
+        return '\n<meta name="robots" content="noindex, follow">'
+    title = re.search(r"<title>(.*?)</title>", text)[1]
+    summary = re.search(r'<meta name="description" content="([^"]*)">', text)[1]
+    url = layout.esc(SITE_URL + path)
+    tags = (
+        f'<link rel="canonical" href="{url}">',
+        '<meta name="author" content="Blockether">',
+        '<meta name="theme-color" content="#faf3eb">',
+        '<meta property="og:type" content="website">',
+        '<meta property="og:site_name" content="Blockether">',
+        f'<meta property="og:title" content="{title}">',
+        f'<meta property="og:description" content="{summary}">',
+        f'<meta property="og:url" content="{url}">',
+        f'<meta property="og:image" content="{PREVIEW_IMAGE}">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta property="og:image:alt" content="Blockether logo">',
+        '<meta property="og:locale" content="en_US">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        f'<meta name="twitter:title" content="{title}">',
+        f'<meta name="twitter:description" content="{summary}">',
+        f'<meta name="twitter:image" content="{PREVIEW_IMAGE}">',
+        '<script type="application/ld+json">'
+        + structured_data(path, html.unescape(title), html.unescape(summary))
+        + "</script>",
+    )
+    return "\n" + "\n".join(tags)
+
+
+def sitemap(paths):
+    urls = "".join(f"<url><loc>{layout.esc(SITE_URL + path)}</loc></url>\n" for path in paths)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n"
+    ).encode()
+
+
+def public_page(text, path=None):
+    """Keep the original layout. Use only local assets and inert transcript text.
+
+    path is the page address under SITE_URL ("" for the index); None keeps the page out of search.
+    """
+    if path:
+        text = re.sub(r"<title>(.*?)</title>", rf"<title>\1 | {SITE_NAME}</title>", text, count=1)
     up = "../" if 'href="../report.css"' in text else ""
     text = re.sub(r'<link rel="preconnect" [^>]*>\n', "", text)
     # Preload the fonts: the browser finds them in fonts.css only after it parses that file.
@@ -421,7 +572,8 @@ def public_page(text):
             '<meta charset="utf-8">',
             '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="'
             + policy
-            + '">',
+            + '">'
+            + search_tags(text, path),
         )
     )
 
@@ -468,10 +620,16 @@ def assets():
 
 
 def render(data, metrics, *, transcripts=False):
-    text = layout.index(public_trials(data, metrics), "from sealed results", head=head())
+    text = layout.index(
+        public_trials(data, metrics),
+        "from sealed results",
+        head=head(),
+        title=TITLE,
+        description=description(),
+    )
     if not transcripts:
         text = re.sub(r'<a href="trial/[0-9a-f]{64}\.html">([^<]+)</a>', r"\1", text)
-    return public_page(text).encode()
+    return public_page(text, "").encode()
 
 
 def expected(data, metrics):
