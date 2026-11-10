@@ -257,7 +257,6 @@ def page(title: str, body: str, *, depth: int, description: str) -> str:
 <div class="container topbar-row">
 <a class="brand" href="{up}index.html"><img src="{up}logo.svg" alt="" width="25" height="28">
 <span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span></a>
-<a class="brand-name" href="https://www.tbench.ai/">Terminal-Bench 4.0{ARROW}</a>
 </div>
 </header>
 <main class="container">
