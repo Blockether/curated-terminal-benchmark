@@ -127,3 +127,65 @@ def test_a_streaming_client_gets_text_tool_calls_and_usage(monkeypatch, tmp_path
     ]
     assert deltas[-1].finish_reason == "tool_calls"
     assert chunks[-1].usage.prompt_tokens_details.cached_tokens == 4
+
+
+def test_a_responses_client_gets_the_upstream_stream_unchanged(monkeypatch, tmp_path):
+    """Wisp speaks Responses: the proxy adds the login and settings, not a conversion."""
+    from openai import OpenAI
+
+    done = {
+        "type": "response.completed",
+        "sequence_number": 2,
+        "response": {
+            "id": "resp_1",
+            "object": "response",
+            "model": "gpt-6.1-sol",
+            "status": "completed",
+            "output": [],
+            "usage": {
+                "input_tokens": 10,
+                "output_tokens": 3,
+                "total_tokens": 13,
+                "input_tokens_details": {"cached_tokens": 4},
+            },
+        },
+    }
+    delta = {"type": "response.output_text.delta", "sequence_number": 1, "delta": "Hi"}
+    delta |= {"item_id": "m1", "output_index": 0, "content_index": 0}
+    sent = {}
+
+    def upstream(url, body, headers):
+        sent.update(url=url, body=body, headers=headers)
+        lines = [f"event: {e['type']}\ndata: {json.dumps(e)}\n\n" for e in (delta, done)]
+        return nullcontext(iter(line.encode() for text in lines for line in text.splitlines(True)))
+
+    monkeypatch.setattr(
+        proxy.credentials, "codex_vis", lambda _: SimpleNamespace(token="tok", account_id="acc")
+    )
+    monkeypatch.setattr(proxy, "_open", upstream)
+    server = proxy.Proxy(tmp_path / "proxy.jsonl").start()
+    try:
+        client = OpenAI(api_key=server.key, base_url=f"http://127.0.0.1:{server.port}/v1")
+        events = list(
+            client.responses.create(
+                model="gpt-6.1-sol",
+                input=[{"type": "message", "role": "user", "content": "x"}],
+                stream=True,
+                store=False,
+                prompt_cache_key="s1",
+                reasoning={"effort": "medium", "summary": "auto"},
+            )
+        )
+    finally:
+        server.stop()
+    assert [e.type for e in events] == ["response.output_text.delta", "response.completed"]
+    assert events[-1].response.usage.input_tokens_details.cached_tokens == 4
+    assert sent["url"] == proxy.CODEX_URL
+    assert sent["body"]["text"] == {"verbosity": proxy.VERBOSITY}
+    assert sent["body"]["reasoning"] == {"effort": "medium", "summary": "auto"}
+    assert sent["body"]["input"] == [{"type": "message", "role": "user", "content": "x"}]
+    assert sent["headers"]["Authorization"] == "Bearer tok"
+    assert sent["headers"]["session_id"] == "s1"
+    row = json.loads((tmp_path / "proxy.jsonl").read_text())
+    assert (row["status"], row["usage"]["prompt_tokens"], row["error"]) == (200, 10, None)
+    assert row["usage"]["prompt_tokens_details"]["cached_tokens"] == 4

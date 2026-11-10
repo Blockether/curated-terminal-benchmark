@@ -1,9 +1,10 @@
-"""OpenAI Chat Completions proxy for agents that only speak that wire.
+"""OpenAI proxy for agents without the ChatGPT subscription login.
 
-samizdat and Wisp reach models only through an OpenAI-compatible endpoint. This
-proxy runs on the host. It sends `gpt-*` models to the ChatGPT Codex Responses API,
-with the subscription access token that Vis keeps. The container gets only a
-random proxy key.
+This proxy runs on the host and sends `gpt-*` models to the ChatGPT Codex Responses API,
+with the subscription access token that Vis keeps. The container gets only a random
+proxy key. `/v1/chat/completions` converts the Chat Completions wire (samizdat).
+`/v1/responses` relays a Responses request and its event stream unchanged (Wisp); it adds
+only the login, the session headers and the shared GPT settings that the body does not set.
 """
 
 import hashlib
@@ -173,12 +174,17 @@ def codex_reply(events: list[dict]) -> tuple[dict, dict]:
     if status is None:
         # A stream that closes before its terminal event is a failed call, not an empty answer.
         raise UpstreamError(502, f"stream ended after {len(events)} events without a response")
-    cached = (usage.get("input_tokens_details") or {}).get("cached_tokens") or 0
     message = {"role": "assistant", "content": "".join(text)}
     if calls:
         message["tool_calls"] = calls
     finish = "tool_calls" if calls else ("length" if status == "response.incomplete" else "stop")
-    return {"message": message, "finish_reason": finish, "model": model}, {
+    return {"message": message, "finish_reason": finish, "model": model}, chat_usage(usage)
+
+
+def chat_usage(usage: dict) -> dict:
+    """Responses usage in the Chat Completions shape of the proxy log."""
+    cached = (usage.get("input_tokens_details") or {}).get("cached_tokens") or 0
+    return {
         "prompt_tokens": usage.get("input_tokens") or 0,
         "completion_tokens": usage.get("output_tokens") or 0,
         "total_tokens": usage.get("total_tokens") or 0,
@@ -186,20 +192,24 @@ def codex_reply(events: list[dict]) -> tuple[dict, dict]:
     }
 
 
-def call_codex(req: dict) -> tuple[dict, dict]:
+def codex_headers(cache_key: str | None) -> dict:
     access = credentials.codex_vis(TOKEN_MIN_S)
-    body = codex_body(req)
     headers = {
         "Authorization": f"Bearer {access.token}",
         "chatgpt-account-id": access.account_id or "",
         "accept": "text/event-stream",
+    }
+    if cache_key:
         # Codex and Pi send the conversation id here too; the backend routes a
         # conversation to its cached prefix by these headers, not by the body key alone.
-        "session_id": body["prompt_cache_key"],
-        "x-client-request-id": body["prompt_cache_key"],
-    }
+        headers["session_id"] = headers["x-client-request-id"] = cache_key
+    return headers
+
+
+def call_codex(req: dict) -> tuple[dict, dict]:
+    body = codex_body(req)
     events = []
-    with _open(CODEX_URL, body, headers) as resp:
+    with _open(CODEX_URL, body, codex_headers(body["prompt_cache_key"])) as resp:
         for raw in resp:
             line = raw.decode("utf-8", "replace").strip()
             if line.startswith("data:") and line[5:].strip() not in ("", "[DONE]"):
@@ -229,6 +239,29 @@ def _open(url: str, body: dict, headers: dict):
         return urllib.request.urlopen(req, timeout=TIMEOUT_S)
     except urllib.error.HTTPError as e:
         raise UpstreamError(e.code, e.read().decode("utf-8", "replace")) from e
+
+
+def open_responses(req: dict):
+    """The upstream event stream of one Responses request."""
+    body = {**req, "text": {"verbosity": VERBOSITY, **(req.get("text") or {})}}
+    return _open(CODEX_URL, body, codex_headers(body.get("prompt_cache_key")))
+
+
+def relay_event(raw: bytes) -> tuple[dict | None, str | None]:
+    """The usage of a terminal stream line, or the error of a failed one."""
+    line = raw.decode("utf-8", "replace").strip()
+    if not line.startswith("data:"):
+        return None, None
+    try:
+        event = json.loads(line[5:])
+    except ValueError:
+        return None, None
+    kind = event.get("type") if isinstance(event, dict) else None
+    if kind in ("response.completed", "response.incomplete"):
+        return chat_usage((event.get("response") or {}).get("usage") or {}), None
+    if kind in ("response.failed", "error"):
+        return None, json.dumps(event)[:300]
+    return None, None
 
 
 def complete(req: dict) -> dict:
@@ -309,8 +342,46 @@ class Proxy:
                 else:
                     self._send(404, {"error": {"message": "not found"}})
 
+            def _relay(self, req: dict, started: float) -> None:
+                try:
+                    upstream = open_responses(req)
+                except UpstreamError as e:
+                    proxy.record(
+                        req.get("model"), e.status, {}, time.monotonic() - started, str(e)[:300]
+                    )
+                    self._send(e.status, {"error": {"message": str(e), "type": "upstream_error"}})
+                    return
+                status, usage, error = 502, {}, "stream ended without a terminal event"
+                try:
+                    self.send_response(200)
+                    self.send_header("content-type", "text/event-stream")
+                    self.send_header("cache-control", "no-cache")
+                    self.end_headers()
+                    with upstream as stream:
+                        for raw in stream:
+                            self.wfile.write(raw)
+                            done, failed = relay_event(raw)
+                            if done is not None:
+                                status, usage, error = 200, done, None
+                            elif failed is not None:
+                                status, error = 502, failed
+                        self.wfile.flush()
+                except OSError as e:
+                    # A closed agent or upstream connection before the terminal event fails the call.
+                    if status != 200:
+                        error = repr(e)[:300]
+                proxy.record(req.get("model"), status, usage, time.monotonic() - started, error)
+                self.close_connection = True
+
             def do_POST(self):
                 if not self._authorized():
+                    return
+                if self.path.rstrip("/").endswith("/responses"):
+                    started = time.monotonic()
+                    self._relay(
+                        json.loads(self.rfile.read(int(self.headers.get("content-length") or 0))),
+                        started,
+                    )
                     return
                 if not self.path.rstrip("/").endswith("/chat/completions"):
                     self._send(404, {"error": {"message": "not found"}})

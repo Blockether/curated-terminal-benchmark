@@ -60,8 +60,9 @@ class Wisp(CuratedAgent):
         # The README setup: one session with the wisp block, AGENTS.md files and skills.
         url, _ = proxy_env()
         return (
-            f"export PATH={BIN}:$PATH WISP_LLM_URL={shlex.quote(url + '/v1/chat/completions')} "
-            f"WISP_LLM_API=openai-chat WISP_SESSIONS_ROOT={SESSIONS} && "
+            # Wisp speaks the Responses wire itself; the proxy adds only the login.
+            f"export PATH={BIN}:$PATH WISP_LLM_URL={shlex.quote(url + '/v1/responses')} "
+            f"WISP_LLM_API=openai-responses WISP_SESSIONS_ROOT={SESSIONS} && "
             f"{{ WISP_SESSION_DIR=$({WISP} new --name ctb -m {self.model} -t {EFFORT} "
             f"--env-in-system-prompt -s <({WISP} build-system-prompt --wisp --skills --agents-md "
             f"< /dev/null)) && export WISP_SESSION_DIR && "
