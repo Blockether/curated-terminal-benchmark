@@ -70,24 +70,19 @@ Clojure, product engineering, data and agentic AI with evaluations.</p>
 </div>
 <div class="footer-main">
 <div><p class="footer-name">BLOCKETHER sp. z o.o.</p>
-<address>Aleja Pokoju 28/117<br>31-564 Cracow, Poland</address></div>
-<ul class="footer-list">
-<li><a href="https://github.com/Blockether">GitHub{ARROW}</a></li>
-<li><a href="https://www.linkedin.com/company/blockether">LinkedIn{ARROW}</a></li>
-</ul>
-</div>
-<div class="footer-legal">
-<dl><div><dt>VAT-ID:</dt> <dd>PL6751813221</dd></div><div><dt>KRS:</dt> <dd>0001171097</dd></div></dl>
-<ul class="footer-list footer-contact">
+<ul class="footer-contact">
 <li><a href="tel:+48123002331">+48 123 002 331</a></li>
 <li><a href="mailto:contact@blockether.com">contact@blockether.com</a></li>
-</ul>
+</ul></div>
 <ul class="footer-links">
 <li><a href="https://blockether.com/developers">Developers</a></li>
 <li><a href="https://blockether.com/legal">Legal Notice</a></li>
 <li><a href="https://blockether.com/sitemap.xml">Sitemap</a></li>
 </ul>
-<p class="footer-copy">&copy; 2026 BLOCKETHER sp. z o.o. <span>All rights reserved.</span></p>
+<ul class="footer-list">
+<li><a href="https://github.com/Blockether">GitHub{ARROW}</a></li>
+<li><a href="https://www.linkedin.com/company/blockether">LinkedIn{ARROW}</a></li>
+</ul>
 </div>
 </div>
 </footer>"""
