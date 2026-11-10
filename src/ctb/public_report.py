@@ -382,7 +382,7 @@ INTRO = (
     "GPT-6.1-sol with medium reasoning and on Qwen 3.8 with medium reasoning."
 )
 EMULATION = (
-    "Run one trial at a time as linux/amd64 containers under Rosetta emulation (Podman 6.0 VM: "
+    "Trials ran one at a time as linux/amd64 containers under Rosetta emulation (Podman 6.0 VM: "
     "12 CPUs, 24 GiB) on a MacBook Pro M4 Max (14 cores, 36 GB, macOS 26.6). Times and CPU "
     "values include the emulation overhead."
 )
