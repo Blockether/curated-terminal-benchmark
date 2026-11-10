@@ -65,8 +65,8 @@ FOOTER = f"""<footer class="footer">
 <div class="footer-cta">
 <p><strong>A benchmark by Blockether.</strong> We build Vis and deliver software engineering for regulated industries:
 Clojure, product engineering, data and agentic AI with evaluations.</p>
-<p class="footer-actions"><a class="footer-button" href="https://blockether.com/">Visit blockether.com{ARROW}</a>
-<a href="https://blockether.com/contact">Contact us{ARROW}</a></p>
+<p class="footer-actions"><a class="footer-button" href="https://blockether.com/">Visit blockether.com</a>
+<a class="footer-button footer-button-outline" href="https://blockether.com/contact">Contact{ARROW}</a></p>
 </div>
 <div class="footer-main">
 <div><p class="footer-name">BLOCKETHER sp. z o.o.</p>

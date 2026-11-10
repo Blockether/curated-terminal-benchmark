@@ -52,8 +52,11 @@ a:hover .arrow { transform: translate(0.08em, -0.08em); }
 .footer-cta p { max-width: 60ch; color: var(--color-ink-2); font-size: var(--text-md); line-height: 1.6; }
 .footer-cta strong { display: block; margin-block-end: var(--space-2xs); color: var(--color-ink); font-size: var(--text-xl); font-weight: 700; letter-spacing: var(--tracking-display); line-height: 1.25; }
 .footer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-lg); font-size: var(--text-md); font-weight: 600; }
-.footer .footer-button { display: inline-flex; align-items: center; min-height: 48px; padding-inline: var(--space-lg); background: var(--color-accent); color: var(--color-accent-ink); font-weight: 600; letter-spacing: -0.01em; box-shadow: 4px 4px 0 0 var(--color-ink); transition: background var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
-.footer .footer-button:hover { background: var(--color-accent-deep); color: var(--color-accent-ink); box-shadow: 2px 2px 0 0 var(--color-ink); transform: translate(2px, 2px); }
+/* The two buttons of the blockether.com closing call to action: filled charcoal, then outlined. */
+.footer .footer-button { display: inline-flex; align-items: center; padding: 12px 24px; border: 2px solid var(--color-ink-2); background: var(--color-ink-2); color: var(--color-paper); font-size: var(--text-md); font-weight: 700; line-height: 24px; }
+.footer .footer-button:hover { background: transparent; color: var(--color-ink); }
+.footer .footer-button-outline { background: transparent; color: var(--color-ink); }
+.footer .footer-button-outline:hover { background: var(--color-accent); color: var(--color-ink); }
 .footer-main { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: var(--space-lg); }
 .footer-name { color: var(--color-ink); font-weight: 700; letter-spacing: -0.01em; }
 .footer-contact { margin-block-start: var(--space-2xs); }
@@ -223,6 +226,8 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
 }
 @media (max-width: 40rem) {
   :root { --gutter: 16px; --control: 44px; }
+  .footer-actions { column-gap: var(--space-md); }
+  .footer .footer-button { padding-inline: 16px; font-size: var(--text-sm); line-height: 20px; }
   .footer-main { grid-template-columns: minmax(0, 1fr); }
   .footer-list { justify-self: start; }
   .footer-links { justify-content: flex-start; }
