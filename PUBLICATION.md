@@ -46,8 +46,11 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
-Four full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
+Five full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
 of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
+The Wisp round `gpt-wisp-ab49003` replaces `gpt-wisp-62106d1`. In the first round, the proxy did not send
+`load_image` images to the model, and the `wisp` command for subagents was not on PATH. Subagent tokens are
+part of the Wisp cost.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
 that recorded hashes did not change, not fairness or correctness. All selected rounds ran the
 linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro

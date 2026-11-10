@@ -17,7 +17,7 @@ SELECTION = {
     "opencode": "gpt-bench-b2a4d4a",
     "pi": "gpt-bench-b2a4d4a",
     "vis-solo": "gpt-vis-solo-057-43a8048",
-    "wisp": "gpt-wisp-62106d1",
+    "wisp": "gpt-wisp-ab49003",
 }
 TASKS = (
     "bun-sourcemap-leak",
