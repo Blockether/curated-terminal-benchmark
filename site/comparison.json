@@ -508,31 +508,37 @@
   "schema": 1,
   "sources": {
     "codex": {
+      "agent_version": "0.166.0",
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
       "round": "gpt-bench-b2a4d4a",
       "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     },
     "kmet": {
+      "agent_version": "kmet v0.2.0-682-g6221f8dd",
       "harness_commit": "16bbdc8ae457a1280a14dee2360768150e06a438",
       "round": "gpt-kmet-2-16bbdc8",
       "seal_sha256": "41acb6f946d03407f9ec60d4bfe0f24feddde85bb724ec6c1c2e76c30a709ade"
     },
     "opencode": {
+      "agent_version": "2.2.5",
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
       "round": "gpt-bench-b2a4d4a",
       "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     },
     "pi": {
+      "agent_version": "1.5.0",
       "harness_commit": "b2a4d4a92984e3b89f7305b101a503e5330660fb",
       "round": "gpt-bench-b2a4d4a",
       "seal_sha256": "de45729af94057e210af52720135036f29e0e77a91fb397eab120d939ceebb53"
     },
     "vis-solo": {
+      "agent_version": "vis-agent 0.5.7",
       "harness_commit": "43a804886818958f9dbe476a175f6a0b597905de",
       "round": "gpt-vis-solo-057-43a8048",
       "seal_sha256": "9d319989aea617f436b2b61483ac1a4f248a553467f7404045072dd237789185"
     },
     "wisp": {
+      "agent_version": "e0d468f7",
       "harness_commit": "ab490033e00b222183d2f53923948fac404a9e24",
       "round": "gpt-wisp-ab49003",
       "seal_sha256": "4c49e0fefbe69ad3775d013ac6fad351f9877f881809bd7c600b3adfa992752f"
