@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>interleaved-vigenere, wisp</title>
+<meta name="description" content="The wisp trial of interleaved-vigenere: times, costs, tool errors, the transcript and the verifier results.">
+<link rel="preload" href="../inter-latin.woff2?v=47f78c62d95ae78ebea7" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../jetbrains-mono-latin.woff2?v=47f78c62d95ae78ebea7" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../fonts.css?v=47f78c62d95ae78ebea7">
+<link rel="stylesheet" href="../tokens.css?v=47f78c62d95ae78ebea7">
+<link rel="stylesheet" href="../base.css?v=47f78c62d95ae78ebea7">
+<link rel="stylesheet" href="../report.css?v=47f78c62d95ae78ebea7">
+<noscript><style>.diagram { display: none; }</style></noscript>
+<link rel="preload" href="../transcripts.json" as="fetch" crossorigin>
+<link rel="preload" href="../transcripts/d4fa8465f82aa6f88bb688d175f75b5a2111e633775a6066247fffa640ae0efa.json.gz" as="fetch" crossorigin>
+<script src="../report.js?v=47f78c62d95ae78ebea7" defer></script>
+<script src="../viewer.js?v=47f78c62d95ae78ebea7" defer></script>
+<script src="../pele.global.js?v=47f78c62d95ae78ebea7" defer data-diagrams></script>
+</head>
+<body>
+<header class="topbar">
+<div class="container topbar-row">
+<a class="brand" href="../index.html"><img src="../logo.svg?v=47f78c62d95ae78ebea7" alt="" width="25" height="28">
+<span class="brand-word">BLOCKETHER<span class="brand-dot">.</span></span></a>
+<span class="brand-name">Terminal-Bench 4.0</span>
+</div>
+</header>
+<main class="container">
+<section class="head">
+<p class="crumb"><a href="../index.html#trials">All trials</a></p>
+<h1>interleaved-vigenere</h1>
+<div class="title-row"><span class="chip chip-passed">Passed</span></div>
+<dl class="facts facts-head"><div><dt>Task</dt><dd>interleaved-vigenere</dd></div><div><dt>Agent</dt><dd>wisp</dd></div><div><dt>Model</dt><dd>openai/gpt-6.1-sol</dd></div><div><dt>Round</dt><dd>gpt-wisp-ab49003</dd></div><div><dt>Started</dt><dd>2026-11-10 00:01 UTC</dd></div><div><dt>Reward</dt><dd>1</dd></div></dl>
+
+</section>
+<div class="panels readings"><div class="reading-cell"><p class="reading-label">Run time</p><p class="reading">7 min 08 s</p></div><div class="reading-cell"><p class="reading-label">Agent time</p><p class="reading">5 min 18 s</p></div><div class="reading-cell"><p class="reading-label">Calls</p><p class="reading">27</p><p class="reading-note">4 min 57 s in calls</p></div><div class="reading-cell"><p class="reading-label">Cost</p><p class="reading">$0.1714</p><p class="reading-note">227,782 tokens</p></div><div class="reading-cell"><p class="reading-label">Tool calls</p><p class="reading">25</p><p class="reading-note">2 min 20 s in tools</p></div><div class="reading-cell"><p class="reading-label">Tool errors</p><p class="reading">1</p><p class="reading-note">4%</p></div></div>
+<section id="timeline" class="block">
+<h2>Run timeline</h2>
+<figure class="diagram"><figcaption>Run phases in UTC</figcaption><pre class="mermaid" role="img" aria-label="Run phases in UTC">gantt
+  dateFormat YYYY-MM-DD HH:mm:ss
+  axisFormat %H:%M:%S
+  Environment setup :p1, 2026-11-10 00:01:36, 2026-11-10 00:01:47
+  Agent setup :p2, 2026-11-10 00:01:47, 2026-11-10 00:02:34
+  Agent execution :p3, 2026-11-10 00:02:34, 2026-11-10 00:07:52
+  Verifier :p4, 2026-11-10 00:08:05, 2026-11-10 00:08:44</pre></figure><ul class="legend"><li>Environment setup <span class="mono">10.8 s</span></li><li>Agent setup <span class="mono">47.2 s</span></li><li>Agent execution <span class="mono">5 min 18 s</span></li><li>Verifier <span class="mono">39.2 s</span></li></ul><p class="empty">Event times are not included in this normalized transcript view.</p>
+</section>
+<section id="provider" class="block">
+<h2>Calls</h2>
+<dl class="facts"><div><dt>Calls</dt><dd>27</dd></div><div><dt>Recorded call time</dt><dd>4 min 57 s</dd></div><div><dt>Mean time</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Longest call</dt><dd><span class="none">not recorded</span></dd></div><div><dt>Failed calls</dt><dd>0</dd></div><div><dt>Cost</dt><dd>$0.1714</dd></div><div><dt>Input tokens</dt><dd>218,244</dd></div><div><dt>Cached tokens</dt><dd>189,696</dd></div><div><dt>Output tokens</dt><dd>9,538</dd></div></dl><p class="hint">Call timing coverage: 27 / 27. Recorded time is a partial sum when any call lacks timing. Token counts use run totals when available.</p>
+</section>
+<section id="tools" class="block">
+<h2>Tools</h2>
+<div class="scroll"><table class="data sortable"><thead><tr><th scope="col" data-type="text"><button type="button" class="sort">Tool</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Calls</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Errors</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Total time</button></th><th scope="col" class="num" data-type="num"><button type="button" class="sort">Mean time</button></th></tr></thead><tbody><tr><th scope="row" class="mono" data-v="bash">bash</th><td class="num" data-v="17">17</td><td class="num bad" data-v="1">1</td><td class="num" data-v="139321.0">2 min 19 s</td><td class="num" data-v="8195.35294117647">8.2 s</td></tr><tr><th scope="row" class="mono" data-v="python3">python3</th><td class="num" data-v="8">8</td><td class="num" data-v="0">0</td><td class="num" data-v="1127.0">1.1 s</td><td class="num" data-v="140.875">141 ms</td></tr></tbody></table></div>
+</section>
+
+<section id="errors" class="block">
+<h2>Errors</h2>
+<p class="empty">Event-level error details are not included in this normalized view.</p>
+</section>
+<section id="transcript" class="block" data-result-id="d4fa8465f82aa6f88bb688d175f75b5a2111e633775a6066247fffa640ae0efa"><h2>Transcript</h2><p class="hint">Credential-like values and local user paths are removed. This normalized text view is not a full raw log. Event timings and error flags are not included. One verified gzip file is downloaded for this trial.</p><p id="status" class="count" role="status">Loading selected transcript…</p><noscript><p>Enable JavaScript to verify and expand this transcript.</p></noscript><div class="tabs" role="tablist" aria-label="Trial phase"><button type="button" role="tab" id="tab-implementation" aria-controls="implementation" aria-selected="true" data-tab="implementation"><span class="tab-name">Implementation</span><small>The agent&#x27;s transcript</small></button><button type="button" role="tab" id="tab-verification" aria-controls="verification" aria-selected="false" data-tab="verification"><span class="tab-name">Verification</span><small>Tests and logs after the run</small></button></div><div id="implementation" role="tabpanel" aria-labelledby="tab-implementation" data-tab-panel="implementation"><nav class="chips" aria-label="Transcript filter"><a class="chip-link" href="?show=all#transcript" data-show="all">All</a><a class="chip-link" href="?show=messages#transcript" data-show="messages">Messages</a><a class="chip-link" href="?show=tools#transcript" data-show="tools">Tools</a><a class="chip-link" href="?show=calls#transcript" data-show="calls">Calls</a></nav><p class="count" data-event-count aria-live="polite"></p><p class="empty" data-empty hidden>No events of this kind.</p><ol id="events" class="events" data-events></ol></div><div id="verification" role="tabpanel" aria-labelledby="tab-verification" data-tab-panel="verification"><p class="hint">What the verifier ran after the agent finished: the task tests, their output and the logs of task services.</p><ol id="checks" class="events" data-verification></ol></div></section>
+</main>
+<footer class="footer">
+<div class="container">A benchmark by <a href="https://blockether.com">Blockether</a></div>
+</footer>
+</body>
+</html>
