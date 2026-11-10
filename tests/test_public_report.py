@@ -12,7 +12,12 @@ class PublicReportTests(unittest.TestCase):
         self.data = {
             "schema": 1,
             "sources": {
-                a: {"round": r, "seal_sha256": "a" * 64, "harness_commit": "b" * 40}
+                a: {
+                    "round": r,
+                    "seal_sha256": "a" * 64,
+                    "harness_commit": "b" * 40,
+                    "agent_version": "1.0.0",
+                }
                 for a, r in p.SELECTION.items()
             },
             "rows": [
@@ -25,6 +30,17 @@ class PublicReportTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         first = next(iter(p.read(root / "public/report-metrics.json").values()))
         self.metrics = {"c" * 64: {**first, "reward": 1}}
+
+    def test_sealed_agent_versions_are_published_and_checked(self):
+        root = Path(__file__).resolve().parents[1]
+        sources = p.from_seals(root)["sources"]
+        seal = p.read(root / "results" / (p.SELECTION["codex"] + ".json"))
+        self.assertEqual(
+            sources["codex"]["agent_version"], seal["runs"][0]["pins"]["harnesses"]["codex"]
+        )
+        self.data["sources"]["codex"]["agent_version"] = "<b>1</b>"
+        with self.assertRaises(ValueError):
+            p.validate(self.data)
 
     def test_render_has_real_results_and_no_external_requests(self):
         text = p.render(self.data, self.metrics).decode()

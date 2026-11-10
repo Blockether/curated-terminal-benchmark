@@ -82,8 +82,10 @@ def validate(data):
     require(type(data["schema"]) is int and data["schema"] == 1)
     keys(data["sources"], SELECTION)
     for agent, source in data["sources"].items():
-        keys(source, ("round", "seal_sha256", "harness_commit"))
+        keys(source, ("round", "seal_sha256", "harness_commit", "agent_version"))
         require(source["round"] == SELECTION[agent])
+        version = source["agent_version"]
+        require(type(version) is str and re.fullmatch("[A-Za-z0-9][A-Za-z0-9 ._+-]{0,63}", version))
         sha(source["seal_sha256"])
         sha(source["harness_commit"], 40)
     require(type(data["rows"]) is list and len(data["rows"]) == len(SELECTION) * len(TASKS))
@@ -112,10 +114,13 @@ def from_seals(root):
         require(bool(runs) and all(r["dirty"] is False for r in runs))
         commits = {r["commit"] for r in runs}
         require(len(commits) == 1)
+        versions = {r["agent_version"] for r in seal["rows"] if r["agent"] == agent}
+        require(len(versions) == 1)
         data["sources"][agent] = {
             "round": name,
             "seal_sha256": seal["digest"],
             "harness_commit": next(iter(commits)),
+            "agent_version": next(iter(versions)),
         }
         for row in seal["rows"]:
             if row["agent"] != agent:
@@ -346,7 +351,7 @@ def public_trials(data, metrics):
                 "round": data["sources"][r["agent"]]["round"],
                 "reward": m["reward"],
                 "started_at": m["started_at"],
-                "version": None,
+                "version": data["sources"][r["agent"]]["agent_version"],
                 "error_message": None,
                 "events": [],
                 "verification": [],
@@ -390,15 +395,15 @@ PREVIEW_IMAGE = BLOCKETHER + "og-image.png"
 LINKS = (
     ("Terminal-Bench 4.0", "https://tbench.ai/news/terminal-bench-4-0"),
     (
-        "Tasks on Harbor Hub",
+        "Harbor Hub tasks",
         "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4",
     ),
     ("Harbor", "https://www.harborframework.com/"),
-    ("Source on GitHub", "https://github.com/Blockether/curated-terminal-benchmark"),
+    ("GitHub", "https://github.com/Blockether/curated-terminal-benchmark"),
 )
 EMULATION = (
     "Run under Rosetta emulation on a MacBook Pro M4 Max (Podman VM, 12 CPUs, 24 GiB). "
-    "Times include its overhead."
+    "Times include the emulation overhead."
 )
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
@@ -417,22 +422,36 @@ def description():
     )
 
 
-def head():
-    paused_attrs = ' class="agent-paused" title="Paused"'
-    items = "".join(
-        f'<li{paused_attrs if paused else ""}><a href="{url}">{label}</a></li>'
-        for label, paused, url in AGENTS.values()
+def head(data):
+    """The page head: one lead line, then the tested versions, the paused agents and the sources."""
+    # A sealed version can carry the program name ("vis-agent 0.5.7"); the list shows the name.
+    versions = {a.split("-")[0]: s["agent_version"].split()[-1] for a, s in data["sources"].items()}
+
+    def agent(key):
+        label, _, url = AGENTS[key]
+        version = (
+            f' <span class="version">{layout.esc(versions[key])}</span>' if key in versions else ""
+        )
+        return f'<li><a href="{url}">{label}</a>{version}</li>'
+
+    rows = (
+        ("Tested", "".join(agent(key) for key in AGENTS if key in versions)),
+        ("Paused", "".join(agent(key) for key, (_, paused, _) in AGENTS.items() if paused)),
+        (
+            "Sources",
+            "".join(f'<li><a href="{url}">{label}{layout.ARROW}</a></li>' for label, url in LINKS),
+        ),
     )
-    links = " · ".join(f'<a href="{url}">{label}{layout.ARROW}</a>' for label, url in LINKS)
+    facts = "".join(
+        f"<div><dt>{name}</dt><dd><ul>{items}</ul></dd></div>" for name, items in rows if items
+    )
     intro = (
-        f"Our agent Vis vs. other coding agents on {len(TASKS)} CPU-only "
-        f'<a href="{LINKS[0][1]}">Terminal-Bench 4.0</a> tasks.<br>'
-        "All on GPT-6.1-sol, medium reasoning."
+        f"Our agent Vis vs. {len(versions) - 1} other coding agents on {len(TASKS)} CPU-only "
+        "Terminal-Bench 4.0 tasks, all on GPT-6.1-sol with medium reasoning."
     )
     return (
         f'<section class="head">\n<h1>{SITE_NAME}</h1>\n<p class="lead">{intro}</p>\n'
-        f'<ul class="agent-list" aria-label="Agents">{items}</ul>\n'
-        f'<p class="head-links">{links}</p>\n'
+        f'<dl class="head-facts">{facts}</dl>\n'
         f'<p class="head-note">{EMULATION}</p>\n</section>'
     )
 
@@ -619,7 +638,7 @@ def render(data, metrics, *, transcripts=False):
     text = layout.index(
         public_trials(data, metrics),
         "from sealed results",
-        head=head(),
+        head=head(data),
         title=TITLE,
         description=description(),
     )
