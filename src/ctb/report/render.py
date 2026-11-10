@@ -410,12 +410,7 @@ def agent_view(trials: list[dict]) -> str:
         )
     else:
         normal = '<p class="empty">No task was passed by every agent.</p>'
-    # One note for both tabs, on one line where the page is wide enough.
-    note = (
-        '<p class="hint hint-line">Totals, not an efficiency ranking. Cost is the API list-price '
-        "equivalent where token usage is recorded; a dash means that no trial records the value.</p>"
-    )
-    return note + tabs(
+    return tabs(
         [
             ("general", "General", "All attempts, failures included", general),
             ("normalized", "Normalized", "Only the tasks that every agent passed", normal),
