@@ -1,6 +1,6 @@
 """The Python toolkit of every agent: the CPython of the Vis runtime with analysis packages.
 
-`ctb fetch` builds it once for linux-amd64. Each agent setup unpacks it into TOOLKIT. Each agent
+`ctb fetch` builds it once for arch.PLATFORM. Each agent setup unpacks it into TOOLKIT. Each agent
 command finds it at the end of PATH, so a Python of the task container still comes first. Vis
 also imports these packages in its sandbox, through VIS_PYTHON_PACKAGES.
 """
@@ -12,19 +12,22 @@ from pathlib import Path
 
 from harbor.environments.base import BaseEnvironment
 
-from ctb import resources
+from ctb import arch, resources
 from ctb.paths import ARTIFACTS
 
 # The CPython build that vis-python-runtime embeds (.cpython-version), so Vis and the toolkit
 # load the same wheels.
 CPYTHON_RELEASE = "20260825"
 CPYTHON_VERSION = "3.14.7"
-CPYTHON_ASSET = f"cpython-{CPYTHON_VERSION}+{CPYTHON_RELEASE}-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
+CPYTHON_ASSET = f"cpython-{CPYTHON_VERSION}+{CPYTHON_RELEASE}-{arch.GNU}-unknown-linux-gnu-install_only_stripped.tar.gz"
 CPYTHON_URL = (
     "https://github.com/astral-sh/python-build-standalone/releases/download/"
     f"{CPYTHON_RELEASE}/{CPYTHON_ASSET.replace('+', '%2B')}"
 )
-CPYTHON_SHA256 = "a0f39e822fd3b96a2605f30f954acf9a2cdf91faa1385a13e24bc407a41e05ea"
+CPYTHON_SHA256 = {
+    "aarch64": "7f0b801b0ba2c74531cd2e66ee898569cdf1f323a24383576f2a6761001e01f1",
+    "x86_64": "a0f39e822fd3b96a2605f30f954acf9a2cdf91faa1385a13e24bc407a41e05ea",
+}[arch.GNU]
 REQUIREMENTS = Path(__file__).with_name("toolkit-requirements.txt")
 TOOLKIT = "/installed-agent/ctb-python"
 PACKAGES = f"{TOOLKIT}/lib/python{CPYTHON_VERSION.rpartition('.')[0]}/site-packages"
@@ -73,17 +76,19 @@ def requirements_sha256() -> str:
 
 
 def archive() -> Path:
-    """The local toolkit archive. Its name changes with the CPython pin and the requirements."""
-    return ARTIFACTS / f"ctb-python-{CPYTHON_VERSION}-{requirements_sha256()[:12]}.tar.gz"
+    """The local toolkit archive. Its name changes with the CPython pin, ARCH and the requirements."""
+    return (
+        ARTIFACTS / f"ctb-python-{CPYTHON_VERSION}-{arch.ARCH}-{requirements_sha256()[:12]}.tar.gz"
+    )
 
 
 def build(cpython: Path, target: Path | None = None) -> Path:
-    """Install the requirements into the CPython archive in a linux/amd64 container."""
+    """Install the requirements into the CPython archive in an arch.PLATFORM container."""
     target = target or archive()
     partial = target.with_name(target.name + ".partial")
     partial.unlink(missing_ok=True)
     subprocess.run(
-        ["podman", "run", "--rm", "--platform", "linux/amd64"]
+        ["podman", "run", "--rm", "--platform", arch.PLATFORM]
         + ["-v", f"{target.parent}:/x", "-v", f"{REQUIREMENTS}:/s/requirements.txt:ro"]
         + ["-e", f"CPYTHON={cpython.relative_to(target.parent)}", "-e", f"OUT={partial.name}"]
         + ["docker.io/library/debian:bookworm-slim", "bash", "-c", BUILD],

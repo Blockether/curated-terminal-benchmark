@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock
 import pytest
 from harbor.models.agent.context import AgentContext
 
-from ctb import cli, credentials
+from ctb import arch, cli, credentials
 from ctb.agents import vis
 from ctb.agents.dirge import Dirge
 from ctb.agents.kmet import Kmet
@@ -333,7 +333,8 @@ def test_run_record_holds_the_vis_build_and_profiles_only_for_vis_runs(
 def test_run_refuses_an_emulated_engine_unless_allowed(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "ROOT", tmp_path)
     monkeypatch.setattr(cli, "trials", lambda *_: [])
-    monkeypatch.setattr(cli, "engine_arch", lambda env=None: "arm64")
+    host = {"value": "riscv64"}
+    monkeypatch.setattr(cli, "engine_arch", lambda env=None: host["value"])
     engines = []
     monkeypatch.setattr(cli, "record_run", lambda jobs, args, engine=None: engines.append(engine))
     args = argparse.Namespace(
@@ -349,7 +350,11 @@ def test_run_refuses_an_emulated_engine_unless_allowed(tmp_path, monkeypatch):
         cli.run(args)
     assert engines == []
     cli.run(argparse.Namespace(**{**vars(args), "allow_emulation": True}))
-    assert engines == [{"arch": "arm64", "emulated": True}]
+    assert engines == [{"arch": "riscv64", "emulated": True}]
+    # A host of the build CPU runs natively and needs no flag.
+    host["value"] = arch.ARCH
+    cli.run(args)
+    assert engines[-1] == {"arch": arch.ARCH, "emulated": False}
 
 
 def test_run_record_holds_the_engine(tmp_path, monkeypatch):

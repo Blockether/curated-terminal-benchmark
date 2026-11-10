@@ -9,7 +9,20 @@ from harbor.models.task.config import HealthcheckConfig
 
 
 class Podman(PodmanEnvironment):
-    """Count a timed-out healthcheck as a failed probe, not a failed trial."""
+    """Build each task image for ctb.arch; count a timed-out healthcheck as a failed probe."""
+
+    async def start(self, force_build: bool) -> None:
+        # The published task images are amd64 only. A build from the task Dockerfile gets
+        # DOCKER_DEFAULT_PLATFORM, so it has the CPU of ctb.arch. Harbor starts the
+        # separate verifier with force_build=False, so this applies to both environments.
+        await super().start(force_build=True)
+
+    async def _run_docker_compose_command(self, command: list[str], *args, **kwargs):
+        # Without --pull, the Compose build takes a cached base image of another CPU and
+        # makes an image that `up` then does not find for DOCKER_DEFAULT_PLATFORM.
+        if command == ["build"]:
+            command = ["build", "--pull"]
+        return await super()._run_docker_compose_command(command, *args, **kwargs)
 
     async def run_healthcheck(self, healthcheck: HealthcheckConfig | None = None) -> None:
         hc = healthcheck if healthcheck is not None else self.task_env_config.healthcheck

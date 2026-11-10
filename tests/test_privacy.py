@@ -10,7 +10,7 @@ from types import SimpleNamespace
 import pytest
 from harbor.cli.job_plugins import attach_job_plugin
 
-from ctb import cli, privacy
+from ctb import arch, cli, privacy
 from ctb.matrix import AGENTS, ROOT, Trial
 
 # Fake credentials: the tests plant them and check that no trial file keeps them.
@@ -116,7 +116,7 @@ def test_round_directories_are_private(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "ROOT", tmp_path)
     monkeypatch.setattr(cli, "trials", lambda *_: [])
     monkeypatch.setattr(cli, "record_run", lambda *_: None)
-    monkeypatch.setattr(cli, "engine_arch", lambda env=None: "amd64")
+    monkeypatch.setattr(cli, "engine_arch", lambda env=None: arch.ARCH)
     args = argparse.Namespace(
         round="r",
         agents="codex",

@@ -15,7 +15,7 @@ from harbor.agents.installed.base import BaseInstalledAgent
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb import credentials, toolkit
+from ctb import arch, credentials, toolkit
 from ctb.agents.base import (
     AGENT_HOME,
     EFFORT,
@@ -120,18 +120,18 @@ def check(path: Path, build: dict) -> None:
 
 
 def extensions_archive(build: dict) -> Path:
-    """The local extensions archive of one build. `fetch` makes it next to the bundle."""
-    return archive(build).with_name("vis-extensions.tar.gz")
+    """The local extensions archive of one build and its bundle. `fetch` makes it next to the bundle."""
+    return archive(build).with_name(build["asset"].replace("vis-agent", "vis-extensions", 1))
 
 
 def build_extensions(build: dict) -> Path:
-    """Install EXTENSIONS with the pinned bundle in a linux/amd64 container and pack them."""
+    """Install EXTENSIONS with the pinned bundle in an arch.PLATFORM container and pack them."""
     bundle, target = archive(build), extensions_archive(build)
     partial = target.with_name(target.name + ".partial")
     partial.unlink(missing_ok=True)
     specs = " ".join(f"{name}@{version}" for name, version in EXTENSIONS.items())
     subprocess.run(
-        ["podman", "run", "--rm", "--platform", "linux/amd64", "-v", f"{bundle.parent}:/x"]
+        ["podman", "run", "--rm", "--platform", arch.PLATFORM, "-v", f"{bundle.parent}:/x"]
         + ["-e", f"BUNDLE={bundle.name}", "-e", f"EXTENSIONS={specs}", "-e", f"OUT={partial.name}"]
         + ["docker.io/library/debian:bookworm-slim", "bash", "-c", EXTENSION_BUILD],
         check=True,

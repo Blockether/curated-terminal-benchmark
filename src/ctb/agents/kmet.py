@@ -6,14 +6,14 @@ from collections.abc import Mapping
 from edn_format import Keyword, loads
 from harbor.models.agent.context import AgentContext
 
-from ctb import credentials
+from ctb import arch, credentials
 from ctb.agents.base import EFFORT, CuratedAgent, min_token_seconds
 from ctb.paths import ARTIFACTS
 from ctb.resources import files_footprint
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = "kmet-6221f8dd-linux-amd64.tar.gz"
+ARCHIVE_NAME = f"kmet-6221f8dd-{arch.KMET}.tar.gz"
 
 
 class Kmet(CuratedAgent):

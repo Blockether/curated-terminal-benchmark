@@ -21,7 +21,7 @@ from pathlib import Path
 
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
-from ctb import credentials, privacy, toolkit
+from ctb import arch, credentials, privacy, toolkit
 from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
@@ -207,8 +207,8 @@ def fetch_kmet() -> Path:
     if not archive.is_file():
         path = checkout(KMET_REPO, KMET_COMMIT, "kmet-agent")
         env = dict(os.environ, PATH=f"{ARTIFACTS / 'tools'}:{os.environ['PATH']}")
-        sh(["bb", "dist", "linux-amd64"], cwd=path, env=env)
-        pack(path / "target/dist/linux-amd64/kmet", archive, "kmet")
+        sh(["bb", "dist", arch.KMET], cwd=path, env=env)
+        pack(path / "target/dist" / arch.KMET / "kmet", archive, "kmet")
     return archive
 
 
@@ -227,7 +227,9 @@ def fetch_wisp() -> Path:
 
 
 def fetch() -> None:
-    """Get everything for linux-amd64: the Python toolkit, native Vis, dirge, kmet, samizdat, Wisp.
+    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet and Wisp.
+
+    Dirge and samizdat are paused and build only for amd64, so only an amd64 fetch gets them.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
@@ -235,7 +237,9 @@ def fetch() -> None:
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_dirge(), fetch_kmet(), fetch_samizdat(), fetch_wisp()]
+    archives += [fetch_kmet(), fetch_wisp()]
+    if arch.ARCH == "amd64":
+        archives += [fetch_dirge(), fetch_samizdat()]
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
@@ -252,6 +256,8 @@ def podman_config() -> Path:
 def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict[str, str]:
     """Process environment of one Harbor job; built-in agents read tokens from it."""
     env = dict(os.environ, PYTHONPATH=str(SOURCE), CONTAINERS_CONF_OVERRIDE=str(podman_config()))
+    # Compose builds the task images for ARCH even when a base image of another CPU is cached.
+    env["DOCKER_DEFAULT_PLATFORM"] = arch.PLATFORM
     privacy.telemetry_off(env)
     if trial.agent.proxy:
         if proxy is None:
@@ -488,13 +494,13 @@ def apply_task_fixes(dataset: Path | None = None) -> list[str]:
 
 
 def run(args: argparse.Namespace) -> None:
-    # The tasks are linux/amd64 images. Another host runs them through a translator, such as
-    # Rosetta, which changes what tasks that read machine code or ptrace other processes see.
-    arch = engine_arch()
-    if arch is not None and arch != "amd64" and not args.allow_emulation:
+    # The tasks and agents are built for arch.ARCH. Another host runs them through a translator,
+    # such as Rosetta, which changes what tasks that read machine code or ptrace other processes see.
+    host = engine_arch()
+    if host is not None and host != arch.ARCH and not args.allow_emulation:
         raise SystemExit(
-            f"The Podman host is {arch}, so the linux/amd64 tasks run under emulation. "
-            "Run on an amd64 host, or give --allow-emulation to record an emulated round."
+            f"The Podman host is {host}, so the {arch.PLATFORM} tasks run under emulation. "
+            f"Run on an {arch.ARCH} host, or give --allow-emulation to record an emulated round."
         )
     jobs = ROOT / "jobs" / args.round
     logs = ROOT / "runs" / args.round
@@ -506,7 +512,7 @@ def run(args: argparse.Namespace) -> None:
     print(f"{len(selected)} trials, parallel {args.parallel}, round {args.round}", flush=True)
     for fixed in apply_task_fixes():
         print(f"task fix {fixed}", flush=True)
-    record_run(jobs, args, {"arch": arch, "emulated": arch != "amd64"})
+    record_run(jobs, args, {"arch": host, "emulated": host != arch.ARCH})
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
     try:
@@ -730,7 +736,7 @@ def report(args: argparse.Namespace) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("fetch", help="get the Python toolkit and every agent for linux-amd64")
+    sub.add_parser("fetch", help="get the Python toolkit and every agent for the CPU of ctb.arch")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
     run_parser.add_argument("--round", required=True)
     run_parser.add_argument("--agents", default=DEFAULT_AGENTS)
@@ -743,7 +749,7 @@ def main(argv: list[str] | None = None) -> None:
     run_parser.add_argument(
         "--allow-emulation",
         action="store_true",
-        help="run on a host that is not amd64; the run record marks the round as emulated",
+        help="run on a host of another CPU than ctb.arch; the run record marks the round as emulated",
     )
     summary_parser = sub.add_parser("summary", help="PASS table of one round")
     summary_parser.add_argument("--round", required=True)

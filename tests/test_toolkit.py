@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock
 import pytest
 from harbor.agents.installed.base import BaseInstalledAgent
 
-from ctb import toolkit
+from ctb import arch, toolkit
 from ctb.agents.dirge import Dirge
 from ctb.matrix import AGENTS
 
@@ -100,7 +100,7 @@ def test_build_replaces_the_archive_only_after_the_container_succeeds(tmp_path, 
     assert target.read_bytes() == b"built"
     assert not target.with_name(target.name + ".partial").exists()
     argv = calls[0]
-    assert argv[:5] == ["podman", "run", "--rm", "--platform", "linux/amd64"]
+    assert argv[:5] == ["podman", "run", "--rm", "--platform", arch.PLATFORM]
     assert f"CPYTHON={toolkit.CPYTHON_ASSET}" in argv
     assert f"{toolkit.REQUIREMENTS}:/s/requirements.txt:ro" in argv
 

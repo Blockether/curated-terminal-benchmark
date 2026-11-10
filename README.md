@@ -30,7 +30,7 @@ Every agent gets the same Python toolkit in `/installed-agent/ctb-python`:
 - The CPython of the Vis runtime (3.14.7, python-build-standalone).
 - The packages of `src/ctb/toolkit-requirements.txt`: numpy, scipy, pandas, pytest and others.
 
-`ctb fetch` builds the toolkit once for linux/amd64 in Podman. Each agent setup unpacks it.
+`ctb fetch` builds the toolkit once for the CPU of `src/ctb/arch.py` (linux/arm64) in Podman. Each agent setup unpacks it.
 Each agent command adds `ctb-python/bin` to the end of `PATH`. A Python of the task image still comes first.
 The verifier gets the same toolkit at the same path and `PATH` (see below).
 
@@ -58,7 +58,7 @@ Every trial uses one verifier, `ctb.verifier:Verifier`:
 
 The verifier of a task is the same for every agent. It must have each file and package that the agent environment gives to the solution:
 
-- `interleaved-vigenere`: both images add NumPy at the toolkit pin. The verifier restores `/app/data` from the environment image and installs `/app/requirements.txt`.
+- `interleaved-vigenere`: both images repeat the layers of the amd64-only upstream images on their multi-arch Python base, and add NumPy at the toolkit pin. The verifier restores `/app/data` from the environment image and installs `/app/requirements.txt`.
 - `photonic-waveguide-routing`: the verifier does not run the optional renderer, which can stop.
 
 Two fixes correct task text or fixtures that no agent could pass:
@@ -73,8 +73,12 @@ The source trial does not change.
 
 Requires Python 3.12+, uv, a running Podman connection, and a valid Vis ChatGPT login.
 Runs consume subscription quota. Configure `CONTAINER_CONNECTION` and `DOCKER_HOST` for your Podman machine.
-The tasks are linux/amd64 images. On another Podman host, such as an Apple Silicon VM with Rosetta,
-the tasks run under emulation. `run` stops there unless you give `--allow-emulation`. Each run record
+`src/ctb/arch.py` sets one CPU for the task images and every agent build: arm64, so the tasks run
+natively in the Podman VM of an Apple Silicon Mac. The published task images are amd64 only, so
+`ctb.environment:Podman` builds each agent and verifier image from the task Dockerfile. The builds
+get `DOCKER_DEFAULT_PLATFORM`, so a cached base image of another CPU is not used. On a Podman host of another CPU the tasks run
+under emulation. `run` stops there unless you give `--allow-emulation`. Dirge and Samizdat are
+paused and build only for amd64. Each run record
 and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
 in the task container shows its path and not its source.
 

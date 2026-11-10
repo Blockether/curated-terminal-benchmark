@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from ctb import cli, credentials, matrix
+from ctb import arch, cli, credentials, matrix
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def root(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "ROOT", tmp_path)
     monkeypatch.setattr(cli, "RESULTS", tmp_path / "results")
     monkeypatch.setattr(cli, "ARTIFACTS", tmp_path / "artifacts")
-    monkeypatch.setattr(cli, "engine_arch", lambda env=None: "amd64")
+    monkeypatch.setattr(cli, "engine_arch", lambda env=None: arch.ARCH)
     return tmp_path
 
 
