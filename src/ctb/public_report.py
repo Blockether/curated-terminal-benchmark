@@ -430,7 +430,9 @@ def head(data):
     def agent(key):
         label, _, url = AGENTS[key]
         version = (
-            f' <span class="version">{layout.esc(versions[key])}</span>' if key in versions else ""
+            f' <span class="version">({layout.esc(versions[key])})</span>'
+            if key in versions
+            else ""
         )
         return f'<li><a href="{url}">{label}</a>{version}</li>'
 
