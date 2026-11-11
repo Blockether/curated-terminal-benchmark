@@ -12,7 +12,7 @@ This audit does not change pins or frozen benchmark inputs.
 | Kmet | `e159cfce3b60a9859b504328016102e4b81ed3b6` | 0.3.0 | Pinned to development HEAD on 11 November 2026. The build needs Babashka 1.13.229 or later. |
 | Wisp | `e0d468f792fb12ba2a31ab873c7f54190a92b753` | none | Development HEAD of `xificurC/wisp`. The repository has no release tags. It is one Python script and runs on the toolkit Python. The local `wisp-missing-git` patch lets it start in task images without git. |
 | Samizdat | `9411f00c87d5ddb725f46eb8794e0d93a479835f` | 0.1.0 | Current pin equals development HEAD. |
-| Vis | 0.5.3 | 0.5.4, `7681f3685de40521f2a864a15378f261020d29d3` | Update candidate. Pin the commit, Linux x64 archive and checksum together. |
+| Vis | 0.5.12, `55d9a4e6a7e532b0d9667442e8e914a4180d4345` | 0.5.12 | Pinned on 11 November 2026 with the Linux arm64 release archive, its checksum and `vis-lang-python` 1.16.10. |
 
 ## Dirge
 
