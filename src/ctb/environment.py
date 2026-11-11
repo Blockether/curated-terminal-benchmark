@@ -1,11 +1,45 @@
 """Podman boundary fixes for the curated benchmark."""
 
 import asyncio
+import json
+import re
+import tempfile
 import time
+from pathlib import Path
 
+import yaml
 from harbor.environments.base import HealthcheckError
 from harbor.environments.podman import PodmanEnvironment
 from harbor.models.task.config import HealthcheckConfig
+
+from ctb import arch
+
+#: A sidecar image that Harbor published from a directory of the task environment.
+SIDECAR = re.compile(
+    r"harborframework/terminal-bench:.+-sidecar-([a-z0-9-]+)-[0-9a-f]{16}(@sha256:[0-9a-f]{64})?"
+)
+
+
+def sidecar_builds(compose: Path, cpu: str) -> dict:
+    """Compose services that build the task's published sidecars from their source for CPU.
+
+    The published sidecar images are amd64 only. For another CPU, each sidecar with a
+    Dockerfile in its directory of the environment is built from that directory."""
+    if cpu == "amd64" or not compose.is_file():
+        return {}
+    services = {}
+    for name, service in (
+        (yaml.safe_load(compose.read_text()) or {}).get("services") or {}
+    ).items():
+        match = SIDECAR.fullmatch(str((service or {}).get("image", "")))
+        source = compose.parent / match.group(1) if match else None
+        if source and (source / "Dockerfile").is_file():
+            services[name] = {
+                "build": {"context": str(source.resolve())},
+                "image": f"ctb-sidecar-{compose.parent.parent.name}-{name}:{cpu}",
+                "pull_policy": "build",
+            }
+    return services
 
 
 class Podman(PodmanEnvironment):
@@ -16,6 +50,19 @@ class Podman(PodmanEnvironment):
         # DOCKER_DEFAULT_PLATFORM, so it has the CPU of ctb.arch. Harbor starts the
         # separate verifier with force_build=False, so this applies to both environments.
         await super().start(force_build=True)
+
+    @property
+    def _docker_compose_paths(self) -> list[Path]:
+        paths = super()._docker_compose_paths
+        services = sidecar_builds(self._environment_docker_compose_path, arch.ARCH)
+        if not services:
+            return paths
+        if not hasattr(self, "_sidecar_dir"):
+            self._sidecar_dir = tempfile.TemporaryDirectory()
+        path = Path(self._sidecar_dir.name) / "docker-compose-sidecars.json"
+        path.write_text(json.dumps({"services": services}))
+        at = len(paths) - paths[::-1].index(self._environment_docker_compose_path)
+        return [*paths[:at], path, *paths[at:]]
 
     async def _run_docker_compose_command(self, command: list[str], *args, **kwargs):
         # Without --pull, the Compose build takes a cached base image of another CPU and

@@ -9,7 +9,7 @@ import pytest
 from harbor.environments.base import HealthcheckError
 from harbor.models.task.config import HealthcheckConfig
 
-from ctb.environment import Podman
+from ctb.environment import Podman, sidecar_builds
 
 
 def environment(outcomes, **kwargs):
@@ -89,3 +89,36 @@ def test_override_healthcheck_replaces_default_configuration():
     asyncio.run(env.run_healthcheck(override))
     assert env.exec.await_args.args == ("override",)
     assert env.exec.await_args.kwargs["timeout_sec"] == 4
+
+
+def test_sidecars_build_from_source_off_amd64(tmp_path):
+    # payments-pipeline-fix and kv-live-surgery failed on arm64: "image not known" for
+    # the amd64-only sidecar images that the task compose file pins.
+    env = tmp_path / "payments-pipeline-fix" / "environment"
+    for name in ("seeder", "customer"):
+        (env / name).mkdir(parents=True)
+        (env / name / "Dockerfile").write_text("FROM scratch\n")
+    pinned = (
+        "harborframework/terminal-bench:payments-pipeline-fix-sidecar-{}-dfa2b554b10ec940@sha256:"
+        + "d" * 64
+    )
+    compose = env / "docker-compose.yaml"
+    compose.write_text(
+        "services:\n"
+        f"  seeder:\n    image: {pinned.format('seeder')}\n"
+        f"  customer:\n    image: {pinned.format('customer')}\n"
+        "  kafka:\n    image: apache/kafka-native:4.3.1\n"
+        "  main:\n    depends_on: [seeder]\n"
+        f"  other:\n    image: {pinned.format('other')}\n"
+    )
+    services = sidecar_builds(compose, "arm64")
+    assert services == {
+        name: {
+            "build": {"context": str((env / name).resolve())},
+            "image": f"ctb-sidecar-payments-pipeline-fix-{name}:arm64",
+            "pull_policy": "build",
+        }
+        for name in ("seeder", "customer")
+    }
+    assert sidecar_builds(compose, "amd64") == {}
+    assert sidecar_builds(env / "missing.yaml", "arm64") == {}
