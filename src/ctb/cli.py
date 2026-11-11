@@ -264,6 +264,10 @@ def host_env(trial: Trial, secret_dir: Path, proxy: Proxy | None = None) -> dict
             raise credentials.CredentialError(f"{trial.agent.name} needs the model proxy")
         env["CTB_PROXY_URL"] = f"http://{PROXY_HOST}:{proxy.port}"
         env["CTB_PROXY_KEY"] = proxy.key
+    if trial.family == "openai":
+        # Each GPT agent and the proxy use the Vis token. A short token blocks the trial
+        # here, before Harbor builds the task and records a failed result.
+        credentials.fresh_codex_vis(min_token_seconds())
     if "PODMAN_COMPOSE_PROVIDER" not in env and COMPOSE.is_file():
         env["PODMAN_COMPOSE_PROVIDER"] = str(COMPOSE)
     for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN"):

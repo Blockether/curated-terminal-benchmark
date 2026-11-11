@@ -41,6 +41,24 @@ def test_a_short_token_blocks_the_trial(monkeypatch, tmp_path):
     )
 
 
+def test_a_short_vis_token_blocks_a_kmet_trial_before_harbor(monkeypatch, tmp_path):
+    vis = tmp_path / "vis.json"
+    vis.write_text(json.dumps({"access_token": "V", "expires_at_ms": credentials.now_ms()}))
+    monkeypatch.setattr(credentials, "VIS_CODEX", vis)
+    # The Vis refresh request does not renew this token.
+    monkeypatch.setattr(credentials.subprocess, "run", lambda *_a, **_k: None)
+    monkeypatch.setattr(cli, "podman_ready", lambda *_a: True)
+
+    def harbor(*_a, **_k):
+        raise AssertionError("Harbor started with a short token")
+
+    monkeypatch.setattr(cli.subprocess, "Popen", harbor)
+    trial = matrix.Trial(matrix.AGENTS["kmet"], "openai", "t")
+    line = cli.run_trial(trial, tmp_path / "jobs", tmp_path, 0.25)
+    assert line.startswith("blocked kmet__openai__t: ")
+    assert not (tmp_path / "jobs" / trial.job).exists()
+
+
 def test_run_records_each_trial_once(root, monkeypatch, capsys):
     calls = []
     monkeypatch.setattr(cli, "run_trial", lambda *a: calls.append(a) or "done dirge: reward=1.0")

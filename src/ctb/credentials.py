@@ -7,6 +7,7 @@ every refresh token that it sees is empty.
 
 import base64
 import json
+import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -14,6 +15,10 @@ from pathlib import Path
 HOME = Path.home()
 VIS_CODEX = HOME / ".vis" / "openai-codex-auth.json"
 CODEX_CLI = HOME / ".codex" / "auth.json"
+#: Vis refreshes its 10-day ChatGPT token only in the last 5 minutes (REFRESH_MARGIN_MS).
+VIS_REFRESH_MARGIN_S = 240
+#: One Vis provider request: it refreshes a token in that window and saves the new one.
+VIS_REFRESH = ("vis-agent", "providers", "limits", "openai-codex")
 AUTH_CLAIM = "https://api.openai.com/auth"
 PROFILE_CLAIM = "https://api.openai.com/profile"
 
@@ -94,6 +99,25 @@ def codex_vis(min_valid_s: int, path: Path = VIS_CODEX) -> Access:
     data = _read(path)
     access = Access(data["access_token"], int(data["expires_at_ms"]), data.get("account_id"))
     return _require(access, min_valid_s, path, "Run one Vis turn on openai-codex to refresh it.")
+
+
+def fresh_codex_vis(min_valid_s: int, path: Path | None = None, sleep=None, run=None) -> Access:
+    """The Vis token; when it is too short for a trial, Vis refreshes it first.
+
+    Vis refreshes only in the last minutes of the token, so wait for that window, then make
+    one Vis provider request. CTB itself never uses the refresh token.
+    """
+    path, sleep, run = path or VIS_CODEX, sleep or time.sleep, run or subprocess.run
+    try:
+        return codex_vis(min_valid_s, path)
+    except ExpiringToken:
+        pass
+    wait_s = (int(_read(path)["expires_at_ms"]) - now_ms()) / 1000 - VIS_REFRESH_MARGIN_S
+    if wait_s > 0:
+        print(f"wait {wait_s:.0f} s until Vis can refresh {path}", flush=True)
+        sleep(wait_s)
+    run(list(VIS_REFRESH), capture_output=True, timeout=300, check=False)
+    return codex_vis(min_valid_s, path)
 
 
 def codex_cli(min_valid_s: int, path: Path = CODEX_CLI, vis_path: Path = VIS_CODEX) -> Access:

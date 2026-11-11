@@ -48,7 +48,9 @@ def test_samizdat_needs_the_proxy(monkeypatch):
         host_env(trial, Path("/tmp"))
 
 
-def test_host_env_gives_samizdat_the_proxy_url_and_key(tmp_path):
+def test_host_env_gives_samizdat_the_proxy_url_and_key(tmp_path, monkeypatch):
+    monkeypatch.setattr(credentials, "fresh_codex_vis", lambda *_a: None)
+
     class FakeProxy:
         port, key = 4242, "secret"
 

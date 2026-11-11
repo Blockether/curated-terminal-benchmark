@@ -34,6 +34,34 @@ def test_a_token_that_expires_during_the_trial_is_refused(tmp_path):
         credentials.codex_cli(3600, path, vis)
 
 
+def test_vis_refreshes_a_token_that_is_too_short_for_a_trial(tmp_path):
+    path = tmp_path / "vis.json"
+    left_ms = 2000 * 1000
+    path.write_text(
+        json.dumps({"access_token": "OLD", "expires_at_ms": credentials.now_ms() + left_ms})
+    )
+    waits, commands = [], []
+
+    def vis(command, **_):
+        # Vis refreshes in its last minutes and saves a new 10-day token.
+        commands.append(tuple(command))
+        ten_days = credentials.now_ms() + 240 * 3600 * 1000
+        path.write_text(json.dumps({"access_token": "NEW", "expires_at_ms": ten_days}))
+
+    access = credentials.fresh_codex_vis(7500, path, waits.append, vis)
+    assert access.token == "NEW" and commands == [credentials.VIS_REFRESH]
+    assert left_ms / 1000 - credentials.VIS_REFRESH_MARGIN_S - 5 < waits[0] <= 1760
+
+
+def test_a_token_that_vis_does_not_refresh_still_blocks(tmp_path):
+    path = tmp_path / "vis.json"
+    path.write_text(json.dumps({"access_token": "OLD", "expires_at_ms": credentials.now_ms()}))
+    waits = []
+    with pytest.raises(credentials.ExpiringToken):
+        credentials.fresh_codex_vis(7500, path, waits.append, lambda *_a, **_k: None)
+    assert waits == []
+
+
 def test_codex_uses_the_vis_token_and_keeps_a_same_account_id_token(tmp_path):
     path = tmp_path / "codex.json"
     path.write_text(

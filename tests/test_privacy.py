@@ -18,7 +18,8 @@ TOKEN = "sk-ant-oat01-" + "f" * 40
 PROXY_KEY = "fake-proxy-key-0123456789"
 
 
-def test_harbor_jobs_run_with_telemetry_off(tmp_path):
+def test_harbor_jobs_run_with_telemetry_off(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli.credentials, "fresh_codex_vis", lambda *_a: None)
     env = cli.host_env(Trial(AGENTS["kmet"], "openai", "t"), tmp_path)
     assert env["HARBOR_TELEMETRY"] == "off"
 
