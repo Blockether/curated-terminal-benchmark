@@ -50,6 +50,13 @@ AGENTS = {
             ("openai",),
             experiment=True,
         ),
+        # The same kmet arm with only the bash tool selected; run it by name.
+        AgentSpec(
+            "kmet-bash-only",
+            "ctb.agents.kmet:KmetBashOnly",
+            ("openai",),
+            experiment=True,
+        ),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).
         AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True, paused=True),
         # Wisp cannot refresh a ChatGPT token, so it also uses the host proxy.

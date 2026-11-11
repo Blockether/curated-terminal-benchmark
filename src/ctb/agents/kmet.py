@@ -86,3 +86,13 @@ class KmetEvalOnly(Kmet):
     @staticmethod
     def name() -> str:
         return "kmet-eval-only"
+
+
+class KmetBashOnly(Kmet):
+    """kmet with only the bash tool selected (`--tools bash`), everything else as kmet."""
+
+    TOOLS = "bash"
+
+    @staticmethod
+    def name() -> str:
+        return "kmet-bash-only"

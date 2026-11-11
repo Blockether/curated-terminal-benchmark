@@ -34,14 +34,13 @@ def test_paused_arms_stay_out_of_the_default_matrix():
     ]
 
 
-def test_kmet_eval_only_is_an_experiment_arm():
-    spec = matrix.AGENTS["kmet-eval-only"]
+@pytest.mark.parametrize("arm", ["kmet-eval-only", "kmet-bash-only"])
+def test_kmet_tool_only_arms_are_experiment_arms(arm):
+    spec = matrix.AGENTS[arm]
     assert spec.experiment
     assert spec.families == ("openai",)
-    assert "kmet-eval-only" not in matrix.DEFAULT_AGENTS.split(",")
-    assert [t.job for t in matrix.trials(["kmet-eval-only"], ["openai"], ["x"])] == [
-        "kmet-eval-only__openai__x"
-    ]
+    assert arm not in matrix.DEFAULT_AGENTS.split(",")
+    assert [t.job for t in matrix.trials([arm], ["openai"], ["x"])] == [f"{arm}__openai__x"]
 
 
 def test_the_public_agent_list_names_every_harness_and_its_pause():
