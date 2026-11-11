@@ -3,7 +3,14 @@ import json
 
 import pytest
 
-from ctb.metrics import list_price, round_metrics, totals, trajectory_counts, trial_metrics
+from ctb.metrics import (
+    list_price,
+    repeated,
+    round_metrics,
+    totals,
+    trajectory_counts,
+    trial_metrics,
+)
 
 
 def write_trial(root, name, *, cost, tools, model="openai/gpt-6.1-sol", reward=1.0):
@@ -120,6 +127,40 @@ def test_totals_leave_the_cost_open_when_a_trial_has_no_price():
     }
     (total,) = totals([row, {**row, "reward": 1.0, "cost_usd": 2.0}])
     assert total["passed"] == 1 and total["cost_usd"] is None and total["agent_minutes"] == 2.0
+
+
+def test_repeated_rounds_give_the_spread_and_the_passes_per_task():
+    def body(name, passed, cost):
+        rows = [
+            {"agent": "a", "model": "m", "task": f"t{i}", "reward": 1.0 if i < passed else 0.0}
+            for i in range(3)
+        ]
+        total = {
+            "agent": "a",
+            "model": "m",
+            "trials": 3,
+            "passed": passed,
+            "cost_usd": cost,
+            "agent_minutes": 10.0 * passed,
+            "input": 1000,
+            "output": 100,
+            "tool_calls": 5,
+        }
+        return {"round": name, "rows": rows, "agents": [total]}
+
+    (group,) = repeated([body("r1", 1, 1.0), body("r2", 3, 3.0), body("r3", 2, None)])
+    assert group["rounds"] == ["r1", "r2", "r3"] and group["passed"] == [1, 3, 2]
+    assert group["spread"]["passed"] == {"mean": 2.0, "sd": 1.0, "min": 1, "max": 3}
+    assert group["spread"]["input"]["sd"] == 0.0
+    # A round without a price has no cost total, so the cost has no spread.
+    assert group["spread"]["cost_usd"] is None
+    assert group["tasks"] == {
+        "t0": {"passed": 3, "trials": 3},
+        "t1": {"passed": 2, "trials": 3},
+        "t2": {"passed": 1, "trials": 3},
+    }
+    (single,) = repeated([body("r1", 2, 1.0)])
+    assert single["spread"]["passed"]["sd"] is None
 
 
 def test_an_unknown_model_has_no_list_price():

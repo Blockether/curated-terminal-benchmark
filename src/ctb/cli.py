@@ -33,7 +33,7 @@ from ctb.matrix import (
     select_tasks,
     trials,
 )
-from ctb.metrics import round_metrics
+from ctb.metrics import repeated, round_metrics
 from ctb.paths import ARTIFACTS, ROOT, SOURCE
 from ctb.proxy import Proxy
 
@@ -722,6 +722,56 @@ def metrics(args: argparse.Namespace) -> None:
     print(f"wrote {out.relative_to(ROOT)}")
 
 
+def stats(args: argparse.Namespace) -> None:
+    """Print each agent's totals over repeated sealed rounds as mean ± sample standard deviation."""
+    bodies = []
+    for name in args.rounds.split(","):
+        sealed = RESULTS / f"{name}.json"
+        if not sealed.is_file():
+            raise SystemExit(f"{sealed} does not exist; seal the round first")
+        bodies.append(round_metrics(ROOT, json.loads(sealed.read_text())))
+    groups = repeated(bodies)
+    if args.json:
+        Path(args.json).write_text(json.dumps(groups, indent=2) + "\n")
+
+    def cell(s, digits=1):
+        if s is None:
+            return "-"
+        sd = "-" if s["sd"] is None else f"{s['sd']:.{digits}f}"
+        return f"{s['mean']:.{digits}f} ± {sd}"
+
+    print(
+        f"{'agent':15} {'rounds':>6} {'pass':>12} {'min–max':>7} {'cost_usd':>13} "
+        f"{'agent_min':>13} {'input_M':>11} {'output_k':>13}"
+    )
+    for g in groups:
+        s = g["spread"]
+        passes = f"{s['passed']['min']}–{s['passed']['max']}"
+        mega = s["input"] and {
+            **s["input"],
+            "mean": s["input"]["mean"] / 1e6,
+            "sd": None if s["input"]["sd"] is None else s["input"]["sd"] / 1e6,
+        }
+        kilo = s["output"] and {
+            **s["output"],
+            "mean": s["output"]["mean"] / 1e3,
+            "sd": None if s["output"]["sd"] is None else s["output"]["sd"] / 1e3,
+        }
+        print(
+            f"{g['agent']:15} {len(g['rounds']):>6} {cell(s['passed']):>12} {passes:>7} "
+            f"{cell(s['cost_usd'], 2):>13} {cell(s['agent_minutes']):>13} {cell(mega, 2):>11} "
+            f"{cell(kilo):>13}"
+        )
+    tasks = sorted({t for g in groups for t in g["tasks"]})
+    print(f"\npasses per task\n{'task':32} " + " ".join(f"{g['agent'][:14]:>14}" for g in groups))
+    for task in tasks:
+        cells = []
+        for g in groups:
+            t = g["tasks"].get(task)
+            cells.append(f"{t['passed']}/{t['trials']}" if t else "-")
+        print(f"{task.removeprefix('terminal-bench/'):32} " + " ".join(f"{c:>14}" for c in cells))
+
+
 def report(args: argparse.Namespace) -> None:
     """Write the HTML report of every trial under --jobs to --out."""
     from ctb.report.render import build
@@ -761,6 +811,11 @@ def main(argv: list[str] | None = None) -> None:
     seal_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
     metrics_parser = sub.add_parser("metrics", help="cost, time and token table of a sealed round")
     metrics_parser.add_argument("--round", required=True)
+    stats_parser = sub.add_parser(
+        "stats", help="mean ± sd of each agent over repeated sealed rounds"
+    )
+    stats_parser.add_argument("--rounds", required=True, help="comma separated sealed rounds")
+    stats_parser.add_argument("--json", help="also write the groups to this file")
     report_parser = sub.add_parser("report", help="HTML report of every trial and its transcript")
     report_parser.add_argument("--jobs", default=str(ROOT / "jobs"))
     report_parser.add_argument("--out", default=str(ARTIFACTS / "report"))
@@ -772,6 +827,7 @@ def main(argv: list[str] | None = None) -> None:
         "summary": summary,
         "seal": seal,
         "metrics": metrics,
+        "stats": stats,
         "report": report,
     }
     commands[args.command](args)

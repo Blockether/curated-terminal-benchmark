@@ -196,3 +196,46 @@ def totals(rows: list[dict]) -> list[dict]:
             }
         )
     return out
+
+
+#: Per-round agent totals that `repeated` summarizes over rounds.
+REPEATED = ("passed", "cost_usd", "agent_minutes", "input", "output", "tool_calls")
+
+
+def spread(values: list) -> dict | None:
+    """Mean, sample standard deviation, minimum and maximum, or None when a value is missing."""
+    if not values or any(v is None for v in values):
+        return None
+    sd = statistics.stdev(values) if len(values) > 1 else None
+    return {
+        "mean": round(statistics.fmean(values), 2),
+        "sd": None if sd is None else round(sd, 2),
+        "min": min(values),
+        "max": max(values),
+    }
+
+
+def repeated(bodies: list[dict]) -> list[dict]:
+    """Each agent and model over repeated rounds: totals per round, their spread and passes per task."""
+    groups: dict[tuple[str, str], dict] = {}
+    for body in bodies:
+        for total in body["agents"]:
+            group = groups.setdefault((total["agent"], total["model"]), {"totals": [], "tasks": {}})
+            group["totals"].append({**total, "round": body["round"]})
+        for row in body["rows"]:
+            group = groups[(row["agent"], row["model"])]
+            task = group["tasks"].setdefault(row["task"], {"passed": 0, "trials": 0})
+            task["trials"] += 1
+            task["passed"] += (row["reward"] or 0) >= 1
+    return [
+        {
+            "agent": agent,
+            "model": model,
+            "rounds": [t["round"] for t in group["totals"]],
+            "trials": [t["trials"] for t in group["totals"]],
+            **{key: [t[key] for t in group["totals"]] for key in REPEATED},
+            "spread": {key: spread([t[key] for t in group["totals"]]) for key in REPEATED},
+            "tasks": dict(sorted(group["tasks"].items())),
+        }
+        for (agent, model), group in sorted(groups.items())
+    ]
