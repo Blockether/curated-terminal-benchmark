@@ -13,7 +13,7 @@ from ctb.resources import files_footprint
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = f"kmet-e159cfce-{arch.KMET}.tar.gz"
+ARCHIVE_NAME = f"kmet-2a3b07f3-{arch.KMET}.tar.gz"
 
 
 class Kmet(CuratedAgent):
@@ -86,3 +86,13 @@ class KmetEvalOnly(Kmet):
     @staticmethod
     def name() -> str:
         return "kmet-eval-only"
+
+
+class KmetBashOnly(Kmet):
+    """kmet with only the bash tool selected (`--tools bash`), everything else as kmet."""
+
+    TOOLS = "bash"
+
+    @staticmethod
+    def name() -> str:
+        return "kmet-bash-only"

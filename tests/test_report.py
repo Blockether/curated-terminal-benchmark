@@ -1,6 +1,8 @@
 import json
 import re
 
+import pytest
+
 from ctb.report import render
 from ctb.report.transcripts import (
     event,
@@ -49,11 +51,19 @@ def write_vis_trial(jobs, name="t1", task="terminal-bench/demo", model="zai/glm-
     return trial
 
 
-def test_kmet_eval_only_reads_kmet_transcripts():
+@pytest.mark.parametrize("name", ["kmet-eval-only", "kmet-bash-only"])
+def test_kmet_arms_read_kmet_transcripts(name):
     from ctb.report import transcripts
 
-    assert transcripts.harness("kmet-eval-only") == "kmet"
-    assert transcripts.READERS[transcripts.harness("kmet-eval-only")] is transcripts.read_kmet
+    assert transcripts.harness(name) == "kmet"
+    assert transcripts.READERS[transcripts.harness(name)] is transcripts.read_kmet
+
+
+def test_pi_bash_only_reads_pi_transcripts():
+    from ctb.report import transcripts
+
+    assert transcripts.harness("pi-bash-only") == "pi"
+    assert transcripts.READERS[transcripts.harness("pi-bash-only")] is transcripts.read_pi
 
 
 def test_formats_values_for_a_person():

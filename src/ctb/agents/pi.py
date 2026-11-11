@@ -15,7 +15,7 @@ from ctb.agents.base import EFFORT, agent_home, min_token_seconds, split_model, 
 from ctb.resources import npm_footprint
 from ctb.toolkit import TOOLKIT, Toolkit
 
-PI_VERSION = "1.5.0"
+PI_VERSION = "1.5.2"
 AUTH = ".pi/agent/auth.json"
 
 
@@ -53,11 +53,18 @@ class Pi(Toolkit, HarborPi):
     """Run the benchmark model with medium effort, the subscription login and the toolkit."""
 
     FOOTPRINT = npm_footprint("@earendil-works/pi-coding-agent")
+    #: Tool selection passed as `--tools`; empty keeps pi's defaults.
+    TOOLS = ""
 
     def __init__(self, *args, version: str | None = None, **kwargs) -> None:
         kwargs.setdefault("reasoning_effort", EFFORT)
         super().__init__(*args, version=version or PI_VERSION, **kwargs)
         split_model(self.model_name)
+
+    def build_cli_flags(self) -> str:
+        flags = super().build_cli_flags()
+        tools = f"--tools {self.TOOLS}" if self.TOOLS else ""
+        return " ".join(part for part in (tools, flags) if part)
 
     @property
     def model_connection(self) -> ResolvedModelConnection:
@@ -82,3 +89,13 @@ class Pi(Toolkit, HarborPi):
         finally:
             # Remove the token before the verifier runs.
             await self.exec_as_root(environment, command=f"rm -f {home}/{AUTH}")
+
+
+class PiBashOnly(Pi):
+    """Pi with only the bash tool selected (`--tools bash`), everything else as Pi."""
+
+    TOOLS = "bash"
+
+    @staticmethod
+    def name() -> str:
+        return "pi-bash-only"
