@@ -14,7 +14,7 @@ import pytest
 from harbor.models.agent.context import AgentContext
 
 from ctb import arch, cli, credentials
-from ctb.agents import vis
+from ctb.agents import nodecode, vis
 from ctb.agents.dirge import Dirge
 from ctb.agents.kmet import Kmet, KmetEvalOnly
 from ctb.agents.opencode import (
@@ -375,6 +375,7 @@ def test_run_pins_hold_the_version_of_each_harness():
         "opencode": "2.2.5",
         "pi": "1.5.0",
     }
+    assert cli.pins()["nodecode"] == f"{nodecode.VERSION}+{nodecode.LABEL}"
 
 
 def test_parallel_run_records_keep_every_record(tmp_path, monkeypatch):

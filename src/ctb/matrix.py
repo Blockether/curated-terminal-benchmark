@@ -19,6 +19,8 @@ class AgentSpec:
     #: Further Harbor `--ak` kwargs, for example the reasoning summary of Codex.
     agent_kwargs: tuple[str, ...] = ()
     proxy: bool = False
+    #: The only target CPU this arm runs on; None for every CPU.
+    arch: str | None = None
     #: The pinned version of a Harbor built-in agent; Harbor otherwise installs the latest one.
     version: str | None = None
     #: An experiment arm runs only when --agents names it, never in the default matrix.
@@ -48,6 +50,15 @@ AGENTS = {
             "kmet-eval-only",
             "ctb.agents.kmet:KmetEvalOnly",
             ("openai",),
+            experiment=True,
+        ),
+        # Nodecode publishes no Linux arm64 build, so it runs only on an amd64 target.
+        AgentSpec(
+            "nodecode",
+            "ctb.agents.nodecode:Nodecode",
+            ("openai",),
+            proxy=True,
+            arch="amd64",
             experiment=True,
         ),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).

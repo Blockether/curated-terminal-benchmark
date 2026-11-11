@@ -380,6 +380,7 @@ AGENTS = {
     "pi": ("Pi", False, "https://github.com/earendil-works/pi"),
     "kmet": ("Kmet", False, "https://github.com/kmetia/kmet-agent"),
     "wisp": ("Wisp", False, "https://github.com/xificurC/wisp"),
+    "nodecode": ("Nodecode", False, "https://github.com/nodecode-ai/nodecode"),
     "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
     "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
 }

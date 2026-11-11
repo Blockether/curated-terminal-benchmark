@@ -986,6 +986,60 @@ def read_verification(trial: Path) -> list[dict]:
     return entries
 
 
+def read_nodecode(agent: Path, model: str) -> list[dict]:
+    path = agent / "nodecode-rpc.jsonl"
+    if not path.is_file():
+        return []
+    events: list[dict] = []
+    pending: dict = {}
+    for record in jsonl(path):
+        payload = record.get("payload") or {}
+        frame = payload.get("frame") or {}
+        event_ = frame.get("event") or {}
+        kind = event_.get("type")
+        body = event_.get("payload") or {}
+        metadata = event_.get("metadata") or {}
+        at = epoch_ms(metadata.get("occurred_at"))
+        if kind == "turn.input_committed" and body.get("role") == "user":
+            events.append(event("user", at=at, text=text_of(body.get("message"))))
+        elif kind == "turn.tool_call_started":
+            tool = event(
+                "tool",
+                at=at,
+                name=body.get("tool-name"),
+                input=body.get("arguments"),
+            )
+            pending[body.get("call-id")] = tool
+            events.append(tool)
+        elif kind == "turn.tool_result":
+            ms = body.get("duration-ms")
+            fields = {
+                "output": body.get("result"),
+                "error": bool(body.get("failed")),
+                "ms": ms,
+                "ms_source": "recorded" if ms is not None else None,
+            }
+            call_id = body.get("call-id")
+            if call_id in pending:
+                pair(pending, call_id, **fields)
+            else:
+                events.append(event("tool", at=at, name=body.get("tool-name"), **fields))
+        elif kind == "turn.usage":
+            cached = body.get("cached-input-tokens") or 0
+            used = tokens(
+                (body.get("input-tokens") or 0) + cached,
+                cached,
+                body.get("output-tokens"),
+            )
+            cost = body.get("cost_usd") if body.get("cost_known") else None
+            events.append(call(body.get("model") or model, at, None, None, used, cost))
+        elif kind == "turn.assistant_message_completed":
+            text = text_of((body.get("message") or {}).get("content"))
+            if text:
+                events.append(event("assistant", at=at, text=text))
+    return events
+
+
 READERS = {
     "pi": read_pi,
     "opencode": read_opencode,
@@ -995,6 +1049,7 @@ READERS = {
     "samizdat": read_samizdat,
     "vis": read_vis,
     "wisp": read_wisp,
+    "nodecode": read_nodecode,
 }
 
 
