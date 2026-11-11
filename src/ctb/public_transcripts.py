@@ -301,12 +301,13 @@ def export(root, out):
     (out / "transcripts").mkdir(parents=True)
     manifest = {"schema": SCHEMA, "transcripts": {}}
     seals = {
-        r: report.read(root / "results" / (r + ".json")) for r in set(report.SELECTION.values())
+        r: report.read(root / "results" / (r + ".json"))
+        for r in {n for _, _, n in report.selected()}
     }
     # Do not clip text before sanitization; a clipped credential can escape a full-token scan.
     transcripts.MAX_TEXT = 1_000_000_000
     for row in comparison["rows"]:
-        name = report.SELECTION[row["agent"]]
+        name = report.SELECTION[row["agent"]][row["run"] - 1]
         source = next(s for s in seals[name]["rows"] if s["result_sha256"] == row["result_sha256"])
         result_path = root / source["result"]
         report.require(content_hash(result_path.read_bytes()) == row["result_sha256"])
@@ -418,7 +419,7 @@ def main():
             "Publication refused. Inspect locally; do not upload this directory."
         ) from None
     print(
-        f"Publication checked: {len(report.SELECTION) * len(report.TASKS)} sanitized transcripts and exact site files."
+        f"Publication checked: {report.trial_count()} sanitized transcripts and exact site files."
     )
 
 

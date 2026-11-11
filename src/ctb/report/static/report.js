@@ -151,44 +151,66 @@
   }
 
   function setupTabs() {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
-    var panels = Array.prototype.slice.call(document.querySelectorAll("[data-tab-panel]"));
-    if (!tabs.length) return;
-    var first = tabs[0].getAttribute("data-tab");
+    var lists = Array.prototype.slice.call(document.querySelectorAll("[role=tablist]"));
+    if (!lists.length) return;
+    // Each tab list is a group. Groups with the same URL parameter, such as the General and
+    // Normalized tabs of each round, follow each other.
+    var groups = lists.map(function (list) {
+      var tabs = Array.prototype.slice.call(list.querySelectorAll("[data-tab]"));
+      return { param: list.getAttribute("data-param") || "tab", tabs: tabs, first: tabs[0].getAttribute("data-tab") };
+    }).filter(function (group) { return group.first; });
 
-    function select(key, focus) {
-      tabs.forEach(function (tab) {
+    function select(group, key, focus) {
+      group.tabs.forEach(function (tab) {
         var on = tab.getAttribute("data-tab") === key;
         tab.setAttribute("aria-selected", on ? "true" : "false");
         tab.tabIndex = on ? 0 : -1;
         if (on && focus) tab.focus();
+        var panel = document.getElementById(tab.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
       });
-      panels.forEach(function (panel) { panel.hidden = panel.getAttribute("data-tab-panel") !== key; });
+    }
+
+    function known(group, key) {
+      return group.tabs.some(function (t) { return t.getAttribute("data-tab") === key; });
+    }
+
+    function choose(group, key, focus) {
+      groups.forEach(function (g) {
+        if (g.param === group.param && known(g, key)) select(g, key, focus && g === group);
+      });
+      setParams(Object.fromEntries([[group.param, key === group.first ? "" : key]]));
       setupDiagrams();
     }
 
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener("click", function () {
-        var key = tab.getAttribute("data-tab");
-        select(key, false);
-        setParams({ tab: key === first ? "" : key });
+    var params = new URLSearchParams(window.location.search);
+    groups.forEach(function (group) {
+      group.tabs.forEach(function (tab, i) {
+        tab.addEventListener("click", function () { choose(group, tab.getAttribute("data-tab"), false); });
+        tab.addEventListener("keydown", function (event) {
+          var step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+          if (!step) return;
+          event.preventDefault();
+          var next = group.tabs[(i + step + group.tabs.length) % group.tabs.length];
+          choose(group, next.getAttribute("data-tab"), true);
+        });
       });
-      tab.addEventListener("keydown", function (event) {
-        var step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-        if (!step) return;
-        event.preventDefault();
-        var next = tabs[(i + step + tabs.length) % tabs.length];
-        select(next.getAttribute("data-tab"), true);
-        setParams({ tab: next.getAttribute("data-tab") === first ? "" : next.getAttribute("data-tab") });
-      });
+      var key = params.get(group.param);
+      select(group, known(group, key) ? key : group.first, false);
     });
-    var key = new URLSearchParams(window.location.search).get("tab");
+    // A link to an element in a panel opens each tab that holds it.
     var target = window.location.hash && document.getElementById(window.location.hash.slice(1));
     var holder = target && target.closest && target.closest("[data-tab-panel]");
-    if (holder) key = holder.getAttribute("data-tab-panel");
-    var known = tabs.some(function (t) { return t.getAttribute("data-tab") === key; });
-    select(known ? key : first, false);
-    if (holder) target.scrollIntoView();
+    var opened = !!holder;
+    while (holder) {
+      var tab = document.querySelector('[role=tab][aria-controls="' + holder.id + '"]');
+      groups.forEach(function (group) {
+        if (group.tabs.indexOf(tab) >= 0) select(group, tab.getAttribute("data-tab"), false);
+      });
+      holder = holder.parentElement && holder.parentElement.closest("[data-tab-panel]");
+    }
+    setupDiagrams();
+    if (opened) target.scrollIntoView();
   }
 
   function setupDiagrams() {

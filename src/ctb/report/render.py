@@ -121,6 +121,15 @@ def number(value: float | None) -> str | None:
     return None if value is None else f"{value:,.0f}"
 
 
+def tokens(value: float | None) -> str | None:
+    """A token count for a person: 950, 12.3k or 4.56M."""
+    if value is None:
+        return None
+    if value >= 1e6:
+        return f"{value / 1e6:.2f}M"
+    return f"{value / 1e3:.1f}k" if value >= 1e3 else f"{value:.0f}"
+
+
 def percent(part: int | None, whole: int) -> str | None:
     if part is None or not whole:
         return None
@@ -381,8 +390,10 @@ def normalized(trials: list[dict]) -> tuple[list[dict], list[str]]:
     return keep, sorted({t["task"] for t in keep})
 
 
-def agent_view(trials: list[dict]) -> str:
-    """One agent table in two tabs: all attempts, and only the tasks that every agent passed."""
+def agent_view(trials: list[dict], prefix: str = "") -> str:
+    """One agent table in two tabs: all attempts, and only the tasks that every agent passed.
+
+    `prefix` keeps the element ids unique when a page shows this view once for each round."""
     head = [
         th("Agent", "text"),
         th("Trials"),
@@ -416,7 +427,114 @@ def agent_view(trials: list[dict]) -> str:
             ("normalized", "Normalized", "Only the tasks that every agent passed", normal),
         ],
         "Agent view",
+        prefix=prefix,
     )
+
+
+def per_round(group: list[dict], value) -> list[float | None]:
+    """The total of one value in each round; None for a round where a trial has no value."""
+    totals = []
+    for run in sorted({t["run"] for t in group}):
+        values = [value(t) for t in group if t["run"] == run]
+        totals.append(None if None in values else sum(values))
+    return totals
+
+
+def spread_td(values: list[float | None], show) -> str:
+    """The mean ± the sample standard deviation of per-round values; one round shows its value."""
+    if not values or None in values:
+        return td(None, -1)
+    mean = statistics.fmean(values)
+    text = show(mean) if len(values) < 2 else f"{show(mean)} ± {show(statistics.stdev(values))}"
+    return td(text, mean)
+
+
+def mean_view(trials: list[dict]) -> str:
+    """The values of each agent per round, as mean ± standard deviation, and its passes per task."""
+    by_agent: dict[str, list[dict]] = defaultdict(list)
+    for trial in trials:
+        by_agent[trial["agent"]].append(trial)
+    agents = sorted(by_agent)
+    runs = max(len({t["run"] for t in group}) for group in by_agent.values())
+    head = [
+        th("Agent", "text"),
+        th("Rounds"),
+        th("Passed per round"),
+        th("Pass rate"),
+        th("Cost per round"),
+        th("Run time per round"),
+        th("Calls per round"),
+        th("Input tokens per round"),
+        th("Output tokens per round"),
+        th("Tool calls per round"),
+    ]
+    rows = []
+    for agent in agents:
+        group = by_agent[agent]
+        passed = sum(t["passed"] for t in group)
+        rows.append(
+            "<tr>"
+            f'<th scope="row" data-v="{esc(agent)}"><a href="?agent={esc(agent)}#trials">'
+            f"{esc(agent)}</a></th>"
+            + td(number(len({t["run"] for t in group})), len({t["run"] for t in group}))
+            + spread_td(per_round(group, lambda t: int(t["passed"])), lambda v: f"{v:.1f}")
+            + td(percent(passed, len(group)), passed / len(group))
+            + spread_td(per_round(group, lambda t: t["facts"]["cost"]), money)
+            + spread_td(per_round(group, lambda t: t["facts"]["run_ms"]), duration)
+            + spread_td(per_round(group, lambda t: t["summary"]["provider_calls"]), number)
+            + spread_td(per_round(group, lambda t: usage(t)[0]), tokens)
+            + spread_td(per_round(group, lambda t: usage(t)[2]), tokens)
+            + spread_td(per_round(group, lambda t: t["summary"]["tool_calls"]), number)
+            + "</tr>"
+        )
+    names = ", ".join(f'"{mermaid_text(agent)}"' for agent in agents)
+    rates = [round(100 * sum(t["passed"] for t in by_agent[a]) / len(by_agent[a])) for a in agents]
+    chart = bar_chart(names, rates, "Pass rate (%)", "Pass rate by agent over all rounds", top=100)
+    task_rows = []
+    for task in sorted({t["task"] for t in trials}, key=task_name):
+        cells = ""
+        for agent in agents:
+            tries = [t for t in by_agent[agent] if t["task"] == task]
+            won = sum(t["passed"] for t in tries)
+            cells += td(f"{won}/{len(tries)}" if tries else None, won / len(tries) if tries else -1)
+        task_rows.append(
+            f'<tr><th scope="row" data-v="{esc(task_name(task))}" title="{esc(task)}">'
+            f"{esc(task_name(task))}</th>{cells}</tr>"
+        )
+    return (
+        f'<p class="hint">Each agent ran each task once per round. A value per round is the mean '
+        f"± the sample standard deviation over the rounds of that agent ({runs} at most).</p>"
+        f'<div class="charts">{chart}</div>'
+        + table(head, rows, cls="sortable", empty="No trials were found.")
+        + '<h3 class="view-heading">Passes per task</h3>'
+        + table(
+            [th("Task", "text"), *(th(agent) for agent in agents)],
+            task_rows,
+            cls="sortable",
+            empty="No trials were found.",
+        )
+    )
+
+
+def round_view(trials: list[dict]) -> str:
+    """With more than one round: the mean first, then one tab for each round."""
+    runs = {t.get("run") for t in trials}
+    if None in runs or len(runs) < 2:
+        return agent_view(trials)
+    panels = [
+        ("mean", "Mean", f"Mean ± standard deviation over {len(runs)} rounds", mean_view(trials))
+    ]
+    for run in sorted(runs):
+        chosen = [t for t in trials if t["run"] == run]
+        panels.append(
+            (
+                f"round-{run}",
+                f"Round {run}",
+                f"{len(chosen)} trials",
+                agent_view(chosen, f"r{run}-"),
+            )
+        )
+    return tabs(panels, "Rounds", param="view")
 
 
 def table(head: list[str], rows: list[str], *, cls: str = "", empty: str, attrs: str = "") -> str:
@@ -634,7 +752,7 @@ def index(
     body = f"""{head}
 {top}
 <section id="agents" class="block" aria-label="Agents">
-{agent_view(trials)}
+{round_view(trials)}
 </section>
 <section id="tool-errors" class="block">
 <h2>Tool errors by tool</h2>
@@ -1002,19 +1120,27 @@ def verification_list(entries: list[dict]) -> str:
     return f'<ol class="events" data-verification>{"".join(items)}</ol>'
 
 
-def tabs(panels: list[tuple[str, str, str, str]], label: str) -> str:
+def tabs(
+    panels: list[tuple[str, str, str, str]], label: str, *, param: str = "tab", prefix: str = ""
+) -> str:
     """Tab cards with a label and a short note, and their panels; the first tab starts selected.
 
-    Without JavaScript all panels show."""
+    The URL parameter `param` holds the selected key; groups with the same parameter follow
+    each other. `prefix` makes the element ids unique. Without JavaScript all panels show."""
     buttons = "".join(
-        f'<button type="button" role="tab" id="tab-{key}" aria-controls="{key}" '
+        f'<button type="button" role="tab" id="tab-{prefix}{key}" aria-controls="{prefix}{key}" '
         f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{key}">'
         f'<span class="tab-name">{esc(name)}</span><small>{esc(note)}</small></button>'
         for i, (key, name, note, _) in enumerate(panels)
     )
-    return f'<div class="tabs" role="tablist" aria-label="{esc(label)}">{buttons}</div>' + "".join(
-        f'<div id="{key}" role="tabpanel" aria-labelledby="tab-{key}" data-tab-panel="{key}">{html}</div>'
-        for key, _, _, html in panels
+    return (
+        f'<div class="tabs" role="tablist" aria-label="{esc(label)}" data-param="{param}">'
+        f"{buttons}</div>"
+        + "".join(
+            f'<div id="{prefix}{key}" role="tabpanel" aria-labelledby="tab-{prefix}{key}" '
+            f'data-tab-panel="{prefix}{key}">{html}</div>'
+            for key, _, _, html in panels
+        )
     )
 
 

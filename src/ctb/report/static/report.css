@@ -91,6 +91,7 @@ a:hover .arrow { transform: translate(0.08em, -0.08em); }
 .title-row { display: flex; gap: var(--space-sm); }
 .facts-head { margin-block-start: var(--space-xs); grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
 .fact-group + .fact-group { margin-block-start: var(--space-lg); padding-block-start: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.view-heading { margin-block: var(--space-xl) var(--space-sm); font-size: var(--text-md); }
 .fact-group h3 { color: var(--color-ink-2); margin-block-end: var(--space-sm); font-size: var(--text-md); }
 .exception { margin: 0; padding: var(--space-sm) var(--space-md); background: var(--color-bad-soft); color: var(--color-ink); border: var(--rule-hair) solid var(--color-bad); border-left-width: 3px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--text-sm); }
 

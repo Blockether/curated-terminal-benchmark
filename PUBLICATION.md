@@ -48,6 +48,12 @@ restrict who can modify Actions settings. Repository writers can change these co
 
 ## Seals
 
+`public_report.SELECTION` lists the sealed rounds of each agent in order. Each round has each task
+once, and each row of `public/comparison.json` names its round number (`run`). When an agent has
+more than one round, the page shows a Mean tab first: the mean ± the sample standard deviation of
+the values per round, and the passes per task. Then it shows one tab for each round. The URL keeps
+the selected tab (`view=round-2`) and the General or Normalized tab (`tab=normalized`).
+
 Five full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
 of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
 The Wisp round `gpt-wisp-ab49003` replaces `gpt-wisp-62106d1`. In the first round, the proxy did not send

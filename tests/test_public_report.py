@@ -3,6 +3,7 @@ import re
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from ctb import public_report as p
 
@@ -10,19 +11,29 @@ from ctb import public_report as p
 class PublicReportTests(unittest.TestCase):
     def setUp(self):
         self.data = {
-            "schema": 1,
+            "schema": 2,
             "sources": {
-                a: {
-                    "round": r,
-                    "seal_sha256": "a" * 64,
-                    "harness_commit": "b" * 40,
-                    "agent_version": "1.0.0",
-                }
-                for a, r in p.SELECTION.items()
+                a: [
+                    {
+                        "round": r,
+                        "seal_sha256": "a" * 64,
+                        "harness_commit": "b" * 40,
+                        "agent_version": "1.0.0",
+                    }
+                    for r in rounds
+                ]
+                for a, rounds in p.SELECTION.items()
             },
             "rows": [
-                {"agent": a, "task": t, "passed": True, "error": None, "result_sha256": "c" * 64}
-                for a in p.SELECTION
+                {
+                    "agent": a,
+                    "run": n,
+                    "task": t,
+                    "passed": True,
+                    "error": None,
+                    "result_sha256": "c" * 64,
+                }
+                for a, n, _ in p.selected()
                 for t in p.TASKS
             ],
         }
@@ -34,18 +45,20 @@ class PublicReportTests(unittest.TestCase):
     def test_sealed_agent_versions_are_published_and_checked(self):
         root = Path(__file__).resolve().parents[1]
         sources = p.from_seals(root)["sources"]
-        seal = p.read(root / "results" / (p.SELECTION["codex"] + ".json"))
+        seal = p.read(root / "results" / (p.SELECTION["codex"][0] + ".json"))
         self.assertEqual(
-            sources["codex"]["agent_version"], seal["runs"][0]["pins"]["harnesses"]["codex"]
+            sources["codex"][0]["agent_version"], seal["runs"][0]["pins"]["harnesses"]["codex"]
         )
-        self.data["sources"]["codex"]["agent_version"] = "<b>1</b>"
+        self.data["sources"]["codex"][0]["agent_version"] = "<b>1</b>"
         with self.assertRaises(ValueError):
             p.validate(self.data)
 
     def test_render_has_real_results_and_no_external_requests(self):
         text = p.render(self.data, self.metrics).decode()
-        self.assertIn(f"{len(p.SELECTION) * len(p.TASKS)} trials", text)
+        self.assertIn(f"{p.trial_count()} trials", text)
         self.assertIn("100%", text)
+        # One round for each agent: no mean and no round tabs.
+        self.assertNotIn('data-param="view"', text)
         self.assertIn("photonic-waveguide-routing", text)
         # A canonical link names the page address; the browser does not load it.
         loads = re.findall(
@@ -55,6 +68,32 @@ class PublicReportTests(unittest.TestCase):
         self.assertTrue(loads)
         self.assertFalse([u for u in loads if "//" in u or ":" in u])
         self.assertIn('src="report.js?v=', text)
+
+    def test_repeated_rounds_show_the_mean_first_then_each_round(self):
+        rounds = ("gpt-bench-b2a4d4a", "second-round")
+        with mock.patch.dict(p.SELECTION, {"codex": rounds}):
+            self.data["sources"]["codex"].append(
+                {**self.data["sources"]["codex"][0], "round": rounds[1]}
+            )
+            # Round 2 of Codex (the first row) passes only the first half of the tasks.
+            half = len(p.TASKS) // 2
+            self.data["rows"] += [
+                {**self.data["rows"][0], "run": 2, "task": t, "passed": i < half}
+                | ({} if i < half else {"result_sha256": "d" * 64})
+                for i, t in enumerate(p.TASKS)
+            ]
+            self.metrics["d" * 64] = {**self.metrics["c" * 64], "reward": 0}
+            text = p.render(self.data, self.metrics).decode()
+        tabs = re.findall(r'data-param="view">(.*?)</div>', text)[0]
+        self.assertEqual(re.findall(r'data-tab="([^"]+)"', tabs), ["mean", "round-1", "round-2"])
+        # 12 and 6 passes: the mean and the sample standard deviation per round.
+        self.assertIn("9.0 ± 4.2", text)
+        last = p.TASKS[-1]
+        row = re.search(rf'title="{last}">[^<]*</th>(.*?)</tr>', text.split("Passes per task")[1])
+        self.assertIn(">1/2<", row.group(1))
+        round_2 = text.split('data-tab-panel="round-2"')[1]
+        self.assertIn("r2-general", round_2)
+        self.assertNotIn(">kmet</a>", round_2.split('data-tab-panel="r2-normalized"')[0])
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):
         root = Path(__file__).resolve().parents[1]

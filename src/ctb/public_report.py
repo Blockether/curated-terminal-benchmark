@@ -12,13 +12,14 @@ from pathlib import Path
 from ctb.report import render as layout
 from ctb.report.comparison import setup_id
 
+#: The sealed rounds of each agent, in order: round 1 first. Each round has every task once.
 SELECTION = {
-    "codex": "gpt-bench-b2a4d4a",
-    "kmet": "gpt-kmet-2-16bbdc8",
-    "opencode": "gpt-bench-b2a4d4a",
-    "pi": "gpt-bench-b2a4d4a",
-    "vis-solo": "gpt-vis-solo-057-43a8048",
-    "wisp": "gpt-wisp-ab49003",
+    "codex": ("gpt-bench-b2a4d4a",),
+    "kmet": ("gpt-kmet-2-16bbdc8",),
+    "opencode": ("gpt-bench-b2a4d4a",),
+    "pi": ("gpt-bench-b2a4d4a",),
+    "vis-solo": ("gpt-vis-solo-057-43a8048",),
+    "wisp": ("gpt-wisp-ab49003",),
 }
 TASKS = (
     "bun-sourcemap-leak",
@@ -42,6 +43,15 @@ ERRORS = {
     "RuntimeError",
     "VerifierTimeoutError",
 }
+
+
+def selected():
+    """(agent, run, round) for each selected round; run 1 is the first round of the agent."""
+    return [(a, n, name) for a, names in SELECTION.items() for n, name in enumerate(names, 1)]
+
+
+def trial_count():
+    return len(selected()) * len(TASKS)
 
 
 def require(ok):
@@ -79,35 +89,40 @@ def read(path):
 
 def validate(data):
     keys(data, ("schema", "sources", "rows"))
-    require(type(data["schema"]) is int and data["schema"] == 1)
+    require(type(data["schema"]) is int and data["schema"] == 2)
     keys(data["sources"], SELECTION)
-    for agent, source in data["sources"].items():
-        keys(source, ("round", "seal_sha256", "harness_commit", "agent_version"))
-        require(source["round"] == SELECTION[agent])
-        version = source["agent_version"]
-        require(type(version) is str and re.fullmatch("[A-Za-z0-9][A-Za-z0-9 ._+-]{0,63}", version))
-        sha(source["seal_sha256"])
-        sha(source["harness_commit"], 40)
-    require(type(data["rows"]) is list and len(data["rows"]) == len(SELECTION) * len(TASKS))
+    for agent, sources in data["sources"].items():
+        require(type(sources) is list and len(sources) == len(SELECTION[agent]))
+        for source, name in zip(sources, SELECTION[agent], strict=True):
+            keys(source, ("round", "seal_sha256", "harness_commit", "agent_version"))
+            require(source["round"] == name)
+            version = source["agent_version"]
+            require(
+                type(version) is str and re.fullmatch("[A-Za-z0-9][A-Za-z0-9 ._+-]{0,63}", version)
+            )
+            sha(source["seal_sha256"])
+            sha(source["harness_commit"], 40)
+    require(type(data["rows"]) is list and len(data["rows"]) == trial_count())
     seen = set()
     for row in data["rows"]:
-        keys(row, ("agent", "task", "passed", "error", "result_sha256"))
+        keys(row, ("agent", "run", "task", "passed", "error", "result_sha256"))
         require(type(row["agent"]) is str and row["agent"] in SELECTION)
+        require(type(row["run"]) is int and 1 <= row["run"] <= len(SELECTION[row["agent"]]))
         require(type(row["task"]) is str and row["task"] in TASKS)
         require(type(row["passed"]) is bool)
         require(row["error"] is None or type(row["error"]) is str)
         require(row["error"] in ERRORS)
         sha(row["result_sha256"])
-        pair = row["agent"], row["task"]
-        require(pair not in seen)
-        seen.add(pair)
-    require(seen == {(a, t) for a in SELECTION for t in TASKS})
+        trial = row["agent"], row["run"], row["task"]
+        require(trial not in seen)
+        seen.add(trial)
+    require(seen == {(a, n, t) for a, n, _ in selected() for t in TASKS})
     return data
 
 
 def from_seals(root):
-    data = {"schema": 1, "sources": {}, "rows": []}
-    for agent, name in SELECTION.items():
+    data = {"schema": 2, "sources": {a: [] for a in SELECTION}, "rows": []}
+    for agent, run, name in selected():
         seal = read(root / "results" / (name + ".json"))
         require(seal["digest"] == digest(seal) and seal["round"] == name)
         runs = seal["runs"]
@@ -116,12 +131,14 @@ def from_seals(root):
         require(len(commits) == 1)
         versions = {r["agent_version"] for r in seal["rows"] if r["agent"] == agent}
         require(len(versions) == 1)
-        data["sources"][agent] = {
-            "round": name,
-            "seal_sha256": seal["digest"],
-            "harness_commit": next(iter(commits)),
-            "agent_version": next(iter(versions)),
-        }
+        data["sources"][agent].append(
+            {
+                "round": name,
+                "seal_sha256": seal["digest"],
+                "harness_commit": next(iter(commits)),
+                "agent_version": next(iter(versions)),
+            }
+        )
         for row in seal["rows"]:
             if row["agent"] != agent:
                 continue
@@ -133,6 +150,7 @@ def from_seals(root):
             data["rows"].append(
                 {
                     "agent": agent,
+                    "run": run,
                     "task": task.removeprefix("terminal-bench/"),
                     "passed": row["reward"] == 1,
                     "error": row["error"],
@@ -280,7 +298,7 @@ def collect_metrics(root):
 
     data = from_seals(root)
     metrics = {}
-    for agent, name in SELECTION.items():
+    for agent, _, name in selected():
         seal = read(root / "results" / (name + ".json"))
         for row in seal["rows"]:
             if row["agent"] != agent:
@@ -320,7 +338,7 @@ def collect_metrics(root):
 
 def checked_metrics(root, data):
     metrics = validate_metrics(read(root / "public/report-metrics.json"), data)
-    for agent, name in SELECTION.items():
+    for agent, _, name in selected():
         for row in read(root / "results" / (name + ".json"))["rows"]:
             if row["agent"] == agent:
                 m = metrics[row["result_sha256"]]
@@ -341,6 +359,7 @@ def public_trials(data, metrics):
     trials = []
     for r in data["rows"]:
         m = metrics[r["result_sha256"]]
+        source = data["sources"][r["agent"]][r["run"] - 1]
         trials.append(
             {
                 **r,
@@ -348,10 +367,10 @@ def public_trials(data, metrics):
                 "task_checksum": m["task_checksum"],
                 "setup": m["setup"],
                 "model": "openai/gpt-6.1-sol",
-                "round": data["sources"][r["agent"]]["round"],
+                "round": source["round"],
                 "reward": m["reward"],
                 "started_at": m["started_at"],
-                "version": data["sources"][r["agent"]]["agent_version"],
+                "version": source["agent_version"],
                 "error_message": None,
                 "events": [],
                 "verification": [],
@@ -425,7 +444,9 @@ def description():
 def head(data):
     """The page head: one lead line, then the tested versions, the paused agents and the sources."""
     # A sealed version can carry the program name ("vis-agent 0.5.7"); the list shows the name.
-    versions = {a.split("-")[0]: s["agent_version"].split()[-1] for a, s in data["sources"].items()}
+    versions = {
+        a.split("-")[0]: s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
+    }
 
     def agent(key):
         label, _, url = AGENTS[key]
@@ -691,9 +712,7 @@ def main():
         build(args.root, args.out, args.check)
     except (ValueError, KeyError, TypeError, OSError):
         raise SystemExit("Public report refused. No artifact may be uploaded.") from None
-    print(
-        f"Public report checked: {len(SELECTION) * len(TASKS)} trials; exact report assets and metrics."
-    )
+    print(f"Public report checked: {trial_count()} trials; exact report assets and metrics.")
 
 
 if __name__ == "__main__":
