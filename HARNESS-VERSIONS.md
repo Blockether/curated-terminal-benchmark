@@ -9,7 +9,7 @@ This audit does not change pins or frozen benchmark inputs.
 | OpenCode | `@opencode/cli` 2.2.5 | 2.2.5 | Keep. The GitHub latest-release endpoint can return the old 1.19.5 release. |
 | Pi | `@earendil-works/pi-coding-agent` 1.5.0 | 1.5.0 | Keep. Requires Node 22.19 or later. |
 | Dirge | `453776330d4f44a6b07ab21974f8534c1318d596` with local patches | 0.26.1, `7eb18de27eaf5775a00220e74ee5b2c40375c706` | Update candidate. Tool logging still needs the local patch. |
-| Kmet | `e159cfce3b60a9859b504328016102e4b81ed3b6` | 0.3.0 | Pinned to development HEAD on 11 November 2026. The build needs Babashka 1.13.229 or later. |
+| Kmet | `2a3b07f38b4fc45a933a0cd98585609009b8877b` | 0.3.0 | Pinned to development HEAD on 11 November 2026. The build needs Babashka 1.13.229 or later. |
 | Wisp | `e0d468f792fb12ba2a31ab873c7f54190a92b753` | none | Development HEAD of `xificurC/wisp`. The repository has no release tags. It is one Python script and runs on the toolkit Python. The local `wisp-missing-git` patch lets it start in task images without git. |
 | Samizdat | `9411f00c87d5ddb725f46eb8794e0d93a479835f` | 0.1.0 | Current pin equals development HEAD. |
 | Vis | 0.5.12, `55d9a4e6a7e532b0d9667442e8e914a4180d4345` | 0.5.12 | Pinned on 11 November 2026 with the Linux arm64 release archive, its checksum and `vis-lang-python` 1.16.10. |
