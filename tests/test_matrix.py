@@ -34,8 +34,8 @@ def test_paused_arms_stay_out_of_the_default_matrix():
     ]
 
 
-@pytest.mark.parametrize("arm", ["kmet-eval-only", "kmet-bash-only"])
-def test_kmet_tool_only_arms_are_experiment_arms(arm):
+@pytest.mark.parametrize("arm", ["kmet-eval-only", "kmet-bash-only", "pi-bash-only"])
+def test_tool_only_arms_are_experiment_arms(arm):
     spec = matrix.AGENTS[arm]
     assert spec.experiment
     assert spec.families == ("openai",)

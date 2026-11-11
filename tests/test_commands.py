@@ -29,7 +29,7 @@ from ctb.agents.opencode import (
     stopped_error,
     watchdog_verdict,
 )
-from ctb.agents.pi import Pi, pi_auth_json
+from ctb.agents.pi import Pi, PiBashOnly, pi_auth_json
 from ctb.agents.vis import VisSolo, VisTeam
 from ctb.agents.wisp import Wisp
 from ctb.cli import harbor_command
@@ -373,7 +373,7 @@ def test_run_pins_hold_the_version_of_each_harness():
     assert cli.pins()["harnesses"] == {
         "codex": "0.166.0",
         "opencode": "2.2.5",
-        "pi": "1.5.0",
+        "pi": "1.5.2",
     }
 
 
@@ -463,7 +463,7 @@ def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
         reasoning_effort="medium",
     )
     assert pi.options.thinking == "medium"
-    assert pi._version == "1.5.0"
+    assert pi._version == "1.5.2"
     assert pi.model_connection.provider == "openai-codex"
     command = harbor_command(Trial(AGENTS["pi"], "openai", "t"), Path("/j"), 0.25)
     assert command[-2:] == ["--ak", "reasoning_effort=medium"]
@@ -474,6 +474,20 @@ def test_only_the_gpt_model_runs():
         with pytest.raises(ValueError, match="Use --model openai/gpt-6.1-sol"):
             agent(cls, "anthropic/claude-opus-5-5")
     assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
+
+
+def test_pi_bash_only_selects_only_the_bash_tool():
+    pi = agent(Pi, "openai/gpt-6.1-sol")
+    bash_only = agent(PiBashOnly, "openai/gpt-6.1-sol")
+    assert PiBashOnly.name() == "pi-bash-only"
+    assert pi._version == bash_only._version == "1.5.2"
+    assert bash_only.build_cli_flags() == f"--tools bash {pi.build_cli_flags()}"
+
+
+def test_pi_bash_only_uses_the_pi_install_and_effort():
+    command = harbor_command(Trial(AGENTS["pi-bash-only"], "openai", "t"), Path("/j"), 0.25)
+    assert command[command.index("-a") + 1] == "ctb.agents.pi:PiBashOnly"
+    assert command[-2:] == ["--ak", "reasoning_effort=medium"]
 
 
 def test_opencode_sends_low_gpt_verbosity():

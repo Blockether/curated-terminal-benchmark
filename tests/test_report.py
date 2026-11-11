@@ -59,6 +59,13 @@ def test_kmet_arms_read_kmet_transcripts(name):
     assert transcripts.READERS[transcripts.harness(name)] is transcripts.read_kmet
 
 
+def test_pi_bash_only_reads_pi_transcripts():
+    from ctb.report import transcripts
+
+    assert transcripts.harness("pi-bash-only") == "pi"
+    assert transcripts.READERS[transcripts.harness("pi-bash-only")] is transcripts.read_pi
+
+
 def test_formats_values_for_a_person():
     assert render.duration(None) is None
     assert render.duration(850) == "850 ms"
