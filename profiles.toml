@@ -44,3 +44,23 @@ persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.
 config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
 path = ["/installed-agent"]
+
+# ls A/B on one experiment build (Vis branch exp/no-ls-ab, 1eaf5c8c4). Only `env` differs.
+[profiles.exp-ls-base]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = {}
+build = { release = "", run_id = 43305079545, commit = "1eaf5c8c4ed66ae36690dc2c944fe3abb1dec099", sha256 = "4ad230f1c5d4fce266ca35d9a9e2845eee732583e35a56c3441ebbb29037d77e" }
+
+# No `ls`: the model lists directories with plain Python.
+[profiles.exp-ls-none]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = { VIS_EXP_NO_LS = "1" }
+build = { release = "", run_id = 43305079545, commit = "1eaf5c8c4ed66ae36690dc2c944fe3abb1dec099", sha256 = "4ad230f1c5d4fce266ca35d9a9e2845eee732583e35a56c3441ebbb29037d77e" }

@@ -383,8 +383,30 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
+class VisExpLsBase(VisSolo):
+    """ls A/B: the experiment build with `ls`."""
+
+    PROFILE = "exp-ls-base"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-ls-base"
+
+
+class VisExpLsNone(VisSolo):
+    """ls A/B: no `ls`; directories are listed with Python."""
+
+    PROFILE = "exp-ls-none"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-ls-none"
+
+
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam)}
+AGENT_PROFILES = {
+    cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam, VisExpLsBase, VisExpLsNone)
+}
 
 
 def builds() -> list[dict]:
