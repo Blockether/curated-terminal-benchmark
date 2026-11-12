@@ -383,8 +383,30 @@ class VisTeam(VisSolo):
         return "vis-team"
 
 
+class VisExpIoBase(VisSolo):
+    """Python file IO A/B: the experiment build with `cat` and `patch`."""
+
+    PROFILE = "exp-io-base"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-io-base"
+
+
+class VisExpIoPython(VisSolo):
+    """Python file IO A/B: no `cat` and no `patch`; files are read and written with Python."""
+
+    PROFILE = "exp-io-python"
+
+    @staticmethod
+    def name() -> str:
+        return "vis-exp-io-python"
+
+
 #: The default profile of each Vis agent of the matrix.
-AGENT_PROFILES = {cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam)}
+AGENT_PROFILES = {
+    cls.name(): cls.PROFILE for cls in (VisSolo, VisTeam, VisExpIoBase, VisExpIoPython)
+}
 
 
 def builds() -> list[dict]:

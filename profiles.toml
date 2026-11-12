@@ -44,3 +44,23 @@ persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.
 config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
 path = ["/installed-agent"]
+
+# Python file IO A/B on one experiment build (Vis branch exp/python-io-ab). Only `env` differs.
+[profiles.exp-io-base]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = {}
+build = { release = "", run_id = 43192212008, commit = "a34bba3e034e7b781de0d9af47250e9c7502c319", sha256 = "df36648a3031f12b57744119db883dde89d41cee83f51a4f6019f01512182774" }
+
+# No `cat` and no `patch`: the model reads and writes files with plain Python.
+[profiles.exp-io-python]
+toggles = { council = false, draft_backend = "off" }
+effort = "medium"
+persist = false
+config = { python = { environment = "shared" } }
+path = ["/installed-agent"]
+env = { VIS_EXP_PYTHON_IO = "1" }
+build = { release = "", run_id = 43192212008, commit = "a34bba3e034e7b781de0d9af47250e9c7502c319", sha256 = "df36648a3031f12b57744119db883dde89d41cee83f51a4f6019f01512182774" }

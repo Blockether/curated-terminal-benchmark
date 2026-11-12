@@ -147,7 +147,7 @@ def test_vis_arms_share_python_and_keep_the_task_text():
     # Profiles without a note keep the task text as it is.
     assert "-- x >" in solo
     names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
-    assert names == ["VisSolo", "VisTeam"]
+    assert names == ["VisSolo", "VisTeam", "VisExpIoBase", "VisExpIoPython"]
     assert set(vis.AGENT_PROFILES.values()) <= set(vis.settings()["profiles"])
 
 
