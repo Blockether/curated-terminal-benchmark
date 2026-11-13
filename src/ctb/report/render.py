@@ -516,11 +516,13 @@ def mean_view(trials: list[dict]) -> str:
     )
 
 
-def round_view(trials: list[dict]) -> str:
-    """With more than one round: the mean first, then one tab for each round."""
+def round_view(trials: list[dict], prefix: str = "") -> str:
+    """With more than one round: the mean first, then one tab for each round.
+
+    `prefix` keeps the element ids unique when a page shows this view once for each run."""
     runs = {t.get("run") for t in trials}
     if None in runs or len(runs) < 2:
-        return agent_view(trials)
+        return agent_view(trials, prefix)
     panels = [
         ("mean", "Mean", f"Mean ± standard deviation over {len(runs)} rounds", mean_view(trials))
     ]
@@ -531,10 +533,25 @@ def round_view(trials: list[dict]) -> str:
                 f"round-{run}",
                 f"Round {run}",
                 f"{len(chosen)} trials",
-                agent_view(chosen, f"r{run}-"),
+                agent_view(chosen, f"{prefix}r{run}-"),
             )
         )
-    return tabs(panels, "Rounds", param="view")
+    return tabs(panels, "Rounds", param="view", prefix=prefix)
+
+
+def run_views(trials: list[dict]) -> str:
+    """One round view for each run; the Run filter shows one of them, and All shows every trial."""
+    names = {t.get("run_name") for t in trials}
+    if None in names or len(names) < 2:
+        return round_view(trials)
+    names = sorted(names)
+    blocks = [f'<div data-run-block="">{agent_view(trials, "all-")}</div>']
+    for i, name in enumerate(names):
+        chosen = [t for t in trials if t["run_name"] == name]
+        blocks.append(
+            f'<div data-run-block="{esc(name)}" hidden>{round_view(chosen, f"run{i}-")}</div>'
+        )
+    return "".join(blocks)
 
 
 def table(head: list[str], rows: list[str], *, cls: str = "", empty: str, attrs: str = "") -> str:
@@ -660,11 +677,17 @@ def trial_rows(trials: list[dict]) -> list[str]:
             + td(duration(f["agent_ms"]), -1 if f["agent_ms"] is None else f["agent_ms"])
             + f'<td class="mono" data-v="{esc(t["model"])}" title="{esc(t["model"])}">'
             f"{esc(short_model(t['model'])) or NONE}</td>"
-            f'<td data-v="{esc(t["round"])}">{esc(t["round"])}</td>'
+            f'<td data-v="{esc(round_label(t))}">{esc(round_label(t))}</td>'
             + td(stamp(t["started_at"]), t["started_at"] or "", cls="mono")
             + "</tr>"
         )
     return rows
+
+
+def round_label(trial: dict) -> str:
+    """The run, and the round inside it when the run has rounds: `name · round 2`."""
+    run = trial.get("run")
+    return trial["round"] if run is None else f"{trial['round']} · round {run}"
 
 
 def options(name: str, label: str, values: list[str]) -> str:
@@ -738,7 +761,7 @@ def index(
 <label class="field field-q"><span>Search</span>
 <input type="search" name="q" placeholder="Task, agent or model" autocomplete="off"></label>
 {options("agent", "Agent", agents)}
-{options("round", "Round", rounds)}
+{options("round", "Run", rounds)}
 <label class="field field-outcome"><span>Outcome</span><select name="outcome"><option value="">All</option>
 <option value="passed">Passed</option><option value="failed">Failed</option>
 <option value="error">Error</option></select></label>
@@ -752,7 +775,7 @@ def index(
     body = f"""{head}
 {top}
 <section id="agents" class="block" aria-label="Agents">
-{round_view(trials)}
+{run_views(trials)}
 </section>
 <section id="tool-errors" class="block">
 <h2>Tool errors by tool</h2>
@@ -1176,7 +1199,7 @@ def trial_page(trial: dict) -> str:
         ("Agent", trial["agent"]),
         ("Version", trial["version"]),
         ("Model", trial["model"] or None),
-        ("Round", trial["round"]),
+        ("Round", round_label(trial)),
         ("Started", stamp(trial["started_at"])),
         ("Reward", None if trial["reward"] is None else f"{trial['reward']:g}"),
         ("Exception", trial["error"]),
@@ -1324,7 +1347,7 @@ def build(jobs: Path, out: Path, workers: int | None = None) -> list[dict]:
     for stale in pages.glob("*.html"):
         if stale.stem not in set(ids):
             stale.unlink()
-    trials.sort(key=lambda t: (t["round"], t["agent"], t["task"]))
+    trials.sort(key=lambda t: (t["round"], str(t.get("run") or ""), t["agent"], t["task"]))
     generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
     (out / "index.html").write_text(index(trials, generated), encoding="utf-8")
     return trials

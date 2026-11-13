@@ -92,6 +92,8 @@ uv run ctb metrics --round my-round
 ```
 
 Start from a clean commit. Use a new round name for each repeat.
+A round name `RUN/rN` puts round N in the run `RUN`: `jobs/RUN/rN/`. The report shows each run once in the Run filter, with one tab for each of its rounds.
+To add an agent to a run later, run it with the same round names.
 `seal` and `metrics` write `results/<round>.json` and `results/<round>-metrics.json`.
 
 ## Run the full Vis suite

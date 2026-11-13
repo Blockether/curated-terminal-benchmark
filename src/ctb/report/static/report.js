@@ -100,6 +100,10 @@
       table.parentElement.hidden = shown === 0;
       var clear = document.querySelector("[data-clear]");
       if (clear) clear.hidden = !(q || agent || round || outcome);
+      // The agent tables of the chosen run, with a tab for each of its rounds.
+      Array.prototype.forEach.call(document.querySelectorAll("[data-run-block]"), function (block) {
+        block.hidden = block.getAttribute("data-run-block") !== round;
+      });
       setParams({ q: q, agent: agent, round: round, outcome: outcome });
     }
 

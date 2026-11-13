@@ -99,7 +99,12 @@ def load(trial: Path, jobs: Path) -> dict:
         (info.get("model_info") or {}).get("name") or ""
     )
     parts = trial.relative_to(jobs).parts
+    # A run groups rounds: jobs/<run>/r<N>/<job>/<trial>. A single round is jobs/<round>/<job>/<trial>.
+    nested = parts[0] != "suite" and len(parts) == 4
     round_ = parts[0] if parts[0] != "suite" else f"suite/{parts[2]}"
+    job_root = jobs.joinpath(*parts[:2]) if nested else jobs / parts[0]
+    number = re.fullmatch(r"r(\d+)", parts[1]) if nested else None
+    run = (int(number[1]) if number else parts[1]) if nested else None
     key = harness(info.get("name") or "")
     events = read_events(key, trial / "agent", model) if key else []
     if not any(e["kind"] == "user" for e in events):
@@ -108,14 +113,18 @@ def load(trial: Path, jobs: Path) -> dict:
             events.insert(0, event("user", text=prompt))
     reward = ((result.get("verifier_result") or {}).get("rewards") or {}).get("reward")
     exception = result.get("exception_info") or {}
-    manifest = jobs / parts[0] / "ctb-runs.json"
+    manifest = job_root / "ctb-runs.json"
     runs = json.loads(manifest.read_text()) if manifest.is_file() else []
     ids = {setup_id(r) for r in runs if (info.get("name") or "") in r.get("agents", "").split(",")}
     return {
         "task_checksum": result.get("task_checksum"),
         "setup": next(iter(ids)) if len(ids) == 1 else None,
-        "id": slug(f"{round_}-{result.get('trial_name') or trial.name}"),
+        "id": slug(
+            f"{'-'.join(parts[:2]) if nested else round_}-{result.get('trial_name') or trial.name}"
+        ),
         "round": round_,
+        "run": run,
+        "run_name": round_,
         "agent": info.get("name") or "unknown",
         "harness": key,
         "version": clean_version(info.get("version")),

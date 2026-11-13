@@ -677,7 +677,7 @@ def seal(args: argparse.Namespace) -> None:
     if missing:
         raise SystemExit(f"{len(missing)} trials have no result: {', '.join(missing)}")
     body = seal_round(args.round, runs, found.values(), ROOT)
-    RESULTS.mkdir(exist_ok=True)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(body, indent=2) + "\n")
     print(f"sealed {len(body['rows'])} trials in {out.relative_to(ROOT)}, digest {body['digest']}")
 
@@ -792,7 +792,9 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("fetch", help="get the Python toolkit and every agent for the CPU of ctb.arch")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
-    run_parser.add_argument("--round", required=True)
+    run_parser.add_argument(
+        "--round", required=True, help="a name, or RUN/rN to put round N in one run of rounds"
+    )
     run_parser.add_argument("--agents", default=DEFAULT_AGENTS)
     run_parser.add_argument("--models", default=",".join(MODELS))
     run_parser.add_argument("--tasks", default="all", help="all, easy, hard or names")
