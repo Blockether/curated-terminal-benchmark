@@ -4,8 +4,12 @@ Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
 Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Wisp, Vis solo and Vis team.
+Nodecode is an experimental amd64 arm. It reaches GPT through the same host proxy and drives one `nodecode rpc` turn.
 Samizdat and Wisp reach GPT through the host proxy in `src/ctb/proxy.py`. Samizdat speaks only OpenAI Chat Completions, which the proxy converts. Wisp speaks the Responses wire: the proxy relays its requests and events unchanged and adds only the login and the shared `text.verbosity`, which Wisp does not send. The proxy log records the provider usage of each request.
 Dirge and Samizdat are paused: a run without `--agents` skips them, and `--agents dirge` still runs Dirge.
+A run without `--agents` also skips Nodecode. It needs an amd64 target and its own fetch:
+`CTB_ARCH=amd64 uv run ctb fetch --agents nodecode`, then `CTB_ARCH=amd64 uv run ctb run --agents nodecode ...`.
+Nodecode publishes no Linux arm64 build, and the pinned Vis build is arm64.
 
 ## Layout
 
@@ -74,11 +78,12 @@ The source trial does not change.
 Requires Python 3.12+, uv, a running Podman connection, and a valid Vis ChatGPT login.
 Runs consume subscription quota. Configure `CONTAINER_CONNECTION` and `DOCKER_HOST` for your Podman machine.
 `src/ctb/arch.py` sets one CPU for the task images and every agent build: arm64, so the tasks run
-natively in the Podman VM of an Apple Silicon Mac. The published task images are amd64 only, so
+natively in the Podman VM of an Apple Silicon Mac. Set `CTB_ARCH=amd64` for an amd64 round; the
+Nodecode experiment needs it. The published task images are amd64 only, so
 `ctb.environment:Podman` builds each agent and verifier image from the task Dockerfile. The builds
 get `DOCKER_DEFAULT_PLATFORM`, so a cached base image of another CPU is not used. On a Podman host of another CPU the tasks run
 under emulation. `run` stops there unless you give `--allow-emulation`. Dirge and Samizdat are
-paused and build only for amd64. Each run record
+paused and build only for amd64; Nodecode is experimental and runs only on amd64. Each run record
 and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
 in the task container shows its path and not its source.
 

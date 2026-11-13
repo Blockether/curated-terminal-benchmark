@@ -12,6 +12,7 @@ This audit does not change pins or frozen benchmark inputs.
 | Kmet | `e159cfce3b60a9859b504328016102e4b81ed3b6` | 0.3.0 | Pinned to development HEAD on 11 November 2026. The build needs Babashka 1.13.229 or later. |
 | Wisp | `13e25529caa257f0e8811b2ae32b25afcc5393da` | none | Development HEAD of `xificurC/wisp` on 11 November 2026, after the upstream force push. The repository has no release tags. It is one Python script and runs on the toolkit Python. The local `wisp-missing-git` patch lets it start in task images without git. |
 | Samizdat | `9411f00c87d5ddb725f46eb8794e0d93a479835f` | 0.1.0 | Current pin equals development HEAD. |
+| Nodecode | 0.1.14, `cef1be5a34836b4b1d735efb8d346a461d8c9fe3` | 0.1.14 | Experimental amd64 arm. The Linux release is x86_64 only, so an arm64 round cannot run it. |
 | Vis | 0.5.12, `55d9a4e6a7e532b0d9667442e8e914a4180d4345` | 0.5.12 | Pinned on 11 November 2026 with the Linux arm64 release archive, its checksum and `vis-lang-python` 1.16.10. |
 
 ## Dirge
@@ -27,6 +28,14 @@ The benchmark's `tools-v4` patch writes tool calls and results immediately.
 It does not change the model, prompt, tool dispatch or task scoring.
 The report reads both old and new logs. Old measurements are not added or estimated.
 
+## Nodecode
+
+Pinned on 11 November 2026. The experimental arm downloads the stable Linux x86_64 release and drives one turn through
+`nodecode rpc`, with the benchmark proxy as an `openai-responses` provider. Nodecode has no Linux
+arm64 build, so `CTB_ARCH=amd64` selects an amd64 round and `ctb fetch --agents nodecode` gets
+its archive without the arm64 Vis build. The home, store and layer stay in `$HOME`;
+workspace captures, request-body retention and updates are off.
+
 ## Upgrade policy
 
 Do not change a running or frozen round. Use a new round for updated pins.
@@ -38,6 +47,7 @@ Samizdat's upstream repository moved to `samizdat-code/samizdat`.
 - [Codex 0.166.0](https://github.com/openai/codex/releases/tag/rust-v0.166.0)
 - [OpenCode 2.2.5](https://github.com/anomalyco/opencode/releases/tag/v2.2.5)
 - [Pi 1.5.0](https://github.com/earendil-works/pi/releases/tag/v1.5.0)
+- [Nodecode 0.1.14](https://github.com/nodecode-ai/nodecode/releases/tag/v0.1.14)
 - [Dirge 0.26.1](https://github.com/dirge-code/dirge/releases/tag/v0.26.1)
 - [Kmet 0.2.0](https://github.com/kmetia/kmet-agent/releases/tag/v0.2.0)
 - [Kmet changes](https://github.com/kmetia/kmet-agent/compare/b141b2bdf9ee26f6366552b94259ab8a4a40195b...1e4e76aa2d95abedc8ee82258a6feae982ab2e58)

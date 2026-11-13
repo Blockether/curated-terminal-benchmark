@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import arch, credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
+from ctb.agents import dirge, kmet, nodecode, opencode, pi, samizdat, vis, wisp
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -226,20 +226,57 @@ def fetch_wisp() -> Path:
     return archive
 
 
-def fetch() -> None:
-    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet and Wisp.
+def fetch_nodecode() -> Path:
+    """Download the pinned Nodecode release; it has no Linux arm64 build."""
+    return download(nodecode.URL, nodecode.Nodecode.ARCHIVE, nodecode.SHA256)
 
-    Dirge and samizdat are paused and build only for amd64, so only an amd64 fetch gets them.
+
+def fetch_agent(name: str) -> list[Path]:
+    """The local archives of one named agent; empty for an agent Harbor installs itself."""
+    if name in vis.AGENT_PROFILES:
+        if arch.ARCH != "arm64":
+            raise SystemExit("The pinned Vis build is arm64; fetch it on an arm64 target.")
+        return [vis.fetch(build) for build in vis.builds()]
+    if name in ("kmet", "kmet-eval-only"):
+        return [fetch_kmet()]
+    if name == "wisp":
+        return [fetch_wisp()]
+    if name in ("dirge", "samizdat"):
+        if arch.ARCH != "amd64":
+            raise SystemExit(f"{name} builds only for amd64; set CTB_ARCH=amd64.")
+        return [fetch_dirge()] if name == "dirge" else [fetch_samizdat()]
+    if name == "nodecode":
+        return [fetch_nodecode()]
+    if name in ("codex", "opencode", "pi"):
+        return []
+    raise SystemExit(f"Unknown agent: {name}")
+
+
+def fetch(agents: str | None = None) -> None:
+    """Get everything for arch.PLATFORM, or only the archives of --agents.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
-    dirge and samizdat need Podman.
+    dirge and samizdat need Podman. Nodecode only downloads its release. Dirge, samizdat and
+    Nodecode are amd64-only; the pinned Vis build is arm64.
     """
     ARTIFACTS.mkdir(exist_ok=True)
-    archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_kmet(), fetch_wisp()]
-    if arch.ARCH == "amd64":
-        archives += [fetch_dirge(), fetch_samizdat()]
+    if agents is None:
+        # The default fetch keeps the published matrix's shape.
+        archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
+        archives += [fetch_kmet(), fetch_wisp()]
+        if arch.ARCH == "amd64":
+            archives += [fetch_dirge(), fetch_samizdat(), fetch_nodecode()]
+    else:
+        names = [name.strip() for name in agents.split(",") if name.strip()]
+        unknown = sorted(set(names) - set(AGENTS))
+        if unknown:
+            raise SystemExit(f"Unknown agents: {', '.join(unknown)}")
+        check_target_arch(names)
+        archives = [fetch_toolkit()]
+        for name in dict.fromkeys(names):
+            archives += fetch_agent(name)
+        archives = list(dict.fromkeys(archives))
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
@@ -497,7 +534,23 @@ def apply_task_fixes(dataset: Path | None = None) -> list[str]:
     return fixed
 
 
+def check_target_arch(agents: list[str]) -> None:
+    """Refuse an arm that has no build for the target CPU, before Harbor builds anything."""
+    wrong = sorted(
+        {
+            AGENTS[name]
+            for name in agents
+            if name in AGENTS and AGENTS[name].arch and AGENTS[name].arch != arch.ARCH
+        },
+        key=lambda spec: spec.name,
+    )
+    if wrong:
+        needs = ", ".join(f"{spec.name} needs {spec.arch}" for spec in wrong)
+        raise SystemExit(f"{needs}; this round targets {arch.ARCH}. Set CTB_ARCH={wrong[0].arch}.")
+
+
 def run(args: argparse.Namespace) -> None:
+    check_target_arch(args.agents.split(","))
     # The tasks and agents are built for arch.ARCH. Another host runs them through a translator,
     # such as Rosetta, which changes what tasks that read machine code or ptrace other processes see.
     host = engine_arch()
@@ -555,6 +608,7 @@ def pins() -> dict:
         "samizdat": samizdat.COMMIT,
         "jolt": samizdat.JOLT_VERSION,
         "wisp": wisp.COMMIT,
+        "nodecode": f"{nodecode.VERSION}+{nodecode.LABEL}",
         "harbor": metadata.version("harbor"),
         "harnesses": {
             "codex": AGENTS["codex"].version,
@@ -790,7 +844,10 @@ def report(args: argparse.Namespace) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ctb", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("fetch", help="get the Python toolkit and every agent for the CPU of ctb.arch")
+    fetch_parser = sub.add_parser(
+        "fetch", help="get the Python toolkit and every agent for the CPU of ctb.arch"
+    )
+    fetch_parser.add_argument("--agents", help="fetch only these agents, comma separated")
     run_parser = sub.add_parser("run", help="run the matrix in Harbor")
     run_parser.add_argument(
         "--round", required=True, help="a name, or RUN/rN to put round N in one run of rounds"
@@ -828,7 +885,7 @@ def main(argv: list[str] | None = None) -> None:
     report_parser.add_argument("--workers", type=int, help="processes; the default is up to 8")
     args = parser.parse_args(argv)
     commands = {
-        "fetch": lambda _: fetch(),
+        "fetch": lambda args: fetch(args.agents),
         "run": run,
         "summary": summary,
         "seal": seal,
