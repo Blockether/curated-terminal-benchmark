@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import arch, credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
+from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp, xi
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -560,6 +560,7 @@ def pins() -> dict:
             "codex": AGENTS["codex"].version,
             "opencode": opencode.OPENCODE_VERSION,
             "pi": pi.PI_VERSION,
+            "xi": xi.VERSION,
         },
         "models": MODELS,
         "effort": EFFORT,
