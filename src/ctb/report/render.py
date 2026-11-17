@@ -11,7 +11,7 @@ import os
 import re
 import shutil
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from datetime import UTC, datetime
 from itertools import repeat
@@ -439,22 +439,44 @@ def agent_view(trials: list[dict], prefix: str = "") -> str:
     )
 
 
+def complete_rounds(group: list[dict]) -> list:
+    """The rounds with as many trials as the largest round; a round still running is left out."""
+    sizes = Counter(t["run"] for t in group)
+    most = max(sizes.values(), default=0)
+    return sorted((run for run, size in sizes.items() if size == most), key=str)
+
+
+def rounds_text(group: list[dict]) -> str:
+    """The number of complete rounds, and of incomplete rounds when there are some."""
+    done, every = len(complete_rounds(group)), len({t["run"] for t in group})
+    return f"{done}" if done == every else f"{done} (+{every - done} incomplete)"
+
+
 def per_round(group: list[dict], value) -> list[float | None]:
-    """The total of one value in each round; None for a round where a trial has no value."""
+    """The total of one value in each complete round; None for a round where a trial has no value."""
     totals = []
-    for run in sorted({t["run"] for t in group}):
+    for run in complete_rounds(group):
         values = [value(t) for t in group if t["run"] == run]
         totals.append(None if None in values else sum(values))
     return totals
 
 
-def spread_td(values: list[float | None], show) -> str:
+def spread_text(values: list[float | None], show) -> str | None:
     """The mean ± the sample standard deviation of per-round values; one round shows its value."""
     if not values or None in values:
-        return td(None, -1)
+        return None
     mean = statistics.fmean(values)
-    text = show(mean) if len(values) < 2 else f"{show(mean)} ± {show(statistics.stdev(values))}"
-    return td(text, mean)
+    return show(mean) if len(values) < 2 else f"{show(mean)} ± {show(statistics.stdev(values))}"
+
+
+def spread_td(values: list[float | None], show, cls: str = "num") -> str:
+    text = spread_text(values, show)
+    return td(text, -1 if text is None else statistics.fmean(values), cls=cls)
+
+
+def count(value: float) -> str:
+    """A mean count: one decimal."""
+    return f"{value:,.1f}"
 
 
 def mean_view(trials: list[dict]) -> str:
@@ -475,17 +497,20 @@ def mean_view(trials: list[dict]) -> str:
         th("Input tokens per round"),
         th("Output tokens per round"),
         th("Tool calls per round"),
+        th("Tool errors per round"),
+        th("Error rate"),
     ]
     rows = []
     for agent in agents:
         group = by_agent[agent]
         passed = sum(t["passed"] for t in group)
+        tool_errors, marked_calls = marked_errors(group)
         rows.append(
             "<tr>"
             f'<th scope="row" data-v="{esc(agent)}"><a href="?agent={esc(agent)}#trials">'
             f"{esc(agent)}</a></th>"
-            + td(number(len({t["run"] for t in group})), len({t["run"] for t in group}))
-            + spread_td(per_round(group, lambda t: int(t["passed"])), lambda v: f"{v:.1f}")
+            + td(rounds_text(group), len(complete_rounds(group)))
+            + spread_td(per_round(group, lambda t: int(t["passed"])), count)
             + td(percent(passed, len(group)), passed / len(group))
             + spread_td(per_round(group, lambda t: t["facts"]["cost"]), money)
             + spread_td(per_round(group, lambda t: t["facts"]["run_ms"]), duration)
@@ -493,6 +518,15 @@ def mean_view(trials: list[dict]) -> str:
             + spread_td(per_round(group, lambda t: usage(t)[0]), tokens)
             + spread_td(per_round(group, lambda t: usage(t)[2]), tokens)
             + spread_td(per_round(group, lambda t: t["summary"]["tool_calls"]), number)
+            + spread_td(
+                per_round(group, lambda t: t["summary"]["tool_errors"]),
+                count,
+                cls="num bad" if tool_errors else "num",
+            )
+            + td(
+                percent(tool_errors, marked_calls),
+                tool_errors / marked_calls if tool_errors is not None and marked_calls else -1,
+            )
             + "</tr>"
         )
     names = ", ".join(f'"{mermaid_text(agent)}"' for agent in agents)
@@ -511,7 +545,8 @@ def mean_view(trials: list[dict]) -> str:
         )
     return (
         f'<p class="hint">Each agent ran each task once per round. A value per round is the mean '
-        f"± the sample standard deviation over the rounds of that agent ({runs} at most).</p>"
+        f"± the sample standard deviation over the complete rounds of that agent ({runs} at most). "
+        f"A round that is still running is left out of these values.</p>"
         f'<div class="charts">{chart}</div>'
         + table(head, rows, cls="sortable", empty="No trials were found.")
         + '<h3 class="view-heading">Passes per task</h3>'
@@ -524,42 +559,136 @@ def mean_view(trials: list[dict]) -> str:
     )
 
 
-def round_view(trials: list[dict], prefix: str = "") -> str:
-    """With more than one round: the mean first, then one tab for each round.
+def scopes(trials: list[dict]) -> list[tuple[str, str, str, list[dict]]]:
+    """The views that the Run and Round selectors choose: (run, view, kind, trials).
 
-    `prefix` keeps the element ids unique when a page shows this view once for each run."""
-    runs = {t.get("run") for t in trials}
-    if None in runs or len(runs) < 2:
-        return agent_view(trials, prefix)
-    panels = [
-        ("mean", "Mean", f"Mean ± standard deviation over {len(runs)} rounds", mean_view(trials))
-    ]
-    for run in sorted(runs):
-        chosen = [t for t in trials if t["run"] == run]
-        panels.append(
-            (
-                f"round-{run}",
-                f"Round {run}",
-                f"{len(chosen)} trials",
-                agent_view(chosen, f"{prefix}r{run}-"),
-            )
-        )
-    return tabs(panels, "Rounds", param="view", prefix=prefix)
+    Every trial is run "all". A run with rounds has the view "mean" and one view "rN" for each
+    round; another run has the view "". One run, or trials without a run name, is only "all"."""
 
+    def views(run: str, chosen: list[dict]) -> list[tuple[str, str, str, list[dict]]]:
+        rounds = {t.get("run") for t in chosen}
+        if None in rounds:
+            return [(run, "", "all" if run == "all" else "single", chosen)]
+        return [(run, "mean", "mean", chosen)] + [
+            (run, f"r{n}", "round", [t for t in chosen if t["run"] == n])
+            for n in sorted(rounds, key=str)
+        ]
 
-def run_views(trials: list[dict]) -> str:
-    """One round view for each run; the Run filter shows one of them, and All shows every trial."""
     names = {t.get("run_name") for t in trials}
     if None in names or len(names) < 2:
-        return round_view(trials)
-    names = sorted(names)
-    blocks = [f'<div data-run-block="">{agent_view(trials, "all-")}</div>']
-    for i, name in enumerate(names):
-        chosen = [t for t in trials if t["run_name"] == name]
+        return views("all", trials)
+    out = [("all", "", "all", trials)]
+    for name in sorted(names):
+        out += views(name, [t for t in trials if t["run_name"] == name])
+    return out
+
+
+def default_run(trials: list[dict]) -> str:
+    """The run that the page shows first: the newest run with rounds, else every trial."""
+    newest = {
+        run: max(t.get("started_at") or "" for t in chosen)
+        for run, view, _, chosen in scopes(trials)
+        if view == "mean"
+    }
+    return max(newest, key=newest.get) if newest else "all"
+
+
+def scoped(trials: list[dict], render, default: str) -> str:
+    """One block for each scope; the Run and Round selectors show one. `render(trials, kind,
+    prefix)` draws a block; `prefix` keeps the element ids unique."""
+    blocks = []
+    for i, (run, view, kind, chosen) in enumerate(scopes(trials)):
+        hidden = "" if run == default and view in ("", "mean") else " hidden"
         blocks.append(
-            f'<div data-run-block="{esc(name)}" hidden>{round_view(chosen, f"run{i}-")}</div>'
+            f'<div data-run-block="{esc(run)}" data-view-block="{view}"{hidden}>'
+            f"{render(chosen, kind, f's{i}-' if i else '')}</div>"
         )
     return "".join(blocks)
+
+
+def scope_form(trials: list[dict], default: str) -> str:
+    """The Run and Round selectors. A run option lists its rounds in data-rounds."""
+    rounds: dict[str, list[str]] = defaultdict(list)
+    for run, view, _, _ in scopes(trials):
+        rounds[run] += [view] if view.startswith("r") else []
+    runs = "".join(
+        f'<option value="{esc(run)}" data-rounds="{" ".join(views)}"'
+        f"{' selected' if run == default else ''}>{'All runs' if run == 'all' else esc(run)}</option>"
+        for run, views in rounds.items()
+    )
+    every = sorted({v for views in rounds.values() for v in views}, key=lambda v: (len(v), v))
+    picks = "".join(
+        f'<option value="{v}"{"" if v in rounds[default] else " hidden disabled"}>'
+        f"Round {esc(v[1:])}</option>"
+        for v in every
+    )
+    run_field = "" if len(rounds) > 1 else " hidden"
+    view_off = "" if rounds[default] else " disabled"
+    return (
+        '<form class="filters scope" method="get" data-scope>'
+        f'<label class="field field-run"{run_field}><span>Run</span>'
+        f'<select name="run" data-default="{esc(default)}">{runs}</select></label>'
+        f'<label class="field field-view"><span>Round</span><select name="view"{view_off}>'
+        f'<option value="mean">Mean of all rounds</option>{picks}</select></label>'
+        '<noscript><button type="submit" class="filter-submit">Apply</button></noscript>'
+        "</form>"
+    )
+
+
+def scope_readings(trials: list[dict], kind: str) -> str:
+    """The large values of one scope: totals, or for the mean view the mean per round."""
+    passed = sum(t["passed"] for t in trials)
+    if kind == "mean":
+        per = lambda value: per_round(trials, value)
+        return readings(
+            [
+                ("Rounds", rounds_text(trials), f"{len(trials)} trials"),
+                (
+                    "Passed per round",
+                    spread_text(per(lambda t: int(t["passed"])), count),
+                    f"{percent(passed, len(trials))} pass rate",
+                ),
+                ("Cost per round", spread_text(per(lambda t: t["facts"]["cost"]), money), None),
+                (
+                    "Calls per round",
+                    spread_text(per(lambda t: t["summary"]["provider_calls"]), number),
+                    None,
+                ),
+                (
+                    "Tool calls per round",
+                    spread_text(per(lambda t: t["summary"]["tool_calls"]), number),
+                    None,
+                ),
+                (
+                    "Tool errors per round",
+                    spread_text(per(lambda t: t["summary"]["tool_errors"]), count),
+                    None,
+                ),
+            ]
+        )
+    timed = [t["summary"]["provider_ms"] for t in trials if t["summary"]["provider_ms"] is not None]
+    costs = [t["facts"]["cost"] for t in trials if t["facts"]["cost"] is not None]
+    calls = sum(t["summary"]["provider_calls"] for t in trials)
+    tool_calls = sum(t["summary"]["tool_calls"] for t in trials)
+    tool_errors, marked_calls = marked_errors(trials)
+    return readings(
+        [
+            ("Trials", number(len(trials)), f"{passed} passed"),
+            ("Pass rate", percent(passed, len(trials)), None),
+            ("Calls", number(calls), f"{duration(sum(timed)) or 'no time'} recorded"),
+            ("Cost", money(sum(costs)) if costs else None, f"{len(costs)} of {len(trials)} trials"),
+            ("Tool calls", number(tool_calls), None),
+            (
+                "Tool errors",
+                number(tool_errors),
+                f"{percent(tool_errors, marked_calls)} of the calls that mark errors",
+            ),
+        ]
+    )
+
+
+def agents_block(trials: list[dict], kind: str, prefix: str) -> str:
+    return mean_view(trials) if kind == "mean" else agent_view(trials, prefix)
 
 
 def table(head: list[str], rows: list[str], *, cls: str = "", empty: str, attrs: str = "") -> str:
@@ -656,14 +785,151 @@ def tool_error_rows(trials: list[dict]) -> list[str]:
     ]
 
 
+def tool_error_mean_rows(trials: list[dict]) -> list[str]:
+    """Tool errors of each agent and tool as mean ± standard deviation over the rounds."""
+    by_agent: dict[str, list[dict]] = defaultdict(list)
+    for trial in trials:
+        by_agent[trial["agent"]].append(trial)
+    ranked = []
+    for agent, group in by_agent.items():
+        failing = {n for t in group for n, tool in t["summary"]["tools"].items() if tool["errors"]}
+        for name in failing:
+
+            def get(t, field, name=name):
+                return t["summary"]["tools"].get(name, {}).get(field, 0)
+
+            calls = sum(get(t, "calls") for t in group)
+            errors = sum(get(t, "errors") for t in group)
+            ranked.append((-errors, agent, name, group, get, calls, errors))
+    ranked.sort(key=lambda item: item[:3])
+    return [
+        "<tr>"
+        f'<td data-v="{esc(agent)}">{esc(agent)}</td>'
+        f'<td class="mono" data-v="{esc(name)}">{esc(name)}</td>'
+        + spread_td(per_round(group, lambda t, get=get: get(t, "calls")), count)
+        + spread_td(per_round(group, lambda t, get=get: get(t, "errors")), count, cls="num bad")
+        + td(percent(errors, calls), errors / calls if calls else -1)
+        + spread_td(per_round(group, lambda t, get=get: int(get(t, "errors") > 0)), count)
+        + "</tr>"
+        for _, agent, name, group, get, calls, errors in ranked
+    ]
+
+
+def errors_block(trials: list[dict], kind: str, prefix: str) -> str:
+    mean = kind == "mean"
+    head = [
+        th("Agent", "text"),
+        th("Tool", "text"),
+        th("Calls per round" if mean else "Calls"),
+        th("Errors per round" if mean else "Errors"),
+        th("Error rate"),
+        th("Trials with errors per round" if mean else "Trials with errors"),
+    ]
+    return table(
+        head,
+        tool_error_mean_rows(trials) if mean else tool_error_rows(trials),
+        cls="sortable",
+        empty="No harness recorded a tool error.",
+    )
+
+
+def pair_rows(trials: list[dict]) -> list[str]:
+    """One row for each task and agent over the rounds, with a link to each round's trial."""
+    pairs: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for t in trials:
+        pairs[(t["task"], t["agent"])].append(t)
+    rows = []
+    for (task, agent), group in sorted(pairs.items(), key=lambda p: (task_name(p[0][0]), p[0][1])):
+        group.sort(key=lambda t: str(t["run"]))
+        passed = sum(t["passed"] for t in group)
+        outcomes = " ".join(sorted({t["facts"]["outcome"] for t in group}))
+        models = sorted({t["model"] for t in group})
+        search = " ".join([task, agent, *models]).lower()
+        links = " ".join(
+            f'<a class="chip chip-{t["facts"]["outcome"]}" href="trial/{esc(t["id"])}.html" '
+            f'title="Round {esc(t["run"])}: {t["facts"]["outcome"]}">{esc(t["run"])}</a>'
+            for t in group
+        )
+
+        def spread(value, show, cls="num", group=group):
+            return spread_td([value(t) for t in group], show, cls)
+
+        rows.append(
+            f'<tr data-agent="{esc(agent)}" data-outcome="{outcomes}" data-text="{esc(search)}">'
+            f'<th scope="row" data-v="{esc(task_name(task))}" title="{esc(task)}">'
+            f"{esc(task_name(task))}</th>"
+            f'<td data-v="{esc(agent)}">{esc(agent)}</td>'
+            + td(f"{passed}/{len(group)}", passed / len(group))
+            + f'<td class="rounds">{links}</td>'
+            + spread(lambda t: t["facts"]["run_ms"], duration)
+            + spread(lambda t: t["facts"]["cost"], money)
+            + spread(lambda t: t["summary"]["provider_calls"], count)
+            + spread(lambda t: t["summary"]["provider_ms"], duration)
+            + spread(lambda t: t["summary"]["tool_calls"], count)
+            + spread(lambda t: t["summary"]["tool_errors"], count)
+            + spread(lambda t: t["reward"], lambda v: f"{v:.2f}")
+            + f'<td class="mono" data-v="{esc(", ".join(models))}">'
+            f"{esc(', '.join(short_model(m) for m in models)) or NONE}</td>"
+            "</tr>"
+        )
+    return rows
+
+
+def trials_block(trials: list[dict], kind: str, prefix: str) -> str:
+    if kind == "mean":
+        head = [
+            th("Task", "text"),
+            th("Agent", "text"),
+            th("Passed"),
+            th("Rounds", "text", sortable=False),
+            th("Run time"),
+            th("Cost"),
+            th("Calls"),
+            th("Recorded call time"),
+            th("Tool calls"),
+            th("Tool errors"),
+            th("Reward"),
+            th("Model", "text"),
+        ]
+        return table(
+            head,
+            pair_rows(trials),
+            cls="sortable trials",
+            empty="No trials were found.",
+            attrs=' data-trials data-unit="task and agent pairs"',
+        )
+    head = [
+        th("Task", "text"),
+        th("Agent", "text"),
+        th("Outcome", "text"),
+        th("Run time"),
+        th("Cost"),
+        th("Calls"),
+        th("Recorded call time"),
+        th("Tool calls"),
+        th("Tool errors"),
+        th("Reward"),
+        th("Agent time"),
+        th("Model", "text"),
+        th("Round", "text"),
+        th("Started", "text"),
+    ]
+    return table(
+        head,
+        trial_rows(trials),
+        cls="sortable trials",
+        empty="No trials were found.",
+        attrs=' data-trials data-unit="trials"',
+    )
+
+
 def trial_rows(trials: list[dict]) -> list[str]:
     rows = []
     for t in trials:
         f, s = t["facts"], t["summary"]
         search = " ".join([t["task"], t["agent"], t["model"], t["round"]]).lower()
         rows.append(
-            f'<tr data-agent="{esc(t["agent"])}" data-round="{esc(t["round"])}" '
-            f'data-outcome="{f["outcome"]}" data-text="{esc(search)}">'
+            f'<tr data-agent="{esc(t["agent"])}" data-outcome="{f["outcome"]}" data-text="{esc(search)}">'
             f'<th scope="row" data-v="{esc(task_name(t["task"]))}" title="{esc(t["task"])}">'
             f'<a href="trial/{esc(t["id"])}.html">{esc(task_name(t["task"]))}</a></th>'
             f'<td data-v="{esc(t["agent"])}">{esc(t["agent"])}</td>'
@@ -717,59 +983,15 @@ def index(
     """The trial overview; head replaces the default heading and description the lead."""
     agents = sorted({t["agent"] for t in trials})
     rounds = sorted({t["round"] for t in trials})
-    passed = sum(t["passed"] for t in trials)
-    timed = [t["summary"]["provider_ms"] for t in trials if t["summary"]["provider_ms"] is not None]
-    costs = [t["facts"]["cost"] for t in trials if t["facts"]["cost"] is not None]
-    calls = sum(t["summary"]["provider_calls"] for t in trials)
-    tool_calls = sum(t["summary"]["tool_calls"] for t in trials)
-    tool_errors, marked_calls = marked_errors(trials)
     lead = (
-        f"{len(trials)} trials from {len(agents)} agents in {len(rounds)} rounds. "
+        f"{len(trials)} trials from {len(agents)} agents in {len(rounds)} runs. "
         f"Generated {generated}."
     )
-    top = readings(
-        [
-            ("Trials", number(len(trials)), f"{passed} passed"),
-            ("Pass rate", percent(passed, len(trials)), None),
-            ("Calls", number(calls), f"{duration(sum(timed)) or 'no time'} recorded"),
-            ("Cost", money(sum(costs)) if costs else None, f"{len(costs)} of {len(trials)} trials"),
-            ("Tool calls", number(tool_calls), None),
-            (
-                "Tool errors",
-                number(tool_errors),
-                f"{percent(tool_errors, marked_calls)} of the calls that mark errors",
-            ),
-        ]
-    )
-    error_head = [
-        th("Agent", "text"),
-        th("Tool", "text"),
-        th("Calls"),
-        th("Errors"),
-        th("Error rate"),
-        th("Trials with errors"),
-    ]
-    trial_head = [
-        th("Task", "text"),
-        th("Agent", "text"),
-        th("Outcome", "text"),
-        th("Run time"),
-        th("Cost"),
-        th("Calls"),
-        th("Recorded call time"),
-        th("Tool calls"),
-        th("Tool errors"),
-        th("Reward"),
-        th("Agent time"),
-        th("Model", "text"),
-        th("Round", "text"),
-        th("Started", "text"),
-    ]
+    default = default_run(trials)
     filters = f"""<form class="filters" method="get" action="#trials" data-filters>
 <label class="field field-q"><span>Search</span>
 <input type="search" name="q" placeholder="Task, agent or model" autocomplete="off"></label>
 {options("agent", "Agent", agents)}
-{options("round", "Run", rounds)}
 <label class="field field-outcome"><span>Outcome</span><select name="outcome"><option value="">All</option>
 <option value="passed">Passed</option><option value="failed">Failed</option>
 <option value="error">Error</option></select></label>
@@ -781,33 +1003,19 @@ def index(
     if head is None:
         head = f'<section class="head">\n<h1>Benchmark runs</h1>\n<p class="lead">{esc(lead)}</p>\n</section>'
     body = f"""{head}
-{top}
+{scope_form(trials, default)}
+{scoped(trials, lambda chosen, kind, _: scope_readings(chosen, kind), default)}
 <section id="agents" class="block" aria-label="Agents">
-{run_views(trials)}
+{scoped(trials, agents_block, default)}
 </section>
 <section id="tool-errors" class="block">
 <h2>Tool errors by tool</h2>
-{
-        table(
-            error_head,
-            tool_error_rows(trials),
-            cls="sortable",
-            empty="No harness recorded a tool error.",
-        )
-    }
+{scoped(trials, errors_block, default)}
 </section>
 <section id="trials" class="block">
 <h2>Trials</h2>
 {filters}
-{
-        table(
-            trial_head,
-            trial_rows(trials),
-            cls="sortable trials",
-            empty="No trials were found.",
-            attrs=" data-trials",
-        )
-    }
+{scoped(trials, trials_block, default)}
 </section>"""
     return page(title, body, depth=0, description=description or lead)
 

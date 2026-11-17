@@ -25,20 +25,68 @@ def test_rounds_of_one_run_share_one_run_entry(tmp_path):
     assert single["run"] is None and single["run_name"] == "single"
 
 
-def test_each_run_gets_one_block_with_a_tab_for_each_round():
-    def fake(name, run):
-        return {"round": name, "run_name": name, "run": run}
+def fake_trial(name, run, agent="a", task="t", passed=True, errors=0, started="2026-01-01"):
+    return {
+        "round": name,
+        "run_name": name,
+        "run": run,
+        "id": f"{name}-{run}-{agent}-{task}",
+        "agent": agent,
+        "task": task,
+        "model": "openai/gpt",
+        "passed": passed,
+        "reward": 1.0 if passed else 0.0,
+        "started_at": started,
+        "facts": {"outcome": "passed" if passed else "failed", "run_ms": 1000, "cost": 0.5},
+        "summary": {
+            "provider_calls": 2,
+            "provider_ms": 500,
+            "tool_calls": 4,
+            "tool_errors": errors,
+            "tools": {"bash": {"calls": 4, "errors": errors}},
+        },
+    }
 
-    shown = []
-    original = render.round_view
-    render.round_view = lambda trials, prefix="": shown.append((prefix, len(trials))) or ""
-    render.agent_view, original_agent = (lambda trials, prefix="": ""), render.agent_view
-    try:
-        html = render.run_views([fake("a", 1), fake("a", 2), fake("b", None)])
-    finally:
-        render.round_view, render.agent_view = original, original_agent
-    assert re.findall(r'data-run-block="([^"]*)"', html) == ["", "a", "b"]
-    assert shown == [("run0-", 2), ("run1-", 1)]
+
+def test_page_starts_on_the_mean_of_the_newest_run_with_rounds():
+    trials = [
+        fake_trial("gpt", 1, started="2026-02-01"),
+        fake_trial("gpt", 2, started="2026-02-02"),
+        fake_trial("smoke", None, started="2026-03-01"),
+    ]
+    html = render.scoped(trials, lambda chosen, kind, _: f"{kind}:{len(chosen)}", "gpt")
+    blocks = re.findall(
+        r'data-run-block="([^"]*)" data-view-block="([^"]*)"( hidden)?>([^<]*)', html
+    )
+    assert blocks == [
+        ("all", "", " hidden", "all:3"),
+        ("gpt", "mean", "", "mean:2"),
+        ("gpt", "r1", " hidden", "round:1"),
+        ("gpt", "r2", " hidden", "round:1"),
+        ("smoke", "", " hidden", "single:1"),
+    ]
+    assert render.default_run(trials) == "gpt"
+
+
+def test_mean_views_average_over_rounds_and_link_each_round():
+    trials = [
+        fake_trial("gpt", 1, errors=2),
+        fake_trial("gpt", 2, passed=False, errors=0),
+    ]
+    [errors] = render.tool_error_mean_rows(trials)
+    cells = re.findall(r"<td[^>]*>([^<]*)</td>", errors)
+    # Calls, errors per round, error rate, trials with errors per round.
+    assert cells[2:] == ["4.0 ± 0.0", "1.0 ± 1.4", "25%", "0.5 ± 0.7"]
+    [pair] = render.pair_rows(trials)
+    assert ">1/2<" in pair and 'data-outcome="failed passed"' in pair
+    assert re.findall(r'href="trial/([^"]+)\.html"', pair) == ["gpt-1-a-t", "gpt-2-a-t"]
+
+
+def test_a_round_still_running_stays_out_of_the_mean():
+    trials = [fake_trial("gpt", r, task=task) for r in (1, 2) for task in ("t", "u")]
+    trials.append(fake_trial("gpt", 3, task="t"))
+    assert render.per_round(trials, lambda t: int(t["passed"])) == [2, 2]
+    assert render.rounds_text(trials) == "2 (+1 incomplete)"
 
 
 def test_charts_keep_agents_with_values_and_count_the_trials_left_out(monkeypatch):

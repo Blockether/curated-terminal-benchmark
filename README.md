@@ -92,7 +92,7 @@ uv run ctb metrics --round my-round
 ```
 
 Start from a clean commit. Use a new round name for each repeat.
-A round name `RUN/rN` puts round N in the run `RUN`: `jobs/RUN/rN/`. The report shows each run once in the Run filter, with one tab for each of its rounds.
+A round name `RUN/rN` puts round N in the run `RUN`: `jobs/RUN/rN/`. The Run and Round selectors at the top of the report choose the view of every section. The report starts on the newest run with rounds and shows the mean ± standard deviation over its complete rounds. Select a round to see only its trials.
 To add an agent to a run later, run it with the same round names.
 `seal` and `metrics` write `results/<round>.json` and `results/<round>-metrics.json`.
 

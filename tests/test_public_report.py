@@ -84,16 +84,16 @@ class PublicReportTests(unittest.TestCase):
             ]
             self.metrics["d" * 64] = {**self.metrics["c" * 64], "reward": 0}
             text = p.render(self.data, self.metrics).decode()
-        tabs = re.findall(r'data-param="view">(.*?)</div>', text)[0]
-        self.assertEqual(re.findall(r'data-tab="([^"]+)"', tabs), ["mean", "round-1", "round-2"])
+        views = re.findall(r'<option value="(mean|r\d+)"', text)
+        self.assertEqual(views, ["mean", "r1", "r2"])
         # 12 and 6 passes: the mean and the sample standard deviation per round.
         self.assertIn("9.0 ± 4.2", text)
         last = p.TASKS[-1]
         row = re.search(rf'title="{last}">[^<]*</th>(.*?)</tr>', text.split("Passes per task")[1])
         self.assertIn(">1/2<", row.group(1))
-        round_2 = text.split('data-tab-panel="round-2"')[1]
-        self.assertIn("r2-general", round_2)
-        self.assertNotIn(">kmet</a>", round_2.split('data-tab-panel="r2-normalized"')[0])
+        round_2 = text.split('id="agents"')[1].split('data-view-block="r2" hidden>')[1]
+        self.assertIn('data-tab-panel="s2-general"', round_2)
+        self.assertNotIn(">kmet</a>", round_2.split('data-tab-panel="s2-normalized"')[0])
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):
         root = Path(__file__).resolve().parents[1]

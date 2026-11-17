@@ -127,8 +127,8 @@ th[aria-sort="ascending"] .sort::after { content: "\2191"; }
 th[aria-sort="descending"] .sort::after { content: "\2193"; }
 
 /* Filters */
-.filters { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); grid-template-areas: "q agent round outcome"; gap: var(--space-sm); align-items: end; margin-block-end: var(--space-sm); }
-.field-q { grid-area: q; } .field-agent { grid-area: agent; } .field-round { grid-area: round; } .field-outcome { grid-area: outcome; }
+.filters { display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); grid-template-areas: "q agent outcome"; gap: var(--space-sm); align-items: end; margin-block-end: var(--space-sm); }
+.field-q { grid-area: q; } .field-agent { grid-area: agent; } .filters.scope { grid-template-columns: repeat(auto-fit, minmax(14rem, 22rem)); grid-template-areas: none; } .rounds .chip { min-width: 24px; justify-content: center; margin-inline-end: 2px; text-decoration: none; } .field-outcome { grid-area: outcome; }
 .field { display: grid; gap: var(--space-2xs); font-size: var(--text-sm); font-weight: 500; color: var(--color-ink-2); min-width: 0; }
 .field input, .field select { min-height: var(--control); width: 100%; padding: 0 var(--space-sm); background-color: var(--color-paper-2); color: var(--color-ink); border: var(--rule-hair) solid var(--color-muted); border-radius: 0; font-size: var(--text-md); }
 .field select { appearance: none; padding-inline-end: 36px; text-overflow: ellipsis; background-image: linear-gradient(45deg, transparent 50%, var(--color-ink-2) 50%), linear-gradient(135deg, var(--color-ink-2) 50%, transparent 50%); background-position: calc(100% - 18px) 52%, calc(100% - 13px) 52%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
@@ -223,7 +223,7 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
 
 @media (max-width: 70rem) {
   .readings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "q q q" "agent round outcome"; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "q q" "agent outcome"; }
 }
 @media (max-width: 40rem) {
   :root { --gutter: 16px; --control: 44px; }
@@ -241,7 +241,7 @@ pre { margin: 0; padding: var(--space-sm); border-top: var(--rule-hair) solid va
   .brand { flex: none; min-height: 48px; padding: var(--space-xs) var(--gutter); font-size: var(--text-md); }
   .topbar-row { flex-wrap: nowrap; }
   .brand img { height: 24px; }
-  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "q q" "agent outcome" "round round"; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "q q" "agent outcome"; }
   .errors li { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
   .strip-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
   .strip figcaption span:nth-child(2) { display: none; }
