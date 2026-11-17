@@ -398,7 +398,7 @@ def test_trial_page_puts_verification_in_its_own_tab(tmp_path):
     )
 
 
-def test_agent_charts_total_tokens_and_omit_a_partial_sum():
+def test_agent_charts_total_tokens_and_leave_out_trials_without_tokens():
     def trial(agent, tokens_in, tokens_out, cached=0):
         harbor = {"input": tokens_in, "cache": cached, "output": tokens_out}
         facts = {"cost": 1.0}
@@ -423,10 +423,10 @@ def test_agent_charts_total_tokens_and_omit_a_partial_sum():
     assert 'y-axis "Pass rate (%)" 0 --&gt; 100' in html
     # The hit rate is the cached share of all input tokens of an agent, not a mean of trials.
     assert 'y-axis "Cached share of input (%)" 0 --&gt; 100' in html and "bar [43, 80]" in html
-    # Harbor writes 0 for counts that the agent did not report, so b has no tokens.
+    # Harbor writes 0 for counts that the agent did not report, so b has no tokens and no bar.
     html = render.agent_charts([trial("a", 2_000_000, 3000), trial("b", 0, 0)])
-    assert "Input tokens chart omitted" in html and "Output tokens chart omitted" in html
-    assert "Cache chart omitted" in html
+    assert "chart omitted" not in html and "1 trials without a recorded value left out" in html
+    assert 'x-axis ["a"]' in html
 
 
 def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):

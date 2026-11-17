@@ -331,49 +331,57 @@ def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
     if not shared:
         rates = [round(100 * sum(t["passed"] for t in group) / len(group)) for group in groups]
         charts.append(bar_chart(names, rates, "Pass rate (%)", "Pass rate by agent", top=100))
-    # A total needs a value from every trial; a partial sum is not a total.
-    if all(t["facts"]["cost"] is not None for t in trials):
-        costs = [round(sum(t["facts"]["cost"] for t in group), 2) for group in groups]
-        charts.append(bar_chart(names, costs, "Cost (USD)", f"Total cost by agent {scope}"))
-    else:
-        charts.append('<p class="empty">Cost chart omitted: some trials have no recorded cost.</p>')
     used = {id(t): usage(t) for t in trials}
-    for index, label in ((0, "Input tokens"), (2, "Output tokens")):
-        if any(used[id(t)][index] is None for t in trials):
-            charts.append(
-                f'<p class="empty">{label} chart omitted: some trials have no recorded tokens.</p>'
-            )
-            continue
-        totals = [sum(used[id(t)][index] for t in group) for group in groups]
-        unit, size = ("millions", 1e6) if max(totals) >= 1e6 else ("thousands", 1e3)
-        note = ", cached included" if index == 0 else ""
+
+    def recorded(value, axis, caption, *, total=sum, tokens=False, top=None, digits=None):
+        """One bar per agent: `total` of `value` over the trials that recorded it.
+
+        An agent with no recorded value has no bar, and the caption counts the trials left out."""
+        kept = []
+        for agent, group in sorted(by_agent.items()):
+            values = [v for v in map(value, group) if v is not None]
+            if values:
+                kept.append((agent, total(values)))
+        if not kept:
+            return
+        size = 1
+        if tokens:
+            unit, size = ("millions", 1e6) if max(v for _, v in kept) >= 1e6 else ("thousands", 1e3)
+            axis, digits = f"{axis} ({unit})", 1
+        missing = sum(value(t) is None for t in trials)
+        note = f"; {missing} trials without a recorded value left out" if missing else ""
         charts.append(
             bar_chart(
-                names,
-                [round(v / size, 1) for v in totals],
-                f"{label} ({unit})",
-                f"{label} by agent {scope}{note}",
+                ", ".join(f'"{mermaid_text(agent)}"' for agent, _ in kept),
+                [v if digits is None else round(v / size, digits) for _, v in kept],
+                axis,
+                caption + note,
+                **({"top": top} if top else {}),
             )
         )
+
+    def cached_share(pairs):
+        given = sum(i for i, _ in pairs)
+        return round(100 * sum(c for _, c in pairs) / given) if given else 0
+
+    recorded(lambda t: t["facts"]["cost"], "Cost (USD)", f"Total cost by agent {scope}", digits=2)
+    recorded(
+        lambda t: used[id(t)][0],
+        "Input tokens",
+        f"Input tokens by agent {scope}, cached included",
+        tokens=True,
+    )
+    recorded(
+        lambda t: used[id(t)][2], "Output tokens", f"Output tokens by agent {scope}", tokens=True
+    )
     # Input includes cached tokens, so the cached share of input is the cache hit rate.
-    if any(None in used[id(t)][:2] for t in trials):
-        charts.append(
-            '<p class="empty">Cache chart omitted: some trials have no recorded tokens.</p>'
-        )
-    else:
-        rates = []
-        for group in groups:
-            given = sum(used[id(t)][0] for t in group)
-            rates.append(round(100 * sum(used[id(t)][1] for t in group) / given) if given else 0)
-        charts.append(
-            bar_chart(
-                names,
-                rates,
-                "Cached share of input (%)",
-                f"Cache hit rate by agent {scope}",
-                top=100,
-            )
-        )
+    recorded(
+        lambda t: None if None in used[id(t)][:2] else used[id(t)][:2],
+        "Cached share of input (%)",
+        f"Cache hit rate by agent {scope}",
+        total=cached_share,
+        top=100,
+    )
     return '<div class="charts">' + "".join(charts) + "</div>"
 
 

@@ -39,3 +39,33 @@ def test_each_run_gets_one_block_with_a_tab_for_each_round():
         render.round_view, render.agent_view = original, original_agent
     assert re.findall(r'data-run-block="([^"]*)"', html) == ["", "a", "b"]
     assert shown == [("run0-", 2), ("run1-", 1)]
+
+
+def test_charts_keep_agents_with_values_and_count_the_trials_left_out(monkeypatch):
+    def fake(agent, tokens, cost):
+        return {"agent": agent, "passed": True, "tokens": tokens, "facts": {"cost": cost}}
+
+    monkeypatch.setattr(render, "usage", lambda t: t["tokens"])
+    shown = []
+    monkeypatch.setattr(
+        render,
+        "bar_chart",
+        lambda names, values, axis, caption, **_: shown.append((names, values, caption)) or "",
+    )
+    render.agent_charts(
+        [
+            fake("a", (2000, 1000, 500), 1.5),
+            fake("a", (None, None, None), 0.5),
+            fake("b", (4000, 0, 1000), None),
+        ]
+    )
+    by_caption = {
+        caption.split(" by agent")[0]: (names, values, caption) for names, values, caption in shown
+    }
+    names, values, caption = by_caption["Total cost"]
+    assert (names, values) == ('"a"', [2.0]) and caption.endswith(
+        "1 trials without a recorded value left out"
+    )
+    names, values, caption = by_caption["Input tokens"]
+    assert (names, values) == ('"a", "b"', [2.0, 4.0]) and "1 trials without" in caption
+    assert by_caption["Cache hit rate"][1] == [50, 0]
