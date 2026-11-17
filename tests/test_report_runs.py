@@ -82,6 +82,25 @@ def test_mean_views_average_over_rounds_and_link_each_round():
     assert re.findall(r'href="trial/([^"]+)\.html"', pair) == ["gpt-1-a-t", "gpt-2-a-t"]
 
 
+def test_local_head_names_versions_model_and_machine_from_the_run(tmp_path):
+    from ctb.public_report import NATIVE, local_head
+
+    root = tmp_path / "gpt" / "r1"
+    root.mkdir(parents=True)
+    record = {"pins": {"effort": "medium"}, "engine": {"arch": "arm64", "emulated": False}}
+    (root / "ctb-runs.json").write_text(json.dumps([record]))
+    trials = []
+    for agent, version in (("codex", "codex-cli 0.166.0"), ("pi", "1.5.0")):
+        trial = fake_trial("gpt", 1, agent=agent)
+        trial |= {"version": version, "model": "openai/gpt-6.1-sol"}
+        trial["path"] = str(root / f"{agent}__job" / "t__abc")
+        trials.append(trial)
+    head = local_head(trials)
+    assert "2 coding agents on 1 CPU-only Terminal-Bench 4.0 tasks" in head
+    assert "GPT-6.1-sol with medium reasoning" in head and NATIVE in head
+    assert "(0.166.0)</span>" in head and "Rosetta" not in head
+
+
 def test_only_runs_with_rounds_are_reported():
     trials = [fake_trial("gpt", 1), fake_trial("gpt", 2), fake_trial("smoke", None)]
     assert [t["round"] for t in render.reported(trials)] == ["gpt", "gpt"]

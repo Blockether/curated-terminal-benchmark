@@ -1566,5 +1566,9 @@ def build(jobs: Path, out: Path, workers: int | None = None) -> list[dict]:
             stale.unlink()
     trials.sort(key=lambda t: (t["round"], str(t.get("run") or ""), t["agent"], t["task"]))
     generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
-    (out / "index.html").write_text(index(trials, generated), encoding="utf-8")
+    from ctb.public_report import local_head
+
+    (out / "index.html").write_text(
+        index(trials, generated, head=local_head(trials)), encoding="utf-8"
+    )
     return trials

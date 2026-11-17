@@ -420,10 +420,9 @@ LINKS = (
     ("Harbor", "https://www.harborframework.com/"),
     ("GitHub", "https://github.com/Blockether/curated-terminal-benchmark"),
 )
-EMULATION = (
-    "Run under Rosetta emulation on a MacBook Pro M4 Max (Podman VM, 12 CPUs, 24 GiB). "
-    "Times include the emulation overhead."
-)
+MACHINE = "a MacBook Pro M4 Max (Podman VM, 12 CPUs, 24 GiB)"
+EMULATION = f"Run under Rosetta emulation on {MACHINE}. Times include the emulation overhead."
+NATIVE = f"Run natively (arm64) on {MACHINE}."
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
 
@@ -442,11 +441,37 @@ def description():
 
 
 def head(data):
-    """The page head: one lead line, then the tested versions, the paused agents and the sources."""
+    """The page head of the sealed results."""
     # A sealed version can carry the program name ("vis-agent 0.5.7"); the list shows the name.
     versions = {
         a.split("-")[0]: s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
     }
+    return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", EMULATION)
+
+
+def local_head(trials):
+    """The page head of a local report, from the trials and the run records of their rounds."""
+    trials = layout.reported(trials)
+    versions, records = {}, []
+    for t in sorted(trials, key=lambda t: t.get("started_at") or ""):
+        key = t["agent"].split("-")[0]
+        if key in AGENTS and t.get("version"):
+            versions[key] = t["version"].split()[-1]
+    for root in sorted({Path(t["path"]).parents[1] for t in trials if t.get("path")}):
+        manifest = root / "ctb-runs.json"
+        records += json.loads(manifest.read_text()) if manifest.is_file() else []
+    models = sorted({t["model"].rsplit("/", 1)[-1] for t in trials if t.get("model")})
+    model = ", ".join(m.replace("gpt-", "GPT-", 1) for m in models) or "one model"
+    efforts = sorted({r["pins"]["effort"] for r in records if r.get("pins", {}).get("effort")})
+    if len(efforts) == 1:
+        model += f" with {efforts[0]} reasoning"
+    engines = [r.get("engine") or {} for r in records]
+    note = EMULATION if any(e.get("emulated") for e in engines) else NATIVE if engines else ""
+    return head_html(versions, len({t["task"] for t in trials}), model, note)
+
+
+def head_html(versions, tasks, model, note):
+    """The page head: one lead line, then the tested versions, the paused agents and the sources."""
 
     def agent(key):
         label, _, url = AGENTS[key]
@@ -468,14 +493,16 @@ def head(data):
     facts = "".join(
         f"<div><dt>{name}</dt><dd><ul>{items}</ul></dd></div>" for name, items in rows if items
     )
+    tail = f"{tasks} CPU-only Terminal-Bench 4.0 tasks, all on {layout.esc(model)}."
     intro = (
-        f"Our agent Vis vs. {len(versions) - 1} other coding agents on {len(TASKS)} CPU-only "
-        "Terminal-Bench 4.0 tasks, all on GPT-6.1-sol with medium reasoning."
+        f"Our agent Vis vs. {len(versions) - 1} other coding agents on {tail}"
+        if "vis" in versions
+        else f"{len(versions)} coding agents on {tail}"
     )
+    extra = f'<p class="head-note">{note}</p>\n' if note else ""
     return (
         f'<section class="head">\n<h1>{SITE_NAME}</h1>\n<p class="lead">{intro}</p>\n'
-        f'<dl class="head-facts">{facts}</dl>\n'
-        f'<p class="head-note">{EMULATION}</p>\n</section>'
+        f'<dl class="head-facts">{facts}</dl>\n{extra}</section>'
     )
 
 
