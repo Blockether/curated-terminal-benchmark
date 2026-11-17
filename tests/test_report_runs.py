@@ -82,6 +82,12 @@ def test_mean_views_average_over_rounds_and_link_each_round():
     assert re.findall(r'href="trial/([^"]+)\.html"', pair) == ["gpt-1-a-t", "gpt-2-a-t"]
 
 
+def test_only_runs_with_rounds_are_reported():
+    trials = [fake_trial("gpt", 1), fake_trial("gpt", 2), fake_trial("smoke", None)]
+    assert [t["round"] for t in render.reported(trials)] == ["gpt", "gpt"]
+    assert render.scopes(render.reported(trials))[0][:2] == ("all", "mean")
+
+
 def test_a_round_still_running_stays_out_of_the_mean():
     trials = [fake_trial("gpt", r, task=task) for r in (1, 2) for task in ("t", "u")]
     trials.append(fake_trial("gpt", 3, task="t"))

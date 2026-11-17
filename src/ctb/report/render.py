@@ -485,7 +485,6 @@ def mean_view(trials: list[dict]) -> str:
     for trial in trials:
         by_agent[trial["agent"]].append(trial)
     agents = sorted(by_agent)
-    runs = max(len({t["run"] for t in group}) for group in by_agent.values())
     head = [
         th("Agent", "text"),
         th("Rounds"),
@@ -544,9 +543,6 @@ def mean_view(trials: list[dict]) -> str:
             f"{esc(task_name(task))}</th>{cells}</tr>"
         )
     return (
-        f'<p class="hint">Each agent ran each task once per round. A value per round is the mean '
-        f"± the sample standard deviation over the complete rounds of that agent ({runs} at most). "
-        f"A round that is still running is left out of these values.</p>"
         f'<div class="charts">{chart}</div>'
         + table(head, rows, cls="sortable", empty="No trials were found.")
         + '<h3 class="view-heading">Passes per task</h3>'
@@ -581,6 +577,11 @@ def scopes(trials: list[dict]) -> list[tuple[str, str, str, list[dict]]]:
     for name in sorted(names):
         out += views(name, [t for t in trials if t["run_name"] == name])
     return out
+
+
+def reported(trials: list[dict]) -> list[dict]:
+    """The trials of the runs with rounds; smoke, aborted and replaced runs stay out."""
+    return [t for t in trials if t.get("run") is not None] or trials
 
 
 def default_run(trials: list[dict]) -> str:
@@ -981,12 +982,12 @@ def index(
     description: str | None = None,
 ) -> str:
     """The trial overview; head replaces the default heading and description the lead."""
+    trials = reported(trials)
     agents = sorted({t["agent"] for t in trials})
-    rounds = sorted({t["round"] for t in trials})
-    lead = (
-        f"{len(trials)} trials from {len(agents)} agents in {len(rounds)} runs. "
-        f"Generated {generated}."
-    )
+    runs = {t["round"] for t in trials}
+    rounds = {(t["round"], t.get("run")) for t in trials}
+    parts = f"{len(rounds)} rounds" if len(runs) == 1 else f"{len(runs)} runs"
+    lead = f"{len(trials)} trials from {len(agents)} agents in {parts}. Generated {generated}."
     default = default_run(trials)
     filters = f"""<form class="filters" method="get" action="#trials" data-filters>
 <label class="field field-q"><span>Search</span>
