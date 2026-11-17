@@ -43,10 +43,22 @@ AGENTS = {
         ),
         AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",), paused=True),
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
-        # The same kmet arm with only the eval tool selected; run it by name.
+        # The same kmet arm with one tool selected: eval, codemode or bash; run it by name.
         AgentSpec(
             "kmet-eval-only",
             "ctb.agents.kmet:KmetEvalOnly",
+            ("openai",),
+            experiment=True,
+        ),
+        AgentSpec(
+            "kmet-codemode",
+            "ctb.agents.kmet:KmetCodemode",
+            ("openai",),
+            experiment=True,
+        ),
+        AgentSpec(
+            "kmet-shell-only",
+            "ctb.agents.kmet:KmetShellOnly",
             ("openai",),
             experiment=True,
         ),

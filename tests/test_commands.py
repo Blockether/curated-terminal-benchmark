@@ -16,7 +16,7 @@ from harbor.models.agent.context import AgentContext
 from ctb import arch, cli, credentials
 from ctb.agents import vis
 from ctb.agents.dirge import Dirge
-from ctb.agents.kmet import Kmet, KmetEvalOnly
+from ctb.agents.kmet import Kmet, KmetCodemode, KmetEvalOnly, KmetShellOnly
 from ctb.agents.opencode import (
     LOCAL_DATA,
     OpenCode,
@@ -405,12 +405,20 @@ def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
     assert "--mode edn --session-dir /logs/agent/kmet-sessions" in kmet
 
 
-def test_kmet_eval_only_selects_only_the_eval_tool():
+@pytest.mark.parametrize(
+    ("cls", "name", "tool"),
+    [
+        (KmetEvalOnly, "kmet-eval-only", "eval"),
+        (KmetCodemode, "kmet-codemode", "codemode"),
+        (KmetShellOnly, "kmet-shell-only", "bash"),
+    ],
+)
+def test_kmet_arms_select_only_their_tool(cls, name, tool):
     kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
-    eval_only = agent(KmetEvalOnly, "openai/gpt-6.1-sol").command("x")
-    assert KmetEvalOnly.name() == "kmet-eval-only"
-    assert "--tools eval " in eval_only
-    assert eval_only.replace("--tools eval ", "", 1) == kmet
+    one = agent(cls, "openai/gpt-6.1-sol").command("x")
+    assert cls.name() == name and AGENTS[name].experiment
+    assert f"--tools {tool} " in one
+    assert one.replace(f"--tools {tool} ", "", 1) == kmet
 
 
 def test_kmet_eval_only_uses_the_kmet_install_without_harbor_kwargs():
