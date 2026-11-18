@@ -29,6 +29,7 @@ from typing import IO
 import edn_format
 import zstandard
 
+from ctb.lines import lines
 from ctb.metrics import list_price
 from ctb.paths import ARTIFACTS
 
@@ -54,9 +55,24 @@ def clip(value: object) -> str | None:
     if value is None:
         return None
     text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, indent=1)
-    if len(text) <= MAX_TEXT:
+    return cut(text, len(text) - MAX_TEXT)
+
+
+def clip_file(path: Path) -> str | None:
+    """clip() of a text file that is read in parts: a test can print more than the memory holds."""
+    with path.open(encoding="utf-8", errors="replace") as stream:
+        text = stream.read(MAX_TEXT + 1)
+        more = len(text) - MAX_TEXT
+        if more > 0:
+            more += sum(map(len, iter(lambda: stream.read(1 << 20), "")))
+    return cut(text, more)
+
+
+def cut(text: str, more: int) -> str:
+    """The first MAX_TEXT characters of text and a note of the `more` characters that follow."""
+    if more <= 0:
         return text
-    return f"{text[:MAX_TEXT]}\n\n[{len(text) - MAX_TEXT} more characters not shown]"
+    return f"{text[:MAX_TEXT]}\n\n[{more} more characters not shown]"
 
 
 def event(kind: str, **fields: object) -> dict:
@@ -603,7 +619,7 @@ def read_kmet(agent: Path, model: str) -> list[dict]:
     pending: dict = {}
     previous: float | None = None
     for path in sorted((agent / "kmet-sessions").rglob("*.ednl")):
-        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        for line in lines(path, errors="replace"):
             if not line.strip():
                 continue
             try:
@@ -798,7 +814,7 @@ def wisp_log(path: Path) -> tuple[list[list], dict[str, float]]:
     tools: dict[str, float] = {}
     if not path.is_file():
         return rounds, tools
-    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+    for line in lines(path, errors="replace"):
         stamp, _, rest = line.partition(" ")
         fields = dict(f.split("=", 1) for f in rest.split() if "=" in f)
         try:
@@ -943,14 +959,13 @@ def read_verification(trial: Path) -> list[dict]:
         entries.extend(ctrf_run(path, label, failed_only=bool(number)))
     stdout = verifier / "test-stdout.txt"
     if stdout.is_file():
-        text = stdout.read_text(encoding="utf-8", errors="replace")
         entries.append(
             {
                 "kind": "log",
                 "name": "Verifier output",
                 "status": None,
                 "ms": None,
-                "text": clip(text) or None,
+                "text": clip_file(stdout) or None,
             }
         )
     manifest = trial / "artifacts" / "manifest.json"

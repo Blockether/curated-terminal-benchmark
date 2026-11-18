@@ -8,6 +8,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import arch, credentials
 from ctb.agents.base import EFFORT, CuratedAgent, min_token_seconds
+from ctb.lines import lines
 from ctb.paths import ARTIFACTS
 from ctb.resources import files_footprint
 
@@ -50,8 +51,7 @@ class Kmet(CuratedAgent):
             return
         totals = {key: 0 for key in ("input", "output", "cache-read")}
         found = False
-        # Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
-        for line in path.read_text().split("\n"):
+        for line in lines(path, prefix="{:type :message-end"):
             # Parallel tool writes can interleave; only finalized messages carry usage.
             if not line.startswith("{:type :message-end,") and not line.startswith(
                 "{:type :message-end "

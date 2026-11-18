@@ -5,6 +5,7 @@ import json
 import os
 import shlex
 import time
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import override
 
@@ -16,6 +17,7 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import credentials, resources
 from ctb.agents.base import EFFORT, VERBOSITY, min_token_seconds, split_model, stage_files
+from ctb.lines import lines
 from ctb.toolkit import Toolkit, shared_instruction
 
 OPENCODE_VERSION = "2.2.5"
@@ -84,21 +86,19 @@ def idle_limit_seconds() -> int:
     return int(os.environ.get("CTB_OPENCODE_IDLE_S", "1800"))
 
 
-def json_lines(output: str) -> list[dict]:
-    """The JSON objects of OpenCode's output; other lines are skipped."""
-    events = []
+def json_lines(output: str | Iterable[str]) -> Iterator[dict]:
+    """The JSON objects of OpenCode's output text or lines; other lines are skipped."""
     # JSON Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
-    for line in output.split("\n"):
+    for line in output.split("\n") if isinstance(output, str) else output:
         try:
             event = json.loads(line)
         except ValueError:
             continue
         if isinstance(event, dict):
-            events.append(event)
-    return events
+            yield event
 
 
-def has_final_answer(output: str) -> bool:
+def has_final_answer(output: str | Iterable[str]) -> bool:
     """Whether OpenCode's JSON lines contain the end of the model's final step."""
     # OpenCode 2 marks no final text part; a step that ends with `stop` calls no more tools.
     for event in json_lines(output):
@@ -112,7 +112,7 @@ def has_final_answer(output: str) -> bool:
     return False
 
 
-def session_id(output: str) -> str | None:
+def session_id(output: str | Iterable[str]) -> str | None:
     """The OpenCode session of a run, from the first JSON line that names it."""
     for event in json_lines(output):
         if isinstance(event.get("sessionID"), str):
@@ -140,7 +140,7 @@ def session_usage(steps: list[dict]) -> tuple[int, int, int, float | None]:
     return input_tokens, cached, output_tokens, cost or None
 
 
-def watchdog_verdict(output: str, idle_s: float, idle_limit_s: float) -> str | None:
+def watchdog_verdict(output: str | Iterable[str], idle_s: float, idle_limit_s: float) -> str | None:
     """`final` or `hang` when ctb must stop OpenCode, else None."""
     if idle_s >= FINAL_GRACE_S and has_final_answer(output):
         return "final"
@@ -268,7 +268,7 @@ class OpenCode(Toolkit, HarborOpenCode):
             if size != last_size:
                 last_size, last_change = size, time.monotonic()
                 continue
-            text = output.read_text(errors="replace") if size else ""
+            text = lines(output, errors="replace") if size else ()
             verdict = watchdog_verdict(text, time.monotonic() - last_change, idle_limit_seconds())
             if verdict:
                 stopped.append(verdict)
@@ -331,7 +331,7 @@ class OpenCode(Toolkit, HarborOpenCode):
         data = f"{LOCAL_DATA}/xdg-data/opencode"
         logs = (self.environment_logs_dir / "opencode").as_posix()
         output = Path(self.logs_dir) / self._OUTPUT_FILENAME
-        sid = session_id(output.read_text(errors="replace")) if output.is_file() else None
+        sid = session_id(lines(output, errors="replace")) if output.is_file() else None
         try:
             if sid:
                 await self.exec_as_agent(

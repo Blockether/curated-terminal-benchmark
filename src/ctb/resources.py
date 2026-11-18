@@ -6,6 +6,8 @@ import os
 import shlex
 from pathlib import Path
 
+from ctb.lines import lines
+
 SAMPLES = "/logs/agent/resources.jsonl"
 FOOTPRINT = "/logs/agent/footprint.json"
 #: The sampler runs from a file, so a process list shows a path and not its source text.
@@ -228,7 +230,7 @@ def summary(agent_dir: Path) -> dict:
             kinds[index] = "agent" if runs_agent(proc, paths) else "wrapper"
         return kinds[index]
 
-    for line in path.read_text().split("\n"):
+    for line in lines(path):
         if not line.strip():
             continue
         try:

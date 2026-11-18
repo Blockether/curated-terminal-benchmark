@@ -8,6 +8,7 @@ from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
 from ctb.agents.base import EFFORT, CuratedAgent, proxy_env
+from ctb.lines import lines
 from ctb.paths import ARTIFACTS, ROOT
 from ctb.resources import files_footprint
 from ctb.toolkit import TOOLKIT
@@ -82,7 +83,7 @@ class Wisp(CuratedAgent):
             if json.loads(path.read_text()).get("parent")
         )
         for path in sorted(sessions.glob("*/wisp.usage")):
-            for line in path.read_text().split("\n"):
+            for line in lines(path):
                 line = line.removeprefix("data: ")
                 if not line.startswith("{"):
                     continue

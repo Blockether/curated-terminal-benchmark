@@ -1,9 +1,12 @@
 """Keep trials on this machine: no Harbor telemetry, no Hub upload, no secrets in trial files."""
 
 import asyncio
+import codecs
 import json
 import os
-from collections.abc import Collection, Mapping
+import re
+import shutil
+from collections.abc import Collection, Iterator, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +26,8 @@ HUB_FLAGS = frozenset(
 CREDENTIAL_FILES = (credentials.VIS_CODEX, credentials.CODEX_CLI)
 # Shorter values also match ordinary words and numbers.
 MIN_SECRET = 8
+# Bytes of a file that redaction reads at one time.
+CHUNK = 1 << 20
 
 
 def telemetry_off(env: dict[str, str]) -> dict[str, str]:
@@ -90,23 +95,59 @@ def secret_values(
 def redact_tree(root: Path, secrets: Collection[str]) -> list[Path]:
     """Replace secret values in the text files under root; return the changed files."""
     ordered = sorted(secrets, key=len, reverse=True)
+    pattern = re.compile("|".join(map(re.escape, ordered)))
     changed = []
     for path in sorted(root.rglob("*")) if ordered else []:
         if path.is_symlink() or not path.is_file():
             continue
+        # A first pass only looks: most files have no secret and are not written again.
+        temp = path.with_name(f".{path.name}.redacting")
         try:
-            text = path.read_bytes().decode("utf-8")
-        except (OSError, UnicodeDecodeError):
+            if not any(hit for _, hit in redacted(path, ordered, pattern)):
+                continue
+            with temp.open("w", encoding="utf-8", newline="") as out:
+                for text, _ in redacted(path, ordered, pattern):
+                    out.write(text)
+            shutil.copymode(path, temp)
+            os.replace(temp, path)
+        except (OSError, UnicodeDecodeError, ValueError):
+            temp.unlink(missing_ok=True)
             continue
-        if "\0" in text:
-            continue
-        clean = text
-        for secret in ordered:
-            clean = clean.replace(secret, REDACTED)
-        if clean != text:
-            path.write_bytes(clean.encode("utf-8"))
-            changed.append(path)
+        changed.append(path)
     return changed
+
+
+def redacted(
+    path: Path, ordered: list[str], pattern: re.Pattern[str]
+) -> Iterator[tuple[str, bool]]:
+    """The text of a file in parts with each secret replaced, and whether a part had a secret.
+
+    An agent log can be larger than the memory, so the file is never read whole. Raises
+    UnicodeDecodeError for a file that is not UTF-8 and ValueError for a binary file.
+    """
+    # A match that starts in the last `keep` characters can continue in the next part.
+    keep = len(ordered[0]) - 1
+    decoder = codecs.getincrementaldecoder("utf-8")()
+    tail = ""
+    with path.open("rb") as source:
+        while True:
+            raw = source.read(CHUNK)
+            text = tail + decoder.decode(raw, final=not raw)
+            if "\0" in text:
+                raise ValueError(f"{path} is binary")
+            cut = max(0, len(text) - keep) if raw else len(text)
+            parts, done = [], 0
+            if any(secret in text for secret in ordered):
+                for match in pattern.finditer(text):
+                    if match.start() >= cut:
+                        break
+                    parts += [text[done : match.start()], REDACTED]
+                    done = match.end()
+            cut = max(cut, done)
+            yield "".join(parts) + text[done:cut], done > 0
+            tail = text[cut:]
+            if not raw:
+                return
 
 
 class Redactor(BaseJobPlugin):

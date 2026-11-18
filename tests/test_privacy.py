@@ -89,6 +89,24 @@ def test_redaction_keeps_binary_files_and_reports_changes(tmp_path):
     assert privacy.redact_tree(tmp_path, set()) == []
 
 
+def test_redaction_finds_a_secret_across_read_parts(tmp_path, monkeypatch):
+    monkeypatch.setattr(privacy, "CHUNK", 16)
+    log = tmp_path / "agent.log"
+    log.write_text("x" * 10 + TOKEN + "\n" + "y" * 40 + TOKEN)
+    assert privacy.redact_tree(tmp_path, {TOKEN, PROXY_KEY}) == [log]
+    assert log.read_text() == "x" * 10 + "[REDACTED]\n" + "y" * 40 + "[REDACTED]"
+
+
+def test_redaction_keeps_a_file_that_is_binary_after_the_first_part(tmp_path, monkeypatch):
+    monkeypatch.setattr(privacy, "CHUNK", 16)
+    data = (TOKEN + "z" * 64 + "\0").encode()
+    blob = tmp_path / "blob"
+    blob.write_bytes(data)
+    assert privacy.redact_tree(tmp_path, {TOKEN}) == []
+    assert blob.read_bytes() == data
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["blob"]
+
+
 def test_redactor_removes_planted_credentials_from_trajectories(tmp_path, monkeypatch):
     auth = tmp_path / "openai-codex-auth.json"
     auth.write_text(json.dumps({"access_token": TOKEN, "expires_at_ms": 1}))

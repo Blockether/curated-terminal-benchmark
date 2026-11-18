@@ -25,6 +25,7 @@ from ctb.agents.base import (
     min_token_seconds,
     split_model,
 )
+from ctb.lines import lines
 from ctb.paths import ARTIFACTS, ROOT
 from ctb.resources import files_footprint
 
@@ -204,8 +205,7 @@ def result_frame(path: Path) -> dict | None:
     if not path.is_file():
         return None
     result = None
-    # JSON Lines end only at \n; splitlines() also splits at \x85 or \u2028 inside a string.
-    for line in path.read_text(errors="replace").split("\n"):
+    for line in lines(path, errors="replace"):
         try:
             frame = json.loads(line)
         except json.JSONDecodeError:
