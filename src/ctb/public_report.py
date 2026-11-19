@@ -14,10 +14,10 @@ from ctb.report.comparison import setup_id
 
 #: The sealed rounds of each agent, in order: round 1 first. Each round has every task once.
 SELECTION = {
-    "codex": ("gpt-bench-b2a4d4a",),
+    "codex": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "kmet": ("gpt-kmet-2-16bbdc8",),
-    "opencode": ("gpt-bench-b2a4d4a",),
-    "pi": ("gpt-bench-b2a4d4a",),
+    "opencode": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
+    "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
     "wisp": ("gpt-wisp-ab49003",),
 }
@@ -94,14 +94,18 @@ def validate(data):
     for agent, sources in data["sources"].items():
         require(type(sources) is list and len(sources) == len(SELECTION[agent]))
         for source, name in zip(sources, SELECTION[agent], strict=True):
-            keys(source, ("round", "seal_sha256", "harness_commit", "agent_version"))
+            keys(source, ("round", "seal_sha256", "harness_commits", "agent_version", "emulated"))
             require(source["round"] == name)
             version = source["agent_version"]
             require(
                 type(version) is str and re.fullmatch("[A-Za-z0-9][A-Za-z0-9 ._+-]{0,63}", version)
             )
             sha(source["seal_sha256"])
-            sha(source["harness_commit"], 40)
+            commits = source["harness_commits"]
+            require(type(commits) is list and commits and commits == sorted(set(commits)))
+            for commit in commits:
+                sha(commit, 40)
+            require(type(source["emulated"]) is bool)
     require(type(data["rows"]) is list and len(data["rows"]) == trial_count())
     seen = set()
     for row in data["rows"]:
@@ -120,23 +124,36 @@ def validate(data):
     return data
 
 
+def agent_runs(seal, agent):
+    return [r for r in seal["runs"] if agent in r["agents"].split(",")]
+
+
+def trial_run(seal, agent, row):
+    """The run record of a trial: the last run of its agent that started before the trial."""
+    start = datetime.fromisoformat(row["started_at"])
+    runs = [r for r in agent_runs(seal, agent) if datetime.fromisoformat(r["started_at"]) <= start]
+    require(bool(runs))
+    return max(runs, key=lambda r: datetime.fromisoformat(r["started_at"]))
+
+
 def from_seals(root):
     data = {"schema": 2, "sources": {a: [] for a in SELECTION}, "rows": []}
     for agent, run, name in selected():
         seal = read(root / "results" / (name + ".json"))
         require(seal["digest"] == digest(seal) and seal["round"] == name)
-        runs = seal["runs"]
-        require(bool(runs) and all(r["dirty"] is False for r in runs))
-        commits = {r["commit"] for r in runs}
-        require(len(commits) == 1)
+        require(bool(seal["runs"]) and all(r["dirty"] is False for r in seal["runs"]))
+        runs = agent_runs(seal, agent)
+        require(bool(runs))
         versions = {r["agent_version"] for r in seal["rows"] if r["agent"] == agent}
         require(len(versions) == 1)
         data["sources"][agent].append(
             {
                 "round": name,
                 "seal_sha256": seal["digest"],
-                "harness_commit": next(iter(commits)),
+                "harness_commits": sorted({r["commit"] for r in runs}),
                 "agent_version": next(iter(versions)),
+                # Run records without an engine predate native runs; all of those ran emulated.
+                "emulated": any((r.get("engine") or {"emulated": True})["emulated"] for r in runs),
             }
         )
         for row in seal["rows"]:
@@ -308,12 +325,11 @@ def collect_metrics(root):
             require(hashlib.sha256(path.read_bytes()).hexdigest() == row["result_sha256"])
             trial = load(path.parent, root / "jobs")
             facts, summary = layout.facts(trial), trial["summary"]
-            runs = [r for r in seal["runs"] if agent in r["agents"].split(",")]
-            identities = {setup_id(r) for r in runs}
-            require(len(identities) == 1 and None not in identities)
+            setup = setup_id(trial_run(seal, agent, row))
+            require(setup is not None)
             metrics[row["result_sha256"]] = {
                 "task_checksum": row["task_checksum"],
-                "setup": next(iter(identities)),
+                "setup": setup,
                 **{k: facts[k] for k in ("run_ms", "agent_ms", "cost")},
                 **{
                     k: summary[k]
@@ -339,16 +355,12 @@ def collect_metrics(root):
 def checked_metrics(root, data):
     metrics = validate_metrics(read(root / "public/report-metrics.json"), data)
     for agent, _, name in selected():
-        for row in read(root / "results" / (name + ".json"))["rows"]:
+        seal = read(root / "results" / (name + ".json"))
+        for row in seal["rows"]:
             if row["agent"] == agent:
                 m = metrics[row["result_sha256"]]
                 require(m["task_checksum"] == row["task_checksum"])
-                runs = [
-                    r
-                    for r in read(root / "results" / (name + ".json"))["runs"]
-                    if agent in r["agents"].split(",")
-                ]
-                require({setup_id(r) for r in runs} == {m["setup"]})
+                require(setup_id(trial_run(seal, agent, row)) == m["setup"])
                 require(m["reward"] == row["reward"] and m["started_at"] == row["started_at"])
     return metrics
 
@@ -446,7 +458,25 @@ def head(data):
     versions = {
         a.split("-")[0]: s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
     }
-    return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", EMULATION)
+    emulated = {
+        a.split("-")[0] for a, s in data["sources"].items() if any(r["emulated"] for r in s)
+    }
+    note = NATIVE if not emulated else EMULATION if emulated == set(versions) else None
+    note = note or mixed(versions, emulated)
+    return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", note)
+
+
+def mixed(versions, emulated):
+    """The machine note when some agents ran natively and others under emulation."""
+
+    def listing(keys):
+        labels = [AGENTS[k][0] for k in AGENTS if k in keys]
+        return labels[0] if len(labels) == 1 else ", ".join(labels[:-1]) + " and " + labels[-1]
+
+    return (
+        f"{listing(set(versions) - emulated)} ran natively (arm64), {listing(emulated)} under "
+        f"Rosetta emulation, on {MACHINE}. Emulated times include the emulation overhead."
+    )
 
 
 def local_head(trials):

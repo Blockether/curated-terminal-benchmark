@@ -10,15 +10,23 @@ from ctb import public_report as p
 
 class PublicReportTests(unittest.TestCase):
     def setUp(self):
-        self.data = {
+        self.data = self.comparison()
+
+        root = Path(__file__).resolve().parents[1]
+        first = next(iter(p.read(root / "public/report-metrics.json").values()))
+        self.metrics = {"c" * 64: {**first, "reward": 1}}
+
+    def comparison(self):
+        return {
             "schema": 2,
             "sources": {
                 a: [
                     {
                         "round": r,
                         "seal_sha256": "a" * 64,
-                        "harness_commit": "b" * 40,
+                        "harness_commits": ["b" * 40],
                         "agent_version": "1.0.0",
+                        "emulated": True,
                     }
                     for r in rounds
                 ]
@@ -38,10 +46,6 @@ class PublicReportTests(unittest.TestCase):
             ],
         }
 
-        root = Path(__file__).resolve().parents[1]
-        first = next(iter(p.read(root / "public/report-metrics.json").values()))
-        self.metrics = {"c" * 64: {**first, "reward": 1}}
-
     def test_sealed_agent_versions_are_published_and_checked(self):
         root = Path(__file__).resolve().parents[1]
         sources = p.from_seals(root)["sources"]
@@ -57,8 +61,6 @@ class PublicReportTests(unittest.TestCase):
         text = p.render(self.data, self.metrics).decode()
         self.assertIn(f"{p.trial_count()} trials", text)
         self.assertIn("100%", text)
-        # One round for each agent: no mean and no round tabs.
-        self.assertNotIn('data-param="view"', text)
         self.assertIn("photonic-waveguide-routing", text)
         # A canonical link names the page address; the browser does not load it.
         loads = re.findall(
@@ -71,19 +73,20 @@ class PublicReportTests(unittest.TestCase):
 
     def test_repeated_rounds_show_the_mean_first_then_each_round(self):
         rounds = ("gpt-bench-b2a4d4a", "second-round")
-        with mock.patch.dict(p.SELECTION, {"codex": rounds}):
-            self.data["sources"]["codex"].append(
-                {**self.data["sources"]["codex"][0], "round": rounds[1]}
-            )
-            # Round 2 of Codex (the first row) passes only the first half of the tasks.
+        single = {a: r[:1] for a, r in p.SELECTION.items()}
+        with mock.patch.dict(p.SELECTION, {**single, "codex": rounds}):
+            data = self.comparison()
+            # Round 2 of Codex passes only the first half of the tasks.
             half = len(p.TASKS) // 2
-            self.data["rows"] += [
-                {**self.data["rows"][0], "run": 2, "task": t, "passed": i < half}
-                | ({} if i < half else {"result_sha256": "d" * 64})
-                for i, t in enumerate(p.TASKS)
-            ]
+            for row in data["rows"]:
+                if (
+                    row["agent"] == "codex"
+                    and row["run"] == 2
+                    and p.TASKS.index(row["task"]) >= half
+                ):
+                    row.update(passed=False, result_sha256="d" * 64)
             self.metrics["d" * 64] = {**self.metrics["c" * 64], "reward": 0}
-            text = p.render(self.data, self.metrics).decode()
+            text = p.render(data, self.metrics).decode()
         views = re.findall(r'<option value="(mean|r\d+)"', text)
         self.assertEqual(views, ["mean", "r1", "r2"])
         # 12 and 6 passes: the mean and the sample standard deviation per round.
@@ -94,6 +97,20 @@ class PublicReportTests(unittest.TestCase):
         round_2 = text.split('id="agents"')[1].split('data-view-block="r2" hidden>')[1]
         self.assertIn('data-tab-panel="s2-general"', round_2)
         self.assertNotIn(">kmet</a>", round_2.split('data-tab-panel="s2-normalized"')[0])
+
+    def test_one_round_for_each_agent_has_no_round_tabs(self):
+        with mock.patch.dict(p.SELECTION, {a: r[:1] for a, r in p.SELECTION.items()}):
+            text = p.render(self.comparison(), self.metrics).decode()
+        self.assertNotIn('data-param="view"', text)
+
+    def test_head_names_the_agents_that_ran_natively_and_under_emulation(self):
+        for agent in ("codex", "pi"):
+            for source in self.data["sources"][agent]:
+                source["emulated"] = False
+        text = p.render(self.data, self.metrics).decode()
+        self.assertIn("Codex and Pi ran natively (arm64), ", text)
+        self.assertIn(" under Rosetta emulation", text)
+        self.assertNotIn(p.EMULATION, text)
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):
         root = Path(__file__).resolve().parents[1]

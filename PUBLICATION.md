@@ -2,14 +2,14 @@
 
 `main` holds source code, result seals, evidence manifests and public transcript hashes.
 `gh-pages` holds only the Pages workflow and `site/`: the original report layout, a text viewer, manifests,
-and 72 individual `.json.gz` transcripts. Never upload `jobs/`, `runs/`, raw logs, task
+and one `.json.gz` transcript for each selected trial. Never upload `jobs/`, `runs/`, raw logs, task
 artifacts, or the local HTML report. The public export is a different directory.
 
 ## Data boundary
 
 `public_report.py` projects a closed set of agents, tasks, errors, outcomes and hashes.
 `public/report-metrics.json` holds reviewed numeric measurements, phase times and known tool
-labels for the same 72 result hashes. Unknown fields and tool names are refused. Rewards and
+labels for the same result hashes. Unknown fields and tool names are refused. Rewards and
 start times must match the seals. The Pages checker does not read source logs.
 The public pages use `ctb.report.render` and the original report assets. Fonts are local,
 with their Open Font License. Trial HTML has metadata only; transcript text stays in gzip.
@@ -54,15 +54,21 @@ more than one round, the page shows a Mean tab first: the mean ± the sample sta
 the values per round, and the passes per task. Then it shows one tab for each round. The URL keeps
 the selected tab (`view=round-2`) and the General or Normalized tab (`tab=normalized`).
 
-Five full rounds are sealed after the evidence reset. The comparison selects 12 tasks for each
-of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi, Wisp and Kmet. Recovery trials are not substituted.
+The comparison selects 12 tasks for each of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
+Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
+`r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
+`3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
+recorded no cost. A source lists each harness commit of its agent. Each trial gets the setup of the
+last run record of its agent that started before the trial. The other agents have one round each.
+Recovery trials are not substituted.
 The Wisp round `gpt-wisp-ab49003` replaces `gpt-wisp-62106d1`. In the first round, the proxy did not send
 `load_image` images to the model, and the `wisp` command for subagents was not on PATH. Subagent tokens are
 part of the Wisp cost.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
-that recorded hashes did not change, not fairness or correctness. All selected rounds ran the
+that recorded hashes did not change, not fairness or correctness. The single rounds ran the
 linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro
-with Apple M4 Max (14 cores, 36 GB) and a VM with 12 CPUs and 24 GiB. The page states this. New rounds on that host need `--allow-emulation`.
+with Apple M4 Max (14 cores, 36 GB) and a VM with 12 CPUs and 24 GiB. A run record without an
+engine predates native runs and counts as emulated. The page names the native and emulated agents. New rounds on that host need `--allow-emulation`.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.
 Each round is audited and committed separately within the same expansion budget. No evidence
