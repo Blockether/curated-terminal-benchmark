@@ -43,7 +43,7 @@
     var tables = document.querySelectorAll("table.sortable");
     var params = new URLSearchParams(window.location.search);
     Array.prototype.forEach.call(tables, function (table, tableIndex) {
-      var key = table.hasAttribute("data-trials") ? "sort" : "sort" + tableIndex;
+      var key = "sort" + tableIndex;
       var buttons = table.tHead.querySelectorAll("button.sort");
       Array.prototype.forEach.call(buttons, function (button) {
         var cell = button.parentElement;
@@ -67,13 +67,51 @@
     });
   }
 
+  // The Run and Round selectors show one block in each section: every trial, one run,
+  // the mean of a run's rounds or one round.
+  function setupScope() {
+    var form = document.querySelector("[data-scope]");
+    if (!form) return;
+    var run = form.elements.run, view = form.elements.view;
+    var fallback = run.getAttribute("data-default");
+    var blocks = document.querySelectorAll("[data-run-block]");
+    var params = new URLSearchParams(window.location.search);
+    var asked = params.get("run") || params.get("round");
+    Array.prototype.forEach.call(run.options, function (o) { if (o.value === asked) run.value = asked; });
+    if (params.get("view")) view.value = params.get("view");
+
+    function apply() {
+      var option = run.options[run.selectedIndex];
+      var rounds = (option.getAttribute("data-rounds") || "").split(" ").filter(Boolean);
+      Array.prototype.forEach.call(view.options, function (o) {
+        var off = o.value !== "mean" && rounds.indexOf(o.value) < 0;
+        o.hidden = off;
+        o.disabled = off;
+      });
+      view.disabled = !rounds.length;
+      if (view.selectedIndex < 0 || view.options[view.selectedIndex].disabled) view.value = "mean";
+      var key = rounds.length ? view.value : "";
+      Array.prototype.forEach.call(blocks, function (block) {
+        block.hidden = block.getAttribute("data-run-block") !== run.value ||
+          block.getAttribute("data-view-block") !== key;
+      });
+      setParams({ run: run.value === fallback ? "" : run.value, view: key === "mean" ? "" : key, round: "" });
+      document.dispatchEvent(new CustomEvent("ctb:scope"));
+      setupDiagrams();
+    }
+
+    form.addEventListener("submit", function (event) { event.preventDefault(); apply(); });
+    form.addEventListener("change", apply);
+    apply();
+  }
+
   function setupFilters() {
     var form = document.querySelector("[data-filters]");
-    var table = document.querySelector("[data-trials]");
-    if (!form || !table) return;
+    var tables = document.querySelectorAll("[data-trials]");
+    if (!form || !tables.length) return;
     var count = document.querySelector("[data-count]");
     var empty = document.querySelector("[data-empty]");
-    var names = ["q", "agent", "round", "outcome"];
+    var names = ["q", "agent", "outcome"];
     var params = new URLSearchParams(window.location.search);
     names.forEach(function (name) {
       var value = params.get(name);
@@ -83,29 +121,33 @@
     function apply() {
       var q = form.elements.q.value.trim().toLowerCase();
       var agent = form.elements.agent.value;
-      var round = form.elements.round.value;
       var outcome = form.elements.outcome.value;
-      var rows = table.tBodies[0].rows, shown = 0;
-      Array.prototype.forEach.call(rows, function (row) {
-        var match = (!q || row.getAttribute("data-text").indexOf(q) !== -1) &&
-          (!agent || row.getAttribute("data-agent") === agent) &&
-          (!round || row.getAttribute("data-round") === round) &&
-          (!outcome || row.getAttribute("data-outcome") === outcome);
-        row.hidden = !match;
-        if (match) shown += 1;
+      Array.prototype.forEach.call(tables, function (table) {
+        var rows = table.tBodies[0].rows, shown = 0;
+        Array.prototype.forEach.call(rows, function (row) {
+          var outcomes = " " + row.getAttribute("data-outcome") + " ";
+          var match = (!q || row.getAttribute("data-text").indexOf(q) !== -1) &&
+            (!agent || row.getAttribute("data-agent") === agent) &&
+            (!outcome || outcomes.indexOf(" " + outcome + " ") !== -1);
+          row.hidden = !match;
+          if (match) shown += 1;
+        });
+        table.parentElement.hidden = shown === 0;
+        if (table.closest("[data-run-block][hidden]")) return;
+        var unit = table.getAttribute("data-unit") || "trials";
+        count.textContent = shown === rows.length ? rows.length + " " + unit
+          : "Showing " + shown + " of " + rows.length + " " + unit;
+        empty.hidden = shown !== 0;
       });
-      count.textContent = shown === rows.length ? rows.length + " trials"
-        : "Showing " + shown + " of " + rows.length + " trials";
-      empty.hidden = shown !== 0;
-      table.parentElement.hidden = shown === 0;
       var clear = document.querySelector("[data-clear]");
-      if (clear) clear.hidden = !(q || agent || round || outcome);
-      setParams({ q: q, agent: agent, round: round, outcome: outcome });
+      if (clear) clear.hidden = !(q || agent || outcome);
+      setParams({ q: q, agent: agent, outcome: outcome });
     }
 
     form.addEventListener("submit", function (event) { event.preventDefault(); apply(); });
     form.addEventListener("input", apply);
     form.addEventListener("change", apply);
+    document.addEventListener("ctb:scope", apply);
     apply();
   }
 
@@ -232,6 +274,7 @@
 
   setupSorting();
   setupFilters();
+  setupScope();
   setupTranscript();
   setupTabs();
   document.addEventListener("ctb:transcript-loaded", setupTranscript);
