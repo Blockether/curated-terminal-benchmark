@@ -577,6 +577,294 @@
       "task": "wal-recovery-ordering"
     },
     {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "59de45d3da6b2a820d723fc1447cf1d459432eaae5bb415d2955e15a9f2ae08e",
+      "run": 1,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "2ac7982a3d499ee09ebfb2862183e36331d0e8def4d4b6eda52e1cc7f0107ee0",
+      "run": 1,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "ed4f1d729d2b7487f32291f185a02b8b508639c066279b638f2dcf62393676ac",
+      "run": 1,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "0dd8599c1ad56a9350cfbfcaee861f84d220764a6c5fd06a9ee27b1d4559995b",
+      "run": 1,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": "VerifierTimeoutError",
+      "passed": false,
+      "result_sha256": "8f508d4d03f6df00d634f80e640c43f6a0888de4b084b70a33436c059f47dd38",
+      "run": 1,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c674dd00bc47e205bcad7b098c24ca4907eecf6ddd85757c44b2d420cd2f2fa3",
+      "run": 1,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "d5174aeaa497d78d81e5cc9c2ae2bfe5db5957365f4587b20fc34c1d66536492",
+      "run": 1,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "6dbe112f8626187d4384f5a61c5d042d47ca89e1892a228fbd20bc887a4ffabc",
+      "run": 1,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "d2e850f153f79d9a7d827c338d5c76689a324abcb67fb15e983a4a5263b20a99",
+      "run": 1,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": false,
+      "result_sha256": "07e8c4a5d9dc8324d8f7f631454795187fac3ca4a2a45e4db766df8cef76ca62",
+      "run": 1,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "04400ce13c11c052b851a5abbcee2c50b8256668d4da9d714b9be91132ee1dc6",
+      "run": 1,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "kmet-codemode",
+      "error": null,
+      "passed": true,
+      "result_sha256": "3d878ea6b0e8059a01cac7a22cb4c77188107b589026dcf32645a13fef22979c",
+      "run": 1,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "0335ca0350c8b236c34e4b8ec60e20b5a1f3c1dcc1577f8ff73f233a90edfd7e",
+      "run": 1,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "23d5e7fe3596ab887f1ef92988714924f6cd9a51e13d3fe708c8bec26950eab1",
+      "run": 1,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "f2cbf6e40e955f908187d0117a2d3d85972e786f8cea9a5f66d785d37699a1cd",
+      "run": 1,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "f32ff34d5914ee6573aeed4164d7cac95841b7a2748af4ca988b14c3259ec394",
+      "run": 1,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "48c66d2b2d2fe79368678df347c3de166e4266ba851c5049a00ce1b8c45a698a",
+      "run": 1,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "779c019666dc8f2474e00d7145919909723c2a6c9488d0f673a8b6840d1a3c11",
+      "run": 1,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "a3f20f8b8b9106032d8e73babab9bde879b7a5081987cf92f2df145c43feaac4",
+      "run": 1,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "bf3a2f75ca36f0d4adb17f3c996f25a9b44bffc2a11b93d3b9e6eae8d9436778",
+      "run": 1,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "6c674d870c0e7fc6e5bd47c2ebcb58d218ae3ce9b1d9c1c9ef55aa9e65cc9769",
+      "run": 1,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "cc34dbf488bd443daf03458ae2073d9024406a36b2c5558cbfb75a139f120cb1",
+      "run": 1,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c60f9134e0ce69058b3dde370f1f1aa91e11a373b01d0aefc4528ebfeac8cbee",
+      "run": 1,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "kmet-eval-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "d6c5fd79e56dba3c1dcb76b9400439ecf575f1a27038d4221ee12a878a4310f0",
+      "run": 1,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "1ca93995af95f68f6669d2c1bb1ca0a4ceab48c2973c89222de4682c742143cb",
+      "run": 1,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "8e19a1283ba89bee8938a21390100ce87b7daaffba23e9a2de486acc368decb5",
+      "run": 1,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "c903869a1e502ea37564a00af48eab8cbcb757128621ad26bb8fb78fa1c01bbf",
+      "run": 1,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "808eb09377e8eea6855b62bac407668aa58411802358ae3b714284b648badfdc",
+      "run": 1,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "dab1e772ed92f6455d5404003ad934eb4b4615019c5747d9ec5b992413589578",
+      "run": 1,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "78bae2ee0f6fa249f48cdc6a2500c1a90fb42b4c032ca6eb449375f173202863",
+      "run": 1,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "1a5b7fcaf59b95842b746d13fe0c42fde119c8eb386512457608bf8f574b3b53",
+      "run": 1,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "9b64481fd994de9c04d8561e193932286a9398b600eb4c12f3bb77458c42abdc",
+      "run": 1,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": true,
+      "result_sha256": "512f943c70ebc7f1a6358e347c279f488229aadf5daf31842fa21554b4524685",
+      "run": 1,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "14a2787ce124263c173f8d88462b3d864d81fae6736637004dfeba620de708b6",
+      "run": 1,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "b1d2a0ab33d46188f54c328bd0fa2263dece75cc89296393ee91fc50420691b6",
+      "run": 1,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "kmet-shell-only",
+      "error": null,
+      "passed": false,
+      "result_sha256": "a87bdc474b2cd93943627ef30dce25285d3d7d48ebb290ddcb711bb603ec3924",
+      "run": 1,
+      "task": "wal-recovery-ordering"
+    },
+    {
       "agent": "opencode",
       "error": null,
       "passed": false,
@@ -1787,6 +2075,39 @@
         ],
         "round": "gpt-kmet-2-16bbdc8",
         "seal_sha256": "41acb6f946d03407f9ec60d4bfe0f24feddde85bb724ec6c1c2e76c30a709ade"
+      }
+    ],
+    "kmet-codemode": [
+      {
+        "agent_version": "kmet v0.3.1-78-gf07fa90e",
+        "emulated": false,
+        "harness_commits": [
+          "3cafc661d8c3d67d712c6772842b3825d42320d1"
+        ],
+        "round": "kmet-tools-3cafc66/r1",
+        "seal_sha256": "9ad315a5c3961848d4d9adfc16465c9677c1544c74371fe0612f27e03f81e2d9"
+      }
+    ],
+    "kmet-eval-only": [
+      {
+        "agent_version": "kmet v0.3.1-78-gf07fa90e",
+        "emulated": false,
+        "harness_commits": [
+          "3cafc661d8c3d67d712c6772842b3825d42320d1"
+        ],
+        "round": "kmet-tools-3cafc66/r1",
+        "seal_sha256": "9ad315a5c3961848d4d9adfc16465c9677c1544c74371fe0612f27e03f81e2d9"
+      }
+    ],
+    "kmet-shell-only": [
+      {
+        "agent_version": "kmet v0.3.1-78-gf07fa90e",
+        "emulated": false,
+        "harness_commits": [
+          "3cafc661d8c3d67d712c6772842b3825d42320d1"
+        ],
+        "round": "kmet-tools-3cafc66/r1",
+        "seal_sha256": "9ad315a5c3961848d4d9adfc16465c9677c1544c74371fe0612f27e03f81e2d9"
       }
     ],
     "opencode": [

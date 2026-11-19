@@ -48,6 +48,55 @@
       }
     }
   },
+  "0335ca0350c8b236c34e4b8ec60e20b5a1f3c1dcc1577f8ff73f233a90edfd7e": {
+    "agent_ms": 181400.0,
+    "cache": 24704,
+    "cost": 0.0762,
+    "input": 33223,
+    "output": 5671,
+    "phases": [
+      {
+        "end": 1794967706927.356,
+        "name": "environment_setup",
+        "start": 1794967700979.5251
+      },
+      {
+        "end": 1794967724765.717,
+        "name": "agent_setup",
+        "start": 1794967706927.5068
+      },
+      {
+        "end": 1794967906203.833,
+        "name": "agent_execution",
+        "start": 1794967724766.044
+      },
+      {
+        "end": 1794967944029.822,
+        "name": "verifier",
+        "start": 1794967919511.7148
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 177757.4345703125,
+    "provider_timed": 8,
+    "reward": 0.0,
+    "run_ms": 243200.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:08:20.839386Z",
+    "task_checksum": "2ad60b49c1539ee2326512ead3c93bced3be83f8dc6ca2c14aaa952124ff1b23",
+    "tool_calls": 7,
+    "tool_errors": 0,
+    "tool_ms": 1177.69140625,
+    "tools": {
+      "eval": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 1177.69140625,
+        "timed": 7
+      }
+    }
+  },
   "03c2a4312a8c4b1f725444bd39c51fe39d013d48d79424293fe6a7bb16d3b240": {
     "agent_ms": 305400.0,
     "cache": 393088,
@@ -222,6 +271,55 @@
         "errors": 0,
         "ms": 8162.0,
         "timed": 7
+      }
+    }
+  },
+  "04400ce13c11c052b851a5abbcee2c50b8256668d4da9d714b9be91132ee1dc6": {
+    "agent_ms": 473800.0,
+    "cache": 258048,
+    "cost": 0.276,
+    "input": 309592,
+    "output": 14711,
+    "phases": [
+      {
+        "end": 1794993643469.336,
+        "name": "environment_setup",
+        "start": 1794993640938.897
+      },
+      {
+        "end": 1794993656498.1028,
+        "name": "agent_setup",
+        "start": 1794993643469.401
+      },
+      {
+        "end": 1794994130283.248,
+        "name": "agent_execution",
+        "start": 1794993656498.252
+      },
+      {
+        "end": 1794994220679.111,
+        "name": "verifier",
+        "start": 1794994143932.1511
+      }
+    ],
+    "provider_calls": 28,
+    "provider_errors": 0,
+    "provider_ms": 409999.3278808594,
+    "provider_timed": 28,
+    "reward": 1.0,
+    "run_ms": 579800.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T09:20:40.852520Z",
+    "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+    "tool_calls": 27,
+    "tool_errors": 1,
+    "tool_ms": 61595.99609375,
+    "tools": {
+      "codemode": {
+        "calls": 27,
+        "errors": 1,
+        "ms": 61595.99609375,
+        "timed": 27
       }
     }
   },
@@ -497,6 +595,55 @@
         "errors": 0,
         "ms": 240212.0,
         "timed": 35
+      }
+    }
+  },
+  "07e8c4a5d9dc8324d8f7f631454795187fac3ca4a2a45e4db766df8cef76ca62": {
+    "agent_ms": 178300.0,
+    "cache": 34816,
+    "cost": 0.1038,
+    "input": 56101,
+    "output": 5779,
+    "phases": [
+      {
+        "end": 1795020788366.58,
+        "name": "environment_setup",
+        "start": 1795020785736.5898
+      },
+      {
+        "end": 1795020799942.799,
+        "name": "agent_setup",
+        "start": 1795020788366.6511
+      },
+      {
+        "end": 1795020978280.991,
+        "name": "agent_execution",
+        "start": 1795020799943.0151
+      },
+      {
+        "end": 1795021014619.201,
+        "name": "verifier",
+        "start": 1795020989882.65
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 175905.49755859375,
+    "provider_timed": 10,
+    "reward": 0.0,
+    "run_ms": 229000.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T16:53:05.662597Z",
+    "task_checksum": "7fea45f6992c6c8e98eea01a60e555f65b035bead587ecc0761c2714f76b900f",
+    "tool_calls": 9,
+    "tool_errors": 1,
+    "tool_ms": 279.033447265625,
+    "tools": {
+      "codemode": {
+        "calls": 9,
+        "errors": 1,
+        "ms": 279.033447265625,
+        "timed": 9
       }
     }
   },
@@ -848,6 +995,55 @@
       }
     }
   },
+  "0dd8599c1ad56a9350cfbfcaee861f84d220764a6c5fd06a9ee27b1d4559995b": {
+    "agent_ms": 380800.0,
+    "cache": 917504,
+    "cost": 0.313,
+    "input": 988873,
+    "output": 7853,
+    "phases": [
+      {
+        "end": 1794991456534.397,
+        "name": "environment_setup",
+        "start": 1794991444376.936
+      },
+      {
+        "end": 1794991493811.538,
+        "name": "agent_setup",
+        "start": 1794991475688.049
+      },
+      {
+        "end": 1794991874657.598,
+        "name": "agent_execution",
+        "start": 1794991493811.699
+      },
+      {
+        "end": 1794991920378.9749,
+        "name": "verifier",
+        "start": 1794991897040.956
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 346004.6662597656,
+    "provider_timed": 23,
+    "reward": 0.0,
+    "run_ms": 476100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:44:04.322534Z",
+    "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+    "tool_calls": 22,
+    "tool_errors": 0,
+    "tool_ms": 22028.0126953125,
+    "tools": {
+      "codemode": {
+        "calls": 22,
+        "errors": 0,
+        "ms": 22028.0126953125,
+        "timed": 22
+      }
+    }
+  },
   "1020eaf3b43fa0adb82afb658c851d13a2f64a734d877810b3966b05a49d9a4f": {
     "agent_ms": 250900.0,
     "cache": 406784,
@@ -961,6 +1157,55 @@
         "errors": 0,
         "ms": 14877.0,
         "timed": 7
+      }
+    }
+  },
+  "14a2787ce124263c173f8d88462b3d864d81fae6736637004dfeba620de708b6": {
+    "agent_ms": 152900.0,
+    "cache": 20224,
+    "cost": 0.0755,
+    "input": 28922,
+    "output": 5605,
+    "phases": [
+      {
+        "end": 1795021018384.1282,
+        "name": "environment_setup",
+        "start": 1795021015938.022
+      },
+      {
+        "end": 1795021032278.1848,
+        "name": "agent_setup",
+        "start": 1795021018384.334
+      },
+      {
+        "end": 1795021185221.3572,
+        "name": "agent_execution",
+        "start": 1795021032278.512
+      },
+      {
+        "end": 1795021219574.527,
+        "name": "verifier",
+        "start": 1795021196876.537
+      }
+    ],
+    "provider_calls": 7,
+    "provider_errors": 0,
+    "provider_ms": 149709.34033203125,
+    "provider_timed": 7,
+    "reward": 0.0,
+    "run_ms": 203800.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T16:56:55.823162Z",
+    "task_checksum": "7fea45f6992c6c8e98eea01a60e555f65b035bead587ecc0761c2714f76b900f",
+    "tool_calls": 6,
+    "tool_errors": 0,
+    "tool_ms": 941.74267578125,
+    "tools": {
+      "bash": {
+        "calls": 6,
+        "errors": 0,
+        "ms": 941.74267578125,
+        "timed": 6
       }
     }
   },
@@ -1342,6 +1587,55 @@
       }
     }
   },
+  "1a5b7fcaf59b95842b746d13fe0c42fde119c8eb386512457608bf8f574b3b53": {
+    "agent_ms": 523500.0,
+    "cache": 126336,
+    "cost": 0.2158,
+    "input": 161263,
+    "output": 13329,
+    "phases": [
+      {
+        "end": 1794974786191.973,
+        "name": "environment_setup",
+        "start": 1794974771212.635
+      },
+      {
+        "end": 1794974797598.75,
+        "name": "agent_setup",
+        "start": 1794974786192.088
+      },
+      {
+        "end": 1794975321091.0598,
+        "name": "agent_execution",
+        "start": 1794974797599.0469
+      },
+      {
+        "end": 1794975460900.759,
+        "name": "verifier",
+        "start": 1794975349100.088
+      }
+    ],
+    "provider_calls": 18,
+    "provider_errors": 0,
+    "provider_ms": 416501.23974609375,
+    "provider_timed": 18,
+    "reward": 0.0,
+    "run_ms": 689800.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T04:06:11.126512Z",
+    "task_checksum": "80b19b18f9138fdcefdc2c69d66c1b69c698679de75b7dc3e80fb771b3ec5b9d",
+    "tool_calls": 17,
+    "tool_errors": 0,
+    "tool_ms": 104158.45434570312,
+    "tools": {
+      "bash": {
+        "calls": 17,
+        "errors": 0,
+        "ms": 104158.45434570312,
+        "timed": 17
+      }
+    }
+  },
   "1a94082a1bcca7ff3be480470140b33354ae66db2298127847324edee569e811": {
     "agent_ms": 1441300.0,
     "cache": 613632,
@@ -1400,6 +1694,55 @@
         "errors": 0,
         "ms": 48888.0,
         "timed": 8
+      }
+    }
+  },
+  "1ca93995af95f68f6669d2c1bb1ca0a4ceab48c2973c89222de4682c742143cb": {
+    "agent_ms": 187200.0,
+    "cache": 22912,
+    "cost": 0.084,
+    "input": 36592,
+    "output": 5437,
+    "phases": [
+      {
+        "end": 1794968261861.213,
+        "name": "environment_setup",
+        "start": 1794968258857.726
+      },
+      {
+        "end": 1794968274317.033,
+        "name": "agent_setup",
+        "start": 1794968261861.36
+      },
+      {
+        "end": 1794968461559.624,
+        "name": "agent_execution",
+        "start": 1794968274317.348
+      },
+      {
+        "end": 1794968500513.9329,
+        "name": "verifier",
+        "start": 1794968474855.8098
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 183296.09057617188,
+    "provider_timed": 10,
+    "reward": 0.0,
+    "run_ms": 241700.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:17:38.791422Z",
+    "task_checksum": "2ad60b49c1539ee2326512ead3c93bced3be83f8dc6ca2c14aaa952124ff1b23",
+    "tool_calls": 9,
+    "tool_errors": 4,
+    "tool_ms": 1270.989501953125,
+    "tools": {
+      "bash": {
+        "calls": 9,
+        "errors": 4,
+        "ms": 1270.989501953125,
+        "timed": 9
       }
     }
   },
@@ -1892,6 +2235,55 @@
       }
     }
   },
+  "23d5e7fe3596ab887f1ef92988714924f6cd9a51e13d3fe708c8bec26950eab1": {
+    "agent_ms": 476300.0,
+    "cache": 23680,
+    "cost": 0.1917,
+    "input": 48148,
+    "output": 14037,
+    "phases": [
+      {
+        "end": 1794947380431.0132,
+        "name": "environment_setup",
+        "start": 1794947377482.091
+      },
+      {
+        "end": 1794947392925.224,
+        "name": "agent_setup",
+        "start": 1794947380431.8308
+      },
+      {
+        "end": 1794947869176.985,
+        "name": "agent_execution",
+        "start": 1794947392925.6748
+      },
+      {
+        "end": 1794948062026.1372,
+        "name": "verifier",
+        "start": 1794947882988.021
+      }
+    ],
+    "provider_calls": 11,
+    "provider_errors": 0,
+    "provider_ms": 471798.5068359375,
+    "provider_timed": 11,
+    "reward": 0.0,
+    "run_ms": 684600.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T20:29:37.384888Z",
+    "task_checksum": "f9e9f9f97cc4ed197e51c0f79218cba93a9dac01e736e1c1076d7ac91f41f1c7",
+    "tool_calls": 10,
+    "tool_errors": 6,
+    "tool_ms": 1568.68603515625,
+    "tools": {
+      "eval": {
+        "calls": 10,
+        "errors": 6,
+        "ms": 1568.68603515625,
+        "timed": 10
+      }
+    }
+  },
   "2519f9e426e4a15275362276670ea79c9dfe6802dcc71723ad4f011b3bf09cd6": {
     "agent_ms": 189300.0,
     "cache": 34688,
@@ -2127,6 +2519,55 @@
         "errors": 0,
         "ms": 203600.0,
         "timed": 37
+      }
+    }
+  },
+  "2ac7982a3d499ee09ebfb2862183e36331d0e8def4d4b6eda52e1cc7f0107ee0": {
+    "agent_ms": 697700.0,
+    "cache": 63360,
+    "cost": 0.2618,
+    "input": 86766,
+    "output": 20869,
+    "phases": [
+      {
+        "end": 1794948067600.857,
+        "name": "environment_setup",
+        "start": 1794948064138.845
+      },
+      {
+        "end": 1794948088380.097,
+        "name": "agent_setup",
+        "start": 1794948067601.03
+      },
+      {
+        "end": 1794948786080.342,
+        "name": "agent_execution",
+        "start": 1794948088381.094
+      },
+      {
+        "end": 1794948955322.709,
+        "name": "verifier",
+        "start": 1794948798492.279
+      }
+    ],
+    "provider_calls": 15,
+    "provider_errors": 0,
+    "provider_ms": 689018.2531738281,
+    "provider_timed": 15,
+    "reward": 1.0,
+    "run_ms": 891300.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T20:41:04.018426Z",
+    "task_checksum": "f9e9f9f97cc4ed197e51c0f79218cba93a9dac01e736e1c1076d7ac91f41f1c7",
+    "tool_calls": 14,
+    "tool_errors": 6,
+    "tool_ms": 1715.560791015625,
+    "tools": {
+      "codemode": {
+        "calls": 14,
+        "errors": 6,
+        "ms": 1715.560791015625,
+        "timed": 14
       }
     }
   },
@@ -2825,6 +3266,55 @@
       }
     }
   },
+  "3d878ea6b0e8059a01cac7a22cb4c77188107b589026dcf32645a13fef22979c": {
+    "agent_ms": 134700.0,
+    "cache": 68736,
+    "cost": 0.0954,
+    "input": 86017,
+    "output": 5393,
+    "phases": [
+      {
+        "end": 1795012583312.639,
+        "name": "environment_setup",
+        "start": 1795012580250.7861
+      },
+      {
+        "end": 1795012600164.0151,
+        "name": "agent_setup",
+        "start": 1795012583312.72
+      },
+      {
+        "end": 1795012734866.631,
+        "name": "agent_execution",
+        "start": 1795012600164.2139
+      },
+      {
+        "end": 1795012958672.648,
+        "name": "verifier",
+        "start": 1795012746832.232
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 130838.00903320312,
+    "provider_timed": 8,
+    "reward": 1.0,
+    "run_ms": 378600.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T14:36:20.047953Z",
+    "task_checksum": "87c1857047d53ede4128554c889cc9457248e4a3356d152362d8f91db6161b35",
+    "tool_calls": 7,
+    "tool_errors": 0,
+    "tool_ms": 1541.905029296875,
+    "tools": {
+      "codemode": {
+        "calls": 7,
+        "errors": 0,
+        "ms": 1541.905029296875,
+        "timed": 7
+      }
+    }
+  },
   "3f017cbc84e9d027e6204d59a9e1093b6156596417f927604833da0fbabffb10": {
     "agent_ms": 849300.0,
     "cache": 662016,
@@ -3503,6 +3993,55 @@
       }
     }
   },
+  "48c66d2b2d2fe79368678df347c3de166e4266ba851c5049a00ce1b8c45a698a": {
+    "agent_ms": 175300.0,
+    "cache": 82048,
+    "cost": 0.1126,
+    "input": 106274,
+    "output": 5593,
+    "phases": [
+      {
+        "end": 1794954070640.391,
+        "name": "environment_setup",
+        "start": 1794954067611.884
+      },
+      {
+        "end": 1794954090827.537,
+        "name": "agent_setup",
+        "start": 1794954070641.1519
+      },
+      {
+        "end": 1794954266120.334,
+        "name": "agent_execution",
+        "start": 1794954090829.001
+      },
+      {
+        "end": 1794954331826.335,
+        "name": "verifier",
+        "start": 1794954279694.335
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 148847.80493164062,
+    "provider_timed": 9,
+    "reward": 0.0,
+    "run_ms": 264300.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T22:21:07.487124Z",
+    "task_checksum": "9623bde8b8df64f044ba142496347ceb058d393e1a2319669250312e8799783f",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 20239.779052734375,
+    "tools": {
+      "eval": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 20239.779052734375,
+        "timed": 8
+      }
+    }
+  },
   "48e283c47caa0e713a92f74460ed6cb262ac8c290ac6613231ee0b1d196bebf2": {
     "agent_ms": 436000.0,
     "cache": 163712,
@@ -4113,6 +4652,55 @@
       }
     }
   },
+  "512f943c70ebc7f1a6358e347c279f488229aadf5daf31842fa21554b4524685": {
+    "agent_ms": 237900.0,
+    "cache": 95744,
+    "cost": 0.1678,
+    "input": 131402,
+    "output": 8694,
+    "phases": [
+      {
+        "end": 1795004056115.921,
+        "name": "environment_setup",
+        "start": 1795004053523.866
+      },
+      {
+        "end": 1795004068893.628,
+        "name": "agent_setup",
+        "start": 1795004056116.0059
+      },
+      {
+        "end": 1795004306804.778,
+        "name": "agent_execution",
+        "start": 1795004068893.786
+      },
+      {
+        "end": 1795004352583.9019,
+        "name": "verifier",
+        "start": 1795004319732.141
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 222901.47045898438,
+    "provider_timed": 12,
+    "reward": 1.0,
+    "run_ms": 299100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T12:14:13.446117Z",
+    "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+    "tool_calls": 11,
+    "tool_errors": 0,
+    "tool_ms": 12831.464599609375,
+    "tools": {
+      "bash": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 12831.464599609375,
+        "timed": 11
+      }
+    }
+  },
   "53ecc945206bf3c476c1c170eecedb677ce24b8c722b8283800f652de7125630": {
     "agent_ms": 175300.0,
     "cache": 97024,
@@ -4220,6 +4808,55 @@
         "errors": 0,
         "ms": 14100.0,
         "timed": 16
+      }
+    }
+  },
+  "59de45d3da6b2a820d723fc1447cf1d459432eaae5bb415d2955e15a9f2ae08e": {
+    "agent_ms": 258800.0,
+    "cache": 45312,
+    "cost": 0.1146,
+    "input": 64575,
+    "output": 7157,
+    "phases": [
+      {
+        "end": 1794967948308.558,
+        "name": "environment_setup",
+        "start": 1794967945272.969
+      },
+      {
+        "end": 1794967961656.913,
+        "name": "agent_setup",
+        "start": 1794967948308.6802
+      },
+      {
+        "end": 1794968220467.161,
+        "name": "agent_execution",
+        "start": 1794967961657.309
+      },
+      {
+        "end": 1794968257728.136,
+        "name": "verifier",
+        "start": 1794968233748.17
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 254834.60034179688,
+    "provider_timed": 12,
+    "reward": 0.0,
+    "run_ms": 312500.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:12:25.200440Z",
+    "task_checksum": "2ad60b49c1539ee2326512ead3c93bced3be83f8dc6ca2c14aaa952124ff1b23",
+    "tool_calls": 11,
+    "tool_errors": 0,
+    "tool_ms": 1499.387451171875,
+    "tools": {
+      "codemode": {
+        "calls": 11,
+        "errors": 0,
+        "ms": 1499.387451171875,
+        "timed": 11
       }
     }
   },
@@ -4870,6 +5507,55 @@
       }
     }
   },
+  "6c674d870c0e7fc6e5bd47c2ebcb58d218ae3ce9b1d9c1c9ef55aa9e65cc9769": {
+    "agent_ms": 286400.0,
+    "cache": 112128,
+    "cost": 0.204,
+    "input": 150502,
+    "output": 11606,
+    "phases": [
+      {
+        "end": 1795003413866.958,
+        "name": "environment_setup",
+        "start": 1795003409472.299
+      },
+      {
+        "end": 1795003433344.9668,
+        "name": "agent_setup",
+        "start": 1795003413867.028
+      },
+      {
+        "end": 1795003719778.627,
+        "name": "agent_execution",
+        "start": 1795003433345.1208
+      },
+      {
+        "end": 1795003764986.669,
+        "name": "verifier",
+        "start": 1795003732542.725
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": 271536.6408691406,
+    "provider_timed": 13,
+    "reward": 1.0,
+    "run_ms": 355700.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T12:03:29.332741Z",
+    "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+    "tool_calls": 12,
+    "tool_errors": 1,
+    "tool_ms": 11942.3291015625,
+    "tools": {
+      "eval": {
+        "calls": 12,
+        "errors": 1,
+        "ms": 11942.3291015625,
+        "timed": 12
+      }
+    }
+  },
   "6d42ac67c990e6c3ce37a7748960b08321aedecda90d54b47122c4335c856c93": {
     "agent_ms": 93800.0,
     "cache": 107904,
@@ -4916,6 +5602,55 @@
         "errors": 0,
         "ms": 9000.0,
         "timed": 5
+      }
+    }
+  },
+  "6dbe112f8626187d4384f5a61c5d042d47ca89e1892a228fbd20bc887a4ffabc": {
+    "agent_ms": 578400.0,
+    "cache": 142976,
+    "cost": 0.2035,
+    "input": 181832,
+    "output": 11146,
+    "phases": [
+      {
+        "end": 1794951927389.52,
+        "name": "environment_setup",
+        "start": 1794951924143.539
+      },
+      {
+        "end": 1794951940263.384,
+        "name": "agent_setup",
+        "start": 1794951927389.72
+      },
+      {
+        "end": 1794952518702.669,
+        "name": "agent_execution",
+        "start": 1794951940263.686
+      },
+      {
+        "end": 1794952577347.805,
+        "name": "verifier",
+        "start": 1794952530767.566
+      }
+    ],
+    "provider_calls": 13,
+    "provider_errors": 0,
+    "provider_ms": 335640.5363769531,
+    "provider_timed": 13,
+    "reward": 1.0,
+    "run_ms": 653300.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T21:45:24.051024Z",
+    "task_checksum": "fd5e651014b9ef4b13ce162f8a5d7d0eac31d34f818e49d18458e716cd816edf",
+    "tool_calls": 12,
+    "tool_errors": 0,
+    "tool_ms": 239851.31958007812,
+    "tools": {
+      "codemode": {
+        "calls": 12,
+        "errors": 0,
+        "ms": 239851.31958007812,
+        "timed": 12
       }
     }
   },
@@ -5755,6 +6490,55 @@
       }
     }
   },
+  "779c019666dc8f2474e00d7145919909723c2a6c9488d0f673a8b6840d1a3c11": {
+    "agent_ms": 131800.0,
+    "cache": 43008,
+    "cost": 0.0722,
+    "input": 57404,
+    "output": 3913,
+    "phases": [
+      {
+        "end": 1794989624222.456,
+        "name": "environment_setup",
+        "start": 1794989620523.281
+      },
+      {
+        "end": 1794989642620.579,
+        "name": "agent_setup",
+        "start": 1794989624222.527
+      },
+      {
+        "end": 1794989774445.985,
+        "name": "agent_execution",
+        "start": 1794989642620.851
+      },
+      {
+        "end": 1794989955398.26,
+        "name": "verifier",
+        "start": 1794989789047.383
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 120644.86376953125,
+    "provider_timed": 10,
+    "reward": 1.0,
+    "run_ms": 335000.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:13:40.426065Z",
+    "task_checksum": "c9fd621d15a4f381c15cefb4b289cb9140b2f0e74b8feecb350e5a53ec47cfa7",
+    "tool_calls": 9,
+    "tool_errors": 2,
+    "tool_ms": 8558.962158203125,
+    "tools": {
+      "eval": {
+        "calls": 9,
+        "errors": 2,
+        "ms": 8558.962158203125,
+        "timed": 9
+      }
+    }
+  },
   "77bbc6d29295e213be66cec99e27f6acc8a74190f95871553519f52a514a3ab8": {
     "agent_ms": 406000.0,
     "cache": 156032,
@@ -5801,6 +6585,55 @@
         "errors": 5,
         "ms": 52666.0,
         "timed": 21
+      }
+    }
+  },
+  "78bae2ee0f6fa249f48cdc6a2500c1a90fb42b4c032ca6eb449375f173202863": {
+    "agent_ms": 72400.0,
+    "cache": 14208,
+    "cost": 0.0426,
+    "input": 23245,
+    "output": 2312,
+    "phases": [
+      {
+        "end": 1794990252440.03,
+        "name": "environment_setup",
+        "start": 1794990249880.392
+      },
+      {
+        "end": 1794990266898.278,
+        "name": "agent_setup",
+        "start": 1794990252440.0999
+      },
+      {
+        "end": 1794990339301.416,
+        "name": "agent_execution",
+        "start": 1794990266898.4302
+      },
+      {
+        "end": 1794990522277.79,
+        "name": "verifier",
+        "start": 1794990353852.298
+      }
+    ],
+    "provider_calls": 5,
+    "provider_errors": 0,
+    "provider_ms": 63982.001953125,
+    "provider_timed": 5,
+    "reward": 1.0,
+    "run_ms": 272500.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:24:09.825647Z",
+    "task_checksum": "c9fd621d15a4f381c15cefb4b289cb9140b2f0e74b8feecb350e5a53ec47cfa7",
+    "tool_calls": 4,
+    "tool_errors": 0,
+    "tool_ms": 6672.624267578125,
+    "tools": {
+      "bash": {
+        "calls": 4,
+        "errors": 0,
+        "ms": 6672.624267578125,
+        "timed": 4
       }
     }
   },
@@ -5862,6 +6695,55 @@
         "errors": 0,
         "ms": 64.0,
         "timed": 14
+      }
+    }
+  },
+  "808eb09377e8eea6855b62bac407668aa58411802358ae3b714284b648badfdc": {
+    "agent_ms": 520600.0,
+    "cache": 1543168,
+    "cost": 0.4041,
+    "input": 1618211,
+    "output": 9965,
+    "phases": [
+      {
+        "end": 1794991933144.567,
+        "name": "environment_setup",
+        "start": 1794991921488.988
+      },
+      {
+        "end": 1794991972407.146,
+        "name": "agent_setup",
+        "start": 1794991952336.545
+      },
+      {
+        "end": 1794992492991.521,
+        "name": "agent_execution",
+        "start": 1794991972407.306
+      },
+      {
+        "end": 1794992538292.0361,
+        "name": "verifier",
+        "start": 1794992515303.2278
+      }
+    ],
+    "provider_calls": 30,
+    "provider_errors": 0,
+    "provider_ms": 408090.83447265625,
+    "provider_timed": 30,
+    "reward": 0.0,
+    "run_ms": 616900.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:52:01.429286Z",
+    "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+    "tool_calls": 29,
+    "tool_errors": 6,
+    "tool_ms": 99195.2724609375,
+    "tools": {
+      "bash": {
+        "calls": 29,
+        "errors": 6,
+        "ms": 99195.2724609375,
+        "timed": 29
       }
     }
   },
@@ -6439,6 +7321,55 @@
       }
     }
   },
+  "8e19a1283ba89bee8938a21390100ce87b7daaffba23e9a2de486acc368decb5": {
+    "agent_ms": 274600.0,
+    "cache": 14720,
+    "cost": 0.0973,
+    "input": 24535,
+    "output": 7624,
+    "phases": [
+      {
+        "end": 1794948959584.6108,
+        "name": "environment_setup",
+        "start": 1794948956916.342
+      },
+      {
+        "end": 1794948976855.009,
+        "name": "agent_setup",
+        "start": 1794948959584.743
+      },
+      {
+        "end": 1794949251417.279,
+        "name": "agent_execution",
+        "start": 1794948976855.292
+      },
+      {
+        "end": 1794949536112.4812,
+        "name": "verifier",
+        "start": 1794949283895.8708
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 266628.9465332031,
+    "provider_timed": 10,
+    "reward": 0.0,
+    "run_ms": 579300.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T20:55:56.821740Z",
+    "task_checksum": "f9e9f9f97cc4ed197e51c0f79218cba93a9dac01e736e1c1076d7ac91f41f1c7",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 2618.187255859375,
+    "tools": {
+      "bash": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 2618.187255859375,
+        "timed": 8
+      }
+    }
+  },
   "8e8d65e5c1a4ba74744228265386dfa10a15b73e9af8fd300b4e334ddbf3dd09": {
     "agent_ms": 897200.0,
     "cache": 1135360,
@@ -6686,6 +7617,55 @@
         "errors": 0,
         "ms": 13.0,
         "timed": 6
+      }
+    }
+  },
+  "8f508d4d03f6df00d634f80e640c43f6a0888de4b084b70a33436c059f47dd38": {
+    "agent_ms": 171500.0,
+    "cache": 25472,
+    "cost": 0.0888,
+    "input": 41191,
+    "output": 5480,
+    "phases": [
+      {
+        "end": 1794954366518.196,
+        "name": "environment_setup",
+        "start": 1794954352852.829
+      },
+      {
+        "end": 1794954391444.0999,
+        "name": "agent_setup",
+        "start": 1794954366519.103
+      },
+      {
+        "end": 1794954562976.564,
+        "name": "agent_execution",
+        "start": 1794954391444.4211
+      },
+      {
+        "end": 1794954698641.186,
+        "name": "verifier",
+        "start": 1794954585547.458
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 156618.32177734375,
+    "provider_timed": 9,
+    "reward": null,
+    "run_ms": 348800.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T22:25:50.633885Z",
+    "task_checksum": "9623bde8b8df64f044ba142496347ceb058d393e1a2319669250312e8799783f",
+    "tool_calls": 8,
+    "tool_errors": 1,
+    "tool_ms": 7809.139404296875,
+    "tools": {
+      "codemode": {
+        "calls": 8,
+        "errors": 1,
+        "ms": 7809.139404296875,
+        "timed": 8
       }
     }
   },
@@ -7500,6 +8480,55 @@
       }
     }
   },
+  "9b64481fd994de9c04d8561e193932286a9398b600eb4c12f3bb77458c42abdc": {
+    "agent_ms": 1168000.0,
+    "cache": 127104,
+    "cost": 0.1908,
+    "input": 146398,
+    "output": 13946,
+    "phases": [
+      {
+        "end": 1794952581641.135,
+        "name": "environment_setup",
+        "start": 1794952578912.975
+      },
+      {
+        "end": 1794952595649.789,
+        "name": "agent_setup",
+        "start": 1794952581641.255
+      },
+      {
+        "end": 1794953763694.867,
+        "name": "agent_execution",
+        "start": 1794952595650.065
+      },
+      {
+        "end": 1794953828464.406,
+        "name": "verifier",
+        "start": 1794953775692.106
+      }
+    ],
+    "provider_calls": 12,
+    "provider_errors": 0,
+    "provider_ms": 495863.16015625,
+    "provider_timed": 12,
+    "reward": 1.0,
+    "run_ms": 1249600.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T21:56:18.817145Z",
+    "task_checksum": "fd5e651014b9ef4b13ce162f8a5d7d0eac31d34f818e49d18458e716cd816edf",
+    "tool_calls": 11,
+    "tool_errors": 1,
+    "tool_ms": 669643.9938964844,
+    "tools": {
+      "bash": {
+        "calls": 11,
+        "errors": 1,
+        "ms": 669643.9938964844,
+        "timed": 11
+      }
+    }
+  },
   "9caa1a5be4a442850128025a628ec9e51c96f3de477a00b376895eb5d58f3087": {
     "agent_ms": 268900.0,
     "cache": 52352,
@@ -7796,6 +8825,55 @@
         "errors": 0,
         "ms": 4.0,
         "timed": 1
+      }
+    }
+  },
+  "a3f20f8b8b9106032d8e73babab9bde879b7a5081987cf92f2df145c43feaac4": {
+    "agent_ms": 533600.0,
+    "cache": 218112,
+    "cost": 0.2476,
+    "input": 259846,
+    "output": 14236,
+    "phases": [
+      {
+        "end": 1794973495971.229,
+        "name": "environment_setup",
+        "start": 1794973476656.355
+      },
+      {
+        "end": 1794973510474.445,
+        "name": "agent_setup",
+        "start": 1794973495971.355
+      },
+      {
+        "end": 1794974044030.979,
+        "name": "agent_execution",
+        "start": 1794973510474.693
+      },
+      {
+        "end": 1794974247433.754,
+        "name": "verifier",
+        "start": 1794974107740.0479
+      }
+    ],
+    "provider_calls": 26,
+    "provider_errors": 0,
+    "provider_ms": 454413.37939453125,
+    "provider_timed": 26,
+    "reward": 0.0,
+    "run_ms": 770900.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T03:44:36.526493Z",
+    "task_checksum": "80b19b18f9138fdcefdc2c69d66c1b69c698679de75b7dc3e80fb771b3ec5b9d",
+    "tool_calls": 25,
+    "tool_errors": 2,
+    "tool_ms": 75622.06469726562,
+    "tools": {
+      "eval": {
+        "calls": 25,
+        "errors": 2,
+        "ms": 75622.06469726562,
+        "timed": 25
       }
     }
   },
@@ -8113,6 +9191,55 @@
         "errors": 0,
         "ms": 13.0,
         "timed": 6
+      }
+    }
+  },
+  "a87bdc474b2cd93943627ef30dce25285d3d7d48ebb290ddcb711bb603ec3924": {
+    "agent_ms": 133100.0,
+    "cache": 28928,
+    "cost": 0.0667,
+    "input": 39801,
+    "output": 4211,
+    "phases": [
+      {
+        "end": 1795012965990.437,
+        "name": "environment_setup",
+        "start": 1795012961521.729
+      },
+      {
+        "end": 1795013004208.616,
+        "name": "agent_setup",
+        "start": 1795012965990.52
+      },
+      {
+        "end": 1795013137301.065,
+        "name": "agent_execution",
+        "start": 1795013004209.41
+      },
+      {
+        "end": 1795013268274.8262,
+        "name": "verifier",
+        "start": 1795013152864.25
+      }
+    ],
+    "provider_calls": 6,
+    "provider_errors": 0,
+    "provider_ms": 112530.328125,
+    "provider_timed": 6,
+    "reward": 0.0,
+    "run_ms": 306900.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T14:42:41.378028Z",
+    "task_checksum": "87c1857047d53ede4128554c889cc9457248e4a3356d152362d8f91db6161b35",
+    "tool_calls": 5,
+    "tool_errors": 1,
+    "tool_ms": 1099.5498046875,
+    "tools": {
+      "bash": {
+        "calls": 5,
+        "errors": 1,
+        "ms": 1099.5498046875,
+        "timed": 5
       }
     }
   },
@@ -8650,6 +9777,55 @@
         "errors": 0,
         "ms": 32.0,
         "timed": 1
+      }
+    }
+  },
+  "b1d2a0ab33d46188f54c328bd0fa2263dece75cc89296393ee91fc50420691b6": {
+    "agent_ms": 490900.0,
+    "cache": 214784,
+    "cost": 0.2239,
+    "input": 243931,
+    "output": 14413,
+    "phases": [
+      {
+        "end": 1794994225859.824,
+        "name": "environment_setup",
+        "start": 1794994222776.617
+      },
+      {
+        "end": 1794994245728.444,
+        "name": "agent_setup",
+        "start": 1794994225859.9082
+      },
+      {
+        "end": 1794994736667.4111,
+        "name": "agent_execution",
+        "start": 1794994245728.76
+      },
+      {
+        "end": 1794994806868.063,
+        "name": "verifier",
+        "start": 1794994751129.3909
+      }
+    ],
+    "provider_calls": 22,
+    "provider_errors": 0,
+    "provider_ms": 386111.6208496094,
+    "provider_timed": 22,
+    "reward": 0.0,
+    "run_ms": 584200.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T09:30:22.658271Z",
+    "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+    "tool_calls": 21,
+    "tool_errors": 1,
+    "tool_ms": 101157.80908203125,
+    "tools": {
+      "bash": {
+        "calls": 21,
+        "errors": 1,
+        "ms": 101157.80908203125,
+        "timed": 21
       }
     }
   },
@@ -9392,6 +10568,55 @@
       }
     }
   },
+  "bf3a2f75ca36f0d4adb17f3c996f25a9b44bffc2a11b93d3b9e6eae8d9436778": {
+    "agent_ms": 1311300.0,
+    "cache": 329472,
+    "cost": 0.4076,
+    "input": 355911,
+    "output": 32182,
+    "phases": [
+      {
+        "end": 1794950537936.381,
+        "name": "environment_setup",
+        "start": 1794950535064.281
+      },
+      {
+        "end": 1794950549592.96,
+        "name": "agent_setup",
+        "start": 1794950537936.499
+      },
+      {
+        "end": 1794951860843.7341,
+        "name": "agent_execution",
+        "start": 1794950549593.4292
+      },
+      {
+        "end": 1794951922443.657,
+        "name": "verifier",
+        "start": 1794951873316.9292
+      }
+    ],
+    "provider_calls": 22,
+    "provider_errors": 0,
+    "provider_ms": 1217734.6025390625,
+    "provider_timed": 22,
+    "reward": 1.0,
+    "run_ms": 1387500.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T21:22:14.966359Z",
+    "task_checksum": "fd5e651014b9ef4b13ce162f8a5d7d0eac31d34f818e49d18458e716cd816edf",
+    "tool_calls": 21,
+    "tool_errors": 3,
+    "tool_ms": 90491.4892578125,
+    "tools": {
+      "eval": {
+        "calls": 21,
+        "errors": 3,
+        "ms": 90491.4892578125,
+        "timed": 21
+      }
+    }
+  },
   "bf6ac657fdebaf883999d72359b9ca9543517ffed10ee5d3436647a9775ea0d5": {
     "agent_ms": 1446800.0,
     "cache": 6104704,
@@ -10125,6 +11350,104 @@
       }
     }
   },
+  "c60f9134e0ce69058b3dde370f1f1aa91e11a373b01d0aefc4528ebfeac8cbee": {
+    "agent_ms": 442900.0,
+    "cache": 66816,
+    "cost": 0.163,
+    "input": 104185,
+    "output": 8159,
+    "phases": [
+      {
+        "end": 1794993127012.924,
+        "name": "environment_setup",
+        "start": 1794993124481.335
+      },
+      {
+        "end": 1794993144484.16,
+        "name": "agent_setup",
+        "start": 1794993127013.008
+      },
+      {
+        "end": 1794993587428.3718,
+        "name": "agent_execution",
+        "start": 1794993144484.411
+      },
+      {
+        "end": 1794993639497.716,
+        "name": "verifier",
+        "start": 1794993600125.791
+      }
+    ],
+    "provider_calls": 17,
+    "provider_errors": 0,
+    "provider_ms": 287152.40673828125,
+    "provider_timed": 17,
+    "reward": 0.0,
+    "run_ms": 515100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T09:12:04.387537Z",
+    "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+    "tool_calls": 16,
+    "tool_errors": 0,
+    "tool_ms": 153095.35034179688,
+    "tools": {
+      "eval": {
+        "calls": 16,
+        "errors": 0,
+        "ms": 153095.35034179688,
+        "timed": 16
+      }
+    }
+  },
+  "c674dd00bc47e205bcad7b098c24ca4907eecf6ddd85757c44b2d420cd2f2fa3": {
+    "agent_ms": 93500.0,
+    "cache": 27520,
+    "cost": 0.0746,
+    "input": 49918,
+    "output": 2705,
+    "phases": [
+      {
+        "end": 1794989958999.542,
+        "name": "environment_setup",
+        "start": 1794989956528.574
+      },
+      {
+        "end": 1794989973100.473,
+        "name": "agent_setup",
+        "start": 1794989958999.5999
+      },
+      {
+        "end": 1794990066600.676,
+        "name": "agent_execution",
+        "start": 1794989973100.596
+      },
+      {
+        "end": 1794990248899.386,
+        "name": "verifier",
+        "start": 1794990081255.76
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 83118.48974609375,
+    "provider_timed": 8,
+    "reward": 0.0,
+    "run_ms": 292400.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:19:16.474763Z",
+    "task_checksum": "c9fd621d15a4f381c15cefb4b289cb9140b2f0e74b8feecb350e5a53ec47cfa7",
+    "tool_calls": 7,
+    "tool_errors": 1,
+    "tool_ms": 8154.6083984375,
+    "tools": {
+      "codemode": {
+        "calls": 7,
+        "errors": 1,
+        "ms": 8154.6083984375,
+        "timed": 7
+      }
+    }
+  },
   "c789d787d4a3627e9a124e03191a0c51e8975d345b4366f1085ce13c6303401a": {
     "agent_ms": 261300.0,
     "cache": 133376,
@@ -10192,6 +11515,55 @@
       }
     }
   },
+  "c903869a1e502ea37564a00af48eab8cbcb757128621ad26bb8fb78fa1c01bbf": {
+    "agent_ms": 191400.0,
+    "cache": 103808,
+    "cost": 0.128,
+    "input": 132475,
+    "output": 6031,
+    "phases": [
+      {
+        "end": 1794969681313.376,
+        "name": "environment_setup",
+        "start": 1794969678591.2559
+      },
+      {
+        "end": 1794969692795.6282,
+        "name": "agent_setup",
+        "start": 1794969681313.521
+      },
+      {
+        "end": 1794969884178.061,
+        "name": "agent_execution",
+        "start": 1794969692795.9968
+      },
+      {
+        "end": 1794969922638.124,
+        "name": "verifier",
+        "start": 1794969896660.377
+      }
+    ],
+    "provider_calls": 16,
+    "provider_errors": 0,
+    "provider_ms": 184313.7177734375,
+    "provider_timed": 16,
+    "reward": 1.0,
+    "run_ms": 244100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:41:18.492603Z",
+    "task_checksum": "2c37b7990593216ff1ae7ba95e53ba6c7ced5779d275598120d19411e358f7a0",
+    "tool_calls": 15,
+    "tool_errors": 0,
+    "tool_ms": 4700.658203125,
+    "tools": {
+      "bash": {
+        "calls": 15,
+        "errors": 0,
+        "ms": 4700.658203125,
+        "timed": 15
+      }
+    }
+  },
   "c99a9eee0a5168851a6a769e05f6d53e349dfbc5c2c3099b34a936f13317593d": {
     "agent_ms": 565500.0,
     "cache": 1942784,
@@ -10250,6 +11622,55 @@
         "errors": 0,
         "ms": 128164.0,
         "timed": 27
+      }
+    }
+  },
+  "cc34dbf488bd443daf03458ae2073d9024406a36b2c5558cbfb75a139f120cb1": {
+    "agent_ms": 120600.0,
+    "cache": 16000,
+    "cost": 0.0754,
+    "input": 32567,
+    "output": 4068,
+    "phases": [
+      {
+        "end": 1795020615337.806,
+        "name": "environment_setup",
+        "start": 1795020612690.4832
+      },
+      {
+        "end": 1795020627878.949,
+        "name": "agent_setup",
+        "start": 1795020615337.887
+      },
+      {
+        "end": 1795020748438.831,
+        "name": "agent_execution",
+        "start": 1795020627879.3572
+      },
+      {
+        "end": 1795020784505.655,
+        "name": "verifier",
+        "start": 1795020760045.6309
+      }
+    ],
+    "provider_calls": 8,
+    "provider_errors": 0,
+    "provider_ms": 117696.77001953125,
+    "provider_timed": 8,
+    "reward": 0.0,
+    "run_ms": 171900.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T16:50:12.565979Z",
+    "task_checksum": "7fea45f6992c6c8e98eea01a60e555f65b035bead587ecc0761c2714f76b900f",
+    "tool_calls": 7,
+    "tool_errors": 1,
+    "tool_ms": 592.146240234375,
+    "tools": {
+      "eval": {
+        "calls": 7,
+        "errors": 1,
+        "ms": 592.146240234375,
+        "timed": 7
       }
     }
   },
@@ -10613,6 +12034,55 @@
       }
     }
   },
+  "d2e850f153f79d9a7d827c338d5c76689a324abcb67fb15e983a4a5263b20a99": {
+    "agent_ms": 224800.0,
+    "cache": 66688,
+    "cost": 0.153,
+    "input": 93304,
+    "output": 9312,
+    "phases": [
+      {
+        "end": 1795003769158.7278,
+        "name": "environment_setup",
+        "start": 1795003766039.339
+      },
+      {
+        "end": 1795003782561.605,
+        "name": "agent_setup",
+        "start": 1795003769158.7988
+      },
+      {
+        "end": 1795004007400.6199,
+        "name": "agent_execution",
+        "start": 1795003782561.7312
+      },
+      {
+        "end": 1795004052278.2222,
+        "name": "verifier",
+        "start": 1795004020380.2031
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 212317.35400390625,
+    "provider_timed": 9,
+    "reward": 1.0,
+    "run_ms": 286300.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T12:09:25.981708Z",
+    "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+    "tool_calls": 8,
+    "tool_errors": 1,
+    "tool_ms": 10028.386962890625,
+    "tools": {
+      "codemode": {
+        "calls": 8,
+        "errors": 1,
+        "ms": 10028.386962890625,
+        "timed": 8
+      }
+    }
+  },
   "d4dca46b70d2c2735b717cb3791a963ef47bd8b7aa58e4aa0cfb151399ade722": {
     "agent_ms": 264400.0,
     "cache": 101504,
@@ -10720,6 +12190,55 @@
         "errors": 0,
         "ms": 1127.0,
         "timed": 8
+      }
+    }
+  },
+  "d5174aeaa497d78d81e5cc9c2ae2bfe5db5957365f4587b20fc34c1d66536492": {
+    "agent_ms": 332500.0,
+    "cache": 152576,
+    "cost": 0.1547,
+    "input": 172398,
+    "output": 9980,
+    "phases": [
+      {
+        "end": 1794974265331.9448,
+        "name": "environment_setup",
+        "start": 1794974250401.4248
+      },
+      {
+        "end": 1794974276872.3992,
+        "name": "agent_setup",
+        "start": 1794974265332.044
+      },
+      {
+        "end": 1794974609420.479,
+        "name": "agent_execution",
+        "start": 1794974276872.639
+      },
+      {
+        "end": 1794974769663.403,
+        "name": "verifier",
+        "start": 1794974637710.213
+      }
+    ],
+    "provider_calls": 19,
+    "provider_errors": 0,
+    "provider_ms": 271327.39453125,
+    "provider_timed": 19,
+    "reward": 0.0,
+    "run_ms": 519299.99999999994,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T03:57:30.314152Z",
+    "task_checksum": "80b19b18f9138fdcefdc2c69d66c1b69c698679de75b7dc3e80fb771b3ec5b9d",
+    "tool_calls": 18,
+    "tool_errors": 1,
+    "tool_ms": 58157.6044921875,
+    "tools": {
+      "codemode": {
+        "calls": 18,
+        "errors": 1,
+        "ms": 58157.6044921875,
+        "timed": 18
       }
     }
   },
@@ -10879,6 +12398,55 @@
         "errors": 1,
         "ms": 10400.0,
         "timed": 21
+      }
+    }
+  },
+  "d6c5fd79e56dba3c1dcb76b9400439ecf575f1a27038d4221ee12a878a4310f0": {
+    "agent_ms": 148500.0,
+    "cache": 47232,
+    "cost": 0.1104,
+    "input": 72943,
+    "output": 5428,
+    "phases": [
+      {
+        "end": 1795012178986.341,
+        "name": "environment_setup",
+        "start": 1795012175379.7651
+      },
+      {
+        "end": 1795012198627.157,
+        "name": "agent_setup",
+        "start": 1795012178986.42
+      },
+      {
+        "end": 1795012347143.835,
+        "name": "agent_execution",
+        "start": 1795012198627.315
+      },
+      {
+        "end": 1795012577635.0479,
+        "name": "verifier",
+        "start": 1795012359276.8828
+      }
+    ],
+    "provider_calls": 9,
+    "provider_errors": 0,
+    "provider_ms": 144726.59643554688,
+    "provider_timed": 9,
+    "reward": 1.0,
+    "run_ms": 402400.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T14:29:35.281832Z",
+    "task_checksum": "87c1857047d53ede4128554c889cc9457248e4a3356d152362d8f91db6161b35",
+    "tool_calls": 8,
+    "tool_errors": 0,
+    "tool_ms": 957.409423828125,
+    "tools": {
+      "eval": {
+        "calls": 8,
+        "errors": 0,
+        "ms": 957.409423828125,
+        "timed": 8
       }
     }
   },
@@ -11093,6 +12661,55 @@
         "errors": 0,
         "ms": 27.0,
         "timed": 11
+      }
+    }
+  },
+  "dab1e772ed92f6455d5404003ad934eb4b4615019c5747d9ec5b992413589578": {
+    "agent_ms": 152800.0,
+    "cache": 121088,
+    "cost": 0.1138,
+    "input": 150600,
+    "output": 4263,
+    "phases": [
+      {
+        "end": 1794954784641.0388,
+        "name": "environment_setup",
+        "start": 1794954761600.096
+      },
+      {
+        "end": 1794954822446.981,
+        "name": "agent_setup",
+        "start": 1794954784641.5552
+      },
+      {
+        "end": 1794954975277.647,
+        "name": "agent_execution",
+        "start": 1794954822448.548
+      },
+      {
+        "end": 1794955028906.129,
+        "name": "verifier",
+        "start": 1794954989625.3801
+      }
+    ],
+    "provider_calls": 10,
+    "provider_errors": 0,
+    "provider_ms": 138576.7685546875,
+    "provider_timed": 10,
+    "reward": 0.0,
+    "run_ms": 271200.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-17T22:32:37.686849Z",
+    "task_checksum": "9623bde8b8df64f044ba142496347ceb058d393e1a2319669250312e8799783f",
+    "tool_calls": 9,
+    "tool_errors": 2,
+    "tool_ms": 8085.42431640625,
+    "tools": {
+      "bash": {
+        "calls": 9,
+        "errors": 2,
+        "ms": 8085.42431640625,
+        "timed": 9
       }
     }
   },
@@ -11987,6 +13604,55 @@
       }
     }
   },
+  "ed4f1d729d2b7487f32291f185a02b8b508639c066279b638f2dcf62393676ac": {
+    "agent_ms": 347500.0,
+    "cache": 278016,
+    "cost": 0.2097,
+    "input": 320490,
+    "output": 9698,
+    "phases": [
+      {
+        "end": 1794969273992.8,
+        "name": "environment_setup",
+        "start": 1794969271164.5352
+      },
+      {
+        "end": 1794969285612.173,
+        "name": "agent_setup",
+        "start": 1794969273992.9258
+      },
+      {
+        "end": 1794969633128.275,
+        "name": "agent_execution",
+        "start": 1794969285612.579
+      },
+      {
+        "end": 1794969677163.6008,
+        "name": "verifier",
+        "start": 1794969645537.8
+      }
+    ],
+    "provider_calls": 23,
+    "provider_errors": 0,
+    "provider_ms": 335779.57080078125,
+    "provider_timed": 23,
+    "reward": 0.0,
+    "run_ms": 406100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:34:31.076531Z",
+    "task_checksum": "2c37b7990593216ff1ae7ba95e53ba6c7ced5779d275598120d19411e358f7a0",
+    "tool_calls": 22,
+    "tool_errors": 1,
+    "tool_ms": 8835.7919921875,
+    "tools": {
+      "codemode": {
+        "calls": 22,
+        "errors": 1,
+        "ms": 8835.7919921875,
+        "timed": 22
+      }
+    }
+  },
   "ef0145e3b520fd17810d445d3eb8725551131e736bdc22179af6613be8b0755c": {
     "agent_ms": 285200.0,
     "cache": 233856,
@@ -12210,6 +13876,104 @@
         "errors": 0,
         "ms": 6.0,
         "timed": 2
+      }
+    }
+  },
+  "f2cbf6e40e955f908187d0117a2d3d85972e786f8cea9a5f66d785d37699a1cd": {
+    "agent_ms": 371600.0,
+    "cache": 204032,
+    "cost": 0.2289,
+    "input": 256713,
+    "output": 10311,
+    "phases": [
+      {
+        "end": 1794968843895.457,
+        "name": "environment_setup",
+        "start": 1794968841155.0032
+      },
+      {
+        "end": 1794968855447.013,
+        "name": "agent_setup",
+        "start": 1794968843895.5679
+      },
+      {
+        "end": 1794969227064.569,
+        "name": "agent_execution",
+        "start": 1794968855447.3381
+      },
+      {
+        "end": 1794969269767.01,
+        "name": "verifier",
+        "start": 1794969239566.231
+      }
+    ],
+    "provider_calls": 20,
+    "provider_errors": 0,
+    "provider_ms": 335021.5378417969,
+    "provider_timed": 20,
+    "reward": 1.0,
+    "run_ms": 428700.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T02:27:21.076293Z",
+    "task_checksum": "2c37b7990593216ff1ae7ba95e53ba6c7ced5779d275598120d19411e358f7a0",
+    "tool_calls": 19,
+    "tool_errors": 0,
+    "tool_ms": 33765.192138671875,
+    "tools": {
+      "eval": {
+        "calls": 19,
+        "errors": 0,
+        "ms": 33765.192138671875,
+        "timed": 19
+      }
+    }
+  },
+  "f32ff34d5914ee6573aeed4164d7cac95841b7a2748af4ca988b14c3259ec394": {
+    "agent_ms": 376900.0,
+    "cache": 578816,
+    "cost": 0.2397,
+    "input": 637600,
+    "output": 6428,
+    "phases": [
+      {
+        "end": 1794990985456.978,
+        "name": "environment_setup",
+        "start": 1794990973288.839
+      },
+      {
+        "end": 1794991021595.2,
+        "name": "agent_setup",
+        "start": 1794991004734.201
+      },
+      {
+        "end": 1794991398532.491,
+        "name": "agent_execution",
+        "start": 1794991021595.381
+      },
+      {
+        "end": 1794991443376.109,
+        "name": "verifier",
+        "start": 1794991420783.22
+      }
+    ],
+    "provider_calls": 19,
+    "provider_errors": 0,
+    "provider_ms": 320429.9970703125,
+    "provider_timed": 19,
+    "reward": 0.0,
+    "run_ms": 470100.0,
+    "setup": "5a669d6aa46da2ad96e8550d2db0c5d063848b2dccb6b9c040fd5bb2a29a2a32",
+    "started_at": "2026-11-18T08:36:13.234591Z",
+    "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+    "tool_calls": 18,
+    "tool_errors": 0,
+    "tool_ms": 43394.53173828125,
+    "tools": {
+      "eval": {
+        "calls": 18,
+        "errors": 0,
+        "ms": 43394.53173828125,
+        "timed": 18
       }
     }
   },
