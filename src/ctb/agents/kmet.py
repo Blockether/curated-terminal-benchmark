@@ -1,5 +1,6 @@
 """kmet (github.com/kmetia/kmet-agent) in one-shot print mode."""
 
+import hashlib
 import shlex
 from collections.abc import Mapping
 
@@ -9,12 +10,16 @@ from harbor.models.agent.context import AgentContext
 from ctb import arch, credentials
 from ctb.agents.base import EFFORT, CuratedAgent, min_token_seconds
 from ctb.lines import lines
-from ctb.paths import ARTIFACTS
+from ctb.paths import ARTIFACTS, ROOT
 from ctb.resources import files_footprint
 
 KMET = "/installed-agent/kmet"
 STREAM = "kmet.edn"
-ARCHIVE_NAME = f"kmet-f07fa90e-{arch.KMET}.tar.gz"
+# GPT fills the unused optional `tail` of the read tool with 0, and kmet refuses `tail` next to
+# `offset`. The patch reads `tail` 0 as no tail; it changes nothing else.
+PATCHES = ("kmet-read-tail-zero.patch",)
+PATCH_SHA = hashlib.sha256(b"".join((ROOT / "patches" / p).read_bytes() for p in PATCHES))
+ARCHIVE_NAME = f"kmet-f07fa90e-{PATCH_SHA.hexdigest()[:8]}-{arch.KMET}.tar.gz"
 
 
 class Kmet(CuratedAgent):

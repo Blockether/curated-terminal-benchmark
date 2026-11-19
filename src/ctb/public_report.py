@@ -16,6 +16,9 @@ from ctb.report.comparison import setup_id
 SELECTION = {
     "codex": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "kmet": ("gpt-kmet-2-16bbdc8",),
+    "kmet-codemode": ("kmet-tools-3cafc66/r1",),
+    "kmet-eval-only": ("kmet-tools-3cafc66/r1",),
+    "kmet-shell-only": ("kmet-tools-3cafc66/r1",),
     "opencode": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
@@ -191,9 +194,11 @@ TOOLS = frozenset(
         "ask_human",
         "bash",
         "bash_output",
+        "codemode",
         "done",
         "edit",
         "edit_file",
+        "eval",
         "exec",
         "execution",
         "fetch_turn",
@@ -410,6 +415,10 @@ AGENTS = {
     "opencode": ("OpenCode", False, "https://github.com/anomalyco/opencode"),
     "pi": ("Pi", False, "https://github.com/earendil-works/pi"),
     "kmet": ("Kmet", False, "https://github.com/kmetia/kmet-agent"),
+    # Experiment arms: the same Kmet with one tool selected by `--tools`.
+    "kmet-eval-only": ("Kmet eval-only", False, "https://github.com/kmetia/kmet-agent"),
+    "kmet-codemode": ("Kmet codemode", False, "https://github.com/kmetia/kmet-agent"),
+    "kmet-shell-only": ("Kmet shell-only", False, "https://github.com/kmetia/kmet-agent"),
     "wisp": ("Wisp", False, "https://github.com/xificurC/wisp"),
     "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
     "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
@@ -438,8 +447,13 @@ NATIVE = f"Run natively (arm64) on {MACHINE}."
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
 
+def agent_key(agent):
+    """The AGENTS entry of an agent: its own entry, else the program (vis-solo is vis)."""
+    return agent if agent in AGENTS else agent.split("-")[0]
+
+
 def agent_names():
-    """The display names of the selected agents, in the order of AGENTS."""
+    """The display names of the selected programs, in the order of AGENTS."""
     chosen = {name.split("-")[0] for name in SELECTION}
     return [label for key, (label, _, _) in AGENTS.items() if key in chosen]
 
@@ -456,11 +470,9 @@ def head(data):
     """The page head of the sealed results."""
     # A sealed version can carry the program name ("vis-agent 0.5.7"); the list shows the name.
     versions = {
-        a.split("-")[0]: s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
+        agent_key(a): s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
     }
-    emulated = {
-        a.split("-")[0] for a, s in data["sources"].items() if any(r["emulated"] for r in s)
-    }
+    emulated = {agent_key(a) for a, s in data["sources"].items() if any(r["emulated"] for r in s)}
     note = NATIVE if not emulated else EMULATION if emulated == set(versions) else None
     note = note or mixed(versions, emulated)
     return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", note)
@@ -484,7 +496,7 @@ def local_head(trials):
     trials = layout.reported(trials)
     versions, records = {}, []
     for t in sorted(trials, key=lambda t: t.get("started_at") or ""):
-        key = t["agent"].split("-")[0]
+        key = agent_key(t["agent"])
         if key in AGENTS and t.get("version"):
             versions[key] = t["version"].split()[-1]
     for root in sorted({Path(t["path"]).parents[1] for t in trials if t.get("path")}):
@@ -524,10 +536,11 @@ def head_html(versions, tasks, model, note):
         f"<div><dt>{name}</dt><dd><ul>{items}</ul></dd></div>" for name, items in rows if items
     )
     tail = f"{tasks} CPU-only Terminal-Bench 4.0 tasks, all on {layout.esc(model)}."
+    programs = len({key.split("-")[0] for key in versions})
     intro = (
-        f"Our agent Vis vs. {len(versions) - 1} other coding agents on {tail}"
+        f"Our agent Vis vs. {programs - 1} other coding agents on {tail}"
         if "vis" in versions
-        else f"{len(versions)} coding agents on {tail}"
+        else f"{programs} coding agents on {tail}"
     )
     extra = f'<p class="head-note">{note}</p>\n' if note else ""
     return (

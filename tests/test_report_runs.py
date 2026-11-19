@@ -114,6 +114,26 @@ def test_a_round_still_running_stays_out_of_the_mean():
     assert render.rounds_text(trials) == "2 (+1 incomplete)"
 
 
+def test_agents_with_different_rounds_have_no_incomplete_rounds():
+    # Agent a has five rounds and agent b one: round 1 has more trials, but no round is incomplete.
+    trials = [fake_trial("gpt", r, task=task) for r in range(1, 6) for task in ("t", "u")]
+    trials += [fake_trial("gpt", 1, agent="b", task=task, passed=False) for task in ("t", "u")]
+    html = render.scope_readings(trials, "mean")
+    assert "incomplete" not in html
+    assert "1 to 5 per agent" in html
+    # Passes per round: 2 for a and 0 for b, the sum of the agent means.
+    assert 'Passed per round</p><p class="reading">2.0<' in html
+    # A round of b without a cost stays out of the mean of b: 0.5 per trial, two tasks each.
+    trials[-1]["facts"]["cost"] = None
+    trials.append(fake_trial("gpt", 2, agent="b", task="t"))
+    trials.append(
+        {**fake_trial("gpt", 2, agent="b", task="u"), "facts": {"run_ms": 1, "cost": 0.5}}
+    )
+    html = render.scope_readings(trials, "mean")
+    assert 'Cost per round</p><p class="reading">$2.00<' in html
+    assert "1 agent round without a value left out" in html
+
+
 def test_charts_keep_agents_with_values_and_count_the_trials_left_out(monkeypatch):
     def fake(agent, tokens, cost):
         return {"agent": agent, "passed": True, "tokens": tokens, "facts": {"cost": cost}}

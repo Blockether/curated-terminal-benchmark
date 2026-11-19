@@ -452,6 +452,41 @@ def rounds_text(group: list[dict]) -> str:
     return f"{done}" if done == every else f"{done} (+{every - done} incomplete)"
 
 
+def agent_groups(trials: list[dict]) -> list[list[dict]]:
+    by_agent: dict[str, list[dict]] = defaultdict(list)
+    for trial in trials:
+        by_agent[trial["agent"]].append(trial)
+    return [by_agent[a] for a in sorted(by_agent)]
+
+
+def scope_rounds_text(trials: list[dict]) -> str:
+    """The complete rounds of each agent: one number when all agents have the same rounds."""
+    texts = sorted({rounds_text(g) for g in agent_groups(trials)}, key=lambda s: (len(s), s))
+    return texts[0] if len(texts) == 1 else f"{texts[0]} to {texts[-1]} per agent"
+
+
+def scope_spread(trials: list[dict], value, show) -> tuple[str | None, str | None]:
+    """The run value per round and a note. When agents have different rounds, a round total
+    mixes agents, so the value is the sum of the agent means, without a spread. A round where a
+    trial has no value stays out of the mean of its agent."""
+    groups = agent_groups(trials)
+    if len({tuple(complete_rounds(g)) for g in groups}) == 1:
+        text = spread_text(per_round(trials, value), show)
+        if text is not None or len(groups) < 2:
+            return text, None
+    rounds = [per_round(g, value) for g in groups]
+    known = [[v for v in r if v is not None] for r in rounds]
+    if not all(known):
+        return None, None
+    left = sum(len(r) - len(k) for r, k in zip(rounds, known, strict=True))
+    note = (
+        f"{left} agent {'round' if left == 1 else 'rounds'} without a value left out"
+        if left
+        else None
+    )
+    return show(sum(statistics.fmean(k) for k in known)), note
+
+
 def per_round(group: list[dict], value) -> list[float | None]:
     """The total of one value in each complete round; None for a round where a trial has no value."""
     totals = []
@@ -640,31 +675,16 @@ def scope_readings(trials: list[dict], kind: str) -> str:
     """The large values of one scope: totals, or for the mean view the mean per round."""
     passed = sum(t["passed"] for t in trials)
     if kind == "mean":
-        per = lambda value: per_round(trials, value)
+        per = lambda value, show: scope_spread(trials, value, show)
+        passes = per(lambda t: int(t["passed"]), count)[0]
         return readings(
             [
-                ("Rounds", rounds_text(trials), f"{len(trials)} trials"),
-                (
-                    "Passed per round",
-                    spread_text(per(lambda t: int(t["passed"])), count),
-                    f"{percent(passed, len(trials))} pass rate",
-                ),
-                ("Cost per round", spread_text(per(lambda t: t["facts"]["cost"]), money), None),
-                (
-                    "Calls per round",
-                    spread_text(per(lambda t: t["summary"]["provider_calls"]), number),
-                    None,
-                ),
-                (
-                    "Tool calls per round",
-                    spread_text(per(lambda t: t["summary"]["tool_calls"]), number),
-                    None,
-                ),
-                (
-                    "Tool errors per round",
-                    spread_text(per(lambda t: t["summary"]["tool_errors"]), count),
-                    None,
-                ),
+                ("Rounds", scope_rounds_text(trials), f"{len(trials)} trials"),
+                ("Passed per round", passes, f"{percent(passed, len(trials))} pass rate"),
+                ("Cost per round", *per(lambda t: t["facts"]["cost"], money)),
+                ("Calls per round", *per(lambda t: t["summary"]["provider_calls"], number)),
+                ("Tool calls per round", *per(lambda t: t["summary"]["tool_calls"], number)),
+                ("Tool errors per round", *per(lambda t: t["summary"]["tool_errors"], count)),
             ]
         )
     timed = [t["summary"]["provider_ms"] for t in trials if t["summary"]["provider_ms"] is not None]

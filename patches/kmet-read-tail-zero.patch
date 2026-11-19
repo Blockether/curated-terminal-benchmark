@@ -1,0 +1,32 @@
+diff --git a/modules/app/src/kmet/app/tools/read.clj b/modules/app/src/kmet/app/tools/read.clj
+index ab081730..626944ad 100644
+--- a/modules/app/src/kmet/app/tools/read.clj
++++ b/modules/app/src/kmet/app/tools/read.clj
+@@ -342,7 +342,9 @@
+    The eval verb's `:start`/`:end` (inclusive) and `:as :lines` are
+    verb-only; the model-facing read tool does not declare them."
+   [{:keys [path file_path offset start limit end tail footer as]} _on-update signal _ctx]
+-  (let [raw-path (or path file_path)]
++  (let [raw-path (or path file_path)
++        ;; ctb: GPT fills an unused optional :tail with 0. The last 0 lines is no tail.
++        tail (when-not (and (number? tail) (zero? tail)) tail)]
+     (try
+       (if (or (nil? raw-path) (and (string? raw-path) (str/blank? raw-path)))
+         {:content "File not found: " :is-error true}
+diff --git a/modules/app/test/kmet/app/tools/test_read.clj b/modules/app/test/kmet/app/tools/test_read.clj
+index 5677150c..0abf391a 100644
+--- a/modules/app/test/kmet/app/tools/test_read.clj
++++ b/modules/app/test/kmet/app/tools/test_read.clj
+@@ -67,9 +67,9 @@
+         (let [result (read-call {:path f :tail 1.5})]
+           (is (:is-error result))
+           (is (str/includes? (:content result) "positive integer")))
+-        (let [result (read-call {:path f :tail 0})]
+-          (is (:is-error result))
+-          (is (str/includes? (:content result) "positive")))
++        ;; ctb: GPT sends an unused :tail as 0 next to :offset and :limit.
++        (let [result (read-call {:path f :offset 1 :limit 2 :tail 0 :footer false})]
++          (is (= "one\ntwo" (:content result))))
+         (let [result (read-call {:path f :offset 0})]
+           (is (:is-error result))
+           (is (str/includes? (:content result) ":offset must be a positive integer")))

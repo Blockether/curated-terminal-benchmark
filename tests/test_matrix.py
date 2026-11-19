@@ -49,7 +49,7 @@ def test_the_public_agent_list_names_every_harness_and_its_pause():
 
     harnesses = {}
     for name, spec in matrix.AGENTS.items():
-        harnesses[name.split("-")[0]] = spec.paused
+        harnesses[public_report.agent_key(name)] = spec.paused
     assert {k: v[1] for k, v in public_report.AGENTS.items()} == harnesses
     assert [t.job for t in matrix.trials(["dirge"], ["openai"], ["x"])] == ["dirge__openai__x"]
 

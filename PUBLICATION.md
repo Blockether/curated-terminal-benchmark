@@ -59,7 +59,9 @@ Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` 
 `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
 recorded no cost. A source lists each harness commit of its agent. Each trial gets the setup of the
-last run record of its agent that started before the trial. The other agents have one round each.
+last run record of its agent that started before the trial. The Kmet arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have round `kmet-tools-3cafc66/r1`,
+natively on arm64, and show as separate agents. Base Kmet in that round is not sealed: it has no result
+for one task. The other agents have one round each.
 Recovery trials are not substituted.
 The Wisp round `gpt-wisp-ab49003` replaces `gpt-wisp-62106d1`. In the first round, the proxy did not send
 `load_image` images to the model, and the `wisp` command for subagents was not on PATH. Subagent tokens are

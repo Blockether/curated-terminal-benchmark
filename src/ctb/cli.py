@@ -206,6 +206,7 @@ def fetch_kmet() -> Path:
     archive = ARTIFACTS / kmet.ARCHIVE_NAME
     if not archive.is_file():
         path = checkout(KMET_REPO, KMET_COMMIT, "kmet-agent")
+        apply_patches(path, *kmet.PATCHES)
         env = dict(os.environ, PATH=f"{ARTIFACTS / 'tools'}:{os.environ['PATH']}")
         sh(["bb", "dist", arch.KMET], cwd=path, env=env)
         pack(path / "target/dist" / arch.KMET / "kmet", archive, "kmet")
