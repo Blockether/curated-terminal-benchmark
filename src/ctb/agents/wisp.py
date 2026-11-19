@@ -15,7 +15,7 @@ from ctb.toolkit import TOOLKIT
 
 REPO = "https://github.com/xificurC/wisp.git"
 # The newest main commit; the repository has no release tags.
-COMMIT = "13e25529caa257f0e8811b2ae32b25afcc5393da"
+COMMIT = "9cddabcdd3cbff0b461d5026482658fdaba6e3c4"
 VERSION = COMMIT[:8]
 # Upstream Wisp stops when the task image has no git; the patch treats a missing program as a
 # failed command. It changes nothing else.
