@@ -48,7 +48,7 @@ VERIFIER = "ctb.verifier:Verifier"
 DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
 KMET_REPO, KMET_COMMIT = (
     "https://github.com/kmetia/kmet-agent.git",
-    "f07fa90ef19b361e065c9d597608c16ebaf732cd",
+    "b52aa1186c5f6e3968b15f2bfc23ea59e5851f07",
 )
 SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 # Task containers reach the host proxy here (Podman's name for the host).

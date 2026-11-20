@@ -19,7 +19,7 @@ STREAM = "kmet.edn"
 # `offset`. The patch reads `tail` 0 as no tail; it changes nothing else.
 PATCHES = ("kmet-read-tail-zero.patch",)
 PATCH_SHA = hashlib.sha256(b"".join((ROOT / "patches" / p).read_bytes() for p in PATCHES))
-ARCHIVE_NAME = f"kmet-f07fa90e-{PATCH_SHA.hexdigest()[:8]}-{arch.KMET}.tar.gz"
+ARCHIVE_NAME = f"kmet-b52aa118-{PATCH_SHA.hexdigest()[:8]}-{arch.KMET}.tar.gz"
 
 
 class Kmet(CuratedAgent):

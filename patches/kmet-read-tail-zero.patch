@@ -1,8 +1,8 @@
 diff --git a/modules/app/src/kmet/app/tools/read.clj b/modules/app/src/kmet/app/tools/read.clj
-index ab081730..626944ad 100644
+index 60009460..e2f71ffc 100644
 --- a/modules/app/src/kmet/app/tools/read.clj
 +++ b/modules/app/src/kmet/app/tools/read.clj
-@@ -342,7 +342,9 @@
+@@ -347,7 +347,9 @@
     The eval verb's `:start`/`:end` (inclusive) and `:as :lines` are
     verb-only; the model-facing read tool does not declare them."
    [{:keys [path file_path offset start limit end tail footer as]} _on-update signal _ctx]
@@ -14,7 +14,7 @@ index ab081730..626944ad 100644
        (if (or (nil? raw-path) (and (string? raw-path) (str/blank? raw-path)))
          {:content "File not found: " :is-error true}
 diff --git a/modules/app/test/kmet/app/tools/test_read.clj b/modules/app/test/kmet/app/tools/test_read.clj
-index 5677150c..0abf391a 100644
+index 618ccf7d..afd2e2b4 100644
 --- a/modules/app/test/kmet/app/tools/test_read.clj
 +++ b/modules/app/test/kmet/app/tools/test_read.clj
 @@ -67,9 +67,9 @@
@@ -29,4 +29,4 @@ index 5677150c..0abf391a 100644
 +          (is (= "one\ntwo" (:content result))))
          (let [result (read-call {:path f :offset 0})]
            (is (:is-error result))
-           (is (str/includes? (:content result) ":offset must be a positive integer")))
+           (is (str/includes? (:content result) ":offset must be a positive integer"))
