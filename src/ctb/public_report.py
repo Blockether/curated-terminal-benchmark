@@ -22,7 +22,7 @@ SELECTION = {
     "opencode": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
-    "wisp": ("gpt-wisp-ab49003",),
+    "wisp": tuple(f"gpt-wisp-5818f6d/r{n}" for n in range(1, 6)),
 }
 TASKS = (
     "bun-sourcemap-leak",

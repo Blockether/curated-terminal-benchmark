@@ -56,16 +56,17 @@ the selected tab (`view=round-2`) and the General or Normalized tab (`tab=normal
 
 The comparison selects 12 tasks for each of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
 Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
-`r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
+`r5`), natively on arm64. Wisp (pin `9cddabc`) has the five rounds of run `gpt-wisp-5818f6d`
+(`gpt-wisp-5818f6d/r1` to `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
 recorded no cost. A source lists each harness commit of its agent. Each trial gets the setup of the
 last run record of its agent that started before the trial. The Kmet arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have round `kmet-tools-3cafc66/r1`,
 natively on arm64, and show as separate agents. Base Kmet in that round is not sealed: it has no result
 for one task. The other agents have one round each.
 Recovery trials are not substituted.
-The Wisp round `gpt-wisp-ab49003` replaces `gpt-wisp-62106d1`. In the first round, the proxy did not send
-`load_image` images to the model, and the `wisp` command for subagents was not on PATH. Subagent tokens are
-part of the Wisp cost.
+The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
+In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
+subagents was not on PATH. Subagent tokens are part of the Wisp cost.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
 that recorded hashes did not change, not fairness or correctness. The single rounds ran the
 linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro
