@@ -103,14 +103,15 @@ class PublicReportTests(unittest.TestCase):
             text = p.render(self.comparison(), self.metrics).decode()
         self.assertNotIn('data-param="view"', text)
 
-    def test_head_names_the_agents_that_ran_natively_and_under_emulation(self):
-        for agent in ("codex", "pi"):
-            for source in self.data["sources"][agent]:
-                source["emulated"] = False
+    def test_head_marks_the_agents_with_an_emulated_round(self):
+        for agent, sources in self.data["sources"].items():
+            for source in sources:
+                source["emulated"] = agent == "vis-solo"
         text = p.render(self.data, self.metrics).decode()
-        self.assertIn("Codex and Pi ran natively (arm64), ", text)
-        self.assertIn(" under Rosetta emulation", text)
-        self.assertNotIn(p.EMULATION, text)
+        self.assertIn(f"{p.NATIVE} {p.RERUN}", text)
+        self.assertIn(">Vis</a>*", text)
+        self.assertNotIn(">Codex</a>*", text)
+        self.assertNotIn("Rosetta", text)
 
     def test_metrics_reject_unknown_text_and_invalid_numbers(self):
         root = Path(__file__).resolve().parents[1]

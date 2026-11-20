@@ -15,10 +15,10 @@ from ctb.report.comparison import setup_id
 #: The sealed rounds of each agent, in order: round 1 first. Each round has every task once.
 SELECTION = {
     "codex": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
-    "kmet": ("gpt-kmet-2-16bbdc8",),
-    "kmet-codemode": ("kmet-tools-3cafc66/r1",),
-    "kmet-eval-only": ("kmet-tools-3cafc66/r1",),
-    "kmet-shell-only": ("kmet-tools-3cafc66/r1",),
+    "kmet": ("kmet-89fa382/r1",),
+    "kmet-codemode": ("kmet-89fa382/r1",),
+    "kmet-eval-only": ("kmet-89fa382/r1",),
+    "kmet-shell-only": ("kmet-89fa382/r1",),
     "opencode": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
@@ -444,6 +444,7 @@ LINKS = (
 MACHINE = "a MacBook Pro M4 Max (Podman VM, 12 CPUs, 24 GiB)"
 EMULATION = f"Run under Rosetta emulation on {MACHINE}. Times include the emulation overhead."
 NATIVE = f"Run natively (arm64) on {MACHINE}."
+RERUN = "* To be run again natively."
 FONT_FILES = ("inter-latin.woff2", "jetbrains-mono-latin.woff2")
 
 
@@ -472,23 +473,10 @@ def head(data):
     versions = {
         agent_key(a): s[-1]["agent_version"].split()[-1] for a, s in data["sources"].items()
     }
-    emulated = {agent_key(a) for a, s in data["sources"].items() if any(r["emulated"] for r in s)}
-    note = NATIVE if not emulated else EMULATION if emulated == set(versions) else None
-    note = note or mixed(versions, emulated)
-    return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", note)
-
-
-def mixed(versions, emulated):
-    """The machine note when some agents ran natively and others under emulation."""
-
-    def listing(keys):
-        labels = [AGENTS[k][0] for k in AGENTS if k in keys]
-        return labels[0] if len(labels) == 1 else ", ".join(labels[:-1]) + " and " + labels[-1]
-
-    return (
-        f"{listing(set(versions) - emulated)} ran natively (arm64), {listing(emulated)} under "
-        f"Rosetta emulation, on {MACHINE}. Emulated times include the emulation overhead."
-    )
+    # An agent with an emulated round gets a mark: its rounds will run again natively.
+    rerun = {agent_key(a) for a, s in data["sources"].items() if any(r["emulated"] for r in s)}
+    note = NATIVE + (f" {RERUN}" if rerun else "")
+    return head_html(versions, len(TASKS), "GPT-6.1-sol with medium reasoning", note, rerun)
 
 
 def local_head(trials):
@@ -512,7 +500,7 @@ def local_head(trials):
     return head_html(versions, len({t["task"] for t in trials}), model, note)
 
 
-def head_html(versions, tasks, model, note):
+def head_html(versions, tasks, model, note, rerun=()):
     """The page head: one lead line, then the tested versions, the paused agents and the sources."""
 
     def agent(key):
@@ -522,7 +510,8 @@ def head_html(versions, tasks, model, note):
             if key in versions
             else ""
         )
-        return f'<li><a href="{url}">{label}</a>{version}</li>'
+        mark = "*" if key in rerun else ""
+        return f'<li><a href="{url}">{label}</a>{mark}{version}</li>'
 
     rows = (
         ("Tested", "".join(agent(key) for key in AGENTS if key in versions)),

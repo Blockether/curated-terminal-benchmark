@@ -60,18 +60,20 @@ Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` 
 (`gpt-wisp-5818f6d/r1` to `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
 recorded no cost. A source lists each harness commit of its agent. Each trial gets the setup of the
-last run record of its agent that started before the trial. The Kmet arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have round `kmet-tools-3cafc66/r1`,
-natively on arm64, and show as separate agents. Base Kmet in that round is not sealed: it has no result
-for one task. The other agents have one round each.
+last run record of its agent that started before the trial. Kmet and its arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have the rounds of run
+`kmet-89fa382`, natively on arm64, with the local patch for the `tail` 0 refusal of the read tool. The arms
+show as separate agents. They replace the rounds `gpt-kmet-2-16bbdc8` and `kmet-tools-3cafc66/r1`. Each
+round is added when it completes. Vis has one round.
 Recovery trials are not substituted.
 The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
 In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
 subagents was not on PATH. Subagent tokens are part of the Wisp cost.
 The first Kmet round is not sealed because an untracked file made its run record dirty. A seal proves
-that recorded hashes did not change, not fairness or correctness. The single rounds ran the
-linux/amd64 tasks under Rosetta emulation in a Podman VM on an Apple Silicon Mac: a MacBook Pro
-with Apple M4 Max (14 cores, 36 GB) and a VM with 12 CPUs and 24 GiB. A run record without an
-engine predates native runs and counts as emulated. The page names the native and emulated agents. New rounds on that host need `--allow-emulation`.
+that recorded hashes did not change, not fairness or correctness. The rounds ran in a Podman VM
+on an Apple Silicon Mac: a MacBook Pro with Apple M4 Max (14 cores, 36 GB) and a VM with 12 CPUs and
+24 GiB. The Vis round ran the linux/amd64 tasks under Rosetta emulation. A run record without an engine
+predates native runs and counts as emulated. The page says that the agents ran natively and marks an
+agent with an emulated round with `*`: its rounds will run again natively. New rounds on that host need `--allow-emulation`.
 
 `results/*-transcripts-seal.json` contains local evidence paths and hashes, not file contents.
 Each round is audited and committed separately within the same expansion budget. No evidence
