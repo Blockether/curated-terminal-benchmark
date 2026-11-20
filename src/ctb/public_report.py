@@ -258,6 +258,10 @@ COUNTS = {
 }
 
 
+class MissingMetrics(ValueError):
+    """Selected trials without a value that the comparison shows."""
+
+
 def measurement(value, *, count=False):
     require(
         value is None
@@ -271,6 +275,15 @@ def measurement(value, *, count=False):
 
 def validate_metrics(metrics, data):
     keys(metrics, {r["result_sha256"] for r in data["rows"]})
+    # The agents compare only when each trial has each value; a gap needs a repeat of the round.
+    gaps = [
+        f"{row['agent']} round {row['run']} {row['task']}: {', '.join(missing)}"
+        for row in data["rows"]
+        if type(metrics[row["result_sha256"]]) is dict
+        and (missing := [k for k in METRIC_NUMBERS if metrics[row["result_sha256"]].get(k) is None])
+    ]
+    if gaps:
+        raise MissingMetrics("; ".join(gaps))
     for row in data["rows"]:
         m = metrics[row["result_sha256"]]
         keys(
@@ -281,8 +294,6 @@ def validate_metrics(metrics, data):
         sha(m["setup"])
         for key in METRIC_NUMBERS:
             measurement(m[key], count=key in COUNTS)
-        for key in ("provider_calls", "provider_timed", "tool_calls", "provider_errors"):
-            require(m[key] is not None)
         require(m["provider_timed"] <= m["provider_calls"])
         require(type(m["reward"]) in (int, float, type(None)) and m["reward"] in (None, 0, 1))
         require(row["passed"] == (m["reward"] == 1))
@@ -298,10 +309,7 @@ def validate_metrics(metrics, data):
                 measurement(value, count=key != "ms")
             require(tool["errors"] <= tool["calls"] and tool["timed"] <= tool["calls"])
         require(sum(t["calls"] for t in m["tools"].values()) == m["tool_calls"])
-        require(
-            m["tool_errors"] is None
-            or m["tool_errors"] == sum(t["errors"] for t in m["tools"].values())
-        )
+        require(m["tool_errors"] == sum(t["errors"] for t in m["tools"].values()))
         require(type(m["phases"]) is list and len(m["phases"]) == 4)
         require({p["name"] for p in m["phases"]} == set(layout.PHASE_NAMES))
         for phase in m["phases"]:
@@ -769,6 +777,8 @@ def main():
     args = parser.parse_args()
     try:
         build(args.root, args.out, args.check)
+    except MissingMetrics as error:
+        raise SystemExit(f"Public report refused: trials without metrics: {error}") from None
     except (ValueError, KeyError, TypeError, OSError):
         raise SystemExit("Public report refused. No artifact may be uploaded.") from None
     print(f"Public report checked: {trial_count()} trials; exact report assets and metrics.")
