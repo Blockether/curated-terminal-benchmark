@@ -1924,7 +1924,7 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "18611286e40b62d393fac9a0f591a5c3520d1b4ab6149c4ac162e74a91498fa1",
+      "result_sha256": "feeac786074e242ce0a98ef768becefdb6c8e05c3f71b16ec02725f74fda894f",
       "run": 1,
       "task": "bun-sourcemap-leak"
     },
@@ -1932,7 +1932,7 @@
       "agent": "wisp",
       "error": null,
       "passed": true,
-      "result_sha256": "43240940217c26a4a2eb27508ca7fc128c4e9f96cc28b887154f8da45b877333",
+      "result_sha256": "8859afc354598139f593b6f2520333b53978dd2face5d537f67cb7f3b3adb482",
       "run": 1,
       "task": "html-js-filter"
     },
@@ -1940,7 +1940,7 @@
       "agent": "wisp",
       "error": null,
       "passed": true,
-      "result_sha256": "d4fa8465f82aa6f88bb688d175f75b5a2111e633775a6066247fffa640ae0efa",
+      "result_sha256": "18a79200c6ad9cdc27701a7b7605cffba9206c994c281c0668c61c3162ddcba5",
       "run": 1,
       "task": "interleaved-vigenere"
     },
@@ -1948,7 +1948,7 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "f9c9a23bccec24ae7986d578c9237e84007052b1317bf3adb25fe4a6eb5665a5",
+      "result_sha256": "5f5f55bc5a60eecd9715bd645d7ff395cad8689e4a252872f46e1af079effe08",
       "run": 1,
       "task": "kv-live-surgery"
     },
@@ -1956,15 +1956,15 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "a593e4c58b6cc1109c6406927c2f7ddd90cc60cd25979f4005ef117dac6db188",
+      "result_sha256": "9af6f4501815c6dcf825ad92373d29f3670a01ac742c7294b55d7b3b7fc65d7c",
       "run": 1,
       "task": "music-harmony"
     },
     {
       "agent": "wisp",
       "error": null,
-      "passed": true,
-      "result_sha256": "c568b23637dac23eca12c425f24742700d56c61598332d67440b63ff38156954",
+      "passed": false,
+      "result_sha256": "592db62bcb8f63d1e7a8f4f39427d7f5887bf473853a644f8e1cd9d5e761f964",
       "run": 1,
       "task": "mvcc-lsm-compaction"
     },
@@ -1972,7 +1972,7 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "1fb55d43149ddb17cd26ee0569537dcb1892f4eb8c5db959a72842a2eb39a150",
+      "result_sha256": "aee9f971632863cf3d386970ec5159d727fa9d357bda650276e020f3e754a2c0",
       "run": 1,
       "task": "payments-pipeline-fix"
     },
@@ -1980,15 +1980,15 @@
       "agent": "wisp",
       "error": null,
       "passed": true,
-      "result_sha256": "cefce8f8807576ce656ff92dfc158aae8a40802f423d6ce7d726ff0facdcfbbd",
+      "result_sha256": "6c9b93d3295d7d2ea45875653573ebaf4dcc89eafeebbd2b02434f9123721097",
       "run": 1,
       "task": "photonic-waveguide-routing"
     },
     {
       "agent": "wisp",
       "error": null,
-      "passed": true,
-      "result_sha256": "fe2151e5462b05a3d0c549dc5e3a5d4f2090f0f7f240c23499dd93811b8817ef",
+      "passed": false,
+      "result_sha256": "459bd33489730fdc6b1f7f5240d6ddad756ff1560cd1f51da662b71c7ca19a36",
       "run": 1,
       "task": "react-lead-form"
     },
@@ -1996,15 +1996,15 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "2519f9e426e4a15275362276670ea79c9dfe6802dcc71723ad4f011b3bf09cd6",
+      "result_sha256": "eb345fdf6c169876d9828e53c90d0800d4517d97f1039270fb4a8c807e67ace9",
       "run": 1,
       "task": "session-window-debug"
     },
     {
       "agent": "wisp",
       "error": null,
-      "passed": true,
-      "result_sha256": "77bbc6d29295e213be66cec99e27f6acc8a74190f95871553519f52a514a3ab8",
+      "passed": false,
+      "result_sha256": "8a78edef8e72b2b86e214d45aa56eefad7639ccfbdbc2e78d770ccc1f93bba39",
       "run": 1,
       "task": "vf2-speedup-networkx"
     },
@@ -2012,8 +2012,392 @@
       "agent": "wisp",
       "error": null,
       "passed": false,
-      "result_sha256": "6685461a0029ea6b6a1fd2f9bee269bbee436f6655ba9618ed071550a4add71f",
+      "result_sha256": "a4339926e0b454c04c344bb2465bfcccf84b819ea3ec41a68011fbd47c8803a1",
       "run": 1,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c0c18c550335181d5ed6d81109a487b7bac9a484f5e5ec3e377503fc9a2b33a3",
+      "run": 2,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "fbbff6c707777ea3aeaac1c842445b6aa4bf2f6f5e8c9be9061404806ebd0bb0",
+      "run": 2,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "9436cbf39f0023db023bf07c3aa7f5b3b7c50b1b12f46206e463141a7e610cd0",
+      "run": 2,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "cab8f69af4eb04e81b35b698ed0c6450c7ba2593f08af0690f4501cea38c6392",
+      "run": 2,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c1ac6342e065ad7b68ed3b5f53106ea1db1230e648ed10cf9506ffde016e3832",
+      "run": 2,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "7c242cfee549121aa8fd53fc5aba6422724983d293ba96cd0222419674827962",
+      "run": 2,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "85f287439b9a5ea4d54eb76081b8d8f4bdf19469df48216734eee31980ee75da",
+      "run": 2,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "ddf1b6e2aa3184395d07cf679853c48d9723c78e2675c2f2d37a263bb5415cba",
+      "run": 2,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "235010584fbff914169bc954711d6821309c3dcb09d711b3c6b353c4e4a063bf",
+      "run": 2,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "8e066ecca9fe0dfec37a49e9ffe626a4763066baf1772267026a5144af2e7965",
+      "run": 2,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "f996c5f6ca21f9918c432506569aa25a2b791791cdb63095d7071176baf80a82",
+      "run": 2,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "77c85971b23ffc1639822656766a11a742084aa91b091ed3be6c4096e1f35d0b",
+      "run": 2,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "39aa0398301562e438f4dacca7d702fef2af8362a1867a623639a6abd25d68d4",
+      "run": 3,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "8e86592b5b717fe6eccc0b1c8c42f2230386a2cfcf616c99365d17833033827a",
+      "run": 3,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "b08a19ad81cf0b234983f382a08019e4f82927a1e17ea4cd9b49260d4843c732",
+      "run": 3,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "0fc8da7d44b65c16bd435dfa2bff1e11fea6dbf3282e6bd1ce59679376b6161a",
+      "run": 3,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "9349513c4da7aaeef4616da2bf45288286622a5c556a159d6a1eea791a93285f",
+      "run": 3,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "bf7b994058718799e38df8cf5d3ff5bf488cf0fd4ad2aa5cf9456627440fdd90",
+      "run": 3,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "e4c9053f09b38479b7ee2dc14500afb2ecaf1a6762f00756f5a9be67b1566cb4",
+      "run": 3,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "5767e2356527eae5bbe38251adb4ed55702ea6975d7469ff947a908830f0ca68",
+      "run": 3,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "efc11a66cbc75993b22f010506a129db95e728d87e7f58556c7bcb6bd2f035ff",
+      "run": 3,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "edc911701da14c76ff87df4ef4d58c53a34378151545d0e1a25ae3d8e4db57f2",
+      "run": 3,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "9acefa0bf60740aad4a996e79d3b11822f3edc4861044985a977c0f7fcd10ee0",
+      "run": 3,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "6e8861d93bd63b3a5180efec8e0e5e23a1b75cf4ff36c7386a8ebf9044892653",
+      "run": 3,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "81e11660dd012c339c06907ade3e0b316bcf836177de62db3e42ce8f8439655a",
+      "run": 4,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c5c1a69da64fb1e562082f6819fbcfa3b588e746f0213edcdc1d9110130d19ce",
+      "run": 4,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "d5d758e662d8dd1c7791c9dc3a5085f61366437b51afdcde7bc75714b7d6c846",
+      "run": 4,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "6a13be4d4dc0c173119ed5943a70861f1cca7013e9fdd0a0407cf1ded8571567",
+      "run": 4,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "4f26f3dd8eb2e5c69240803781e70c2882284efc50a436c08588999c9b3d5109",
+      "run": 4,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "f99de5bf74fd8a04cf5aac850cd3497d7db83ac05700699c8e1da0955e125330",
+      "run": 4,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "6a89b8e4de3cff937ec667bd3fc94db0cfae6b2414c3cf183241879f2ede9b9e",
+      "run": 4,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "9c807d0484f5a4b2def65731f9edba809f4faa03d8bd12edab297d75272ca3a0",
+      "run": 4,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "c3192eba3ad2d3e7dc4f532a25b66f7ab919dfe5123441c94df045faa2dd07bb",
+      "run": 4,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "fc53eedf53e63bc0b2f59b1e9089e5b58f75895648367bfd4d9357ac2cbf537d",
+      "run": 4,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "270b4c7f13989eb297deca2c3442f7e2a06744b57d72e4cc5c6809e1f5765176",
+      "run": 4,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "923fb1c52847e41ed392b72ee0a76fbb86d952ca9c6d1e8bb6537d4384863f0e",
+      "run": 4,
+      "task": "wal-recovery-ordering"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "26e1cee357685e66f5e27172223941b39e118e29daccc786a40709e427124ddd",
+      "run": 5,
+      "task": "bun-sourcemap-leak"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "1845b0a636b3fd1fdd533756562cfcf439dc696b19aeee4eb336a4908741fed4",
+      "run": 5,
+      "task": "html-js-filter"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "3fa42c99b3ca67677057ea2d7840361055fd75d8fd4c3191bd4c75047434bab0",
+      "run": 5,
+      "task": "interleaved-vigenere"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "c466096d3a64996009068322cd934ac4a8350dd4f08506d893d914cdfb8c3550",
+      "run": 5,
+      "task": "kv-live-surgery"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "292fafb1ea596afc987993fbf1ca56147de172e061112f1b04ac2c84e7c80eb5",
+      "run": 5,
+      "task": "music-harmony"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "c769478b6038a49e1ced14066668fbda1bf9776a05f30fd56b8e37033de8e802",
+      "run": 5,
+      "task": "mvcc-lsm-compaction"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "14a0923239956b9f879c79f0766dd63582eff960001c71212f2b468d62681065",
+      "run": 5,
+      "task": "payments-pipeline-fix"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "fcfb903441fa948e96c7d7752491eb36bbce3a3d58094f7b35b731d683ef12d7",
+      "run": 5,
+      "task": "photonic-waveguide-routing"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "2c9890949721530c902770a668d9bbd16295d572afafb9deebccc43a1402f366",
+      "run": 5,
+      "task": "react-lead-form"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "32b6cb7f0a4525b6c481bf80f7c3ec5be25c5851f09302a415109459513f2bf7",
+      "run": 5,
+      "task": "session-window-debug"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": false,
+      "result_sha256": "405b3121e4503c0a8c5dd4c1cb637ca9c81cad66deaa7d5f7424bb9bbed055d1",
+      "run": 5,
+      "task": "vf2-speedup-networkx"
+    },
+    {
+      "agent": "wisp",
+      "error": null,
+      "passed": true,
+      "result_sha256": "ad6449c03034603eedf5d2fe9671332f8a689ba979095c4a635d735e3a733037",
+      "run": 5,
       "task": "wal-recovery-ordering"
     }
   ],
@@ -2218,13 +2602,49 @@
     ],
     "wisp": [
       {
-        "agent_version": "e0d468f7",
-        "emulated": true,
+        "agent_version": "9cddabcd",
+        "emulated": false,
         "harness_commits": [
-          "ab490033e00b222183d2f53923948fac404a9e24"
+          "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
-        "round": "gpt-wisp-ab49003",
-        "seal_sha256": "4c49e0fefbe69ad3775d013ac6fad351f9877f881809bd7c600b3adfa992752f"
+        "round": "gpt-wisp-5818f6d/r1",
+        "seal_sha256": "cefdbd65a3e5f1e5cc90b99dd2cb8da04d5fedcfdf54465b478ea8261b03ae54"
+      },
+      {
+        "agent_version": "9cddabcd",
+        "emulated": false,
+        "harness_commits": [
+          "5818f6dfc180b8607777f7f9fba898f85b4a8016"
+        ],
+        "round": "gpt-wisp-5818f6d/r2",
+        "seal_sha256": "f6a2a384b566a037e04a3560b37b6c80e1607c3a73fe69dd601e732ca0eaead0"
+      },
+      {
+        "agent_version": "9cddabcd",
+        "emulated": false,
+        "harness_commits": [
+          "5818f6dfc180b8607777f7f9fba898f85b4a8016"
+        ],
+        "round": "gpt-wisp-5818f6d/r3",
+        "seal_sha256": "a7c446be6f4eeeee630ab0148bbbcef88b58c2f8acce7937a568cc662e9258d0"
+      },
+      {
+        "agent_version": "9cddabcd",
+        "emulated": false,
+        "harness_commits": [
+          "5818f6dfc180b8607777f7f9fba898f85b4a8016"
+        ],
+        "round": "gpt-wisp-5818f6d/r4",
+        "seal_sha256": "07b0efd6323adf5c763ae62a713930024ba52eeb69064c36e7c508d21b561660"
+      },
+      {
+        "agent_version": "9cddabcd",
+        "emulated": false,
+        "harness_commits": [
+          "5818f6dfc180b8607777f7f9fba898f85b4a8016"
+        ],
+        "round": "gpt-wisp-5818f6d/r5",
+        "seal_sha256": "b06db0fe8cf11bfae678fa670abb2d368ae15e1cb7479b0ede09029c1bd7f61b"
       }
     ]
   }
