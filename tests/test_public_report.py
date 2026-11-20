@@ -132,6 +132,15 @@ class PublicReportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             p.validate_metrics({}, data)
 
+    def test_metrics_refuse_a_trial_without_a_compared_value(self):
+        row = self.data["rows"][0]
+        bad = copy.deepcopy(self.metrics)
+        bad[row["result_sha256"]]["cost"] = None
+        with self.assertRaisesRegex(
+            p.MissingMetrics, rf"{row['agent']} round 1 {row['task']}: cost"
+        ):
+            p.render(self.data, bad)
+
     def test_unknown_or_secret_values_fail(self):
         changes = [
             ("agent", "SECRET-canary"),
