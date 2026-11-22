@@ -29,6 +29,12 @@ SELECTION = {
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
     "wisp": tuple(f"gpt-wisp-5818f6d/r{n}" for n in range(1, 6)),
 }
+#: Trials that infrastructure interrupted, repeated alone with the same harness commit:
+#: (agent, round, task) -> the round of the repeat. The repeat must have the same setup.
+REPLACED = {
+    # The provider connection failed (TLS bad_record_mac) and Kmet did not retry.
+    ("kmet-eval-only", "kmet-0557d54/r2", "interleaved-vigenere"): "kmet-retry-0557d54/r1",
+}
 TASKS = (
     "bun-sourcemap-leak",
     "html-js-filter",
@@ -102,8 +108,23 @@ def validate(data):
     for agent, sources in data["sources"].items():
         require(type(sources) is list and len(sources) == len(SELECTION[agent]))
         for source, name in zip(sources, SELECTION[agent], strict=True):
-            keys(source, ("round", "seal_sha256", "harness_commits", "agent_version", "emulated"))
+            keys(
+                source,
+                (
+                    "round",
+                    "seal_sha256",
+                    "harness_commits",
+                    "agent_version",
+                    "emulated",
+                    "replaced",
+                ),
+            )
             require(source["round"] == name)
+            require(type(source["replaced"]) is list)
+            for item in source["replaced"]:
+                keys(item, ("task", "round", "seal_sha256"))
+                require(REPLACED.get((agent, name, item["task"])) == item["round"])
+                sha(item["seal_sha256"])
             version = source["agent_version"]
             require(
                 type(version) is str and re.fullmatch("[A-Za-z0-9][A-Za-z0-9 ._+-]{0,63}", version)
@@ -144,16 +165,44 @@ def trial_run(seal, agent, row):
     return max(runs, key=lambda r: datetime.fromisoformat(r["started_at"]))
 
 
+def sealed(root, name):
+    seal = read(root / "results" / (name + ".json"))
+    require(seal["digest"] == digest(seal) and seal["round"] == name)
+    require(bool(seal["runs"]) and all(r["dirty"] is False for r in seal["runs"]))
+    return seal
+
+
+def round_trials(root, agent, name):
+    """(seal, row) of each trial of the agent in a selected round, a REPLACED trial from its repeat."""
+    seal = sealed(root, name)
+    trials = []
+    for row in seal["rows"]:
+        if row["agent"] != agent:
+            continue
+        repeat = REPLACED.get((agent, name, row["task"].removeprefix("terminal-bench/")))
+        if repeat is None:
+            trials.append((seal, row))
+            continue
+        other = sealed(root, repeat)
+        [new] = [r for r in other["rows"] if r["agent"] == agent and r["task"] == row["task"]]
+        # Only an interrupted trial is repeated, on the same task, agent and setup.
+        require(row["error"] is not None)
+        require(new["task_checksum"] == row["task_checksum"])
+        require(new["agent_version"] == row["agent_version"])
+        require(setup_id(trial_run(other, agent, new)) == setup_id(trial_run(seal, agent, row)))
+        trials.append((other, new))
+    return seal, trials
+
+
 def from_seals(root):
     data = {"schema": 2, "sources": {a: [] for a in SELECTION}, "rows": []}
     for agent, run, name in selected():
-        seal = read(root / "results" / (name + ".json"))
-        require(seal["digest"] == digest(seal) and seal["round"] == name)
-        require(bool(seal["runs"]) and all(r["dirty"] is False for r in seal["runs"]))
+        seal, trials = round_trials(root, agent, name)
         runs = agent_runs(seal, agent)
         require(bool(runs))
         versions = {r["agent_version"] for r in seal["rows"] if r["agent"] == agent}
         require(len(versions) == 1)
+        repeats = [(s, r) for s, r in trials if s is not seal]
         data["sources"][agent].append(
             {
                 "round": name,
@@ -162,11 +211,17 @@ def from_seals(root):
                 "agent_version": next(iter(versions)),
                 # Run records without an engine predate native runs; all of those ran emulated.
                 "emulated": any((r.get("engine") or {"emulated": True})["emulated"] for r in runs),
+                "replaced": [
+                    {
+                        "task": r["task"].removeprefix("terminal-bench/"),
+                        "round": s["round"],
+                        "seal_sha256": s["digest"],
+                    }
+                    for s, r in repeats
+                ],
             }
         )
-        for row in seal["rows"]:
-            if row["agent"] != agent:
-                continue
+        for _, row in trials:
             require(row["model"] == "openai/gpt-6.1-sol")
             require(type(row["reward"]) in (int, float, type(None)))
             require(row["reward"] in (None, 0, 1))
@@ -334,10 +389,7 @@ def collect_metrics(root):
     data = from_seals(root)
     metrics = {}
     for agent, _, name in selected():
-        seal = read(root / "results" / (name + ".json"))
-        for row in seal["rows"]:
-            if row["agent"] != agent:
-                continue
+        for seal, row in round_trials(root, agent, name)[1]:
             path = root / row["result"]
             require(path.resolve().is_relative_to((root / "jobs").resolve()))
             require(hashlib.sha256(path.read_bytes()).hexdigest() == row["result_sha256"])
@@ -373,13 +425,11 @@ def collect_metrics(root):
 def checked_metrics(root, data):
     metrics = validate_metrics(read(root / "public/report-metrics.json"), data)
     for agent, _, name in selected():
-        seal = read(root / "results" / (name + ".json"))
-        for row in seal["rows"]:
-            if row["agent"] == agent:
-                m = metrics[row["result_sha256"]]
-                require(m["task_checksum"] == row["task_checksum"])
-                require(setup_id(trial_run(seal, agent, row)) == m["setup"])
-                require(m["reward"] == row["reward"] and m["started_at"] == row["started_at"])
+        for seal, row in round_trials(root, agent, name)[1]:
+            m = metrics[row["result_sha256"]]
+            require(m["task_checksum"] == row["task_checksum"])
+            require(setup_id(trial_run(seal, agent, row)) == m["setup"])
+            require(m["reward"] == row["reward"] and m["started_at"] == row["started_at"])
     return metrics
 
 
@@ -397,7 +447,10 @@ def public_trials(data, metrics):
                 "task_checksum": m["task_checksum"],
                 "setup": m["setup"],
                 "model": "openai/gpt-6.1-sol",
-                "round": source["round"],
+                "round": next(
+                    (x["round"] for x in source["replaced"] if x["task"] == r["task"]),
+                    source["round"],
+                ),
                 "reward": m["reward"],
                 "started_at": m["started_at"],
                 "version": source["agent_version"],

@@ -67,7 +67,10 @@ last run record of its agent that started before the trial. OpenCode round 4 is 
 show as separate agents. They replace the rounds `gpt-kmet-2-16bbdc8`, `kmet-tools-3cafc66/r1` and
 `kmet-89fa382`. Vis has one round. Each published trial must have each compared value: cost, tokens,
 calls, tool calls, tool errors and times. The publication refuses a trial without one of them and names it.
-Recovery trials are not substituted.
+One trial is a repeat: the `kmet-eval-only` trial of interleaved-vigenere in `kmet-0557d54/r2` comes from
+`kmet-retry-0557d54/r1` at the same harness commit. The provider connection failed (TLS `bad_record_mac`)
+and Kmet did not retry. `public_report.REPLACED` names the repeat. The report accepts a repeat only for a trial
+with an error and with the same task checksum, agent version and setup. Other trials are not substituted.
 The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
 In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
 subagents was not on PATH. Subagent tokens are part of the Wisp cost.

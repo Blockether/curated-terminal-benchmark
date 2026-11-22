@@ -42,6 +42,32 @@ def sidecar_builds(compose: Path, cpu: str) -> dict:
     return services
 
 
+#: The image of a Dockerfile FROM line, after its options.
+FROM = re.compile(r"^\s*FROM\s+(?:--\S+\s+)*(\S+)(?:\s+AS\s+(\S+))?", re.IGNORECASE | re.MULTILINE)
+
+
+def base_images(environment: Path, compose: Path, cpu: str) -> list[str]:
+    """The images that a task environment builds from or runs: Dockerfile bases and Compose images.
+
+    A stage name, an ARG reference and scratch are not images. Off amd64 the published sidecars
+    are built from their directories, so their bases count and their images do not."""
+    refs = set()
+    for dockerfile in sorted(environment.rglob("Dockerfile")):
+        found = FROM.findall(dockerfile.read_text())
+        stages = {stage.lower() for _, stage in found if stage}
+        refs |= {
+            ref
+            for ref, _ in found
+            if ref.lower() not in stages and "$" not in ref and ref != "scratch"
+        }
+    if compose.is_file():
+        for service in ((yaml.safe_load(compose.read_text()) or {}).get("services") or {}).values():
+            image = str((service or {}).get("image", ""))
+            if image and "$" not in image and (cpu == "amd64" or not SIDECAR.fullmatch(image)):
+                refs.add(image)
+    return sorted(refs)
+
+
 class Podman(PodmanEnvironment):
     """Build each task image for ctb.arch; count a timed-out healthcheck as a failed probe."""
 
@@ -50,6 +76,27 @@ class Podman(PodmanEnvironment):
         # DOCKER_DEFAULT_PLATFORM, so it has the CPU of ctb.arch. Harbor starts the
         # separate verifier with force_build=False, so this applies to both environments.
         await super().start(force_build=True)
+        await self.record_images()
+
+    async def record_images(self) -> None:
+        """Write the ID and digest of each base image next to the trial.
+
+        The task Dockerfiles use moving tags and every build pulls, so this record shows
+        whether two trials ran on the same images. An image that Podman cannot inspect gets nulls."""
+        images = {}
+        for ref in base_images(
+            self.environment_dir, self._environment_docker_compose_path, arch.ARCH
+        ):
+            process = await asyncio.create_subprocess_exec(
+                *type(self)._engine_cmd("image", "inspect", ref),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+            out, _ = await process.communicate()
+            info = json.loads(out)[0] if process.returncode == 0 else {}
+            images[ref] = {k: info.get(k) for k in ("Id", "Digest", "Architecture", "Created")}
+        path = self.trial_paths.trial_dir / f"images-{self.environment_dir.name}.json"
+        path.write_text(json.dumps(images, indent=2, sort_keys=True) + "\n")
 
     @property
     def _docker_compose_paths(self) -> list[Path]:

@@ -9,7 +9,7 @@ import pytest
 from harbor.environments.base import HealthcheckError
 from harbor.models.task.config import HealthcheckConfig
 
-from ctb.environment import Podman, sidecar_builds
+from ctb.environment import Podman, base_images, sidecar_builds
 
 
 def environment(outcomes, **kwargs):
@@ -122,3 +122,22 @@ def test_sidecars_build_from_source_off_amd64(tmp_path):
     }
     assert sidecar_builds(compose, "amd64") == {}
     assert sidecar_builds(env / "missing.yaml", "arm64") == {}
+
+
+def test_base_images_name_the_images_that_a_task_builds_from(tmp_path):
+    # The Dockerfiles use moving tags and builds pull, so each trial records these images.
+    env = tmp_path / "environment"
+    (env / "kafka").mkdir(parents=True)
+    (env / "Dockerfile").write_text(
+        "ARG BASE=python:3.13\nFROM --platform=linux/arm64 python:3.13-slim AS build\n"
+        "FROM build\nFROM ${BASE}\nFROM scratch\n"
+    )
+    (env / "kafka" / "Dockerfile").write_text("from ubuntu:24.04\n")
+    sidecar = "harborframework/terminal-bench:x-sidecar-kafka-0123456789abcdef"
+    compose = env / "docker-compose.yaml"
+    compose.write_text(
+        f"services:\n  main: {{build: .}}\n  kafka: {{image: {sidecar}}}\n"
+        "  db: {image: postgres:16}\n"
+    )
+    assert base_images(env, compose, "arm64") == ["postgres:16", "python:3.13-slim", "ubuntu:24.04"]
+    assert sidecar in base_images(env, compose, "amd64")

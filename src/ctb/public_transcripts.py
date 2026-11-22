@@ -300,15 +300,16 @@ def export(root, out):
     report.require(not out.exists() and not any(p.is_symlink() for p in out.parents))
     (out / "transcripts").mkdir(parents=True)
     manifest = {"schema": SCHEMA, "transcripts": {}}
-    seals = {
-        r: report.read(root / "results" / (r + ".json"))
-        for r in {n for _, _, n in report.selected()}
+    # The sealed row of each selected trial; a REPLACED trial comes from its repeat round.
+    sources = {
+        row["result_sha256"]: row
+        for agent, _, name in report.selected()
+        for _, row in report.round_trials(root, agent, name)[1]
     }
     # Do not clip text before sanitization; a clipped credential can escape a full-token scan.
     transcripts.MAX_TEXT = 1_000_000_000
     for row in comparison["rows"]:
-        name = report.SELECTION[row["agent"]][row["run"] - 1]
-        source = next(s for s in seals[name]["rows"] if s["result_sha256"] == row["result_sha256"])
+        source = sources[row["result_sha256"]]
         result_path = root / source["result"]
         report.require(content_hash(result_path.read_bytes()) == row["result_sha256"])
         events = transcripts.read_events(

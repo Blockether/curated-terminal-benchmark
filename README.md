@@ -6,6 +6,7 @@ New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 Agents: Codex, OpenCode, Pi, Dirge, Kmet, Samizdat, Wisp, Vis solo and Vis team.
 Samizdat and Wisp reach GPT through the host proxy in `src/ctb/proxy.py`. Samizdat speaks only OpenAI Chat Completions, which the proxy converts. Wisp speaks the Responses wire: the proxy relays its requests and events unchanged and adds only the login and the shared `text.verbosity`, which Wisp does not send. The proxy log records the provider usage of each request.
 Dirge and Samizdat are paused: a run without `--agents` skips them, and `--agents dirge` still runs Dirge.
+The experiment arms `kmet-eval-only`, `kmet-codemode`, `kmet-shell-only` and `pi-shell-only` select tools with `--tools`. A run without `--agents` skips them too.
 
 ## Layout
 
@@ -81,6 +82,8 @@ under emulation. `run` stops there unless you give `--allow-emulation`. Dirge an
 paused and build only for amd64. Each run record
 and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
 in the task container shows its path and not its source.
+Most task Dockerfiles use moving tags and every build pulls. Thus each trial records the ID and digest of each base image
+in `images-environment.json` and `images-tests.json`, next to `result.json`.
 
 ```sh
 uv sync
@@ -95,6 +98,9 @@ Start from a clean commit. Use a new round name for each repeat.
 A round name `RUN/rN` puts round N in the run `RUN`: `jobs/RUN/rN/`. The report shows only runs with rounds; other job folders stay out. The Round selector at the top chooses the view of every section: the mean ± standard deviation over the complete rounds, or one round. With more than one run, a Run selector shows next to it.
 To add an agent to a run later, run it with the same round names.
 `seal` and `metrics` write `results/<round>.json` and `results/<round>-metrics.json`.
+Run a trial that infrastructure interrupted again alone, at the same harness commit, under a new round name.
+`REPLACED` in `src/ctb/public_report.py` names the repeat. The report uses it only for a trial with an error and only
+when the task checksum, the agent version and the setup are the same. The page shows the round of the repeat.
 
 ## Run the full Vis suite
 

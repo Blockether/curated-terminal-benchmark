@@ -10495,54 +10495,54 @@
     "cache": 40320,
     "output": 13233
   },
-  "6afbbfb06a24ef7a065cf5769d269315f990006b832e9f2195a2be12337485a3": {
+  "4eadf59a40c31449a537d6cc581245b166139495f6a93a670c87f532707de75a": {
     "task_checksum": "2c37b7990593216ff1ae7ba95e53ba6c7ced5779d275598120d19411e358f7a0",
     "setup": "495aacc0f5d05130d553cb85934b70a2c1c66721023eb73812d6c274ccfe3105",
-    "run_ms": 412900.0,
-    "agent_ms": 346400.0,
-    "cost": 0.1928,
-    "provider_calls": 22,
-    "provider_ms": 330015.4069824219,
-    "provider_timed": 22,
-    "tool_calls": 21,
-    "tool_errors": 0,
+    "run_ms": 407400.0,
+    "agent_ms": 240100.0,
+    "cost": 0.1481,
+    "provider_calls": 17,
+    "provider_ms": 214058.28662109375,
+    "provider_timed": 17,
+    "tool_calls": 16,
+    "tool_errors": 2,
     "provider_errors": 0,
-    "tool_ms": 14214.748046875,
+    "tool_ms": 21209.5673828125,
     "tools": {
       "eval": {
-        "calls": 21,
-        "errors": 0,
-        "ms": 14214.748046875,
-        "timed": 21
+        "calls": 16,
+        "errors": 2,
+        "ms": 21209.5673828125,
+        "timed": 16
       }
     },
     "phases": [
       {
         "name": "environment_setup",
-        "start": 1795238890922.7158,
-        "end": 1795238893608.0278
+        "start": 1795363490011.6528,
+        "end": 1795363493002.479
       },
       {
         "name": "agent_setup",
-        "start": 1795238893608.093,
-        "end": 1795238906771.534
+        "start": 1795363493002.6008,
+        "end": 1795363505982.914
       },
       {
         "name": "agent_execution",
-        "start": 1795238906771.688,
-        "end": 1795239253209.841
+        "start": 1795363505983.295,
+        "end": 1795363746105.9102
       },
       {
         "name": "verifier",
-        "start": 1795239265049.4512,
-        "end": 1795239303761.351
+        "start": 1795363771993.798,
+        "end": 1795363897362.18
       }
     ],
-    "started_at": "2026-11-21T05:28:10.837316Z",
-    "reward": 0.0,
-    "input": 187846,
-    "cache": 155776,
-    "output": 11306
+    "started_at": "2026-11-22T16:04:49.927527Z",
+    "reward": 1.0,
+    "input": 146593,
+    "cache": 112384,
+    "output": 6841
   },
   "02cde06d83da3a7066812c2ef36601978236f88f8e80787b37227a9151ef37b3": {
     "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",

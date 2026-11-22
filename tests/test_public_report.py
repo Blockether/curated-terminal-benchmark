@@ -27,6 +27,7 @@ class PublicReportTests(unittest.TestCase):
                         "harness_commits": ["b" * 40],
                         "agent_version": "1.0.0",
                         "emulated": True,
+                        "replaced": [],
                     }
                     for r in rounds
                 ]
@@ -56,6 +57,19 @@ class PublicReportTests(unittest.TestCase):
         self.data["sources"]["codex"][0]["agent_version"] = "<b>1</b>"
         with self.assertRaises(ValueError):
             p.validate(self.data)
+
+    def test_an_interrupted_trial_is_replaced_by_its_repeat(self):
+        root = Path(__file__).resolve().parents[1]
+        data = p.from_seals(root)
+        (agent, name, task), repeat = next(iter(p.REPLACED.items()))
+        run = p.SELECTION[agent].index(name) + 1
+        [row] = [r for r in data["rows"] if (r["agent"], r["run"], r["task"]) == (agent, run, task)]
+        seal = p.read(root / "results" / (repeat + ".json"))
+        self.assertEqual(row["result_sha256"], seal["rows"][0]["result_sha256"])
+        self.assertEqual(
+            data["sources"][agent][run - 1]["replaced"],
+            [{"task": task, "round": repeat, "seal_sha256": seal["digest"]}],
+        )
 
     def test_render_has_real_results_and_no_external_requests(self):
         text = p.render(self.data, self.metrics).decode()

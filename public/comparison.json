@@ -9,7 +9,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "0.166.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r2",
@@ -18,7 +19,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "0.166.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r3",
@@ -27,7 +29,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "0.166.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r4",
@@ -36,7 +39,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "0.166.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r5",
@@ -45,7 +49,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "0.166.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "kmet": [
@@ -56,7 +61,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r2",
@@ -65,7 +71,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r3",
@@ -74,7 +81,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r4",
@@ -83,7 +91,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r5",
@@ -92,7 +101,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "kmet-codemode": [
@@ -103,7 +113,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r2",
@@ -112,7 +123,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r3",
@@ -121,7 +133,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r4",
@@ -130,7 +143,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r5",
@@ -139,7 +153,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "kmet-eval-only": [
@@ -150,7 +165,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r2",
@@ -159,7 +175,14 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": [
+          {
+            "task": "interleaved-vigenere",
+            "round": "kmet-retry-0557d54/r1",
+            "seal_sha256": "dc640c6ec597ac10cdd222de62fe0bfe5df586a286b38763152047212d4aad6c"
+          }
+        ]
       },
       {
         "round": "kmet-0557d54/r3",
@@ -168,7 +191,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r4",
@@ -177,7 +201,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r5",
@@ -186,7 +211,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "kmet-shell-only": [
@@ -197,7 +223,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r2",
@@ -206,7 +233,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r3",
@@ -215,7 +243,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r4",
@@ -224,7 +253,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "kmet-0557d54/r5",
@@ -233,7 +263,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "kmet v0.3.1-106-gb52aa118-dirty",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "opencode": [
@@ -244,7 +275,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "2.2.5",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r2",
@@ -253,7 +285,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "2.2.5",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r3",
@@ -263,7 +296,8 @@
           "3cafc661d8c3d67d712c6772842b3825d42320d1"
         ],
         "agent_version": "2.2.5",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "opencode-0557d54/r1",
@@ -272,7 +306,8 @@
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
         "agent_version": "2.2.5",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r5",
@@ -281,7 +316,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "2.2.5",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "pi": [
@@ -292,7 +328,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "1.5.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r2",
@@ -301,7 +338,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "1.5.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r3",
@@ -310,7 +348,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "1.5.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r4",
@@ -319,7 +358,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "1.5.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-23a3a92/r5",
@@ -328,7 +368,8 @@
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
         "agent_version": "1.5.0",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ],
     "vis-solo": [
@@ -339,7 +380,8 @@
           "43a804886818958f9dbe476a175f6a0b597905de"
         ],
         "agent_version": "vis-agent 0.5.7",
-        "emulated": true
+        "emulated": true,
+        "replaced": []
       }
     ],
     "wisp": [
@@ -350,7 +392,8 @@
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
         "agent_version": "9cddabcd",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-wisp-5818f6d/r2",
@@ -359,7 +402,8 @@
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
         "agent_version": "9cddabcd",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-wisp-5818f6d/r3",
@@ -368,7 +412,8 @@
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
         "agent_version": "9cddabcd",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-wisp-5818f6d/r4",
@@ -377,7 +422,8 @@
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
         "agent_version": "9cddabcd",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       },
       {
         "round": "gpt-wisp-5818f6d/r5",
@@ -386,7 +432,8 @@
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
         "agent_version": "9cddabcd",
-        "emulated": false
+        "emulated": false,
+        "replaced": []
       }
     ]
   },
@@ -1947,9 +1994,9 @@
       "agent": "kmet-eval-only",
       "run": 2,
       "task": "interleaved-vigenere",
-      "passed": false,
-      "error": "NonZeroAgentExitCodeError",
-      "result_sha256": "6afbbfb06a24ef7a065cf5769d269315f990006b832e9f2195a2be12337485a3"
+      "passed": true,
+      "error": null,
+      "result_sha256": "4eadf59a40c31449a537d6cc581245b166139495f6a93a670c87f532707de75a"
     },
     {
       "agent": "kmet-eval-only",

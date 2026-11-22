@@ -29,7 +29,7 @@ from ctb.agents.opencode import (
     stopped_error,
     watchdog_verdict,
 )
-from ctb.agents.pi import Pi, pi_auth_json
+from ctb.agents.pi import Pi, PiShellOnly, pi_auth_json
 from ctb.agents.vis import VisSolo, VisTeam
 from ctb.agents.wisp import Wisp
 from ctb.cli import harbor_command
@@ -468,6 +468,16 @@ def test_only_the_gpt_model_runs():
         with pytest.raises(ValueError, match="Use --model openai/gpt-6.1-sol"):
             agent(cls, "anthropic/claude-opus-5-5")
     assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
+
+
+def test_pi_shell_only_selects_only_the_bash_tool():
+    pi = agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
+    shell_only = agent(PiShellOnly, "openai/gpt-6.1-sol").build_cli_flags()
+    assert PiShellOnly.name() == "pi-shell-only"
+    assert shell_only == " ".join(part for part in ("--tools bash", pi) if part)
+    command = harbor_command(Trial(AGENTS["pi-shell-only"], "openai", "t"), Path("/j"), 0.25)
+    assert command[command.index("-a") + 1] == "ctb.agents.pi:PiShellOnly"
+    assert command[-2:] == ["--ak", "reasoning_effort=medium"]
 
 
 def test_opencode_sends_low_gpt_verbosity():

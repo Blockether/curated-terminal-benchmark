@@ -69,6 +69,14 @@ AGENTS = {
         # GPT uses each harness's native subscription login.
         AgentSpec("opencode", "ctb.agents.opencode:OpenCode", ("openai",)),
         AgentSpec("pi", "ctb.agents.pi:Pi", ("openai",), effort_kwarg=True),
+        # The same Pi arm with only the bash tool selected; run it by name.
+        AgentSpec(
+            "pi-shell-only",
+            "ctb.agents.pi:PiShellOnly",
+            ("openai",),
+            effort_kwarg=True,
+            experiment=True,
+        ),
     )
 }
 
