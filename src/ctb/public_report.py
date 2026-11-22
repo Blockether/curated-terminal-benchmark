@@ -15,11 +15,16 @@ from ctb.report.comparison import setup_id
 #: The sealed rounds of each agent, in order: round 1 first. Each round has every task once.
 SELECTION = {
     "codex": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
-    "kmet": ("kmet-89fa382/r1",),
-    "kmet-codemode": ("kmet-89fa382/r1",),
-    "kmet-eval-only": ("kmet-89fa382/r1",),
-    "kmet-shell-only": ("kmet-89fa382/r1",),
-    "opencode": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
+    "kmet": tuple(f"kmet-0557d54/r{n}" for n in range(1, 6)),
+    "kmet-codemode": tuple(f"kmet-0557d54/r{n}" for n in range(1, 6)),
+    "kmet-eval-only": tuple(f"kmet-0557d54/r{n}" for n in range(1, 6)),
+    "kmet-shell-only": tuple(f"kmet-0557d54/r{n}" for n in range(1, 6)),
+    # Round 4 is a repeat: in gpt-23a3a92/r4 one call lost its usage, so the round had no cost.
+    "opencode": (
+        *(f"gpt-23a3a92/r{n}" for n in (1, 2, 3)),
+        "opencode-0557d54/r1",
+        "gpt-23a3a92/r5",
+    ),
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
     "wisp": tuple(f"gpt-wisp-5818f6d/r{n}" for n in range(1, 6)),

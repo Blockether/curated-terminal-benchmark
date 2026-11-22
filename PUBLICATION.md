@@ -60,10 +60,13 @@ Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` 
 (`gpt-wisp-5818f6d/r1` to `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
 recorded no cost. A source lists each harness commit of its agent. Each trial gets the setup of the
-last run record of its agent that started before the trial. Kmet and its arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have the rounds of run
-`kmet-89fa382`, natively on arm64, with the local patch for the `tail` 0 refusal of the read tool. The arms
-show as separate agents. They replace the rounds `gpt-kmet-2-16bbdc8` and `kmet-tools-3cafc66/r1`. Each
-round is added when it completes. Vis has one round.
+last run record of its agent that started before the trial. OpenCode round 4 is the repeat round `opencode-0557d54/r1`: in `gpt-23a3a92/r4`, a WebSocket close
+(code 1012) left one call of vf2-speedup-networkx without usage, so that round had no cost. Kmet (pin
+`b52aa11`) and its arms `kmet-eval-only`, `kmet-codemode` and `kmet-shell-only` have the five rounds of run
+`kmet-0557d54`, natively on arm64, with the local patch for the `tail` 0 refusal of the read tool. The arms
+show as separate agents. They replace the rounds `gpt-kmet-2-16bbdc8`, `kmet-tools-3cafc66/r1` and
+`kmet-89fa382`. Vis has one round. Each published trial must have each compared value: cost, tokens,
+calls, tool calls, tool errors and times. The publication refuses a trial without one of them and names it.
 Recovery trials are not substituted.
 The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
 In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
