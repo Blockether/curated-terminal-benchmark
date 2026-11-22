@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import arch, credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp
+from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp, xi
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -227,8 +227,32 @@ def fetch_wisp() -> Path:
     return archive
 
 
+def fetch_xi() -> Path:
+    """Pack the Xi npm package at xi.VERSION with its patches. Bun comes at install."""
+    archive = xi.Xi.ARCHIVE
+    if not archive.is_file():
+        package = download(
+            xi.PACKAGE_URL, ARTIFACTS / f"xi-agent-{xi.VERSION}.tgz", xi.PACKAGE_SHA256
+        )
+        path = SRC / "xi"
+        shutil.rmtree(path, ignore_errors=True)
+        path.mkdir(parents=True)
+        with tarfile.open(package) as source:
+            source.extractall(path, filter="data")
+        app = path / "package"
+        # Its own repository: `git apply` in this checkout would take paths from its root.
+        sh(["git", "init", "-q"], cwd=app)
+        apply_patches(app, *xi.PATCHES)
+        shutil.rmtree(app / ".git")
+        partial = archive.with_name(archive.name + ".partial")
+        with tarfile.open(partial, "w:gz") as out:
+            out.add(app, arcname="xi/app")
+        partial.replace(archive)
+    return archive
+
+
 def fetch() -> None:
-    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet and Wisp.
+    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet, Wisp and Xi.
 
     Dirge and samizdat are paused and build only for amd64, so only an amd64 fetch gets them.
 
@@ -238,7 +262,7 @@ def fetch() -> None:
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_kmet(), fetch_wisp()]
+    archives += [fetch_kmet(), fetch_wisp(), fetch_xi()]
     if arch.ARCH == "amd64":
         archives += [fetch_dirge(), fetch_samizdat()]
     for archive in archives:
@@ -561,6 +585,7 @@ def pins() -> dict:
             "codex": AGENTS["codex"].version,
             "opencode": opencode.OPENCODE_VERSION,
             "pi": pi.PI_VERSION,
+            "xi": xi.VERSION,
         },
         "models": MODELS,
         "effort": EFFORT,

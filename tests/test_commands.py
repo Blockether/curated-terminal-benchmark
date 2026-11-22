@@ -374,6 +374,7 @@ def test_run_pins_hold_the_version_of_each_harness():
         "codex": "0.166.0",
         "opencode": "2.2.5",
         "pi": "1.5.0",
+        "xi": "0.6.0",
     }
 
 

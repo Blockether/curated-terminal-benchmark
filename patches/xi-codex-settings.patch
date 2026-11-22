@@ -1,0 +1,27 @@
+diff --git a/providers/packages/codex/src/main.ts b/providers/packages/codex/src/main.ts
+--- a/providers/packages/codex/src/main.ts
++++ b/providers/packages/codex/src/main.ts
+@@ -12,6 +12,9 @@
+ const CODEX_URL = "https://chatgpt.com/backend-api/codex/responses";
+ // identify as the client these credentials belong to
+ const ORIGINATOR = "codex_cli_rs";
++// patches/xi-codex-settings.patch: the benchmark gives every agent the same GPT
++// settings. An unset variable keeps the value of Xi.
++const setting = (name: string, value: string) => process.env[name] || value;
+ 
+ export const stripPrefix = (model: string) => (model.startsWith("openai/") ? model.slice("openai/".length) : model);
+ 
+@@ -42,8 +45,11 @@
+             include: ["reasoning.encrypted_content"],
+             tool_choice: "auto",
+             parallel_tool_calls: true,
+-            reasoning: { effort: reasoningEffort, summary: "auto" },
+-            text: { verbosity: "medium" },
++            reasoning: {
++              effort: setting("XI_CODEX_REASONING_EFFORT", reasoningEffort),
++              summary: setting("XI_CODEX_REASONING_SUMMARY", "auto"),
++            },
++            text: { verbosity: setting("XI_CODEX_TEXT_VERBOSITY", "medium") },
+             ...(tools.length ? { tools } : {}),
+           },
+         };

@@ -1,0 +1,36 @@
+diff --git a/providers/packages/codex/src/main.ts b/providers/packages/codex/src/main.ts
+--- a/providers/packages/codex/src/main.ts
++++ b/providers/packages/codex/src/main.ts
+@@ -3,7 +3,7 @@
+ // the CLI's own login (./auth.ts), so `codex login` is the only setup. Model
+ // ids carry the `openai/` prefix, which is dropped before the request.
+ 
+-import { existsSync } from "node:fs";
++import { appendFileSync, existsSync } from "node:fs";
+ import { serve, type Reading } from "../../provider-kit/src/index.ts";
+ import { responsesTurn } from "../../provider-kit/src/openai-responses.ts";
+ import { authPath, resolveToken } from "./auth.ts";
+@@ -17,6 +17,14 @@
+ const setting = (name: string, value: string) => process.env[name] || value;
+ 
+ export const stripPrefix = (model: string) => (model.startsWith("openai/") ? model.slice("openai/".length) : model);
++
++// patches/xi-codex-usage.patch: Xi keeps the usage only in memory. With XI_CODEX_USAGE_LOG set,
++// each turn appends its usage as one JSON line.
++const logUsage = (result: { usage?: unknown }) => {
++  const path = process.env.XI_CODEX_USAGE_LOG;
++  if (path && result.usage) appendFileSync(path, JSON.stringify(result.usage) + "\n");
++  return result;
++};
+ 
+ serve({
+   turn: (req, io) =>
+@@ -54,7 +62,7 @@
+           },
+         };
+       },
+-    }),
++    }).then(logUsage),
+ 
+   usage: async (_req, io): Promise<Reading[]> => {
+     if (!existsSync(authPath())) return [];

@@ -28,6 +28,7 @@ def test_paused_arms_stay_out_of_the_default_matrix():
         "vis-team",
         "codex",
         "kmet",
+        "xi",
         "wisp",
         "opencode",
         "pi",

@@ -481,6 +481,7 @@ AGENTS = {
     "opencode": ("OpenCode", False, "https://github.com/anomalyco/opencode"),
     "pi": ("Pi", False, "https://github.com/earendil-works/pi"),
     "kmet": ("Kmet", False, "https://github.com/kmetia/kmet-agent"),
+    "xi": ("Xi", False, "https://xi-agent.com/"),
     # Experiment arms: the same Kmet with one tool selected by `--tools`.
     "kmet-eval-only": ("Kmet eval-only", False, "https://github.com/kmetia/kmet-agent"),
     "kmet-codemode": ("Kmet codemode", False, "https://github.com/kmetia/kmet-agent"),
