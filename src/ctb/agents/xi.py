@@ -22,17 +22,17 @@ XI = "/installed-agent/xi"
 BUN = f"{XI}/bin/bun"
 MAIN = f"{XI}/app/target/main.js"
 VERSION = "0.6.0"
-USAGE = "xi-usage.jsonl"
+TRACE = "xi-trace.jsonl"
 BUN_VERSION = "1.4.4"
 PACKAGE_URL = f"https://registry.npmjs.org/xi-agent/-/xi-agent-{VERSION}.tgz"
 PACKAGE_SHA256 = "79a482850530a866dad1442a37323ae854089326be7e87b9b83a3c01f4f7f374"
 # Xi sends no reasoning effort to its Codex provider, so GPT gets the provider default "low",
 # and the provider fixes the text verbosity at "medium". The first patch lets the environment
-# set the effort, the verbosity and the reasoning summary. Xi keeps the usage only in memory;
-# the second patch appends the usage of each turn to a file. The base prompt of Xi says that
+# set the effort, the verbosity and the reasoning summary. Xi keeps usage and times only in memory;
+# the second patch appends each model request and tool call to a file. The base prompt of Xi says that
 # Python is not available, which is false in the task images; the third patch removes only
 # that sentence. The patches change nothing else.
-PATCHES = ("xi-codex-settings.patch", "xi-codex-usage.patch", "xi-python-claim.patch")
+PATCHES = ("xi-codex-settings.patch", "xi-trace.patch", "xi-python-claim.patch")
 PATCH_SHA = hashlib.sha256(b"".join((ROOT / "patches" / p).read_bytes() for p in PATCHES))
 ARCHIVE_NAME = f"xi-{VERSION}-{PATCH_SHA.hexdigest()[:8]}.tar.gz"
 BUN_ASSETS = {
@@ -131,7 +131,7 @@ class Xi(CuratedAgent):
             f"export PATH={XI}/bin:$PATH CODEX_HOME=$HOME/.codex "
             f"CLAUDE_CONFIG_DIR=$HOME/.claude XI_CODEX_REASONING_EFFORT={EFFORT} "
             f"XI_CODEX_TEXT_VERBOSITY={VERBOSITY} XI_CODEX_REASONING_SUMMARY={REASONING_SUMMARY} "
-            f"XI_CODEX_USAGE_LOG={logs}/{USAGE}; "
+            f"XI_TRACE_LOG={logs}/{TRACE}; "
             f"printf %s {shlex.quote(instruction)} | "
             f"xi prompt --model {self.model_name} --json "
             f"> {logs}/xi.json 2> {logs}/xi-stderr.log; code=$?; "
@@ -142,11 +142,12 @@ class Xi(CuratedAgent):
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
-        # xi-codex-usage.patch: one line for each turn of the agent and of its subagents.
-        path = self.logs_dir / USAGE
+        # xi-trace.patch: one line for each model request of the agent and of its subagents.
+        path = self.logs_dir / TRACE
         if not path.is_file():
             return
-        turns = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+        lines = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+        turns = [line.get("usage") or {} for line in lines if line.get("type") == "call"]
         if not turns:
             return
         cached = sum(turn.get("cache_read_input_tokens", 0) for turn in turns)

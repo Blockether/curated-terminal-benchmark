@@ -19,7 +19,7 @@ def root(tmp_path, monkeypatch):
 def run_args(**extra):
     base = {
         "round": "r",
-        "agents": "dirge",
+        "agents": "kmet",
         "models": "openai",
         "tasks": "html-js-filter",
         "parallel": 1,
@@ -35,9 +35,9 @@ def test_a_short_token_blocks_the_trial(monkeypatch, tmp_path):
 
     monkeypatch.setattr(cli, "podman_ready", lambda: True)
     monkeypatch.setattr(cli, "host_env", short)
-    trial = matrix.Trial(matrix.AGENTS["dirge"], "openai", "t")
+    trial = matrix.Trial(matrix.AGENTS["kmet"], "openai", "t")
     assert (
-        cli.run_trial(trial, tmp_path / "jobs", tmp_path, 0.25) == "blocked dirge__openai__t: short"
+        cli.run_trial(trial, tmp_path / "jobs", tmp_path, 0.25) == "blocked kmet__openai__t: short"
     )
 
 
@@ -61,11 +61,11 @@ def test_a_short_vis_token_blocks_a_kmet_trial_before_harbor(monkeypatch, tmp_pa
 
 def test_run_records_each_trial_once(root, monkeypatch, capsys):
     calls = []
-    monkeypatch.setattr(cli, "run_trial", lambda *a: calls.append(a) or "done dirge: reward=1.0")
+    monkeypatch.setattr(cli, "run_trial", lambda *a: calls.append(a) or "done kmet: reward=1.0")
     cli.run(run_args())
-    assert "done dirge" in capsys.readouterr().out and len(calls) == 1
+    assert "done kmet" in capsys.readouterr().out and len(calls) == 1
     record = json.loads((root / "jobs/r/ctb-runs.json").read_text())
-    assert record[0]["pins"]["dirge"] == cli.DIRGE_COMMIT and record[0]["parallel"] == 1
+    assert record[0]["pins"]["kmet"] == cli.KMET_COMMIT and record[0]["parallel"] == 1
 
 
 def write_result(root, job, reward):
@@ -93,12 +93,12 @@ def write_runs(root, dirty):
 
 def test_seal_writes_rows_hashes_and_a_digest_once(root):
     write_runs(root, dirty=False)
-    write_result(root, "dirge__openai__html-js-filter", 1.0)
+    write_result(root, "kmet__openai__html-js-filter", 1.0)
     cli.seal(run_args())
     sealed = json.loads((root / "results/r.json").read_text())
     row = sealed["rows"][0]
     assert (row["agent"], row["reward"], row["cache"], row["agent_version"]) == (
-        "dirge",
+        "kmet",
         1.0,
         4,
         "1.0",
@@ -116,17 +116,17 @@ def test_seal_refuses_missing_trials_and_dirty_runs(root):
     with pytest.raises(SystemExit, match="1 trials have no result"):
         cli.seal(run_args())
     write_runs(root, dirty=True)
-    write_result(root, "dirge__openai__html-js-filter", 0.0)
+    write_result(root, "kmet__openai__html-js-filter", 0.0)
     with pytest.raises(SystemExit, match="clean harness commit"):
         cli.seal(run_args())
 
 
 def test_rows_read_the_trials_of_a_round_and_skip_job_results(root):
-    write_result(root, "dirge__openai__html-js-filter", 1.0)
-    (root / "jobs/r/dirge__openai__html-js-filter/result.json").write_text('{"stats": {}}')
+    write_result(root, "kmet__openai__html-js-filter", 1.0)
+    (root / "jobs/r/kmet__openai__html-js-filter/result.json").write_text('{"stats": {}}')
     assert cli.rows(root / "jobs/r") == [
         {
-            "agent": "dirge",
+            "agent": "kmet",
             "model": "openai/gpt-6.1-sol",
             "task": "terminal-bench/html-js-filter",
             "reward": 1.0,
@@ -139,10 +139,10 @@ def test_rows_read_the_trials_of_a_round_and_skip_job_results(root):
 
 
 def test_summary_counts_the_level_of_a_dataset_task_name(root, capsys):
-    write_result(root, "dirge__openai__html-js-filter", 1.0)
+    write_result(root, "kmet__openai__html-js-filter", 1.0)
     cli.summary(argparse.Namespace(round="r", json=None))
     columns = capsys.readouterr().out.splitlines()[1].split()
-    assert columns[:3] == ["dirge", "openai/gpt-6.1-sol", "1/1"]
+    assert columns[:3] == ["kmet", "openai/gpt-6.1-sol", "1/1"]
     assert sorted(columns[3:5]) == ["0/0", "1/1"]
 
 

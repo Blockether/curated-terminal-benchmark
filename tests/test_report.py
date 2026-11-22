@@ -1,12 +1,11 @@
 import json
 import re
 
-from ctb.report import render
+from ctb.report import render, transcripts
 from ctb.report.transcripts import (
     event,
     merge_reasoning,
     read_codex,
-    read_dirge,
     read_opencode,
     read_verification,
     read_wisp,
@@ -447,26 +446,11 @@ def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):
 
 
 def test_tokens_come_from_the_run_totals_or_harbor_when_no_call_records_them(tmp_path):
-    # Dirge writes usage only in its final result record, not in each assistant message.
-    lines = [
-        {"type": "assistant", "message": {"id": "m1", "content": [{"type": "text", "text": "Hi"}]}},
-        {
-            "type": "result",
-            "subtype": "success",
-            "is_error": False,
-            "duration_ms": 249_392,
-            "total_cost_usd": 0.0,
-            "usage": {
-                "input_tokens": 448_724,
-                "cached_input_tokens": 238_080,
-                "output_tokens": 7_620,
-            },
-        },
+    # Some harnesses write usage only in a final result record, not in each assistant message.
+    events = [
+        transcripts.event("assistant", text="Hi"),
+        transcripts.event("result", ms=249_392, tokens=transcripts.tokens(448_724, 238_080, 7_620)),
     ]
-    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(line) for line in lines) + "\n")
-    events = read_dirge(tmp_path, "openai/gpt-5.5")
-    result = events[-1]
-    assert result["kind"] == "result" and result["ms"] == 249_392 and result["cost"] is None
     harbor = {"input": 0, "cache": 0, "output": 0}
     trial = {"events": events, "summary": summarize(events), "harbor": harbor}
     assert render.usage(trial) == (448_724, 238_080, 7_620)
@@ -547,27 +531,6 @@ def test_run_usage_includes_side_calls_missing_from_turn_events():
     assert render.usage(trial) == (100, 20, 10)
     trial["events"] = []
     assert render.usage(trial) == (None, None, None)
-
-
-def test_dirge_calls_without_ids_are_not_deduplicated(tmp_path, monkeypatch):
-    records = [{"type": "assistant", "message": {"content": []}} for _ in range(1000)]
-    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
-    assert (
-        len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1000
-    )
-    # Streaming decoders can reuse storage; object identity is not a message identity.
-    from ctb.report import transcripts
-
-    original = transcripts.jsonl
-    record = {"type": "assistant", "message": {"content": []}}
-    monkeypatch.setattr(transcripts, "jsonl", lambda path: (record for _ in range(1000)))
-    assert (
-        len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1000
-    )
-    monkeypatch.setattr(transcripts, "jsonl", original)
-    records = [{"type": "assistant", "message": {"id": "same", "content": []}} for _ in range(3)]
-    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
-    assert len([e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "call"]) == 1
 
 
 def test_partial_call_prices_do_not_become_a_run_total():
@@ -652,81 +615,6 @@ def test_opencode_rejects_stale_or_empty_usage_export(tmp_path):
         message["tokens"] = used
         path.write_text(json.dumps({"messages": [message]}))
         assert render.run_result(read_opencode(tmp_path, "m"))["usage_complete"] is False
-
-
-def test_dirge_immediate_tools_survive_an_interrupted_turn(tmp_path):
-    records = [
-        {
-            "type": "ctb_tool_call",
-            "id": "a",
-            "name": "bash",
-            "input": {"command": "sleep 5"},
-            "at_ms": 1000,
-        },
-        {"type": "ctb_tool_call", "id": "b", "name": "read", "input": {"path": "x"}, "at_ms": 1001},
-        {"type": "ctb_tool_result", "id": "b", "output": "file contents", "duration_ms": 0},
-    ]
-    path = tmp_path / "dirge.jsonl"
-    path.write_text("\n".join(json.dumps(r) for r in records) + '\n{"type":')
-    events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
-    tools = [e for e in events if e["kind"] == "tool"]
-    assert len(tools) == 2
-    assert tools[0]["name"] == "bash" and tools[0]["at"] == 1000
-    assert tools[0]["output"] is None and tools[0]["ms"] is None
-    assert tools[1]["output"] == "file contents"
-    assert tools[1]["ms"] == 0 and tools[1]["ms_source"] == "recorded"
-    assert not [e for e in events if e["kind"] == "call"]
-
-
-def test_dirge_immediate_tools_do_not_duplicate_turn_blocks(tmp_path):
-    records = [
-        {
-            "type": "ctb_tool_call",
-            "id": "a",
-            "name": "bash",
-            "input": {"command": "echo ok"},
-            "at_ms": 1000,
-        },
-        {"type": "ctb_tool_result", "id": "a", "output": "ok", "duration_ms": 25},
-        {
-            "type": "assistant",
-            "message": {
-                "content": [
-                    {"type": "tool_use", "id": "a", "name": "bash", "input": {"command": "echo ok"}}
-                ]
-            },
-        },
-        {
-            "type": "user",
-            "message": {"content": [{"type": "tool_result", "tool_use_id": "a", "content": "ok"}]},
-        },
-    ]
-    path = tmp_path / "dirge.jsonl"
-    path.write_text("\n".join(json.dumps(r) for r in records))
-    for _ in range(2):
-        events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
-        tools = [e for e in events if e["kind"] == "tool"]
-        assert len(tools) == 1
-        assert tools[0]["ms"] == 25 and tools[0]["output"] == "ok"
-        assert len([e for e in events if e["kind"] == "call"]) == 1
-    path.write_text("\n".join(json.dumps(r) for r in records[2:]))
-    legacy = [e for e in read_dirge(tmp_path, "openai/gpt-6.1-sol") if e["kind"] == "tool"]
-    assert len(legacy) == 1 and legacy[0]["output"] == "ok" and legacy[0]["ms"] is None
-    path.write_text("")
-    assert read_dirge(tmp_path, "openai/gpt-6.1-sol") == []
-
-
-def test_dirge_unpaired_result_is_not_a_tool_call(tmp_path):
-    records = [
-        {"type": "ctb_tool_call", "id": "1", "name": "read", "input": {}},
-        {"type": "ctb_tool_result", "id": None, "output": "unpaired", "duration_ms": None},
-    ]
-    (tmp_path / "dirge.jsonl").write_text("\n".join(json.dumps(r) for r in records))
-    events = read_dirge(tmp_path, "openai/gpt-6.1-sol")
-    tools = [e for e in events if e["kind"] == "tool"]
-    assert len(tools) == 1 and tools[0]["output"] is None and tools[0]["ms"] is None
-    assert events[-1]["name"] == "Unpaired tool result"
-    assert events[-1]["text"] == "unpaired"
 
 
 def test_wisp_transcript_pairs_tools_and_takes_times_from_the_log(tmp_path):

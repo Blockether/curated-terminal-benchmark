@@ -487,7 +487,6 @@ AGENTS = {
     "kmet-codemode": ("Kmet codemode", False, "https://github.com/kmetia/kmet-agent"),
     "kmet-shell-only": ("Kmet shell-only", False, "https://github.com/kmetia/kmet-agent"),
     "wisp": ("Wisp", False, "https://github.com/xificurC/wisp"),
-    "dirge": ("Dirge", True, "https://github.com/dirge-code/dirge"),
     "samizdat": ("Samizdat", True, "https://github.com/samizdat-code/samizdat"),
 }
 #: The public address of the site, and the site name in titles and link previews.

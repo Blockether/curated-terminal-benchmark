@@ -6,14 +6,14 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from ctb.agents.dirge import Dirge
+from ctb.agents.kmet import Kmet
 
 
 @pytest.mark.parametrize("manager", ["apt-get", "dnf", "yum", "apk"])
 def test_install_ensures_ca_certificates(tmp_path, monkeypatch, manager):
     archive = tmp_path / "agent.tar.gz"
     archive.write_bytes(b"test archive")
-    agent = Dirge(logs_dir=tmp_path / "logs", model_name="openai/gpt-6.1-sol")
+    agent = Kmet(logs_dir=tmp_path / "logs", model_name="openai/gpt-6.1-sol")
     monkeypatch.setattr(agent, "ARCHIVE", archive)
     monkeypatch.setattr(agent, "_get_system_package_manager", AsyncMock(return_value=manager))
     execute = AsyncMock()

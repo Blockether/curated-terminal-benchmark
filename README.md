@@ -3,10 +3,10 @@
 Compare coding agents on 12 CPU-only Terminal-Bench tasks with Harbor.
 New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
-Agents: Codex, OpenCode, Pi, Dirge, Kmet, Xi, Samizdat, Wisp, Vis solo and Vis team.
-Xi runs one-shot prompts on its Codex provider with the ChatGPT subscription login. Its rules allow all tool calls, because a one-shot prompt has no client to answer permission questions. The local patches are in `HARNESS-VERSIONS.md`.
+Agents: Codex, OpenCode, Pi, Kmet, Xi, Samizdat, Wisp, Vis solo and Vis team.
+Xi runs one-shot prompts on its Codex provider with the ChatGPT subscription login. Its rules allow all tool calls, because a one-shot prompt has no client to answer permission questions. Its trace patch writes each model request and tool call with its time to `xi-trace.jsonl`. The local patches are in `HARNESS-VERSIONS.md`.
 Samizdat and Wisp reach GPT through the host proxy in `src/ctb/proxy.py`. Samizdat speaks only OpenAI Chat Completions, which the proxy converts. Wisp speaks the Responses wire: the proxy relays its requests and events unchanged and adds only the login and the shared `text.verbosity`, which Wisp does not send. The proxy log records the provider usage of each request.
-Dirge and Samizdat are paused: a run without `--agents` skips them, and `--agents dirge` still runs Dirge.
+Samizdat is paused: a run without `--agents` skips it, and `--agents samizdat` still runs it.
 The experiment arms `kmet-eval-only`, `kmet-codemode`, `kmet-shell-only` and `pi-shell-only` select tools with `--tools`. A run without `--agents` skips them too.
 
 ## Layout
@@ -79,8 +79,8 @@ Runs consume subscription quota. Configure `CONTAINER_CONNECTION` and `DOCKER_HO
 natively in the Podman VM of an Apple Silicon Mac. The published task images are amd64 only, so
 `ctb.environment:Podman` builds each agent and verifier image from the task Dockerfile. The builds
 get `DOCKER_DEFAULT_PLATFORM`, so a cached base image of another CPU is not used. On a Podman host of another CPU the tasks run
-under emulation. `run` stops there unless you give `--allow-emulation`. Dirge and Samizdat are
-paused and build only for amd64. Each run record
+under emulation. `run` stops there unless you give `--allow-emulation`. Samizdat is
+paused and builds only for amd64. Each run record
 and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
 in the task container shows its path and not its source.
 Most task Dockerfiles use moving tags and every build pulls. Thus each trial records the ID and digest of each base image
@@ -133,13 +133,6 @@ Select Vis and one or more other agents. General shows all attempts and totals.
 Normalized shows means for tasks that every selected agent passed with the same task content and model.
 Missing measurements stay unavailable. Different setup versions produce a warning.
 
-New Dirge runs record each tool call and result immediately in `dirge.jsonl`.
-The `ctb_tool_call` and `ctb_tool_result` records include unique trace IDs, inputs, outputs,
-and measured tool duration. An interrupted call stays in the log without a result or duration.
-If provider IDs are ambiguous, the result stays unpaired and has no duration.
-Old logs remain unchanged; their missing timing data is not estimated.
-The `tools-v4` archive is separate from the previous `usage-v3` archive.
-Existing frozen benchmark queues keep their original code and archives.
 Reports use HTML. Print the HTML page to create a PDF; there is no separate PDF renderer.
 
 ## Privacy and seals

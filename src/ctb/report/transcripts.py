@@ -502,102 +502,80 @@ def read_codex(agent: Path, model: str) -> list[dict]:
     return events
 
 
-def read_dirge(agent: Path, model: str) -> list[dict]:
+def read_xi(agent: Path, model: str) -> list[dict]:
+    """Xi transcripts give the messages and tool results; xi-trace.jsonl gives each call and tool time."""
+    trace = list(jsonl(agent / "xi-trace.jsonl")) if (agent / "xi-trace.jsonl").is_file() else []
+    calls = [r for r in trace if r.get("type") == "call"]
+    tool_times = {r.get("id"): r for r in trace if r.get("type") == "tool"}
     events: list[dict] = []
     pending: dict = {}
-    seen: set = set()
-    path = agent / "dirge.jsonl"
-    immediate = path.is_file() and any(r.get("type") == "ctb_tool_call" for r in jsonl(path))
-    for record in jsonl(path) if path.is_file() else []:
-        message = record.get("message") or {}
-        if record.get("type") == "ctb_tool_call":
-            tool = event(
-                "tool",
-                name=record.get("name"),
-                input=record.get("input"),
-                at=record.get("at_ms"),
-            )
-            pending[record.get("id")] = tool
-            events.append(tool)
-        elif record.get("type") == "ctb_tool_result":
-            if record.get("id") not in pending:
-                events.append(event("user", name="Unpaired tool result", text=record.get("output")))
-                continue
-            duration = record.get("duration_ms")
-            pair(
-                pending,
-                record.get("id"),
-                output=record.get("output"),
-                ms=duration,
-                ms_source="recorded" if duration is not None else None,
-            )
-        elif record.get("type") == "assistant":
-            key = message.get("id")
-            if key is None or key not in seen:
-                if key is not None:
-                    seen.add(key)
-                used = message.get("usage")
-                events.append(
-                    call(
-                        model,
-                        None,
-                        None,
-                        None,
-                        tokens(
-                            used.get("input_tokens"),
-                            used.get("cached_input_tokens") or used.get("cache_read_input_tokens"),
-                            used.get("output_tokens"),
-                        )
-                        if used
-                        else None,
-                    )
-                )
-            for part in message.get("content") or []:
-                kind = part.get("type")
-                if kind == "text" and part.get("text"):
-                    events.append(event("assistant", text=part["text"]))
-                elif kind == "thinking" and part.get("thinking"):
-                    events.append(event("reasoning", text=part["thinking"]))
-                elif kind == "tool_use" and not immediate:
-                    tool = event("tool", name=part.get("name"), input=part.get("input"))
-                    pending[part.get("id")] = tool
-                    events.append(tool)
-        elif record.get("type") == "user":
-            content = message.get("content")
-            if isinstance(content, str):
-                events.append(event("user", text=content))
-            for part in content if isinstance(content, list) else []:
-                if part.get("type") == "tool_result" and not immediate:
-                    pair(
-                        pending,
-                        part.get("tool_use_id"),
-                        output=text_of(part.get("content")),
-                        error=part.get("is_error"),
-                    )
-                elif part.get("type") == "text":
-                    events.append(event("user", text=part.get("text")))
-        elif record.get("type") == "result":
+    done = 0
+
+    def emit(upto: int) -> None:
+        nonlocal done
+        for record in calls[done:upto]:
             used = record.get("usage") or {}
-            # Dirge writes 0.0 when it has no price for the model, so only a positive cost counts.
-            cost = record.get("total_cost_usd") or None
-            events.append(
-                event(
-                    "result",
-                    name=record.get("subtype"),
-                    error=bool(record.get("is_error")),
-                    ms=record.get("duration_ms"),
-                    ms_source="recorded" if record.get("duration_ms") is not None else None,
-                    tokens=tokens(
-                        used.get("input_tokens"),
-                        used.get("cached_input_tokens") or used.get("cache_read_input_tokens"),
-                        used.get("output_tokens"),
-                    )
-                    if used
-                    else None,
-                    cost=cost,
-                    cost_source="recorded" if cost is not None else None,
-                )
+            cached = used.get("cache_read_input_tokens") or 0
+            entry = call(
+                model,
+                record.get("at"),
+                record.get("ms"),
+                "recorded",
+                tokens((used.get("input_tokens") or 0) + cached, cached, used.get("output_tokens"))
+                if used
+                else None,
             )
+            entry["error"] = bool(record.get("error"))
+            events.append(entry)
+        done = max(done, upto)
+
+    def owner(key: object) -> int:
+        """One past the index of the call that requested tool `key`, or 0."""
+        return next((i + 1 for i, c in enumerate(calls) if key in (c.get("calls") or [])), 0)
+
+    for path in sorted((agent / "xi-transcripts").rglob("*.jsonl")):
+        for record in jsonl(path):
+            message = record.get("message") or {}
+            content = message.get("content")
+            if record.get("type") == "assistant":
+                ids = [
+                    p.get("id")
+                    for p in content or []
+                    if isinstance(p, dict) and p.get("type") == "tool_use"
+                ]
+                emit(owner(ids[0]) if ids else done + 1)
+                for part in content if isinstance(content, list) else []:
+                    if part.get("type") == "text" and part.get("text"):
+                        events.append(event("assistant", text=part["text"]))
+                    elif part.get("type") == "tool_use":
+                        timed = tool_times.get(part.get("id")) or {}
+                        tool = event(
+                            "tool",
+                            at=timed.get("at"),
+                            name=part.get("name"),
+                            input=part.get("input"),
+                        )
+                        pending[part.get("id")] = tool
+                        events.append(tool)
+                if isinstance(content, str) and content:
+                    events.append(event("assistant", text=content))
+            elif record.get("type") == "user":
+                if isinstance(content, str):
+                    events.append(event("user", text=content))
+                for part in content if isinstance(content, list) else []:
+                    if part.get("type") == "tool_result":
+                        ms = (tool_times.get(part.get("tool_use_id")) or {}).get("ms")
+                        pair(
+                            pending,
+                            part.get("tool_use_id"),
+                            output=text_of(part.get("content")),
+                            error=bool(part.get("is_error")),
+                            ms=ms,
+                            ms_source="recorded" if ms is not None else None,
+                        )
+                    elif part.get("type") == "text":
+                        events.append(event("user", text=part.get("text")))
+    emit(len(calls))
     return events
 
 
@@ -1005,11 +983,11 @@ READERS = {
     "pi": read_pi,
     "opencode": read_opencode,
     "codex": read_codex,
-    "dirge": read_dirge,
     "kmet": read_kmet,
     "samizdat": read_samizdat,
     "vis": read_vis,
     "wisp": read_wisp,
+    "xi": read_xi,
 }
 
 

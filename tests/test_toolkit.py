@@ -9,7 +9,7 @@ import pytest
 from harbor.agents.installed.base import BaseInstalledAgent
 
 from ctb import arch, toolkit
-from ctb.agents.dirge import Dirge
+from ctb.agents.kmet import Kmet
 from ctb.matrix import AGENTS
 
 
@@ -27,8 +27,8 @@ def test_every_agent_wraps_its_harbor_class_with_the_toolkit(name):
 def test_every_agent_command_gets_the_toolkit_path():
     environment = AsyncMock()
     environment.exec.return_value = SimpleNamespace(return_code=0, stdout="", stderr="")
-    dirge = Dirge(logs_dir=Path("/tmp/ctb-test-logs"), model_name="openai/gpt-6.1-sol")
-    asyncio.run(dirge.exec_as_agent(environment, command="python3 -V"))
+    kmet = Kmet(logs_dir=Path("/tmp/ctb-test-logs"), model_name="openai/gpt-6.1-sol")
+    asyncio.run(kmet.exec_as_agent(environment, command="python3 -V"))
     command = environment.exec.await_args.kwargs["command"]
     assert toolkit.PATH_SETUP + "python3 -V" in command
 
@@ -142,7 +142,7 @@ def test_shared_instruction_is_the_same_for_all_agents():
     assert asyncio.run(Shared().run(text, None, None)) == text
 
 
-@pytest.mark.parametrize("name", ["dirge", "kmet", "samizdat", "vis-solo", "vis-team", "opencode"])
+@pytest.mark.parametrize("name", ["kmet", "samizdat", "vis-solo", "vis-team", "opencode"])
 def test_real_adapter_run_receives_shared_instruction(name, tmp_path, monkeypatch):
     from harbor.models.agent.context import AgentContext
 

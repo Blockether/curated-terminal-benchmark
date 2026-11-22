@@ -22,7 +22,7 @@ from pathlib import Path
 from blockether.vis.evals import HarborTrial, read_trial, read_trials, seal_round
 
 from ctb import arch, credentials, privacy, toolkit
-from ctb.agents import dirge, kmet, opencode, pi, samizdat, vis, wisp, xi
+from ctb.agents import kmet, opencode, pi, samizdat, vis, wisp, xi
 from ctb.agents.base import EFFORT, min_token_seconds
 from ctb.matrix import (
     AGENTS,
@@ -44,8 +44,7 @@ COMPOSE = ARTIFACTS / "docker-compose"
 # Tracked verifier fixes, copied over the downloaded dataset before each run.
 TASK_FIXES = ROOT / "task-fixes"
 VERIFIER = "ctb.verifier:Verifier"
-# Pinned master commits. Dirge patches preserve provider token accounting.
-DIRGE_REPO, DIRGE_COMMIT = "https://github.com/dirge-code/dirge.git", "45377633"
+# Pinned master commit.
 KMET_REPO, KMET_COMMIT = (
     "https://github.com/kmetia/kmet-agent.git",
     "b52aa1186c5f6e3968b15f2bfc23ea59e5851f07",
@@ -55,13 +54,6 @@ SAMIZDAT_REPO = "https://github.com/yogthos/samizdat.git"
 PROXY_HOST = "host.containers.internal"
 BB_MIN = "1.13.229"
 SRC = ARTIFACTS / "src"
-DIRGE_BUILD = (
-    "apt-get update -qq && apt-get install -y -qq musl-tools clang mold >/dev/null && "
-    "rustup target add x86_64-unknown-linux-musl >/dev/null && "
-    "cargo test --release --target x86_64-unknown-linux-musl --bin dirge -- "
-    "codex_completed_response_keeps_usage codex_body_gets_gpt_settings ctb_tool_trace && "
-    "cargo build --release --target x86_64-unknown-linux-musl --bin dirge"
-)
 # The steps of samizdat's release.yml on ubuntu-22.04, without its test and smoke steps.
 SAMIZDAT_BUILD = (
     "apt-get update -qq && apt-get install -y -qq curl git ca-certificates cmake g++ "
@@ -102,57 +94,6 @@ def pack(binary: Path, archive: Path, name: str) -> None:
 def apply_patches(path: Path, *names: str) -> None:
     for name in names:
         sh(["git", "apply", str(ROOT / "patches" / name)], cwd=path)
-
-
-def prepare_dirge_rig(path: Path) -> None:
-    """Extract the locked Rig crate before applying the streaming parser patch."""
-    packages = tomllib.loads((path / "Cargo.lock").read_text())["package"]
-    package = next(p for p in packages if p["name"] == "rig-core")
-    if package["version"] != "0.41.0":
-        raise RuntimeError("The Dirge streaming patch requires rig-core 0.41.0")
-    name = "rig-core-0.41.0.crate"
-    archive = download(
-        f"https://static.crates.io/crates/rig-core/{name}",
-        ARTIFACTS / name,
-        package["checksum"],
-    )
-    with tarfile.open(archive) as source:
-        source.extractall(path / "vendor", filter="data")
-
-
-def fetch_dirge() -> Path:
-    archive = ARTIFACTS / dirge.ARCHIVE_NAME
-    if not archive.is_file():
-        path = checkout(DIRGE_REPO, DIRGE_COMMIT, "dirge")
-        prepare_dirge_rig(path)
-        apply_patches(
-            path,
-            "dirge-usage.patch",
-            "dirge-rig-stream.patch",
-            "dirge-codex-settings.patch",
-            "dirge-tool-trace.patch",
-        )
-        sh(
-            [
-                "podman",
-                "run",
-                "--rm",
-                "--platform",
-                "linux/amd64",
-                "-v",
-                f"{path}:/src",
-                "-w",
-                "/src",
-                "-e",
-                "CARGO_TARGET_DIR=/src/target-linux",
-                "docker.io/library/rust:1-bookworm",
-                "bash",
-                "-c",
-                DIRGE_BUILD,
-            ]
-        )
-        pack(path / "target-linux/x86_64-unknown-linux-musl/release/dirge", archive, "dirge")
-    return archive
 
 
 def download(url: str, path: Path, sha256: str | None = None) -> Path:
@@ -254,17 +195,17 @@ def fetch_xi() -> Path:
 def fetch() -> None:
     """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet, Wisp and Xi.
 
-    Dirge and samizdat are paused and build only for amd64, so only an amd64 fetch gets them.
+    Samizdat is paused and builds only for amd64, so only an amd64 fetch gets it.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
-    dirge and samizdat need Podman.
+    and samizdat need Podman.
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
     archives += [fetch_kmet(), fetch_wisp(), fetch_xi()]
     if arch.ARCH == "amd64":
-        archives += [fetch_dirge(), fetch_samizdat()]
+        archives += [fetch_samizdat()]
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 
@@ -575,7 +516,6 @@ def pins() -> dict:
             "setup_note_sha256": hashlib.sha256(toolkit.SETUP_NOTE.encode()).hexdigest(),
             "inventory_schema": 1,
         },
-        "dirge": DIRGE_COMMIT,
         "kmet": KMET_COMMIT,
         "samizdat": samizdat.COMMIT,
         "jolt": samizdat.JOLT_VERSION,

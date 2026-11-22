@@ -23,8 +23,7 @@ class AgentSpec:
     version: str | None = None
     #: An experiment arm runs only when --agents names it, never in the default matrix.
     experiment: bool = False
-    #: A paused arm also runs only when --agents names it. Dirge and Samizdat are paused:
-    #: they used the most time and cost and passed 2 and 3 of 12 tasks.
+    #: A paused arm also runs only when --agents names it.
     paused: bool = False
 
 
@@ -41,7 +40,6 @@ AGENTS = {
             agent_kwargs=(f"reasoning_summary={REASONING_SUMMARY}",),
             version="0.166.0",
         ),
-        AgentSpec("dirge", "ctb.agents.dirge:Dirge", ("openai",), paused=True),
         AgentSpec("kmet", "ctb.agents.kmet:Kmet", ("openai",)),
         AgentSpec("xi", "ctb.agents.xi:Xi", ("openai",)),
         # The same kmet arm with one tool selected: eval, codemode or bash; run it by name.

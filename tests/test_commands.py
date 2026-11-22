@@ -15,7 +15,6 @@ from harbor.models.agent.context import AgentContext
 
 from ctb import arch, cli, credentials
 from ctb.agents import vis
-from ctb.agents.dirge import Dirge
 from ctb.agents.kmet import Kmet, KmetCodemode, KmetEvalOnly, KmetShellOnly
 from ctb.agents.opencode import (
     LOCAL_DATA,
@@ -391,15 +390,7 @@ def test_parallel_run_records_keep_every_record(tmp_path, monkeypatch):
     assert not (tmp_path / "ctb-runs.json.tmp").exists()
 
 
-def test_dirge_and_kmet_select_subscription_auth_and_medium_effort():
-    dirge = agent(Dirge, "openai/gpt-6.1-sol").config()
-    assert dirge["providers"]["openai"] == {
-        "auth": "chatgpt",
-        "model": "gpt-6.1-sol",
-        "effort": "medium",
-    }
-    command = agent(Dirge, "openai/gpt-6.1-sol").command("x")
-    assert "DIRGE_CODEX_TEXT_VERBOSITY=low DIRGE_CODEX_REASONING_SUMMARY=auto;" in command
+def test_kmet_selects_subscription_auth_and_medium_effort():
     kmet = agent(Kmet, "openai/gpt-6.1-sol").command("x")
     assert "--model openai-codex/gpt-6.1-sol --thinking medium" in kmet
     assert "KMET_CODING_AGENT_DIR=$HOME/.kmet/agent" in kmet
@@ -465,7 +456,7 @@ def test_opencode_and_pi_use_the_chatgpt_subscription_with_medium_effort():
 
 
 def test_only_the_gpt_model_runs():
-    for cls in (OpenCode, Pi, Dirge):
+    for cls in (OpenCode, Pi):
         with pytest.raises(ValueError, match="Use --model openai/gpt-6.1-sol"):
             agent(cls, "anthropic/claude-opus-5-5")
     assert "--extension" not in agent(Pi, "openai/gpt-6.1-sol").build_cli_flags()
@@ -512,43 +503,6 @@ def test_opencode_and_pi_logins_cannot_rotate_the_host_login():
 
 def tokens(context):
     return context.n_input_tokens, context.n_cache_tokens, context.n_output_tokens
-
-
-def test_dirge_tokens_come_from_the_result_event(tmp_path):
-    usage = {
-        "input_tokens": 100,
-        "cached_input_tokens": 80,
-        "cache_creation_input_tokens": 5,
-        "output_tokens": 7,
-    }
-    lines = [{"type": "assistant"}, {"type": "result", "usage": usage}]
-    (tmp_path / "dirge.jsonl").write_text("\n".join(map(json.dumps, lines)) + "\n")
-    gpt = AgentContext()
-    agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(gpt)
-    # OpenAI counts cached tokens inside input_tokens.
-    assert tokens(gpt) == (100, 80, 7)
-
-
-def test_dirge_reads_a_tool_result_with_unicode_line_separators(tmp_path):
-    # A raw PDF in a dirge tool result split one JSON line at \x85 and crashed the trial.
-    usage = {"input_tokens": 100, "cached_input_tokens": 80, "output_tokens": 7}
-    lines = [
-        {"type": "user", "message": {"content": "%PDF-1.3\x85\u2028\x1c stream"}},
-        {"type": "result", "usage": usage},
-    ]
-    text = "\n".join(json.dumps(line, ensure_ascii=False) for line in lines) + "\n"
-    assert len(text.splitlines()) > len(lines)
-    (tmp_path / "dirge.jsonl").write_text(text)
-    context = AgentContext()
-    agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
-    assert tokens(context) == (100, 80, 7)
-
-
-def test_dirge_without_usage_leaves_tokens_unknown(tmp_path):
-    (tmp_path / "dirge.jsonl").write_text(json.dumps({"type": "result"}) + "\n")
-    context = AgentContext()
-    agent(Dirge, "openai/gpt-6.1-sol", tmp_path).populate_context_post_run(context)
-    assert tokens(context) == (None, None, None)
 
 
 def test_wisp_tokens_include_subagent_sessions(tmp_path):
@@ -710,15 +664,6 @@ def test_opencode_hang_keeps_a_process_list_in_the_trial_logs():
     command = processes_command("/logs/agent/opencode/processes.txt")
     assert "/proc/[0-9]*" in command and "wchan" in command
     assert command.endswith("> /logs/agent/opencode/processes.txt 2>/dev/null; true")
-
-
-def test_dirge_uses_the_same_chatgpt_account_as_other_harnesses(monkeypatch):
-    access = credentials.Access("vis-access", 9999999999999, "vis-account")
-    monkeypatch.setattr(credentials, "codex_vis", lambda minimum: access)
-    monkeypatch.setattr(credentials, "codex_cli", lambda minimum: credentials.Access("other", 1))
-    auth = json.loads(agent(Dirge, "openai/gpt-6.1-sol").secret_files()[".codex/auth.json"])
-    assert auth["tokens"]["access_token"] == "vis-access"
-    assert auth["tokens"]["account_id"] == "vis-account"
 
 
 def test_kmet_ignores_interleaved_tool_events_for_usage(tmp_path):

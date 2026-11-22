@@ -149,8 +149,7 @@ less without being better, so General resource totals must be read with the pass
 
 Derived report totals use complete run records before partial call records. OpenCode session
 exports include visible output and reasoning output in the API list-price equivalent. Invalid
-exports have no full-run token or cost total. Dirge messages without IDs are distinct calls;
-only explicit duplicate IDs are removed. Samizdat run totals include its side calls.
+exports have no full-run token or cost total. Samizdat run totals include its side calls.
 These reader corrections do not change source results or seals. Re-export and audit normalized
 transcripts after reader changes, then approve the new hashes on main. Per-call timings that
 were never recorded remain unavailable. API-equivalent cost is not a subscription charge.

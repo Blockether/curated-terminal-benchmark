@@ -1,0 +1,58 @@
+diff --git a/providers/packages/provider-kit/src/openai-responses.ts b/providers/packages/provider-kit/src/openai-responses.ts
+index e72ee8d..3a1af29 100644
+--- a/providers/packages/provider-kit/src/openai-responses.ts
++++ b/providers/packages/provider-kit/src/openai-responses.ts
+@@ -9,6 +9,14 @@ import { textOf } from "./index.ts";
+ import { addUsage, failed, interjections, parseArgs, runCalls, systemText } from "./loop.ts";
+ import type { HistoryMessage, ToolCall, ToolDef, TurnRequest, TurnResult, Usage } from "./protocol.ts";
+ import { sseJson } from "./sse.ts";
++import { appendFileSync } from "node:fs";
++
++// patches/xi-trace.patch: Xi keeps usage and times only in memory. With XI_TRACE_LOG set, each
++// model request and each tool call appends one JSON line with its start, milliseconds and result.
++const trace = (record: Record<string, unknown>) => {
++  const path = process.env.XI_TRACE_LOG;
++  if (path) appendFileSync(path, JSON.stringify(record) + "\n");
++};
+ 
+ /** "none" is rejected by some reasoning models; "low" is the cheapest effort
+  *  every one of them accepts. */
+@@ -147,7 +155,15 @@ export async function responsesTurn(req: TurnRequest, io: TurnIO, cfg: Responses
+   try {
+     for (;;) {
+       if (io.signal.aborted) return { aborted: true, stopReason: "aborted", usage, model };
+-      const once = await streamOnce(cfg, { model, input, system, tools, reasoningEffort }, io);
++      const at = Date.now();
++      let once: Once;
++      try {
++        once = await streamOnce(cfg, { model, input, system, tools, reasoningEffort }, io);
++      } catch (e) {
++        trace({ type: "call", at, ms: Date.now() - at, error: String(e) });
++        throw e;
++      }
++      trace({ type: "call", at, ms: Date.now() - at, status: once.status, usage: once.usage, calls: once.calls.map((c) => c.id) });
+       usage = addUsage(usage, once.usage);
+       input.push(...once.items);
+       if (!once.calls.length) {
+@@ -155,7 +171,20 @@ export async function responsesTurn(req: TurnRequest, io: TurnIO, cfg: Responses
+         if (once.status === "incomplete" && once.text) continue;
+         return { stopReason: "stop", resultText: once.text, usage, model };
+       }
+-      const results = await runCalls(io, once.calls);
++      const results = await runCalls(
++        { ...io, runTool: async (c: ToolCall) => {
++          const start = Date.now();
++          try {
++            const r = await io.runTool(c);
++            trace({ type: "tool", id: c.id, name: c.name, at: start, ms: Date.now() - start, error: !!r.isError });
++            return r;
++          } catch (e) {
++            trace({ type: "tool", id: c.id, name: c.name, at: start, ms: Date.now() - start, error: true });
++            throw e;
++          }
++        } },
++        once.calls,
++      );
+       once.calls.forEach((c, i) =>
+         input.push({
+           type: "function_call_output",
