@@ -58,13 +58,21 @@ SRC = ARTIFACTS / "src"
 SAMIZDAT_BUILD = (
     "apt-get update -qq && apt-get install -y -qq curl git ca-certificates cmake g++ "
     "libsqlite3-dev libssl-dev zlib1g-dev >/dev/null && "
+    "jolt tui-native && "
+    'LD_PRELOAD="$(g++ -print-file-name=libstdc++.so)" '
+    "jolt -A:tui build -m samizdat.main -o samizdat"
+)
+# amd64: the jolt release. Jolt has no arm64 Linux release, so arm64 builds it from source.
+JOLT_RELEASE = (
     'curl -fsSL -o /tmp/jolt.tar.gz "https://github.com/jolt-lang/jolt/releases/download/'
     '$JOLT_VERSION/jolt-$JOLT_VERSION-x86_64-linux.tar.gz" && '
     "mkdir -p /opt/jolt && tar xzf /tmp/jolt.tar.gz -C /opt/jolt && "
     'export PATH="$(dirname "$(find /opt/jolt -name jolt -type f -perm -u+x | head -1)"):$PATH" && '
-    "jolt tui-native && "
-    'LD_PRELOAD="$(g++ -print-file-name=libstdc++.so)" '
-    "jolt -A:tui build -m samizdat.main -o samizdat"
+)
+JOLT_REPO = "https://github.com/jolt-lang/jolt.git"
+JOLT_BUILD = (
+    "apt-get update -qq && apt-get install -y -qq git make curl ca-certificates xz-utils "
+    "build-essential xxd uuid-dev libncurses-dev zlib1g-dev liblz4-dev >/dev/null && make build"
 )
 
 
@@ -112,19 +120,30 @@ def download(url: str, path: Path, sha256: str | None = None) -> Path:
 
 
 def fetch_samizdat() -> Path:
-    """Build samizdat at samizdat.COMMIT in an amd64 Ubuntu 22.04 container, as its CI does."""
+    """Build samizdat at samizdat.COMMIT in an Ubuntu 22.04 container for arch.ARCH, as its CI does."""
     archive = samizdat.Samizdat.ARCHIVE
     if not archive.is_file():
         path = checkout(SAMIZDAT_REPO, samizdat.COMMIT, "samizdat")
-        cache = SRC / "samizdat-jolt-cache"
+        cache = SRC / f"samizdat-jolt-cache-{arch.ARCH}"
         cache.mkdir(parents=True, exist_ok=True)
+        mounts = ["-v", f"{path}:/src", "-v", f"{cache}:/root/.jolt"]
+        if arch.ARCH == "amd64":
+            script = JOLT_RELEASE + SAMIZDAT_BUILD
+        else:
+            jolt = checkout(JOLT_REPO, samizdat.JOLT_VERSION, "jolt")
+            sh(["git", "submodule", "update", "--init", "--recursive", "-q"], cwd=jolt)
+            sh(
+                ["podman", "run", "--rm", "--platform", arch.PLATFORM, "-v", f"{jolt}:/jolt"]
+                + ["-w", "/jolt", "docker.io/library/ubuntu:22.04", "bash", "-c", JOLT_BUILD]
+            )
+            mounts += ["-v", f"{jolt}:/jolt:ro"]
+            script = "export PATH=/jolt/target/release:$PATH && " + SAMIZDAT_BUILD
         sh(
-            ["podman", "run", "--rm", "--platform", "linux/amd64"]
-            + ["-v", f"{path}:/src", "-v", f"{cache}:/root/.jolt", "-w", "/src"]
+            ["podman", "run", "--rm", "--platform", arch.PLATFORM, *mounts, "-w", "/src"]
             + ["-e", f"JOLT_VERSION={samizdat.JOLT_VERSION}"]
-            + ["docker.io/library/ubuntu:22.04", "bash", "-c", SAMIZDAT_BUILD]
+            + ["docker.io/library/ubuntu:22.04", "bash", "-c", script]
         )
-        name = f"samizdat-{samizdat.VERSION}-x86_64-linux"
+        name = f"samizdat-{samizdat.VERSION}-{arch.GNU}-linux"
         partial = archive.with_name(archive.name + ".partial")
         with tarfile.open(partial, "w:gz") as out:
             out.add(path / "samizdat", arcname=f"{name}/samizdat")
@@ -193,9 +212,7 @@ def fetch_xi() -> Path:
 
 
 def fetch() -> None:
-    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet, Wisp and Xi.
-
-    Samizdat is paused and builds only for amd64, so only an amd64 fetch gets it.
+    """Get everything for arch.PLATFORM: the Python toolkit, native Vis, kmet, Wisp, Xi and Samizdat.
 
     Vis needs the gh CLI: it gets each build of profiles.toml and builds its extensions archive.
     kmet needs Babashka >= BB_MIN on PATH or in artifacts/tools. The toolkit, the Vis extensions,
@@ -203,9 +220,7 @@ def fetch() -> None:
     """
     ARTIFACTS.mkdir(exist_ok=True)
     archives = [fetch_toolkit(), *(vis.fetch(build) for build in vis.builds())]
-    archives += [fetch_kmet(), fetch_wisp(), fetch_xi()]
-    if arch.ARCH == "amd64":
-        archives += [fetch_samizdat()]
+    archives += [fetch_kmet(), fetch_wisp(), fetch_xi(), fetch_samizdat()]
     for archive in archives:
         print(f"{archive.name}: {archive.stat().st_size} B")
 

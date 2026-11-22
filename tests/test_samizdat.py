@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from harbor.models.agent.context import AgentContext
 
-from ctb import credentials, matrix
+from ctb import arch, credentials, matrix
 from ctb.agents.samizdat import Samizdat
 from ctb.cli import host_env
 from ctb.proxy import codex_body
@@ -24,7 +24,7 @@ def test_samizdat_reaches_the_model_through_the_proxy(proxy_vars):
     gpt = samizdat("openai/gpt-6.1-sol").config()
     assert ':base-url "http://host.containers.internal:5555/v1"' in gpt
     assert ':model "gpt-6.1-sol"' in gpt and ':reasoning-effort "medium"' in gpt
-    assert ":features #{:native-tool-choice :reasoning-effort}" in gpt
+    assert ":type :openai-responses" in gpt and ':text-verbosity "low"' in gpt
     assert ":approval {:mode :yolo}" in gpt and "k3y" not in gpt
     assert samizdat("openai/gpt-6.1-sol").secret_env() == {"CTB_PROXY_KEY": "k3y"}
 
@@ -111,15 +111,13 @@ def test_samizdat_exports_full_turn_text(tmp_path):
     assert calls[-1] == "/v1/runs/r/branches/b/turns/1"
 
 
-def test_samizdat_uses_the_pinned_build_and_model_limits(proxy_vars):
+def test_samizdat_uses_the_pinned_build_of_this_cpu(proxy_vars):
     from ctb.agents.samizdat import ARCHIVE_NAME, COMMIT, SAMIZDAT, VERSION
 
     instance = samizdat("openai/gpt-6.1-sol")
     assert VERSION == COMMIT[:8]
-    assert instance.ARCHIVE.name == ARCHIVE_NAME == f"samizdat-{VERSION}-x86_64-linux.tar.gz"
-    assert SAMIZDAT == f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
-    assert ":context-window 1000000" in instance.config()
-    assert ":max-tokens 128000" in instance.config()
+    assert instance.ARCHIVE.name == ARCHIVE_NAME == f"samizdat-{VERSION}-{arch.GNU}-linux.tar.gz"
+    assert SAMIZDAT == f"/installed-agent/samizdat-{VERSION}-{arch.GNU}-linux/samizdat"
 
 
 def test_samizdat_installs_runtime_libraries(tmp_path, monkeypatch):

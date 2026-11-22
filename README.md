@@ -5,8 +5,7 @@ New runs use **GPT `gpt-6.1-sol`, medium reasoning**.
 
 Agents: Codex, OpenCode, Pi, Kmet, Xi, Samizdat, Wisp, Vis solo and Vis team.
 Xi runs one-shot prompts on its Codex provider with the ChatGPT subscription login. Its rules allow all tool calls, because a one-shot prompt has no client to answer permission questions. Its trace patch writes each model request and tool call with its time to `xi-trace.jsonl`. The local patches are in `HARNESS-VERSIONS.md`.
-Samizdat and Wisp reach GPT through the host proxy in `src/ctb/proxy.py`. Samizdat speaks only OpenAI Chat Completions, which the proxy converts. Wisp speaks the Responses wire: the proxy relays its requests and events unchanged and adds only the login and the shared `text.verbosity`, which Wisp does not send. The proxy log records the provider usage of each request.
-Samizdat is paused: a run without `--agents` skips it, and `--agents samizdat` still runs it.
+Samizdat and Wisp reach GPT through the host proxy in `src/ctb/proxy.py`. Both speak the Responses wire: the proxy relays their requests and events unchanged and adds only the login and the shared `text.verbosity` when a request does not set it. The proxy log records the provider usage of each request.
 The experiment arms `kmet-eval-only`, `kmet-codemode`, `kmet-shell-only` and `pi-shell-only` select tools with `--tools`. A run without `--agents` skips them too.
 
 ## Layout
@@ -79,8 +78,8 @@ Runs consume subscription quota. Configure `CONTAINER_CONNECTION` and `DOCKER_HO
 natively in the Podman VM of an Apple Silicon Mac. The published task images are amd64 only, so
 `ctb.environment:Podman` builds each agent and verifier image from the task Dockerfile. The builds
 get `DOCKER_DEFAULT_PLATFORM`, so a cached base image of another CPU is not used. On a Podman host of another CPU the tasks run
-under emulation. `run` stops there unless you give `--allow-emulation`. Samizdat is
-paused and builds only for amd64. Each run record
+under emulation. `run` stops there unless you give `--allow-emulation`. On arm64 the
+Samizdat fetch builds Samizdat and Jolt from source in a container. Each run record
 and seal holds `engine: {arch, emulated}`. The resource sampler runs from a file, so a process list
 in the task container shows its path and not its source.
 Most task Dockerfiles use moving tags and every build pulls. Thus each trial records the ID and digest of each base image

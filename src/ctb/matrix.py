@@ -62,7 +62,7 @@ AGENTS = {
             experiment=True,
         ),
         # Samizdat reaches GPT through the host proxy (ctb.proxy).
-        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True, paused=True),
+        AgentSpec("samizdat", "ctb.agents.samizdat:Samizdat", ("openai",), proxy=True),
         # Wisp cannot refresh a ChatGPT token, so it also uses the host proxy.
         AgentSpec("wisp", "ctb.agents.wisp:Wisp", ("openai",), proxy=True),
         # GPT uses each harness's native subscription login.

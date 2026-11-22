@@ -11,9 +11,12 @@ TERMINAL = {"completed", "aborted", "failed", "interrupted", "exhausted", "aband
 
 
 def request(path, body=None):
-    token = (Path.home() / ".config/samizdat/http/3985.token").read_text().strip()
+    # The server writes its port and token under the project: $HARNESS_ROOT/.samizdat/http.
+    http = Path(os.environ["HARNESS_ROOT"]) / ".samizdat/http"
+    port = (http / "port").read_text().strip() if (http / "port").is_file() else "3985"
+    token = (http / f"{port}.token").read_text().strip()
     req = urllib.request.Request(
-        "http://127.0.0.1:3985" + path,
+        f"http://127.0.0.1:{port}" + path,
         data=None if body is None else json.dumps(body).encode(),
         headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
     )

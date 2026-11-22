@@ -22,13 +22,14 @@ def test_two_vis_arms_run_task_major_in_one_round():
     ]
 
 
-def test_paused_arms_stay_out_of_the_default_matrix():
+def test_default_matrix_runs_every_agent_but_the_arms():
     assert matrix.DEFAULT_AGENTS.split(",") == [
         "vis-solo",
         "vis-team",
         "codex",
         "kmet",
         "xi",
+        "samizdat",
         "wisp",
         "opencode",
         "pi",

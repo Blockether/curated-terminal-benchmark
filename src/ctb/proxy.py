@@ -2,8 +2,8 @@
 
 This proxy runs on the host and sends `gpt-*` models to the ChatGPT Codex Responses API,
 with the subscription access token that Vis keeps. The container gets only a random
-proxy key. `/v1/chat/completions` converts the Chat Completions wire (samizdat).
-`/v1/responses` relays a Responses request and its event stream unchanged (Wisp); it adds
+proxy key. `/v1/chat/completions` converts the Chat Completions wire (Samizdat 0.1.0).
+`/v1/responses` relays a Responses request and its event stream unchanged (Samizdat, Wisp); it adds
 only the login, the session headers and the shared GPT settings that the body does not set.
 """
 

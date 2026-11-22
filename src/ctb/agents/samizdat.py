@@ -9,18 +9,19 @@ from harbor.agents.installed.base import PackageSpec
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
-from ctb.agents.base import EFFORT, CuratedAgent, proxy_env
+from ctb import arch
+from ctb.agents.base import EFFORT, VERBOSITY, CuratedAgent, proxy_env
 from ctb.paths import ARTIFACTS
 
-# The newest main commit; v0.1.0 is the only release and is 100 commits older.
-COMMIT = "9411f00c87d5ddb725f46eb8794e0d93a479835f"
+# The newest main commit on 21 November 2026; release v0.3.3 is older.
+COMMIT = "daf7a373e1f0164ea3c688c832a849de68620696"
 VERSION = COMMIT[:8]
-# The jolt release that builds it; samizdat CI also builds with the latest jolt release.
-JOLT_VERSION = "v0.8.23"
-ARCHIVE_NAME = f"samizdat-{VERSION}-x86_64-linux.tar.gz"
-SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-x86_64-linux/samizdat"
+# The latest jolt release, which samizdat CI also builds with. Jolt has no arm64 Linux release,
+# so `ctb fetch` builds this tag from source on arm64.
+JOLT_VERSION = "v0.8.28"
+ARCHIVE_NAME = f"samizdat-{VERSION}-{arch.GNU}-linux.tar.gz"
+SAMIZDAT = f"/installed-agent/samizdat-{VERSION}-{arch.GNU}-linux/samizdat"
 RUN_LOG = "samizdat-run.json"
-FEATURES = ":native-tool-choice :reasoning-effort"
 
 
 class Samizdat(CuratedAgent):
@@ -55,15 +56,15 @@ class Samizdat(CuratedAgent):
 
     def config(self) -> str:
         url, _ = proxy_env()
+        # The Responses preset of samizdat for GPT-5 and later sets the features and windows; it
+        # asks for the reasoning summary itself. The proxy relays /v1/responses with the login.
         return (
-            "{:providers {:ctb {:type :openai\n"
+            "{:providers {:ctb {:type :openai-responses\n"
             f'                    :base-url "{url}/v1"\n'
             '                    :api-key-env "CTB_PROXY_KEY"\n'
             f'                    :model "{self.model}"\n'
-            f"                    :features #{{{FEATURES}}}\n"
             f'                    :reasoning-effort "{EFFORT}"\n'
-            "                    :context-window 1000000\n"
-            "                    :max-tokens 128000}}\n"
+            f'                    :text-verbosity "{VERBOSITY}"}}}}\n'
             " :roles {:default :ctb}\n"
             " :approval {:mode :yolo}}\n"
         )
