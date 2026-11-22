@@ -1,0 +1,141 @@
+{
+  "files": [
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/ctb-runs.json",
+      "bytes": 4433,
+      "sha256": "dd51c933b0b7633f75abd1b8834d0ad7c582b0f55eb831eef804826d338b3351"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/ctb-runs.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/config.json",
+      "bytes": 782,
+      "sha256": "ad427775aecbdc4387c5a9eb4bcbd4a42916cf1c29b412c3d2db9d9206804fbf"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/footprint.json",
+      "bytes": 202,
+      "sha256": "863e7edb5bbccd1f3956ce15997ca10ec22581c1adc9dc6ef3592b8306f26dac"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/kmet-sessions/--app--/2026-11-22T16-05-07-420966309Z_1a204010cdc-a60cce3e.ednl",
+      "bytes": 128075,
+      "sha256": "340e7f86740d6819a7d0726a0bf9d1f29314b29cc3bc4dcfdd6c18a97986f575"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/kmet-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/kmet.edn",
+      "bytes": 5608355,
+      "sha256": "546a441a70566c357c9f64aa07cc3cc1adcd6ab1b8eebdbc92d14ba1b3055cd4"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "28470c2eb1314a3f8ed03ff7e0ce7b535ba4d82f5fceb02fc95a7b237c65f6bc"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/resources.jsonl",
+      "bytes": 32310,
+      "sha256": "ce2fe8f41fe92e2ea698b09148b41e0d78286861460b2290063149ac016e79cb"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/artifacts/app/cracker.py",
+      "bytes": 5136,
+      "sha256": "403508fe23f9655663674f1bdb722404eaf7c55bf22442feb21496d55cab5900"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/artifacts/app/requirements.txt",
+      "bytes": 12,
+      "sha256": "a83a2a4ed7ab2e022b9b8a83cfa2b8cf52cc243006c597e8b96f90a8365590ac"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/artifacts/manifest.json",
+      "bytes": 526,
+      "sha256": "fe7f0615211badf36d1fb9923649470cf62e4877443e93a4843237e6cdc7bd25"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/config.json",
+      "bytes": 758,
+      "sha256": "01025125ddcdc1af43e4fd83fb13e08a4dd4f074782915700dca7e38d7d8226e"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/lock.json",
+      "bytes": 1268,
+      "sha256": "cf964d7668d6c7f9f334a657a364a00e163efa305024c7295c3ada74d24d241f"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/result.json",
+      "bytes": 4309,
+      "sha256": "4eadf59a40c31449a537d6cc581245b166139495f6a93a670c87f532707de75a"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/trial.log",
+      "bytes": 12376,
+      "sha256": "8bbb380118f7d897e7df9949df36f63bea85b7d51eaa1f7f83380951e73d334f"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/verifier/ctrf.json",
+      "bytes": 2641,
+      "sha256": "e2b4665fc31b5e3c28375f032aef04cb97ad0bc346ba7942fc7a5079eb5edc0f"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/verifier/test-stdout.txt",
+      "bytes": 475,
+      "sha256": "7a7ae662ec7f5c1625190c33d52690198cbd118ba9bf1e06e9a424439405cc2c"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "68d405bee419521d5dbd215fc3f39310725d670cde26a3986b924fede2a465b3"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/interleaved-vigenere__rFytbDy/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/job.log",
+      "bytes": 12462,
+      "sha256": "016484a344543706a696ba57a2b1a1be8c74dee93043e90732036c8aff099687"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/lock.json",
+      "bytes": 2318,
+      "sha256": "083220b621fd55b097a9ab3abf98047be20102f815a7317c17ddbf5d0934cb6e"
+    },
+    {
+      "path": "jobs/kmet-retry-0557d54/r1/kmet-eval-only__openai__interleaved-vigenere/result.json",
+      "bytes": 1145,
+      "sha256": "4bea0878eb635aef945eeb393149ab98dcda55446e79a69594563d40caf5b13a"
+    },
+    {
+      "path": "results/kmet-retry-0557d54/r1.json",
+      "bytes": 5491,
+      "sha256": "1c6821a7211bc348cee2835f091c0a4a1391b3709fa38d880eb736cf49460c67"
+    }
+  ],
+  "seals": [
+    {
+      "round": "kmet-retry-0557d54/r1",
+      "digest": "dc640c6ec597ac10cdd222de62fe0bfe5df586a286b38763152047212d4aad6c"
+    }
+  ],
+  "digest": "390f7dc31c940f1dcb2609c1df4ea66ad3c46508aa944a20d6955776f69a842a"
+}
