@@ -1554,9 +1554,9 @@
     },
     {
       "agent": "kmet-eval-only",
-      "error": "NonZeroAgentExitCodeError",
-      "passed": false,
-      "result_sha256": "6afbbfb06a24ef7a065cf5769d269315f990006b832e9f2195a2be12337485a3",
+      "error": null,
+      "passed": true,
+      "result_sha256": "4eadf59a40c31449a537d6cc581245b166139495f6a93a670c87f532707de75a",
       "run": 2,
       "task": "interleaved-vigenere"
     },
@@ -3946,6 +3946,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r1",
         "seal_sha256": "d34861e381beff53eb0241fcee0b48786c6178f5931833c54f7efc7c4b28c2da"
       },
@@ -3955,6 +3956,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r2",
         "seal_sha256": "cfc3fe76cbbe47a26fbbb037c8cbbee90f868f787f5d3874927d9795bb0aefac"
       },
@@ -3964,6 +3966,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r3",
         "seal_sha256": "c5c662bb5f3c316a2a8847900070d25cf879c7bf7e6a6d7849613df00461bcc3"
       },
@@ -3973,6 +3976,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r4",
         "seal_sha256": "9265d415b3722e83abb1c07cbfe39fedc1e949e15014bc3f9969a7bdd1f54e95"
       },
@@ -3982,6 +3986,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r5",
         "seal_sha256": "22471a542bc090edb59272b082fe40d00f7b2718e284fa395c3d1154eba1ddc2"
       }
@@ -3993,6 +3998,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r1",
         "seal_sha256": "54f5c401ba93c4d539b91af9554b22b76dbde9d516234f90a96798c8453c678e"
       },
@@ -4002,6 +4008,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r2",
         "seal_sha256": "02167fa8e3736b201423da4a54a245b57b1e306d808b389868a6a4a45e5c6b00"
       },
@@ -4011,6 +4018,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r3",
         "seal_sha256": "67e29b17c5f04a96e18d417008450c19f8d226e575c7ab4a5822a92359881b16"
       },
@@ -4020,6 +4028,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r4",
         "seal_sha256": "39a2b68f965c52f74cb043e0584fc5ce92703cba3f03984d581d2537432554c8"
       },
@@ -4029,6 +4038,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r5",
         "seal_sha256": "fe28529316795ed6894e760b5f52a9beb9090a5a060649cd8ba266f82f8d6e04"
       }
@@ -4040,6 +4050,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r1",
         "seal_sha256": "54f5c401ba93c4d539b91af9554b22b76dbde9d516234f90a96798c8453c678e"
       },
@@ -4049,6 +4060,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r2",
         "seal_sha256": "02167fa8e3736b201423da4a54a245b57b1e306d808b389868a6a4a45e5c6b00"
       },
@@ -4058,6 +4070,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r3",
         "seal_sha256": "67e29b17c5f04a96e18d417008450c19f8d226e575c7ab4a5822a92359881b16"
       },
@@ -4067,6 +4080,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r4",
         "seal_sha256": "39a2b68f965c52f74cb043e0584fc5ce92703cba3f03984d581d2537432554c8"
       },
@@ -4076,6 +4090,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r5",
         "seal_sha256": "fe28529316795ed6894e760b5f52a9beb9090a5a060649cd8ba266f82f8d6e04"
       }
@@ -4087,6 +4102,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r1",
         "seal_sha256": "54f5c401ba93c4d539b91af9554b22b76dbde9d516234f90a96798c8453c678e"
       },
@@ -4095,6 +4111,13 @@
         "emulated": false,
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
+        ],
+        "replaced": [
+          {
+            "round": "kmet-retry-0557d54/r1",
+            "seal_sha256": "dc640c6ec597ac10cdd222de62fe0bfe5df586a286b38763152047212d4aad6c",
+            "task": "interleaved-vigenere"
+          }
         ],
         "round": "kmet-0557d54/r2",
         "seal_sha256": "02167fa8e3736b201423da4a54a245b57b1e306d808b389868a6a4a45e5c6b00"
@@ -4105,6 +4128,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r3",
         "seal_sha256": "67e29b17c5f04a96e18d417008450c19f8d226e575c7ab4a5822a92359881b16"
       },
@@ -4114,6 +4138,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r4",
         "seal_sha256": "39a2b68f965c52f74cb043e0584fc5ce92703cba3f03984d581d2537432554c8"
       },
@@ -4123,6 +4148,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r5",
         "seal_sha256": "fe28529316795ed6894e760b5f52a9beb9090a5a060649cd8ba266f82f8d6e04"
       }
@@ -4134,6 +4160,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r1",
         "seal_sha256": "54f5c401ba93c4d539b91af9554b22b76dbde9d516234f90a96798c8453c678e"
       },
@@ -4143,6 +4170,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r2",
         "seal_sha256": "02167fa8e3736b201423da4a54a245b57b1e306d808b389868a6a4a45e5c6b00"
       },
@@ -4152,6 +4180,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r3",
         "seal_sha256": "67e29b17c5f04a96e18d417008450c19f8d226e575c7ab4a5822a92359881b16"
       },
@@ -4161,6 +4190,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r4",
         "seal_sha256": "39a2b68f965c52f74cb043e0584fc5ce92703cba3f03984d581d2537432554c8"
       },
@@ -4170,6 +4200,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "kmet-0557d54/r5",
         "seal_sha256": "fe28529316795ed6894e760b5f52a9beb9090a5a060649cd8ba266f82f8d6e04"
       }
@@ -4181,6 +4212,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r1",
         "seal_sha256": "d34861e381beff53eb0241fcee0b48786c6178f5931833c54f7efc7c4b28c2da"
       },
@@ -4190,6 +4222,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r2",
         "seal_sha256": "cfc3fe76cbbe47a26fbbb037c8cbbee90f868f787f5d3874927d9795bb0aefac"
       },
@@ -4200,6 +4233,7 @@
           "23a3a9260087ec81368f5949250742d6bd156864",
           "3cafc661d8c3d67d712c6772842b3825d42320d1"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r3",
         "seal_sha256": "c5c662bb5f3c316a2a8847900070d25cf879c7bf7e6a6d7849613df00461bcc3"
       },
@@ -4209,6 +4243,7 @@
         "harness_commits": [
           "0557d54285e2801920eb47e41c730fcabc65078b"
         ],
+        "replaced": [],
         "round": "opencode-0557d54/r1",
         "seal_sha256": "5b91c8c9dfb937e8ab054a69ee011681c273acfc9d89c7972e460a17815d0808"
       },
@@ -4218,6 +4253,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r5",
         "seal_sha256": "22471a542bc090edb59272b082fe40d00f7b2718e284fa395c3d1154eba1ddc2"
       }
@@ -4229,6 +4265,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r1",
         "seal_sha256": "d34861e381beff53eb0241fcee0b48786c6178f5931833c54f7efc7c4b28c2da"
       },
@@ -4238,6 +4275,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r2",
         "seal_sha256": "cfc3fe76cbbe47a26fbbb037c8cbbee90f868f787f5d3874927d9795bb0aefac"
       },
@@ -4247,6 +4285,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r3",
         "seal_sha256": "c5c662bb5f3c316a2a8847900070d25cf879c7bf7e6a6d7849613df00461bcc3"
       },
@@ -4256,6 +4295,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r4",
         "seal_sha256": "9265d415b3722e83abb1c07cbfe39fedc1e949e15014bc3f9969a7bdd1f54e95"
       },
@@ -4265,6 +4305,7 @@
         "harness_commits": [
           "23a3a9260087ec81368f5949250742d6bd156864"
         ],
+        "replaced": [],
         "round": "gpt-23a3a92/r5",
         "seal_sha256": "22471a542bc090edb59272b082fe40d00f7b2718e284fa395c3d1154eba1ddc2"
       }
@@ -4276,6 +4317,7 @@
         "harness_commits": [
           "43a804886818958f9dbe476a175f6a0b597905de"
         ],
+        "replaced": [],
         "round": "gpt-vis-solo-057-43a8048",
         "seal_sha256": "9d319989aea617f436b2b61483ac1a4f248a553467f7404045072dd237789185"
       }
@@ -4287,6 +4329,7 @@
         "harness_commits": [
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
+        "replaced": [],
         "round": "gpt-wisp-5818f6d/r1",
         "seal_sha256": "cefdbd65a3e5f1e5cc90b99dd2cb8da04d5fedcfdf54465b478ea8261b03ae54"
       },
@@ -4296,6 +4339,7 @@
         "harness_commits": [
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
+        "replaced": [],
         "round": "gpt-wisp-5818f6d/r2",
         "seal_sha256": "f6a2a384b566a037e04a3560b37b6c80e1607c3a73fe69dd601e732ca0eaead0"
       },
@@ -4305,6 +4349,7 @@
         "harness_commits": [
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
+        "replaced": [],
         "round": "gpt-wisp-5818f6d/r3",
         "seal_sha256": "a7c446be6f4eeeee630ab0148bbbcef88b58c2f8acce7937a568cc662e9258d0"
       },
@@ -4314,6 +4359,7 @@
         "harness_commits": [
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
+        "replaced": [],
         "round": "gpt-wisp-5818f6d/r4",
         "seal_sha256": "07b0efd6323adf5c763ae62a713930024ba52eeb69064c36e7c508d21b561660"
       },
@@ -4323,6 +4369,7 @@
         "harness_commits": [
           "5818f6dfc180b8607777f7f9fba898f85b4a8016"
         ],
+        "replaced": [],
         "round": "gpt-wisp-5818f6d/r5",
         "seal_sha256": "b06db0fe8cf11bfae678fa670abb2d368ae15e1cb7479b0ede09029c1bd7f61b"
       }
