@@ -262,6 +262,7 @@ TOOLS = frozenset(
         "branch_theses",
         "buffers",
         "cancel",
+        "canvas_review_add_block",
         "canvas_review_add_comment",
         "canvas_review_add_prose",
         "canvas_review_connect",
@@ -280,6 +281,7 @@ TOOLS = frozenset(
         "clj_mv",
         "clj_outline",
         "clj_rename_ns",
+        "clj_replace",
         "clj_topo",
         "clj_tree",
         "codemode",
@@ -398,6 +400,7 @@ TOOLS = frozenset(
         "stop_subagent",
         "structural",
         "subagent_result",
+        "subagents",
         "summary",
         "task",
         "term",
@@ -424,6 +427,7 @@ TOOLS = frozenset(
         "write_todo_list",
         "xi_events",
         "yes",
+        "yolo",
     ]
 )
 METRIC_NUMBERS = (
