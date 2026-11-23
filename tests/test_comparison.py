@@ -104,8 +104,9 @@ def test_normalized_values_compare_each_agent_with_the_task_median_of_the_agents
         (2, 1, 1),
         (2, 1, 1),
     ]
-    assert [round(rows[a]["cost"], 6) for a in "abc"] == [1.0, 1.0, 4.0]
-    assert [round(rows["c"][k], 6) for k in ("input", "output", "tool_calls")] == [4.0] * 3
+    # Rounded, so that the page has the same bytes on every platform.
+    assert [rows[a]["cost"] for a in "abc"] == [1.0, 1.0, 4.0]
+    assert [rows["c"][k] for k in ("input", "output", "tool_calls")] == [4.0] * 3
     assert rows["a"]["cache"] == 50
     # One agent alone has no comparison, but its pass rate stays.
     rows, solvable, compared = normalized([attempt("a", "x", 1)])

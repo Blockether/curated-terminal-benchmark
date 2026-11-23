@@ -440,8 +440,9 @@ def normalized(trials: list[dict]) -> tuple[dict, list[str], list[str]]:
                 baseline = statistics.median(means.values())
                 for agent, mean in means.items():
                     logs[agent].append(mean - baseline)
+        # log and exp can differ in the last bit between platforms; the CI check compares bytes.
         for agent, row in rows.items():
-            row[name] = math.exp(statistics.fmean(logs[agent])) if logs[agent] else None
+            row[name] = round(math.exp(statistics.fmean(logs[agent])), 4) if logs[agent] else None
     for agent, row in rows.items():
         pairs = [
             usage(t)[:2]
