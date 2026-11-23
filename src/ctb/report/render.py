@@ -538,8 +538,9 @@ def normalized_view(trials: list[dict]) -> str:
         else f"Pass rate on the {len(solvable)} tasks that an agent passed. No task was passed "
         "by two or more agents, so there are no relative values."
     )
-    return f'<p class="hint">{esc(hint)}</p><div class="charts">{"".join(charts)}</div>' + table(
-        head, body, cls="sortable", empty="No trials were found."
+    return (
+        f'<p class="hint wide">{esc(hint)}</p><div class="charts">{"".join(charts)}</div>'
+        + table(head, body, cls="sortable", empty="No trials were found.")
     )
 
 
