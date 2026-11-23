@@ -20,6 +20,9 @@ import gzip
 import io
 import json
 import re
+import shutil
+import sqlite3
+import tempfile
 from collections import Counter
 from collections.abc import Iterator, Mapping, Sequence
 from datetime import datetime
@@ -651,6 +654,37 @@ def read_kmet(agent: Path, model: str) -> list[dict]:
     return events
 
 
+def samizdat_tool_ms(agent: Path) -> dict:
+    """Milliseconds from each tool dispatch to its turn record, by (branch, turn).
+
+    samizdat-transcript.json has no tool times; the events table of samizdat.sqlite3 has.
+    A copy is read, so the trial files stay unchanged, with its uncheckpointed WAL.
+    """
+    db = agent / "samizdat.sqlite3"
+    if not db.is_file():
+        return {}
+    with tempfile.TemporaryDirectory() as tmp:
+        for suffix in ("", "-wal"):
+            if Path(f"{db}{suffix}").is_file():
+                shutil.copyfile(f"{db}{suffix}", Path(tmp) / f"copy{suffix}")
+        con = sqlite3.connect(Path(tmp) / "copy")
+        try:
+            rows = con.execute(
+                "SELECT branch_id, turn, kind, created_at FROM events"
+                " WHERE kind IN ('dispatch', 'turn') ORDER BY id"
+            ).fetchall()
+        finally:
+            con.close()
+    starts: dict = {}
+    times: dict = {}
+    for branch, turn, kind, at in rows:
+        if kind == "dispatch":
+            starts[(branch, turn)] = epoch_ms(at)
+        elif starts.get((branch, turn)) is not None and epoch_ms(at) is not None:
+            times[(branch, turn)] = round(epoch_ms(at) - starts.pop((branch, turn)))
+    return times
+
+
 def read_samizdat(agent: Path, model: str) -> list[dict]:
     path = agent / "samizdat-transcript.json"
     if not path.is_file():
@@ -658,6 +692,7 @@ def read_samizdat(agent: Path, model: str) -> list[dict]:
     body = json.loads(path.read_text(encoding="utf-8"))
     turns = [t for branch in body.get("branches") or [] for t in branch.get("turns") or []]
     turns.sort(key=lambda t: (t.get("created_at") or "", t.get("turn") or 0))
+    tool_ms = samizdat_tool_ms(agent)
     events: list[dict] = []
     for turn in turns:
         at = epoch_ms(turn.get("created_at"))
@@ -694,6 +729,8 @@ def read_samizdat(agent: Path, model: str) -> list[dict]:
                     input=turn.get("args"),
                     output=turn.get("full_result") or turn.get("result"),
                     error=failed,
+                    ms=tool_ms.get((branch, turn.get("turn"))),
+                    ms_source="derived" if (branch, turn.get("turn")) in tool_ms else None,
                 )
             )
     return events

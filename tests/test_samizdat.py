@@ -1,4 +1,5 @@
 import json
+import sqlite3
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,8 @@ from ctb import arch, credentials, matrix
 from ctb.agents.samizdat import Samizdat
 from ctb.cli import host_env
 from ctb.proxy import codex_body
+from ctb.report import transcripts
+from ctb.report.trials import summarize
 
 
 @pytest.fixture
@@ -141,3 +144,33 @@ def test_samizdat_installs_runtime_libraries(tmp_path, monkeypatch):
     assert "libsqlite3-0" in command
     assert "libssl3" in command
     environment.upload_file.assert_awaited_once()
+
+
+def test_samizdat_tool_times_come_from_the_harness_events(tmp_path):
+    # samizdat-transcript.json has no tool times; samizdat.sqlite3 records each dispatch.
+    turn = {"branch_id": "B1", "turn": 1, "tool_name": "shell", "args": "{}", "result": "ok"}
+    turn |= {"created_at": "2026-11-23T10:18:30.287Z", "elapsed_ms": 4271, "category": "success"}
+    (tmp_path / "samizdat-transcript.json").write_text(
+        json.dumps({"branches": [{"turns": [turn]}]})
+    )
+    db = sqlite3.connect(tmp_path / "samizdat.sqlite3")
+    db.execute("PRAGMA journal_mode=WAL")
+    db.execute(
+        "CREATE TABLE events (id INTEGER PRIMARY KEY AUTOINCREMENT, branch_id TEXT, turn INTEGER,"
+        " kind TEXT NOT NULL, data TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)"
+    )
+    for kind, at in (
+        ("dispatch", "10:18:30.244"),
+        ("action", "10:18:30.283"),
+        ("turn", "10:18:30.287"),
+    ):
+        db.execute(
+            "INSERT INTO events (branch_id, turn, kind, created_at) VALUES ('B1', 1, ?, ?)",
+            (kind, f"2026-11-23T{at}Z"),
+        )
+    db.commit()
+    events = transcripts.read_samizdat(tmp_path, "openai/gpt-6.1-sol")
+    db.close()
+    [tool] = [e for e in events if e["kind"] == "tool"]
+    assert (tool["ms"], tool["ms_source"]) == (43, "derived")
+    assert summarize(events)["tool_ms"] == 43
