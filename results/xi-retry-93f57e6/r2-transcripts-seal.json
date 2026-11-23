@@ -1,0 +1,836 @@
+{
+  "files": [
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/ctb-runs.json",
+      "bytes": 4769,
+      "sha256": "39e1a0d09d3917d997c1cbdca8a6b9bdadaaee35f565a24cb28c44e049dac1e5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/ctb-runs.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/config.json",
+      "bytes": 746,
+      "sha256": "0393417bb27e912e85c25ebad699afd932eb6892af9c7d43daf30f5a726da9a3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/job.log",
+      "bytes": 14620,
+      "sha256": "f5e0e0c0335b258625688b78e99e2dc202cabf118696a7936cc0c43085278186"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/footprint.json",
+      "bytes": 610,
+      "sha256": "54f01e8c686e225ea55d0a1714bcafb458f297439e5c373a72724852a9db9145"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/resources.jsonl",
+      "bytes": 144268,
+      "sha256": "e0eac425558da688dc7eb70f5e2e1999d1c72b6ad8aa570bf5666d8ac8026ad0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/xi-sessions/-app/01a20773-a2e0-735f-9ea4-2238074cbca7.json",
+      "bytes": 322,
+      "sha256": "51019c69c1d3e62801404f9e33df76fbf60d3c132e89b94dca0b4c9066230ef4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/xi-stderr.log",
+      "bytes": 405,
+      "sha256": "47186f5d561bb04eef4cc6131bdb64bfdea2d9684d71810a5af7e1da5649a714"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/xi-trace.jsonl",
+      "bytes": 22231,
+      "sha256": "cb2e8b18d0e1237de2412733f4d09fdb0fd881728ba04d5b91a6f0d02826f51b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/xi-transcripts/-app/b075e965-bf42-4742-9235-b2a216e41882.jsonl",
+      "bytes": 402565,
+      "sha256": "3580b2fb79162c760feab3be560a9748a9d45da7f552585a52ab458414c84d40"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/agent/xi.json",
+      "bytes": 1200,
+      "sha256": "275355a6e4098eada481bcf7c8bb81bb3e14492e62c72c4d8768d0e40f0dd07c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/artifacts/manifest.json",
+      "bytes": 729,
+      "sha256": "38f2f4c156ebcd133fbcf9815d12f4f1dbd96beabfa258f0a06d0dc9ebc2ed8a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/artifacts/results/loadgen.log",
+      "bytes": 1567,
+      "sha256": "4b6218e2bc8130b40658a9667b06647fbb28c11ec1baade52b4d346a9fab90e7"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/artifacts/results/measure.log",
+      "bytes": 731,
+      "sha256": "64f1c5e3ee0a41e6281c034407e68c0d00ee3300971a6ba1a0190b1e25472e3d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/artifacts/results/results.json",
+      "bytes": 632,
+      "sha256": "269972b9c345b89a5916b57d0278b805468364a84b6973f066f24db56fb99df0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/config.json",
+      "bytes": 717,
+      "sha256": "d584c330ba0220376f9d8e6103f361cbdd8d8b1929ccbbcfa66f0c38019f5b6f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/images-environment.json",
+      "bytes": 816,
+      "sha256": "cbc15384e651f2842740eaec5cc8b0d54f474425127e2f9e508bfb7be0033691"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/images-tests.json",
+      "bytes": 276,
+      "sha256": "519fcc440507eefcc2751ead2f942031254ed6a442a1be4578e272c081d4de9d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/lock.json",
+      "bytes": 1246,
+      "sha256": "dc14f9a6176c1a6f9964a3816ebf66e771ded77e4441b62044e100bf698b9bdd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/result.json",
+      "bytes": 4194,
+      "sha256": "046b94ff628f189c9abc4ebd130fb02bf8aa19032f0f3f35489cd573b4e1dd09"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/trial.log",
+      "bytes": 14546,
+      "sha256": "50972d780f462533422c667585ec6f30e1296698ecc4c691414c735c6d0c0056"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/verifier/ctrf.json",
+      "bytes": 1173,
+      "sha256": "1f4271e69c1ffe241df75063bcc01286a939acb8be4306307e89fbaa56974484"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/verifier/reward.txt",
+      "bytes": 4,
+      "sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/verifier/test-stdout.txt",
+      "bytes": 1456,
+      "sha256": "d7d130d925ef31ee67364ff0ff31fd1aaae4c7ab30f0945e4e06b5212bcf252a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "b8834753859d05a408b6369f8522554df3a6d4aab9d2def29d1d89188382f0ee"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/kv-live-surgery__kA76GnJ/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/lock.json",
+      "bytes": 2296,
+      "sha256": "ef000ff999d4cb0fc7e4d0ef302324d1def93f4a2c93dfd458b5ee764f8d60c9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__kv-live-surgery/result.json",
+      "bytes": 1131,
+      "sha256": "e597b9d28a9e486d401124bf5784c87e3d7b5ab3cae019673a6ad753ad21ab44"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/config.json",
+      "bytes": 746,
+      "sha256": "061acbd9e724025b4cc75d5098e9952849a4b18ff8227aa6c3978a4c7fd458f9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/job.log",
+      "bytes": 16609,
+      "sha256": "993f5c0c7067f07a05a2343c4a2e2ca39404f742462762b3194b346e8a24de52"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/lock.json",
+      "bytes": 2296,
+      "sha256": "7f71714e57f86159104a4b2326717e68b32e1c247b4740775f7085dc532c080e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/footprint.json",
+      "bytes": 610,
+      "sha256": "54f01e8c686e225ea55d0a1714bcafb458f297439e5c373a72724852a9db9145"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/python-resolution.txt",
+      "bytes": 111,
+      "sha256": "702cead70789db9acf399c9a14b63bc36f2ce2373f3ac8f460cac43493a9132b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/resources.jsonl",
+      "bytes": 12580,
+      "sha256": "991a82c0ae3e538bd162f0026c297b4c71fbf81da661e05111caf1bde3cb894c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/xi-sessions/-app/01a20783-b8ba-7b27-acda-2ec99cf7655b.json",
+      "bytes": 322,
+      "sha256": "a8ec881c1645d4f2f100534340b5c3ab8757800f4abafd9ebb7d92e70065f52e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/xi-stderr.log",
+      "bytes": 265,
+      "sha256": "7bf689abf33017b06d34daf2deab7792b3a091dd2b225f5d558ea1884f378298"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/xi-trace.jsonl",
+      "bytes": 4383,
+      "sha256": "9510e655fd596c50b86be1837326f131bb59700380ed08fed0b19314f6424389"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/xi-transcripts/-app/679c6a83-37cb-4814-8336-145203438183.jsonl",
+      "bytes": 36892,
+      "sha256": "83ab9b24cb09eeadf465135351e4286c16fc4a48cbead7906b25b7b8b7330d57"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/agent/xi.json",
+      "bytes": 273,
+      "sha256": "9bf0e98d18d077b5f5f22f9be67f81bc79b659674db4e3d1c6608b966dc673be"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/index.html",
+      "bytes": 368,
+      "sha256": "829542e81e6d36fd980d73973b7d4a173706f557e0ab00ee36dac9c65e173ffc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/package-lock.json",
+      "bytes": 133576,
+      "sha256": "66340f1e802211c9152061e2206320a8bbe5a92edb96a66f405a5de520caa930"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/package.json",
+      "bytes": 663,
+      "sha256": "57432cb0e2b3940a313c0226fdfd36d0351279e454d4ab980da98f13815efd15"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/App.tsx",
+      "bytes": 168,
+      "sha256": "f377425996a178336b5fa542fb39f8fb2a137fba8422eb1e6b75affe7bdba657"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/components/LeadForm.tsx",
+      "bytes": 2507,
+      "sha256": "ea011e5af2c591ef58f9cdc566ec7f9b3a56fadf65cca166f4867f32e4578e20"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/data/lead_input.json",
+      "bytes": 408,
+      "sha256": "9c00c3a6238836ae761d9939b6de038800f362bd084cd02e357b8d8014296616"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/lib/payload.ts",
+      "bytes": 4406,
+      "sha256": "61e2ced01bac5b8c757816a7c6af81056ef8af57342b9ebf0a72f9f1d287b1b1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/lib/submitLead.ts",
+      "bytes": 957,
+      "sha256": "971494bc740e37fc1299f6cae8a37339b9f725e653e2c4293ac349e301ae7a31"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/lib/tracking.ts",
+      "bytes": 430,
+      "sha256": "0a8a667d96d198187e37f28083f8e818056ec525e00f707f4c115264dc6af8c6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/lib/validation.ts",
+      "bytes": 714,
+      "sha256": "986cb117a5c7b804cbd078e6cfeedc609fa6f8ec2457f3fe3948c1905ea7bdec"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/main.tsx",
+      "bytes": 214,
+      "sha256": "f96692b15fd17b25a79a925b563c5c360c02a3bda2d3ceb55792f7876c60c690"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/scripts/submit.ts",
+      "bytes": 854,
+      "sha256": "125ff99cbefd53af5e3d5e5d29e3ea384bf12e7d8f0fa0093f089950be1ce38d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/spec/business_calendar.json",
+      "bytes": 302,
+      "sha256": "8e85f0606d70bcaeac9b79122c1a5794ab5761085f785d5c928485c51ef19bc5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/spec/lead_policy.json",
+      "bytes": 800,
+      "sha256": "1328fc8690c637bfd244c8d6e908a70efcee4e23fa35fc215154e809683eaeb5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/src/spec/lead_schema.json",
+      "bytes": 8423,
+      "sha256": "d0a9aaf654f3d1c038cbb4cba61dc74669d738216e37a95917dca04042918049"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/tsconfig.json",
+      "bytes": 309,
+      "sha256": "f8d0e8c75c805a90a9a83af7671b7b12e1669dd2eeee363efb7f7db0b00d1529"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/app/vite.config.ts",
+      "bytes": 275,
+      "sha256": "860d3c7d55c012e0284ceef6b23c94ca0721762230b80ede730d9b3c1c3663f1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/artifacts/manifest.json",
+      "bytes": 1209,
+      "sha256": "9e3af49d69bb9a608c7e2632607214574cb16347f28024471f877fe128e021d5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/config.json",
+      "bytes": 717,
+      "sha256": "e288c4184f27a3330684bf778dbde1a923a5d9b7a658aa0bae68ec65f67936b4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/exception.txt",
+      "bytes": 7368,
+      "sha256": "01d6417d5da8fdfda5d975f32d53e220b556eec4d7b7e8ae598af70fdb9e4b8f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/images-environment.json",
+      "bytes": 344,
+      "sha256": "a181a02536e79bbdbf3c7c0119a34b03b9752594f5c765be5fac9b5cd3cfc0d6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/images-tests.json",
+      "bytes": 344,
+      "sha256": "a181a02536e79bbdbf3c7c0119a34b03b9752594f5c765be5fac9b5cd3cfc0d6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/lock.json",
+      "bytes": 1246,
+      "sha256": "def7ab6f3e2bdb04eb3641cdf8aac444af48e384621cd4a10f6e8ca2ee99a205"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/result.json",
+      "bytes": 17347,
+      "sha256": "b03ba6ea6f793fb258346e430feb5a1582157d82a893f290e01d570c431d2c31"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/trial.log",
+      "bytes": 16461,
+      "sha256": "724c9015465b37224cd0db0a82f0f9499287f04e2c04122e8e40f24b5ccd11f7"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/verifier/test-stdout.txt",
+      "bytes": 17807,
+      "sha256": "56a02abd8fa849c7a33b4c0293801b9f23f48fc80727bcc64e5227fd9f204b82"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "8f77f3ff795d5bc4d2e56819e7d8caff140187ca1251406a41b8fa2291c827a5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/react-lead-form__tZNDkzx/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__react-lead-form/result.json",
+      "bytes": 1268,
+      "sha256": "fd1e0fdef6325d981c630daae16a32c4d2b71b320200627ce2f232306d5aaa5b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/config.json",
+      "bytes": 756,
+      "sha256": "1271f4198ad8bc65e378a9d1dc6190c8facad7b471b315269129c1f58ffe0f26"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/job.log",
+      "bytes": 15341,
+      "sha256": "7ce8153a135c7eb8be618a3436c6433e79b37b591869ce38478df211c1235142"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/lock.json",
+      "bytes": 2306,
+      "sha256": "91705de83a396d95037aed0ad75b3767bf2b6e43e2fce17a69b7634856985da8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/result.json",
+      "bytes": 1282,
+      "sha256": "752f8ab18564600cf3f4b54cf27b7f9cd4e24d6fd07493a4567802e8d3169aa3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/footprint.json",
+      "bytes": 610,
+      "sha256": "54f01e8c686e225ea55d0a1714bcafb458f297439e5c373a72724852a9db9145"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/resources.jsonl",
+      "bytes": 204303,
+      "sha256": "3816fe240dc3db73bc90b3faa68add0b5e0392c523b768d50eb1626d22fcc67d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/xi-sessions/-app/01a20786-94ca-79e6-b61f-43b127f7992c.json",
+      "bytes": 322,
+      "sha256": "748edda8644be34175f53e070b28dc7d64504c6b942b9cc4ae083db30705d458"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/xi-stderr.log",
+      "bytes": 1345,
+      "sha256": "f81c871112b707a66f39169dc5c62cc5554cfe7467882453e73da88ace0987b0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/xi-trace.jsonl",
+      "bytes": 18707,
+      "sha256": "4e46b83b6e59aa0de4fb9e33cdd4fb6abec159396483ac4ba02998c6b4374010"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/xi-transcripts/-app/d1006c9b-1f83-4f4f-a46f-befcd860f4e4.jsonl",
+      "bytes": 171222,
+      "sha256": "bb278b767fd954e8ea7079ec190412b4713d275fc780c27f7814f6afe1775137"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/agent/xi.json",
+      "bytes": 603,
+      "sha256": "59b10fb6675df3313fad7fc4efc72573b6b034974a70d1d71aad90c825e3fc18"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/__init__.py",
+      "bytes": 5434,
+      "sha256": "d903408bd535beb6d970b8a3980562233dec154b6b8cb715d46856d0b929f53d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 8062,
+      "sha256": "8e887bd35597a4261e06af50a41cc7490e58cd209a1f9da399b6499316c21d22"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/__pycache__/_graphs.cpython-312.pyc",
+      "bytes": 31321,
+      "sha256": "7df9b13170e8e203389eb6812d19ca35fa74f0b7f9abee233bca2d09357f5747"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/_core.cpp",
+      "bytes": 13060,
+      "sha256": "23fffd6a9af82931528df10a91792eb42d2d9b7a121a1425c1b3011f33e6e7f5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/_core.cpython-312-aarch64-linux-gnu.so",
+      "bytes": 76120,
+      "sha256": "a12952b873b764b7c269c83048e398de312e2c049902119bd52f5bd5d729a2ce"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/fast_networkx/_graphs.py",
+      "bytes": 14400,
+      "sha256": "0f44bf314658cdbc3d3ad1e269409e01ee28fd687c3c249f3297c04ce74b7533"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/__init__.py",
+      "bytes": 1732,
+      "sha256": "08380aedc8c9047ecfba08d23c4e7d9cc3c290d719770bc0a9587c5e653529fd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/__main__.py",
+      "bytes": 376,
+      "sha256": "a2d43e9ce4519e0d5a2a415aa5af3c758e3e0a3b5556d2e78d53a51b59a9ef6a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1895,
+      "sha256": "bb4116cc5a2c11eb3c63b8e8d73b224aca0a38ad0391c81e2f4c76cc9c7fa9b5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/__pycache__/__main__.cpython-312.pyc",
+      "bytes": 676,
+      "sha256": "d572126ec801ca87d748a2f1c63ab95a5c23c256e3a563a7e19730cc8cd85b7f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/__pycache__/graph.cpython-312.pyc",
+      "bytes": 11643,
+      "sha256": "eff57862c619794dc4b653658eea68aa2f0aff0fdc6281a8ddc4e280db678328"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/doctrees/environment.pickle",
+      "bytes": 109026,
+      "sha256": "dbe3314b0c00da1b8f51184554f0c291304118952c659c2fa512d677c45cf70b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/doctrees/guide.doctree",
+      "bytes": 46686,
+      "sha256": "0d024c50ab8268186448db2f3b4dcf42792127584a8368d358f5662c89a3872c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/doctrees/index.doctree",
+      "bytes": 5065,
+      "sha256": "e8995fa621c77aa78e56b5ac9fb02bfd244686168518c8b40c4735075f5631af"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/doctrees/install.doctree",
+      "bytes": 3900,
+      "sha256": "d825a0acdfdfe3dc073296c175c874576f09051bb914114d860a64676390220e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/doctrees/intro.doctree",
+      "bytes": 7657,
+      "sha256": "0d0d7de59dcea93b4faa04071b1b499263ba64a68b104b02d21bdd18e8835543"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/.buildinfo",
+      "bytes": 230,
+      "sha256": "e412892a8470c7e01226f2d5f5980018d3c5d316e6b416713f36f53191e837a3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_modules/index.html",
+      "bytes": 3236,
+      "sha256": "69f4bd034e4c70c414a472f4f2423d94b8762bda3d6f2d2e632faa16c2bf6d75"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_modules/pynauty/graph.html",
+      "bytes": 36455,
+      "sha256": "7879027f06ebbad5cffaa68c3cda59161331ba7e1b1c71a4d619039278d6bcd6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_modules/pynauty.html",
+      "bytes": 7013,
+      "sha256": "f5cde9ca448ca44c71f5204c74f8accb3ba51dcf5dd38793e9fc479147d2f3b2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_sources/guide.rst.txt",
+      "bytes": 5177,
+      "sha256": "c2eaa48fba103108cb2ae4b8162ef9525e52ab15daf5a8710b5d0938b52b7b06"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_sources/index.rst.txt",
+      "bytes": 466,
+      "sha256": "c0bc3ffa0046beb201fd13b6ce4db51a9db517d86b0f0e66cdcdfa271f7302f6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_sources/install.rst.txt",
+      "bytes": 235,
+      "sha256": "3005a47d884122469f9d8966a80613c6703366fbdc761199914bd3f3c25a8bea"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_sources/intro.rst.txt",
+      "bytes": 1320,
+      "sha256": "56770a6915f1a16125a752d594ff8cf4da5f5f635f1e0ce8f68b109e62a2447b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/basic.css",
+      "bytes": 15094,
+      "sha256": "80b2240539b36d344e7c9aa5090995a773ffae1dd90f21cc043e6057d9543c3d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/classic.css",
+      "bytes": 4580,
+      "sha256": "c1461fe6c5a07f80a5fbd4553a333a10deba46fd60c28ae158a3ae6aafb47d42"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/doctools.js",
+      "bytes": 4472,
+      "sha256": "81cb2da3c284e429a1a63ab28a20b7e30bceb8eb1556a154c8cbac0b4ce7795b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/documentation_options.js",
+      "bytes": 330,
+      "sha256": "42dafd1588fd0c2ddcb467abcd14fa578a97892f7adb2c4b055f2e6c3f64d617"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/file.png",
+      "bytes": 286,
+      "sha256": "5c4bc9a16aebf38c4b950f59b8e501ca36495328cb9eb622218bce9064a35e3e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/language_data.js",
+      "bytes": 4758,
+      "sha256": "dba8b1d8dce11dadb39bd24d2babdb617a57f8f27e04c614269c937b785df00a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/minus.png",
+      "bytes": 90,
+      "sha256": "47e7fc50db3699f1ca41ce9a2ffa202c00c5d1d5180c55f62ba859b1bd6cc008"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/plus.png",
+      "bytes": 90,
+      "sha256": "54115199b96a130cba02147c47c0deb43dcc9b9f08b5162bba8642b34980ac63"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/pygments.css",
+      "bytes": 4929,
+      "sha256": "1accd27ffdaa3456771214dbc2f4d841d9ebe9324da2b23ac0333d35756f25e5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/searchtools.js",
+      "bytes": 20731,
+      "sha256": "cb2a2c36f3a5208bee2101db454f853a9c84b4ac31924193734f4e5172795291"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/sidebar.js",
+      "bytes": 2540,
+      "sha256": "500d8aab35fc2c64962c513aa3d305328635b5e28f59a9a704b86c4ed8778cec"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/_static/sphinx_highlight.js",
+      "bytes": 5123,
+      "sha256": "096231e9c87df80ec3273da9c5b71bc81503206726a07a4dd4de44c256ff859c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/genindex.html",
+      "bytes": 6270,
+      "sha256": "50b108f9d20bddf1565ba447fa73d2bd0fc066188cc3fe02b27d4bd20c425c82"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/guide.html",
+      "bytes": 35676,
+      "sha256": "f85740e61fdae626a41c7dfa09fa55bc066beba63158d7cb1818e3f64857389a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/index.html",
+      "bytes": 5734,
+      "sha256": "4767cf0685626cb3a0a7750ffba534c823e8add504272f220117494bc5dda715"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/install.html",
+      "bytes": 4479,
+      "sha256": "d23262b83121c44cb5059a82bef732313abe80b7e39d2191ad666c6ff05aec54"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/intro.html",
+      "bytes": 6364,
+      "sha256": "997d5ce79a1aa0624924207ecca37a73ea2bf0b77346c7963ffc743c28545480"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/objects.inv",
+      "bytes": 461,
+      "sha256": "99f45a2e76961f748cea03b97ee4732c0b078d4d15be9dd7b0ce6d103b82daf2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/py-modindex.html",
+      "bytes": 3556,
+      "sha256": "2f9f173002e1f1cdb4f9ef6af08b081ca098c482463ed04fd571fd37fb596df4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/search.html",
+      "bytes": 3353,
+      "sha256": "cd7d3f0932d410eb896096944360c9363da9cd97b3f697fc2dadda85957473bb"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/docs/html/searchindex.js",
+      "bytes": 6592,
+      "sha256": "4a73f9740cac6ea8a97230fde91bff15dfb0a3b57c109d7a06c217e63b679523"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/graph.py",
+      "bytes": 8517,
+      "sha256": "c3de5f96eec1cf01324ebeec087d259975d45e80a6e8b84d41d91cbecf6eb186"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/nautywrap.c",
+      "bytes": 17177,
+      "sha256": "c662021349a57226df7afe21f0a435f93494c96a43d8491907bac993f3dc03f5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/nautywrap.cpython-312-aarch64-linux-gnu.so",
+      "bytes": 174552,
+      "sha256": "f99f6c81b058160269222fdf4e2377c35a3fc7e741f4d00a9501218c0cf41791"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/nautywrap.h",
+      "bytes": 1351,
+      "sha256": "9fe51f608a318d85c8a2969f3c126b31daadb4219197ead02b5a4f38cc4e9014"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/__pycache__/conftest.cpython-312.pyc",
+      "bytes": 123405,
+      "sha256": "3a6b71113df20ec3998d75cba0c172de24161f5959a73cda25ec37c5a71e5812"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/__pycache__/test_autgrp.cpython-312.pyc",
+      "bytes": 829,
+      "sha256": "919c8373fbfa6ea2437c901f904fd6dd0f7f3adefc1609b5a25ffeb7a46a76a6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/__pycache__/test_isomorphic.cpython-312.pyc",
+      "bytes": 1358,
+      "sha256": "a29874cbcb5de95066b8a4bbe7ffa778b973256b1efcca10a40b13981857b36d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/__pycache__/test_minimal.cpython-312.pyc",
+      "bytes": 3263,
+      "sha256": "bb4cc86645d7452da29d30cf4e4b39935453804311f2459a6907d11b56a32618"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/conftest.py",
+      "bytes": 118684,
+      "sha256": "66585d870997d60f8126e784d0db1531685ba8cdb7f1e97b84fd72edcc2e9a1f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/test_autgrp.py",
+      "bytes": 530,
+      "sha256": "6df62672bb11ccfe22b137f97cc47bf813b9245d431246ff1e01e0ef1cb7b2bd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/test_isomorphic.py",
+      "bytes": 644,
+      "sha256": "9cdfc536d067d2702007ec80cf8aad14a496e37a1d168ce0651b148407b69026"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty/tests/test_minimal.py",
+      "bytes": 1865,
+      "sha256": "3774f15bbbc497dc19eabced3beb49134132c753cd82a50f5585168b3c9b61a4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/COPYING",
+      "bytes": 847,
+      "sha256": "0bee61276924b95d4e513746fc28a1f68f5fd02351504e8dc59576aec2916c0a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/INSTALLER",
+      "bytes": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/METADATA",
+      "bytes": 5700,
+      "sha256": "b8e8c06214a56035df42a14fe97b0041ae1799f5b8898ed27f710b464a05a7b1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/RECORD",
+      "bytes": 4983,
+      "sha256": "bfe93b7d0a48a80c859655a1e60c5eba3815234a71e9e74234981b4c4152c130"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/REQUESTED",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/WHEEL",
+      "bytes": 106,
+      "sha256": "b4ef937fa0943b7c1c209406e721ec95a055af71da7987427f642f4670afb2e5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/pynauty-2.8.8.1.dist-info/top_level.txt",
+      "bytes": 8,
+      "sha256": "0e3ddd2f8b914e32321a26fca2c8e6ab5763862266dba34d3b11fe1004f0064c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/tests/__pycache__/test_fast_networkx.cpython-312.pyc",
+      "bytes": 16056,
+      "sha256": "419151469cfcadc30c2e589f5b40a67ab6e935e6180baae9e9596c6ca4565da8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/app/tests/test_fast_networkx.py",
+      "bytes": 6998,
+      "sha256": "18553a6013a40d7dc5c84545404d0242fa9f10f4d55aacdcfa49f8c6d1e94353"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/artifacts/manifest.json",
+      "bytes": 330,
+      "sha256": "1afafd686d4de2d45122d91307a9b1e2241784dd975216626329982504ac53f2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/config.json",
+      "bytes": 732,
+      "sha256": "dfbd08c42e7b5f20591bc6e350f73e6b8c6fdf7238ac9f7ec8ac4888f5dcbd44"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/exception.txt",
+      "bytes": 6105,
+      "sha256": "c1acbb02739dbdc6a32bb07a12ef606057cf065398e44443e9893107cdb9624d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/images-environment.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/images-tests.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/lock.json",
+      "bytes": 1256,
+      "sha256": "fb999cc11ccdc58a83f518948e7f0b9dd6a7b51ab946e1965b73a0c4901aac65"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/result.json",
+      "bytes": 14897,
+      "sha256": "0ae25e79e1b909fcdf242f9a8b2344caa324537cd6038a72c9af937f8a32433c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/trial.log",
+      "bytes": 15193,
+      "sha256": "9e1c9fd670f4ff00d0bfe69d50a96bdfd1b6d8a34b47df4d5a6c14dc2b9a29d1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/verifier/ctrf.json",
+      "bytes": 19656,
+      "sha256": "df5aba9ee15201df08a7036f07c5e171a875395992ee8cf287c28ceccf91f9d5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/verifier/test-stdout.txt",
+      "bytes": 2187,
+      "sha256": "66a01f02fdabb78884227f8f6f1e897223b16582ce231ce8e35be03d418b0df3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "0121e7218ac06ccaba57a60812706f2db83a28bb4f94dc239a504814de7522d2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r2/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__JNgvVHx/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "results/xi-retry-93f57e6/r2.json",
+      "bytes": 7138,
+      "sha256": "2ad65388522069a4ee28d88f0bcd2d9dbdededb4cce0993cc65982d6257b48d6"
+    }
+  ],
+  "seals": [
+    {
+      "round": "xi-retry-93f57e6/r2",
+      "digest": "0ac400c6e1a59f4ef21210ce37c9204350936d6d2e0da842c954e101032ef6f8"
+    }
+  ],
+  "digest": "6b40a878cafd4aca6fa65973105487f18ec311ad5e4d9a12eed48ff31e6d4bde"
+}
