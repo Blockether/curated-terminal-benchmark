@@ -1,0 +1,1061 @@
+{
+  "files": [
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/ctb-runs.json",
+      "bytes": 4737,
+      "sha256": "5835cdc91de366c1a881ca0acec530c6613167f24794090e4a0631dd1eb6b69e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/ctb-runs.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/config.json",
+      "bytes": 756,
+      "sha256": "fbe69a6d49beea2d1244f0bd468e4691baecfd378630ca5873c6deed6763e0e6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/job.log",
+      "bytes": 15277,
+      "sha256": "6c5c3e6fef92b0877ad57ab5556acff52735977b8249f8df884f40f98ebceac4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/lock.json",
+      "bytes": 2306,
+      "sha256": "5b7fd6d898a02d0e856baf8d8b11ffc8d3f1a41d6b78b0d6207841369f57dd15"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/result.json",
+      "bytes": 1135,
+      "sha256": "7f3416f2b6c8a9107236a10a43845d1b8279c122efc6c3cf3234de74e562ec9a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/footprint.json",
+      "bytes": 610,
+      "sha256": "54f01e8c686e225ea55d0a1714bcafb458f297439e5c373a72724852a9db9145"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/resources.jsonl",
+      "bytes": 197967,
+      "sha256": "0210e67625433861b60005c02bf3bba2ab47ab86f1e08b7ae381c6529a5a82ea"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/xi-sessions/-app/01a207d4-a13e-7320-9eaa-75693a01ba22.json",
+      "bytes": 322,
+      "sha256": "874d48c0fc354129fb91a7d356a1febe934e50171ffad59080a0a7d1a9971cb6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/xi-stderr.log",
+      "bytes": 1725,
+      "sha256": "e3cb469c1c895a4b1ce773a2dc9d30980158518f90fe9d24efb0bfc4d0c18734"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/xi-trace.jsonl",
+      "bytes": 17474,
+      "sha256": "8f49a9f311cf5e07f5f7c49567dd4e2fcd0c8e016afc48ecdff23f7264f56224"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/xi-transcripts/-app/0b40f8d5-8550-4eb4-b9ea-232e3249efb6.jsonl",
+      "bytes": 150290,
+      "sha256": "369a0a570f08b6e35937f6a8df626d867aad531e2b932193c86bae187f93e5f2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/agent/xi.json",
+      "bytes": 1149,
+      "sha256": "10eaea175b31faa681510b3dcd464647e1b95dd4b8dd3b719aa1798b38869f78"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/README.md",
+      "bytes": 2662,
+      "sha256": "77b99b91a25898d4bfbc20315de5cd4f484386edd6a6167de9f4bf257b31c135"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/__pycache__/texttable.cpython-312.pyc",
+      "bytes": 30318,
+      "sha256": "ab2f95a7f0a54801c4ddfbd2e8292ca66bb0cd37f5dce2a99fb25cec8ddfb457"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/bin/igraph",
+      "bytes": 215,
+      "sha256": "165248bd54afbb9b46c236b9de0f2e248f82ce9681e54f84b7b88d4b0918540e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/__init__.py",
+      "bytes": 870,
+      "sha256": "d7c3011c6dfc692f23f84f86ddbc7bcb8e7086620ede72003bd0180a67970636"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 885,
+      "sha256": "6723aae47f56b07c8bce296de4a36cbce049564208ba0967a1cb0d662e0ae435"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/__pycache__/graph.cpython-312.pyc",
+      "bytes": 35173,
+      "sha256": "0afdf7da6adae33f41b7cd7d2dae1cf366adb9c59cef52cfd3c650b343036e6e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/__pycache__/isomorphism.cpython-312.pyc",
+      "bytes": 12487,
+      "sha256": "ce36c016eeb38505c6eb5fe31cacff51d5892a4fdeed668aed3badfefc49f1d8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/_native.cpp",
+      "bytes": 11630,
+      "sha256": "f66554663fc477b9eab15954f19a970b4f8c9636bb2c8d5b7b9f9ceb275a6f9f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/_native.cpython-312-aarch64-linux-gnu.so",
+      "bytes": 75928,
+      "sha256": "9896f3235071c70f823653d3adc05fb55cdfbe140895a1d4c830f27e12599feb"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/build_native.py",
+      "bytes": 950,
+      "sha256": "65a764df6ccbc14d3c89b535152de34d999702007f074782aa811ecad7aae39a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/graph.py",
+      "bytes": 15967,
+      "sha256": "d3fd07da198e0717b7cd08274489cf4aced1ac06b05621c5f53472065588506f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/fast_networkx/isomorphism.py",
+      "bytes": 7946,
+      "sha256": "567c67fdb4c121a520dbaf824f80a73e8df52e3b6fd8fdab9cfd4e7d66256d5f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__init__.py",
+      "bytes": 40610,
+      "sha256": "9eee56584ca584e66308e0ef777e1b5b045f843af67d1829a39eeb899bde098b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 37487,
+      "sha256": "ce6c8a5b86ad6fcd4bfc0c063da0d5fede5bfabe0a79f35797e8a0183b6348bd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/adjacency.cpython-312.pyc",
+      "bytes": 7744,
+      "sha256": "1799b69664c4a372795f37832b45c141c22b9c55e51e00dbe8de16f81a2f35f0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/automorphisms.cpython-312.pyc",
+      "bytes": 1485,
+      "sha256": "a3651f3fce3f4fd837567a449922ccab9639b1a5028becc98e8e497c12d50464"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/basic.cpython-312.pyc",
+      "bytes": 8669,
+      "sha256": "2e257db0fef724d8f78c6a0cb0af7792e41a161115a6a90a47a96a07b5e73ed0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/bipartite.cpython-312.pyc",
+      "bytes": 5487,
+      "sha256": "2de779e222468a1d409569751acd50d745e1d0830a19db07b8587883e4ab70d2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/clustering.cpython-312.pyc",
+      "bytes": 76952,
+      "sha256": "0e4e001d6b4647d8f54feff2c0b223e306682861b359b9c61191611386644a69"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/community.cpython-312.pyc",
+      "bytes": 24411,
+      "sha256": "def3348a038c522004ea7f13d3c191b6de039f2366341dca28385955c652c60d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/configuration.cpython-312.pyc",
+      "bytes": 17329,
+      "sha256": "7d5de9c7dc3a84bdd30dbaaba1ba6fed54787bd30bae7ba8515ddf1c4a7bb909"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/cut.cpython-312.pyc",
+      "bytes": 13978,
+      "sha256": "d26381da5ff7e292c7b60c0f6e689cbe0589cead5bd961f8eb5e31e15c0d689c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/datatypes.cpython-312.pyc",
+      "bytes": 31580,
+      "sha256": "ae66026db34f0f85b8bddeb51de74dd1024000c0f8f829e568c96cb1f698f8e8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/formula.cpython-312.pyc",
+      "bytes": 8271,
+      "sha256": "0247bb0b644bf4451ced5f50f20d68504ea3567bf19ae350ca7f91b065605247"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/layout.cpython-312.pyc",
+      "bytes": 35926,
+      "sha256": "bc38b99a6e7edf34f163a62312aa8cd470d7359c6ffff5a68475e5a4030875d5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/matching.cpython-312.pyc",
+      "bytes": 8422,
+      "sha256": "a9ea8962bb8cb2b89f55b8dfd7835adf0b1b737f12a68376b204f51ada13804b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/seq.cpython-312.pyc",
+      "bytes": 29563,
+      "sha256": "fe85deff4601313708c75894bb649fc791370e1e769b46165c3d5e5ff8c77354"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/sparse_matrix.cpython-312.pyc",
+      "bytes": 8805,
+      "sha256": "94ae9947c012a84627f7a1b4913c8b5c332384b612eef15dc2dfefb943cfb939"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/statistics.cpython-312.pyc",
+      "bytes": 28427,
+      "sha256": "b43bc3c3b3efb30adf62c5639ca9764aed0b0e21923ae741c2d6d09e23c7c629"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/structural.cpython-312.pyc",
+      "bytes": 3388,
+      "sha256": "7cc7b0709fe990741b00c5c8e652f01cce3d238847734b73e0cdc54629947fbf"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/summary.cpython-312.pyc",
+      "bytes": 21505,
+      "sha256": "6c5142fff26c160e2dc86f03f1d91221827a88a083ab0d1dcb822305f1104880"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/utils.cpython-312.pyc",
+      "bytes": 14981,
+      "sha256": "c9d46448aa5998ee3bab2672ef6efe130a199674141a1764fdd470bbc2f770b1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/__pycache__/version.cpython-312.pyc",
+      "bytes": 468,
+      "sha256": "70facfd92fe108dca4ea06535eb3a3f0d93bac55c7bae35f146c2ddc18609f3f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/_igraph.abi3.so",
+      "bytes": 8564881,
+      "sha256": "18ac758199544adf85a88e00decdf76fdc3b33a26de52bbfa2152723372de493"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/adjacency.py",
+      "bytes": 6261,
+      "sha256": "427796acbfc185fadb04822c3f802929553b87cd43060862aa322427c80720a4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/app/__init__.py",
+      "bytes": 32,
+      "sha256": "d528abc25d4314fe37f94aaa820da3b16b71e7eedf647cf886da54e41ea7d90b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/app/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 195,
+      "sha256": "69916e9fbfd5fd1267cad480724de1c5da49d8c91f2bda7e544df78648fc9688"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/app/__pycache__/shell.cpython-312.pyc",
+      "bytes": 24297,
+      "sha256": "467009f3a4b53049a7e7a96214e9897f95a0c043772560dbd5339e7d0cfc4588"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/app/shell.py",
+      "bytes": 18328,
+      "sha256": "a90b388e3d02226242e5bd1d0ef8756afe50154a1c450d441ca08f86e7381536"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/automorphisms.py",
+      "bytes": 1506,
+      "sha256": "d879529fdcf9a6491fa1e3e90da4a56b3a18e2f507e340c618ef34ba6029f1d8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/basic.py",
+      "bytes": 7053,
+      "sha256": "c6a88cfcfe41b230be2339907bf693aab2f60d6b03ff1d5d6ae463047efcbaab"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/bipartite.py",
+      "bytes": 5337,
+      "sha256": "17302a856f4746334be8318241bce4fd512c74a3c1b8b1523529e45a02163eab"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/clustering.py",
+      "bytes": 63439,
+      "sha256": "3e71f93eb26a98a37e77014a36dfa04c41c34b92d661f7a60c351b9b5fee7004"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/community.py",
+      "bytes": 23241,
+      "sha256": "1d4a6d649e200442ba4bf0a9f2a0e3bfe593000e524c5cd53e00690a35a47b63"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/configuration.py",
+      "bytes": 14746,
+      "sha256": "e579102538069fcbd4d0025898d7d68e8664e64e2c548c8e1e6610ecc7b85dfd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/cut.py",
+      "bytes": 11437,
+      "sha256": "128ba380377bbd7b65aafcc7a24e2976a8555a7c8060c7c8f10f9483cac58c1a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/datatypes.py",
+      "bytes": 21737,
+      "sha256": "9b47a120e5a05c22a313783a04ef77edf5a1247fa5b22011680c424bafd412da"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__init__.py",
+      "bytes": 12775,
+      "sha256": "dc218c4cf8eadb923918b7e6a60bc9a500ce2a90d1bc2d91cb4040b2538ad9c3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 12036,
+      "sha256": "7ce76bb3d00f80088c98648360a301384d6f5f2980c93b54485aa8500767598a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/baseclasses.cpython-312.pyc",
+      "bytes": 15761,
+      "sha256": "99d6ea0ad77d81402437aae7edcca39be9239547d9d73e60343f7f2e30f795d4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/colors.cpython-312.pyc",
+      "bytes": 72587,
+      "sha256": "f5ddebd3095f205eb213bd253f89aa3a729a9de55f7dfc401ba76be758b6aa79"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/graph.cpython-312.pyc",
+      "bytes": 27291,
+      "sha256": "deffa8a9189d2b12c61881412d42f669f97645599c0e9eca7c7fd15ee4d29bf8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/metamagic.cpython-312.pyc",
+      "bytes": 15687,
+      "sha256": "6d52471771ef804ee29f131a107af8668d030aed938a4bbd800a331a4bae3a03"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/shapes.cpython-312.pyc",
+      "bytes": 16302,
+      "sha256": "7bea774131b1508ba29649df3af256baea28e4e8799f1756c944e524b47be9d4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/text.cpython-312.pyc",
+      "bytes": 599,
+      "sha256": "dee4cd3366a10ca823b3ad2ff7cd3b1ae14c1bbfd6d8cec762b31f534b07b590"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/__pycache__/utils.cpython-312.pyc",
+      "bytes": 33928,
+      "sha256": "25c77a1a8646589879d14ec10f37ce69036f5e24c13cdcf06f340c62faea7292"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/baseclasses.py",
+      "bytes": 14218,
+      "sha256": "d17a8e2eaf40cde56463ccda41db8446c7a2f20a8e774b570e536c98abcab33b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__init__.py",
+      "bytes": 54,
+      "sha256": "5d2d886c16fdaf1fe70d1a14fe2ab070ede0a1bb7d192a2b7ee0731115b4182a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 224,
+      "sha256": "1917dddf18fdfa709fee74b1a0f52e190515b50e287f87a438007ece4486edb5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/base.cpython-312.pyc",
+      "bytes": 3931,
+      "sha256": "ce0a4ee034a5c48fbd606a4df7ad2a5427ceb010c4642c685c8336ece5f65dfc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/coord.cpython-312.pyc",
+      "bytes": 5996,
+      "sha256": "cad20d9cdb48fa68e98cd23d9a9ced0452cf72cec5311db2a029db9c63c892f1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/dendrogram.cpython-312.pyc",
+      "bytes": 11436,
+      "sha256": "8095628dfa93b81998cffd16ed9b0817521a4ddc039bb45c35074ce6ff77263c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/edge.cpython-312.pyc",
+      "bytes": 14702,
+      "sha256": "ac5d1b1ed28f3f14c51e0c963cda01dc791595a8d2626069383be49b5d58b96e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/graph.cpython-312.pyc",
+      "bytes": 16593,
+      "sha256": "e3e41962ac280a337397f3a919bd6c04bd83b48ac0ab479e2826a41ccca4ad63"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/histogram.cpython-312.pyc",
+      "bytes": 2603,
+      "sha256": "918cfde7ab26744bb01a574b4b011deb3e4c800832f81abbcd9bdef5f10c50fc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/matrix.cpython-312.pyc",
+      "bytes": 11351,
+      "sha256": "d3d06afb8fec50d2a82bd20f5d800cfedc0ad078898506f37e6d92d9db5930a2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/palette.cpython-312.pyc",
+      "bytes": 2295,
+      "sha256": "d32321772ef10c12af8a8a796c0e938ef7f44347e933d55d18b1bbed0926ac76"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/plot.cpython-312.pyc",
+      "bytes": 16696,
+      "sha256": "efa2e414c16a5f75e6240ef88d817cde40394b60916a5dd13f7a3b1dee6a8e2c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/polygon.cpython-312.pyc",
+      "bytes": 3603,
+      "sha256": "ea2cc9ba572ba65f5d154c961b63a5f52c0959bca3d279fdf737cb34d25b3bdd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/text.cpython-312.pyc",
+      "bytes": 15873,
+      "sha256": "b37f379df8b016f665e1267beb2b63685964d708c5ce486f2ad8027d4cba6bdc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/utils.cpython-312.pyc",
+      "bytes": 1025,
+      "sha256": "d6991369cf02be29bd677d8f40ff09b8e6fbe4ba16f2c518f18666cdebafdde0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/__pycache__/vertex.cpython-312.pyc",
+      "bytes": 4644,
+      "sha256": "8f2a3f46db777335de548760767631560cee1ada319bc16cc3e674a97a138f18"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/base.py",
+      "bytes": 2874,
+      "sha256": "0f844b0a2106d70fbdde10e65f0ce152c105b9a4187cbbe11f1bb8223aa61a71"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/coord.py",
+      "bytes": 3605,
+      "sha256": "88c8a4591194512b7767f76c15ce473bf8bac96d37adeec9cae257210c490d95"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/dendrogram.py",
+      "bytes": 9736,
+      "sha256": "a2b8d0b8893ada5f211d60fd90b304229d4d9013bfc9e5399ba9a7b06f3460a9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/edge.py",
+      "bytes": 12380,
+      "sha256": "ea13e3f56cc4a97012dc671dd736e058017ae1f8492fa50a8d287d8da312e00b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/graph.py",
+      "bytes": 17776,
+      "sha256": "2d38d518fe7f4f839d35ef953949535eb3554157959372177d2c6fa9931ec202"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/histogram.py",
+      "bytes": 1762,
+      "sha256": "cf542f7c0dc6096ed3e3e75a45ca0ac4be981c30c0cd638ae68a3963f5a6a278"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/matrix.py",
+      "bytes": 10456,
+      "sha256": "20d342164069fa70ec179af225d78939a6f64f376ba159a4006cdf2f033adf76"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/palette.py",
+      "bytes": 1596,
+      "sha256": "96a5254b04845472aadad96507010b1ebc902dcb99e843091f745c0f381637ad"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/plot.py",
+      "bytes": 14240,
+      "sha256": "0ce2fe9d42656cc3701f0bcb26932c5c5d52e4bdfe3647e483afb925cb07513b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/polygon.py",
+      "bytes": 3311,
+      "sha256": "0914189dcf56b46300a2b7eda6ceb56eff4121c0e80dcb6820627222d1cb27bc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/text.py",
+      "bytes": 12960,
+      "sha256": "a07a5c0b0cb0bd1c9a6a91d3dd63ab24559646c070d934f92d1052a434ce222e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/utils.py",
+      "bytes": 818,
+      "sha256": "c58f3076d52a8ffbdc02b8dc3d2aa78f87a3eee1574180ede618a1afa31ecd59"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/cairo/vertex.py",
+      "bytes": 3226,
+      "sha256": "da74ffd9f1a9b0e297404088beb2318665a11932ce937a820fc9af7b65e72a16"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/colors.py",
+      "bytes": 92276,
+      "sha256": "73eebf540de02ee66b40fd468b509df9b343c5cd307eed257c59cbd0947242bb"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/graph.py",
+      "bytes": 24725,
+      "sha256": "d39f8623a1caec9cc83c7de50e293c7517834e6ea473f91fc876eac341bc5df4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 170,
+      "sha256": "9f0587f61368cb5ba586d42ea5868d59dd3b2c7ba074b8a7aaa5406073219d3c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/dendrogram.cpython-312.pyc",
+      "bytes": 6164,
+      "sha256": "5b9aecd7c765a97ae14ee391008b24602fa2cc3132abcffaca70cbf0cfd3682d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/edge.cpython-312.pyc",
+      "bytes": 21824,
+      "sha256": "78679bd108467c060072ab2d0fd92c42774afdebbee98fc9d0a4feea9e5fb47a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/graph.cpython-312.pyc",
+      "bytes": 32240,
+      "sha256": "d93da1b99d2b960e7f82e163d1a5a5dca39b7e5cc07525478947933df0a8c99b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/histogram.cpython-312.pyc",
+      "bytes": 2020,
+      "sha256": "9af8267a8481979e43ef7aa9522d96fbb163df023077ba11bff79bcf1eb88c88"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/matrix.cpython-312.pyc",
+      "bytes": 1354,
+      "sha256": "79167ae241a1a670797eb7be3913e1d2059b38fcfa6bedc0dbd1fd268c05dc20"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/palette.cpython-312.pyc",
+      "bytes": 2190,
+      "sha256": "6db9fd1638ea499a2132118541119dde27cdf2b94c816f19f1b129406ee1d064"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/polygon.cpython-312.pyc",
+      "bytes": 6366,
+      "sha256": "2a60d6ea1018593b880901d18dd4861c711d414c91118b8c481f06853d3d1412"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/utils.cpython-312.pyc",
+      "bytes": 1008,
+      "sha256": "fb56c112db04749c6eadb146097b00c628ae289b02e068e03c59d1e685d8e477"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/__pycache__/vertex.cpython-312.pyc",
+      "bytes": 7372,
+      "sha256": "edac24f68fbcfe04d57fb2c6ba49600656f1d122eceea66a8b86b76f8ea9dd39"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/dendrogram.py",
+      "bytes": 5989,
+      "sha256": "7e4cf756fc53e9602cd10dc5b91641c7e304b7a7981ebb6ed6b778133139f577"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/edge.py",
+      "bytes": 20409,
+      "sha256": "4fe51b06cc128e9582982ff0077fb5b8d597ed09a0d96990d0a497a6c6c8eb20"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/graph.py",
+      "bytes": 28591,
+      "sha256": "bbee424630511f39b8fbf24dc54abeded9f75641dd5861d691a6f161d18a29b8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/histogram.py",
+      "bytes": 1068,
+      "sha256": "ac75a126e91903254631dd1f4d10cdae0d01cf9a9d73d97b68ff02dbaaa912ac"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/matrix.py",
+      "bytes": 762,
+      "sha256": "bf9ec66d9ca89dc2aa01a7ea3fd1ecfa3e50daf9d2ab97285e4409dcdac40ed3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/palette.py",
+      "bytes": 1409,
+      "sha256": "f81bf8d230f535902658c48461a4265f5a3111a8b78e2e75fe54aa93beb31156"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/polygon.py",
+      "bytes": 4853,
+      "sha256": "ef439c181a6b3cfa49d1fad6cbd347046740889836cbf79be56cf775b6e40d3d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/utils.py",
+      "bytes": 701,
+      "sha256": "443e672242b521461678af94d4a34bdd4057a54065b69c5082276f9fa1435ff3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/matplotlib/vertex.py",
+      "bytes": 4995,
+      "sha256": "e3c670349529f8fce77b5aa05de41b924a4017eeb231f564c1652ac427ddbe54"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/metamagic.py",
+      "bytes": 13871,
+      "sha256": "7eae2711d853a319008b8bdc1854644b6c39f2f43cede363dfb17b697d004aa5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 166,
+      "sha256": "973d1f7d50991f716e570cdf1ae9b14fc9a1e99ee3909cd7840d10231a0d5e61"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/edge.cpython-312.pyc",
+      "bytes": 9341,
+      "sha256": "eb314c772ad1aa9f86bbdbab9b3eb4f4f3dc783c9d7ed4f6aa2674c7850c4213"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/graph.cpython-312.pyc",
+      "bytes": 9640,
+      "sha256": "e140ec020323203023a982f8a603e88bf056bb18b03984a245b2384a421be617"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/polygon.cpython-312.pyc",
+      "bytes": 3704,
+      "sha256": "05c29edd2cb16b4168c299c95b4e773e801c472371a7ca066d4d09066473d47d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/utils.cpython-312.pyc",
+      "bytes": 3041,
+      "sha256": "c4a2905b4342eec0c59aa030667401fae48055b0608b5b0e1a6957553424c6e4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/__pycache__/vertex.cpython-312.pyc",
+      "bytes": 3754,
+      "sha256": "fd940999bb13c96991c42edb01527a275308e9c5c89bc4fbd9e7d09bccfe72fe"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/edge.py",
+      "bytes": 9467,
+      "sha256": "174aa4dd28e4965b15797c3b8b123f7eb767381e7b8971df13ad35af756ebf18"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/graph.py",
+      "bytes": 10493,
+      "sha256": "96d31547bfd345aa6bdcea3c157063fd40595885c825830286dcc3c66fc363c0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/polygon.py",
+      "bytes": 3740,
+      "sha256": "956841e5476c76adc1c13d1aa8f2da3e4a5f71e3d62bb32b168bc5d2619acbba"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/utils.py",
+      "bytes": 1907,
+      "sha256": "3999894345715866ee19180b3a86682a48b5ee0b6de1f34ab6aee36285b63dfd"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/plotly/vertex.py",
+      "bytes": 2742,
+      "sha256": "e1ac7810f11a3ff5f39ad698d1f539f6d9b066d278c49c23eda11b48fe724536"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/shapes.py",
+      "bytes": 14250,
+      "sha256": "fff9572e1435a8d047bcac3adf70ee6c039a401cd53c85db48e5b97939b33775"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/text.py",
+      "bytes": 325,
+      "sha256": "be196dec6847916b280d5e25c11a133e2b6a827300d12af43541ae46b8bb6bc4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/drawing/utils.py",
+      "bytes": 24184,
+      "sha256": "7f88bc62b7937ca61180747d58af279da20e08a510578efdbf1fe5657e49b92a"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/formula.py",
+      "bytes": 8056,
+      "sha256": "9033cbd409a5303ff5e310e71924cf0249b1c26cd03d807740d46daab4bddb3d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__init__.py",
+      "bytes": 998,
+      "sha256": "4ed9c1da90f72301566976d9c239481c63beefeafd90de7f547827e31529952b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1093,
+      "sha256": "4bbbf06d5c246a20cfaae878cc9fad162a8636735ed95ae369160e3b466333af"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/adjacency.cpython-312.pyc",
+      "bytes": 6222,
+      "sha256": "94c084b1752ddeaf45d165580744006ee97eb8e3ea086fce73477ac837b8ecfe"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/bipartite.cpython-312.pyc",
+      "bytes": 6983,
+      "sha256": "663b4d5b428abc8c87439edd4b79f622779ccd8dc88ba2fb67857a998b3035cc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/files.cpython-312.pyc",
+      "bytes": 18803,
+      "sha256": "7b8bb50ad1babda5cbe79a17d87dc6038e8adabaf95aad01603c8f10875cc8bb"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/images.cpython-312.pyc",
+      "bytes": 14677,
+      "sha256": "02546315e700ffe1f4699e4e7053cc640afbadb5b1c05c6c923464bae7b46ae3"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/libraries.cpython-312.pyc",
+      "bytes": 11930,
+      "sha256": "1fddd981e23234997b8e902165d59ecf52c134c42da2de98fe8f7dd847a63dd2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/objects.cpython-312.pyc",
+      "bytes": 36769,
+      "sha256": "a1d6b324673da1f6a075f6007551d6c5f491216968606003fba187a332fd64e7"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/random.cpython-312.pyc",
+      "bytes": 964,
+      "sha256": "660a17d01595e335580a407b45238981b0bf023d258c1862fd48d665a81428df"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/__pycache__/utils.cpython-312.pyc",
+      "bytes": 1072,
+      "sha256": "573edaa632775773a3fb024ad669df907d912740edbd7387aa6b22569cb81fdc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/adjacency.py",
+      "bytes": 5794,
+      "sha256": "88b96ecbe1a21576855247fa5f1fecf1ae730f92fd1954e988aeef9e7652c229"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/bipartite.py",
+      "bytes": 6331,
+      "sha256": "80d30ebf11ec7c997a5b59daf6c5b3a33ebb5fc59da6bfb0b32bc421d1a3a03c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/files.py",
+      "bytes": 16642,
+      "sha256": "b943f6115bd36e051d8691f98a51536937c9426b650997f4a6e8703cae6118b9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/images.py",
+      "bytes": 13110,
+      "sha256": "b505cde82fbd8117eb8999079c25f841185da88943ddcee33e2e5cceb7f8bd6f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/libraries.py",
+      "bytes": 9900,
+      "sha256": "95037156589fb5a1840545598590718a5a9054a5ee3d3f13f4c250755f8b0ba4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/objects.py",
+      "bytes": 32425,
+      "sha256": "0b214bc51ef219181a0e49ce8ab13740ae14b5d1121718b4849341ffb83f9112"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/random.py",
+      "bytes": 652,
+      "sha256": "424a7d0a04fdbec7886d1fa041f0f52ea0479fa3e590b9d70d09192efed61ce5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/io/utils.py",
+      "bytes": 732,
+      "sha256": "04e480e3ed63457e9a56aa974dfbb98a36cd0ff053218d59ca3bad2840feb388"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/layout.py",
+      "bytes": 29376,
+      "sha256": "86919aa2383c4cdb3dadf0c6f6a21d3209b160ccf8205f36f0ebd79a6fdfe1a7"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/matching.py",
+      "bytes": 6036,
+      "sha256": "8b450913ef3556f9246068e77db7fd436f2deb49a1455dc2fb7f6db40ca2affa"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/__init__.py",
+      "bytes": 800,
+      "sha256": "c787d4a46cdb006f8f37eb8d90044b63675aff1d081ae511529cb23362400e30"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 794,
+      "sha256": "2bd592d23341cdf6e4e6c8011e2d6f4c222fe3a5aee9c8ee58a10f7f4b6aa03c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/__pycache__/functions.cpython-312.pyc",
+      "bytes": 19415,
+      "sha256": "106fd349f96c9bae8841153a90685b6daed840798bb332f58356a14e4baa2cf2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/__pycache__/methods.cpython-312.pyc",
+      "bytes": 9084,
+      "sha256": "6858682bf65118e691fe5df03f4e70ff1e3148ec8d8e19d963a49c7bee1dba9f"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/functions.py",
+      "bytes": 18155,
+      "sha256": "138f49a698202d5df3ccfb0b958f988c42cb0944f46b520c162f42af54b52ec7"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/operators/methods.py",
+      "bytes": 7443,
+      "sha256": "035de9d1102fd6500c121618480409dd1e92164f78c58952111ddc4ddb60c5ac"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/remote/__init__.py",
+      "bytes": 69,
+      "sha256": "72a0c771bd0b2f318f495708629f589538a5bdbdd224417d0af63e21df08cdc5"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/remote/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 235,
+      "sha256": "07d02adf42a587e80e7798e3cc190f482c2cfd6b0673b891393b848556982f9c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/remote/__pycache__/gephi.cpython-312.pyc",
+      "bytes": 13453,
+      "sha256": "ad13ffee9b6cce106017305c4808ef0800ef631975310b9656b45dfd18952d74"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/remote/gephi.py",
+      "bytes": 10486,
+      "sha256": "36b2baa6ab4dbc59f9fbf3fc7469cdbeaa65d089c05ceaba6999661819a4c321"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/seq.py",
+      "bytes": 30809,
+      "sha256": "639f3870e815fea2ee5648c4d843e306fb652cedfe8e57d9744b82a7e509221d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/sparse_matrix.py",
+      "bytes": 7605,
+      "sha256": "830555046475a311bebc079ce48e6e749e4cd85c8aac452a7509f3d808843734"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/statistics.py",
+      "bytes": 21709,
+      "sha256": "5e3906eeaea9681d883ae6ef5a8b98fe32fbf1ed09f965f413f1fd5f738fdd88"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/structural.py",
+      "bytes": 2852,
+      "sha256": "6d1f913a41def6b8ecf89b4ba81476b18e7db97646674deb989d1fae5ca964e2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/summary.py",
+      "bytes": 14318,
+      "sha256": "acbf1eb935d7fc29820a5686696ea4ae68c611d3fdacf7d819a1f607fa1c34df"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/utils.py",
+      "bytes": 11489,
+      "sha256": "8945036f184cf3430292917fdfc90de3e20085a1388d8fe5d3e858a34c6c7554"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph/version.py",
+      "bytes": 96,
+      "sha256": "fe73f8aff5ca075a716ce791a5181f2c4bf596471f6d01ed458e6564ca470c95"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/INSTALLER",
+      "bytes": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/METADATA",
+      "bytes": 4360,
+      "sha256": "5329eed9f31e5f1c5a022e6137cb0e8c88a60eecff5b942758345a65b02ac9b0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/RECORD",
+      "bytes": 11427,
+      "sha256": "6f15239a1d1e100dab5526830db28d3bf6ddc70e97b1605f34c0b5113e84dbb0"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/REQUESTED",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/WHEEL",
+      "bytes": 149,
+      "sha256": "17bf82c1cc7b5d497f68ddbc0fabdd35391d6a96b539ea7f8b86a1301208c213"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/entry_points.txt",
+      "bytes": 49,
+      "sha256": "875002fae0dfaf5e14720a591498514b1e2ce958fe2cc41051703834a810565e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/licenses/LICENSE",
+      "bytes": 17987,
+      "sha256": "ab15fd526bd8dd18a9e77ebc139656bf4d33e97fc7238cd11bf60e2b9b8666c6"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph-0.11.9.dist-info/top_level.txt",
+      "bytes": 7,
+      "sha256": "5356cffc774705ac7f223ae4a38cc20cfbb84e8043950b7c11e995f87182205c"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph.libs/libgomp-d22c30c5.so.1.0.0",
+      "bytes": 274665,
+      "sha256": "053187ea2b36543b67d37805ff3e8188f5d57674b31f698fe87cfe2221a43ed9"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph.libs/liblzma-6bd50f17.so.5.2.2",
+      "bytes": 265857,
+      "sha256": "2729973f5ae48aa54ff1995c14e8c4c8deffc6e0c6046a1845e5a40a7ae9a7d1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/igraph.libs/libxml2-06c1d338.so.2.9.1",
+      "bytes": 1610161,
+      "sha256": "7a2673d97c8ca2072198505df34759d117239dbfcb02b58fa4729b383cea1b1b"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/include/python/igraph/igraphmodule_api.h",
+      "bytes": 2220,
+      "sha256": "2010bab7d8a0626a547ee5445d91ce1e2f3f7538269717a5055935f6019b959d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/tests/__pycache__/test_fast_networkx.cpython-312.pyc",
+      "bytes": 16217,
+      "sha256": "45f8f85253b955ba06b7cd1a150c4703edafbe9e268b7185cc368afed8dcb9c8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/tests/test_fast_networkx.py",
+      "bytes": 7668,
+      "sha256": "c71bb30c8bab260e455c5548ed35e70dacc2ee02d8aaef413664409c72969ec1"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/INSTALLER",
+      "bytes": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/METADATA",
+      "bytes": 9971,
+      "sha256": "a45fd38346735058849390413f45d6f094d892c56953a566d1524275ccf65a42"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/RECORD",
+      "bytes": 613,
+      "sha256": "fff794de476405bd19dc33a885743970792e58f8f0aca62fe55a6ca9a2e7fae8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/WHEEL",
+      "bytes": 109,
+      "sha256": "52f960d9a36510a76296cc85489b75417e667b47846c28d0cd1de765e164bf2e"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/licenses/LICENSE",
+      "bytes": 1083,
+      "sha256": "4ba7bdab54504a3bc44eb33ecca873a26a63ab902822101a87bb46235da63594"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable-1.7.3.dist-info/top_level.txt",
+      "bytes": 10,
+      "sha256": "dbb032aaf498f32c23b2b78cda94733d7d32f96cde953835a96527a074ec1a20"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/app/texttable.py",
+      "bytes": 23061,
+      "sha256": "0c9f4b5311cf6cbc1763f79326dd9f7d13fc0e6b824b53509510cf22924ad270"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/artifacts/manifest.json",
+      "bytes": 330,
+      "sha256": "1afafd686d4de2d45122d91307a9b1e2241784dd975216626329982504ac53f2"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/config.json",
+      "bytes": 732,
+      "sha256": "86a910ce386fab908b9e5279e9e781843b39159f88df09bd19ca451a596af139"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/images-environment.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/images-tests.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/lock.json",
+      "bytes": 1256,
+      "sha256": "fb999cc11ccdc58a83f518948e7f0b9dd6a7b51ab946e1965b73a0c4901aac65"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/result.json",
+      "bytes": 4233,
+      "sha256": "dfabfa15aea891831071ea58850a2df070a572777fa49bf377f600b27ef7453d"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/trial.log",
+      "bytes": 15203,
+      "sha256": "a92a48b7b19c3d5ed6b528ea091d8cf5efd6f9efe6017f10d367d0be22b8eb51"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/verifier/ctrf.json",
+      "bytes": 19656,
+      "sha256": "84df883395d1827973220a1c6e3e812733edf05ce76a6757c30bafa6dcd389fc"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/verifier/test-stdout.txt",
+      "bytes": 2188,
+      "sha256": "245c33183acb52f70443b83ec77fba3e32b8bcce27f08c80732ec575b2d1e3d4"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "6bacca6e4828951bc0e113b8f4c9a77fa7afbd9b7e4c035004875a9b684b9e14"
+    },
+    {
+      "path": "jobs/xi-retry-93f57e6/r6/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__Zhyxwze/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "results/xi-retry-93f57e6/r6.json",
+      "bytes": 5749,
+      "sha256": "b62b03be9f48659278bf55854b44ec94626cd4790462ce99f50adf8b30c2d7a9"
+    }
+  ],
+  "seals": [
+    {
+      "round": "xi-retry-93f57e6/r6",
+      "digest": "b64bb585becdd28ae403e79493043bb496d0974793b4ced8ad2ee8cdadea53d5"
+    }
+  ],
+  "digest": "d2540b5e0caf208179fbf99e49bc599201e8563a40c2a6074118ab36e854f54b"
+}
