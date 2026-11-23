@@ -28,12 +28,21 @@ SELECTION = {
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
     "wisp": tuple(f"gpt-wisp-5818f6d/r{n}" for n in range(1, 6)),
+    "xi": tuple(f"xi-93f57e6/r{n}" for n in range(1, 6)),
 }
 #: Trials that infrastructure interrupted, repeated alone with the same harness commit:
 #: (agent, round, task) -> the round of the repeat. The repeat must have the same setup.
 REPLACED = {
     # The provider connection failed (TLS bad_record_mac) and Kmet did not retry.
     ("kmet-eval-only", "kmet-0557d54/r2", "interleaved-vigenere"): "kmet-retry-0557d54/r1",
+    # The Codex backend failed (TLS handshake EPROTO or server_is_overloaded) and Xi did not retry.
+    ("xi", "xi-93f57e6/r2", "kv-live-surgery"): "xi-retry-93f57e6/r2",
+    ("xi", "xi-93f57e6/r2", "photonic-waveguide-routing"): "xi-retry-93f57e6/r1",
+    ("xi", "xi-93f57e6/r4", "react-lead-form"): "xi-retry-93f57e6/r3",
+    ("xi", "xi-93f57e6/r4", "vf2-speedup-networkx"): "xi-retry-93f57e6/r5",
+    ("xi", "xi-93f57e6/r5", "bun-sourcemap-leak"): "xi-retry-93f57e6/r1",
+    ("xi", "xi-93f57e6/r5", "kv-live-surgery"): "xi-retry-93f57e6/r3",
+    ("xi", "xi-93f57e6/r5", "vf2-speedup-networkx"): "xi-retry-93f57e6/r6",
 }
 TASKS = (
     "bun-sourcemap-leak",

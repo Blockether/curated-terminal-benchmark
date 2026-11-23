@@ -435,6 +435,96 @@
         "emulated": false,
         "replaced": []
       }
+    ],
+    "xi": [
+      {
+        "round": "xi-93f57e6/r1",
+        "seal_sha256": "43a8637514e5e4df727296b12d1f08d2baa996597254e895464a14084eb309d0",
+        "harness_commits": [
+          "93f57e6ff33853fb407cc33db6c0683ce1690a20"
+        ],
+        "agent_version": "0.6.0",
+        "emulated": false,
+        "replaced": []
+      },
+      {
+        "round": "xi-93f57e6/r2",
+        "seal_sha256": "51c7f992aa0eef3f88f8689911679c3f73c712bbc35c3575fff6f38aabdcc0ff",
+        "harness_commits": [
+          "93f57e6ff33853fb407cc33db6c0683ce1690a20"
+        ],
+        "agent_version": "0.6.0",
+        "emulated": false,
+        "replaced": [
+          {
+            "task": "kv-live-surgery",
+            "round": "xi-retry-93f57e6/r2",
+            "seal_sha256": "0ac400c6e1a59f4ef21210ce37c9204350936d6d2e0da842c954e101032ef6f8"
+          },
+          {
+            "task": "photonic-waveguide-routing",
+            "round": "xi-retry-93f57e6/r1",
+            "seal_sha256": "e48965d41005177b42ef2cf95e2b03120b9fe262276304d89c7d4e857c932df3"
+          }
+        ]
+      },
+      {
+        "round": "xi-93f57e6/r3",
+        "seal_sha256": "822ac5c97b9538a6b572e0ac50c6b99305312c4031cd45984b7e526c80e4919c",
+        "harness_commits": [
+          "93f57e6ff33853fb407cc33db6c0683ce1690a20"
+        ],
+        "agent_version": "0.6.0",
+        "emulated": false,
+        "replaced": []
+      },
+      {
+        "round": "xi-93f57e6/r4",
+        "seal_sha256": "fbe26cacaf942f727169b3b5692337ad15c8d66070cac42226e40765038c8ab1",
+        "harness_commits": [
+          "93f57e6ff33853fb407cc33db6c0683ce1690a20"
+        ],
+        "agent_version": "0.6.0",
+        "emulated": false,
+        "replaced": [
+          {
+            "task": "react-lead-form",
+            "round": "xi-retry-93f57e6/r3",
+            "seal_sha256": "005ae51666af46cb933a3e5a9f26cd1ea34a715ca42f5fad6bed3a5c7f85f222"
+          },
+          {
+            "task": "vf2-speedup-networkx",
+            "round": "xi-retry-93f57e6/r5",
+            "seal_sha256": "f6defdb78dbf23db80e9d656effe96ac5d043f5b4459775d32dc1344d398b9af"
+          }
+        ]
+      },
+      {
+        "round": "xi-93f57e6/r5",
+        "seal_sha256": "4cad0d1b34639b9afeff9f46146616ea0f3a73bacaa2ef70ab5e53f32dc25b9f",
+        "harness_commits": [
+          "93f57e6ff33853fb407cc33db6c0683ce1690a20"
+        ],
+        "agent_version": "0.6.0",
+        "emulated": false,
+        "replaced": [
+          {
+            "task": "bun-sourcemap-leak",
+            "round": "xi-retry-93f57e6/r1",
+            "seal_sha256": "e48965d41005177b42ef2cf95e2b03120b9fe262276304d89c7d4e857c932df3"
+          },
+          {
+            "task": "kv-live-surgery",
+            "round": "xi-retry-93f57e6/r3",
+            "seal_sha256": "005ae51666af46cb933a3e5a9f26cd1ea34a715ca42f5fad6bed3a5c7f85f222"
+          },
+          {
+            "task": "vf2-speedup-networkx",
+            "round": "xi-retry-93f57e6/r6",
+            "seal_sha256": "b64bb585becdd28ae403e79493043bb496d0974793b4ced8ad2ee8cdadea53d5"
+          }
+        ]
+      }
     ]
   },
   "rows": [
@@ -4373,6 +4463,486 @@
       "passed": true,
       "error": null,
       "result_sha256": "ad6449c03034603eedf5d2fe9671332f8a689ba979095c4a635d735e3a733037"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "844ea5ae0b964ce3493255ba9e29a2520e28d543ef6b9d6655eb39fd64584ace"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "html-js-filter",
+      "passed": true,
+      "error": null,
+      "result_sha256": "5d76a03f62fbea75acb45ef63494173478c8fc83db9273b02bfc605a04cd8c34"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "e9097e91a5581a754abcf2f4c5d4cdc4db6f9896adc9d05f029a38a62a8ae5aa"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "d7ae32c3c141a4ce0597bfa39e19c2f64adbe5f434937528591f34496bbdd5f7"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "8b793072641a0a81a6f209e7459389bb106028ee1d6fd5d7633477479a84e2c8"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "e423d4ddf882756bc196bd934e1c09ff3aff627851caac11abeaeb86f5824896"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "ce707f382dab48f4ee1685f7df0fa4082200997c976d6728eb1fe229aa8a7159"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "7c80bf3c821e5ae7bf5a43958245d7de2061ea9d254da25814953c8fe35ad47d"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "47a788ae0b467f2788480437622385608ca877f20800d441d2621ee14255eba3"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "9157f4e9fd6e44f6fa4b183bd3dd5d7877e2cb087800dcd995b581ead93f74fa"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "vf2-speedup-networkx",
+      "passed": true,
+      "error": null,
+      "result_sha256": "6b28f5e3581bee609637f419a3c9b2377e0f2806c60c87818469f680d5eda6d1"
+    },
+    {
+      "agent": "xi",
+      "run": 1,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "83867847cffa8fc3858c12e617097d1b1ba44bc6708b25709209fd4e5f0b755c"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "bun-sourcemap-leak",
+      "passed": true,
+      "error": null,
+      "result_sha256": "b1a369a2ca7f01513c647663dfa036bb0e18057c1aa761818c31ce60163f80d5"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "html-js-filter",
+      "passed": true,
+      "error": null,
+      "result_sha256": "b3f9a802185351be01606e7ce3cf927b0a0e69b225f9d844330360477ae85265"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "84b9a5fddd1696b1a9bc904cd1dae7e69654dbcc94d627466ca785c185119949"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "046b94ff628f189c9abc4ebd130fb02bf8aa19032f0f3f35489cd573b4e1dd09"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "d5a09c6877f5c0a5b5418447c8c906d36c070a76876b1a5a6e8aea42d411622d"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "d2b0a469332790a00d12193f3075c9e5b73c883a4acc969ffd12bb5e75e73278"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "payments-pipeline-fix",
+      "passed": true,
+      "error": null,
+      "result_sha256": "daa0dffe564df60cf2a51dc0eeec981d70e1a789a55c3f66b79b1696a8c50d62"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "f5ca0179b497a4952628217c0586abf0380177e20735ccbc73cc7f6fd2bc5d7f"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "d74af3dda64b64b819e73ff082d7654f3d9d184013c562688d63323f8274cc86"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "eae0d519b7934f19a4e32e04de8de91c2a3c0c3239364d24d950e98eeacef5b7"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "da7cdadb25cc27f6c7ff3b0c3477f68d8e1df14ae35ba7afdb40261cc1e98989"
+    },
+    {
+      "agent": "xi",
+      "run": 2,
+      "task": "wal-recovery-ordering",
+      "passed": true,
+      "error": null,
+      "result_sha256": "49c536c531a0b3d14a25a03a5b6ba4f0ef7f3b7c1f97e5bbdf4fa44a2b83b9f3"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "7e566c8aeec52bb5ae668e7496651c0534aca58a0462fc9a46c4a45c35cc34aa"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "html-js-filter",
+      "passed": true,
+      "error": null,
+      "result_sha256": "028b88c3da47c0a3f356226ef86211e9003946bedb7d094f6e3d0a51bc339ab7"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "4b7def83cc4dafcca70a464503befa8b547033432da8eab4b2813b6b849f5144"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "44f113ca0f1ad79f2cce2057151d40f21d5336a7952c48fb22e060dd7ae35fc7"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "95f1104820dc719e9f733f88d37d48d53c1586a85a8f8273ed1d071b8f848186"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "mvcc-lsm-compaction",
+      "passed": true,
+      "error": null,
+      "result_sha256": "2ed2d276dbb7b973af424f76dd1fda16f0ac1c728d8d3cfe0b01c45a48e94dab"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "843f2a4ac3b49a3ca931bc0e7210399fd7838070c68deaa51c634bb5a0e1ea89"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "7273e812251a7b9e98c43ed36a41f91da979aa293c120e313772857451150f70"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "99a4013ba6265a474ceb63b03ebaa3f4ef59c390bb0a13143ce63a7b8fefa7bf"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "session-window-debug",
+      "passed": true,
+      "error": null,
+      "result_sha256": "00aebc90ce1739c30f1a9fe6ddc10d8866d3cea9e8caef416906ee7b543ff7d5"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "02349b32a28b76e13612c00a1e8262844648d7825d420f37f7e424f7dd857fbf"
+    },
+    {
+      "agent": "xi",
+      "run": 3,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "35baae3a8489d96414288931b6567fb5c9ffb40b618ce0ab6d22cac20fedebf9"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "bun-sourcemap-leak",
+      "passed": true,
+      "error": null,
+      "result_sha256": "13e77ff030ce2169ba4e3a675ddbef061df5cc3231096ee8d9aa69b1f1cd5fa7"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "7751f1ea9b467299fe5c01940d9467896861afec130be3c1718b9a283a9e18b4"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "interleaved-vigenere",
+      "passed": false,
+      "error": null,
+      "result_sha256": "349def1820cb146fdb1160cd90c8a93d3944ea3fbc7c3149b16d6a1e2762b5ad"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "kv-live-surgery",
+      "passed": true,
+      "error": null,
+      "result_sha256": "fef399e900d382d39d58d5937ed10c0627e7d8074b6bd568e76711a81a0e1067"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "915b6b4027e409b48d324edd19d7b835024c418ae02e679c702c018547be1dbf"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "9cf8cebdaac94a9e4c6c79cde15a2ae4751bcd9fb81dba9d52f094cd05d4c9ca"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "payments-pipeline-fix",
+      "passed": true,
+      "error": null,
+      "result_sha256": "d6ff411c6d4de65036aa634ef1ad7a5ad88c8208f87fa9db795f4630bea41295"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "0f8a15226513e1444aa78597b42426dcc775320bcf74dc48b12b108d65adc6fb"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "react-lead-form",
+      "passed": true,
+      "error": null,
+      "result_sha256": "ecd0c6dc64952298688a26f2c2fd8e5b3554ad1fc6952e0d60634d4f9ab25d71"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "a5beaffaf2f2812e0abcaa4c309cdc48ab81c1adddcb45d4df8a4e45a9108b2e"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "vf2-speedup-networkx",
+      "passed": true,
+      "error": null,
+      "result_sha256": "b2e6dbf35b44b2141c8e209f377e2be3d53f187463cdbdca5df256df9964182d"
+    },
+    {
+      "agent": "xi",
+      "run": 4,
+      "task": "wal-recovery-ordering",
+      "passed": true,
+      "error": null,
+      "result_sha256": "ef4a2af611d9b5bd1a3047490618ce6ea4e8ccf4ec43dfafdebc7f838738c366"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "bun-sourcemap-leak",
+      "passed": true,
+      "error": null,
+      "result_sha256": "22a6a043c56d617f4cfb083ebdbd6a0e94f12abbdee45569578f621d80ee8b13"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "895243d4929ff117245be85d9d54ebf83debddfcd2c3344b64703792e8524c44"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "interleaved-vigenere",
+      "passed": false,
+      "error": null,
+      "result_sha256": "13b9ae3dece91e39b0e6ecb0ef8697f54be0e9542a5f876ea7ff8685491e050a"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "kv-live-surgery",
+      "passed": true,
+      "error": null,
+      "result_sha256": "3800dbddb107848914fbec829d7616bd840888caada71c9c864857e5bd0cbad1"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "b557cee3c8c0cf42e6b0e20c8ae2b804aaf9966bfb610e3d66756bb96fc789ab"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "cf8d7e643b0157abbc52ff190d7ba7eb3c2cd2a55cf92033ee2cdb1e215e97a7"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "d48d1499ba972f6ff2335b71d2e02b342286f94bd3d9b74d500a5e1b66061145"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "25c42f0635cba06a2a9bdb9a75d3ebe57395985a1add7f681ba7fda87456fc91"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "07c5b2e20401f4540b84d8c6a401016f2f1942222ba12ee3c329369379e8c33a"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "a443e5a1713ecff8a23148aff60cbed4b784a0128e10990cecf1e4dda4690f94"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "dfabfa15aea891831071ea58850a2df070a572777fa49bf377f600b27ef7453d"
+    },
+    {
+      "agent": "xi",
+      "run": 5,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "c4f86ed64178f3bdee078364cd0555611d3edefb9e08f03074922dc46699ae3d"
     }
   ]
 }

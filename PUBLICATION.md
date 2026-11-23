@@ -54,8 +54,8 @@ more than one round, the page shows a Mean tab first: the mean ± the sample sta
 the values per round, and the passes per task. Then it shows one tab for each round. The URL keeps
 the selected tab (`view=round-2`) and the General or Normalized tab (`tab=normalized`).
 
-The comparison selects 12 tasks for each of six agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
-Wisp and Kmet. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
+The comparison selects 12 tasks for each of seven agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
+Wisp, Kmet and Xi. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
 `r5`), natively on arm64. Wisp (pin `9cddabc`) has the five rounds of run `gpt-wisp-5818f6d`
 (`gpt-wisp-5818f6d/r1` to `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
@@ -71,6 +71,15 @@ One trial is a repeat: the `kmet-eval-only` trial of interleaved-vigenere in `km
 `kmet-retry-0557d54/r1` at the same harness commit. The provider connection failed (TLS `bad_record_mac`)
 and Kmet did not retry. `public_report.REPLACED` names the repeat. The report accepts a repeat only for a trial
 with an error and with the same task checksum, agent version and setup. Other trials are not substituted.
+Xi 0.6.0 has the five rounds of run `xi-93f57e6`, natively on arm64, with the shared GPT settings and the
+local trace patch. In seven Xi trials the Codex backend failed (TLS handshake `EPROTO` or
+`server_is_overloaded`) and Xi did not retry: kv-live-surgery and photonic-waveguide-routing in round 2,
+react-lead-form and vf2-speedup-networkx in round 4, and bun-sourcemap-leak, kv-live-surgery and
+vf2-speedup-networkx in round 5. Each was repeated at the same harness commit until one attempt had no
+provider failure, in the repeat rounds `xi-retry-93f57e6/r1` to `r6`. A round has each task once. Repeats that
+failed again stay sealed but are not selected. In the five main rounds, 7 of 1958 model requests failed,
+and Xi ends a session on the first failed request. The comparison thus measures how Xi
+solves the tasks over a working connection, not how it handles provider failures.
 The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
 In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
 subagents was not on PATH. Subagent tokens are part of the Wisp cost.
