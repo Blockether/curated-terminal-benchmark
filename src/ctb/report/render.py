@@ -18,7 +18,6 @@ from itertools import repeat
 from pathlib import Path
 
 from ctb.metrics import list_price
-from ctb.report.comparison import cohorts
 
 STATIC = Path(__file__).parent / "static"
 ASSETS = ("tokens.css", "base.css", "report.css", "pele.global.js", "report.js", "logo.svg")
@@ -317,8 +316,10 @@ def bar_chart(
     return diagram(source, caption)
 
 
-def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
-    """Pass rate, cost and tokens of each agent as bar charts; on shared tasks no pass rate."""
+def agent_charts(trials: list[dict], *, rounds: bool = False) -> str:
+    """Pass rate, cost and tokens of each agent as bar charts.
+
+    With `rounds`, a total is the mean over the complete rounds of each agent of its round total."""
     by_agent: dict[str, list[dict]] = defaultdict(list)
     for trial in trials:
         by_agent[trial["agent"]].append(trial)
@@ -326,30 +327,34 @@ def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
         return ""
     groups = [group for _, group in sorted(by_agent.items())]
     names = ", ".join(f'"{mermaid_text(agent)}"' for agent in sorted(by_agent))
-    scope = "on the shared tasks" if shared else "(not task-normalized)"
-    charts = []
-    if not shared:
-        rates = [round(100 * sum(t["passed"] for t in group) / len(group)) for group in groups]
-        charts.append(bar_chart(names, rates, "Pass rate (%)", "Pass rate by agent", top=100))
+    scope = "per round (mean of rounds, not task-normalized)" if rounds else "(not task-normalized)"
+    rates = [round(100 * sum(t["passed"] for t in group) / len(group)) for group in groups]
+    caption = "Pass rate by agent over all rounds" if rounds else "Pass rate by agent"
+    charts = [bar_chart(names, rates, "Pass rate (%)", caption, top=100)]
     used = {id(t): usage(t) for t in trials}
 
     def recorded(value, axis, caption, *, total=sum, tokens=False, top=None, digits=None):
         """One bar per agent: `total` of `value` over the trials that recorded it.
 
-        An agent with no recorded value has no bar, and the caption counts the trials left out."""
-        kept = []
+        With `rounds`, a sum is the mean of the round sums; a round where a trial has no value
+        stays out. An agent with no recorded value has no bar, and the caption counts what is
+        left out."""
+        kept, missing = [], 0
+        by_round = rounds and total is sum
         for agent, group in sorted(by_agent.items()):
-            values = [v for v in map(value, group) if v is not None]
-            if values:
-                kept.append((agent, total(values)))
+            values = per_round(group, value) if by_round else [value(t) for t in group]
+            known = [v for v in values if v is not None]
+            missing += len(values) - len(known)
+            if known:
+                kept.append((agent, statistics.fmean(known) if by_round else total(known)))
         if not kept:
             return
         size = 1
         if tokens:
             unit, size = ("millions", 1e6) if max(v for _, v in kept) >= 1e6 else ("thousands", 1e3)
             axis, digits = f"{axis} ({unit})", 1
-        missing = sum(value(t) is None for t in trials)
-        note = f"; {missing} trials without a recorded value left out" if missing else ""
+        left = "agent rounds" if by_round else "trials"
+        note = f"; {missing} {left} without a recorded value left out" if missing else ""
         charts.append(
             bar_chart(
                 ", ".join(f'"{mermaid_text(agent)}"' for agent, _ in kept),
@@ -364,7 +369,10 @@ def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
         given = sum(i for i, _ in pairs)
         return round(100 * sum(c for _, c in pairs) / given) if given else 0
 
-    recorded(lambda t: t["facts"]["cost"], "Cost (USD)", f"Total cost by agent {scope}", digits=2)
+    cost_caption = "Cost" if rounds else "Total cost"
+    recorded(
+        lambda t: t["facts"]["cost"], "Cost (USD)", f"{cost_caption} by agent {scope}", digits=2
+    )
     recorded(
         lambda t: used[id(t)][0],
         "Input tokens",
@@ -385,21 +393,157 @@ def agent_charts(trials: list[dict], *, shared: bool = False) -> str:
     return '<div class="charts">' + "".join(charts) + "</div>"
 
 
-def normalized(trials: list[dict]) -> tuple[list[dict], list[str]]:
-    """The one attempt of each agent on each task that every agent of the same model passed."""
-    keep = []
-    for group in cohorts(trials, strict=False, basis="solved"):
-        solved, agents = set(group["solved"]), set(group["agents"])
-        keep += [
-            t
-            for t in trials
-            if t.get("model") == group["model"] and t["agent"] in agents and t["task"] in solved
+#: The task-normalized values: name, axis label, value of one trial.
+NORMALIZED = (
+    ("cost", "Relative cost", lambda t: t["facts"]["cost"]),
+    ("run_ms", "Relative run time", lambda t: t["facts"].get("run_ms")),
+    ("input", "Relative input tokens", lambda t: usage(t)[0]),
+    ("output", "Relative output tokens", lambda t: usage(t)[2]),
+    ("tool_calls", "Relative tool calls", lambda t: t["summary"].get("tool_calls")),
+)
+
+
+def normalized(trials: list[dict]) -> tuple[dict, list[str], list[str]]:
+    """Task-normalized values of each agent: (rows by agent, solvable tasks, compared tasks).
+
+    A task is one model, task name and task checksum. A solvable task is one that an agent
+    passed; the pass rate counts only those. A compared task is one that two or more agents
+    passed. On it, the value of an agent is the geometric mean of its passed attempts, and the
+    baseline is the median of these agent values, so an agent with more attempts does not move
+    it. The relative value of an agent is the geometric mean over its compared tasks of its
+    value divided by the baseline: each task has equal weight, and 1.0 is the typical value.
+    A value that is not recorded or not positive stays out. The cache hit rate is the cached
+    share of input on the passed attempts of the compared tasks."""
+    key = lambda t: (t.get("model"), t["task"], t.get("task_checksum"))
+    passes: dict = defaultdict(lambda: defaultdict(list))
+    for t in trials:
+        if t["passed"]:
+            passes[key(t)][t["agent"]].append(t)
+    compared = {k for k, by_agent in passes.items() if len(by_agent) >= 2}
+    rows: dict = {}
+    for agent in sorted({t["agent"] for t in trials}):
+        mine = [t for t in trials if t["agent"] == agent and key(t) in passes]
+        rows[agent] = {
+            "trials": len(mine),
+            "passed": sum(t["passed"] for t in mine),
+            "tasks": sum(agent in passes[k] for k in compared),
+        }
+    for name, _, value in NORMALIZED:
+        logs: dict = defaultdict(list)
+        for k in compared:
+            means = {}
+            for agent, tries in passes[k].items():
+                known = [math.log(v) for v in map(value, tries) if v is not None and v > 0]
+                if known:
+                    means[agent] = statistics.fmean(known)
+            if len(means) >= 2:
+                baseline = statistics.median(means.values())
+                for agent, mean in means.items():
+                    logs[agent].append(mean - baseline)
+        for agent, row in rows.items():
+            row[name] = math.exp(statistics.fmean(logs[agent])) if logs[agent] else None
+    for agent, row in rows.items():
+        pairs = [
+            usage(t)[:2]
+            for k in compared
+            for t in passes[k].get(agent, [])
+            if None not in usage(t)[:2]
         ]
-    return keep, sorted({t["task"] for t in keep})
+        given = sum(i for i, _ in pairs)
+        row["cache"] = round(100 * sum(c for _, c in pairs) / given) if given else None
+    names = lambda ks: sorted({k[1] for k in ks}, key=task_name)
+    return rows, names(passes), names(compared)
+
+
+def ratio(value: float | None) -> str | None:
+    return None if value is None else f"{value:.2f}×"
+
+
+def normalized_view(trials: list[dict]) -> str:
+    """Pass rate on the solvable tasks and the task-normalized values, as charts and a table."""
+    rows, solvable, compared = normalized(trials)
+    if not solvable:
+        return '<p class="empty">No agent passed a task.</p>'
+    agents = sorted(rows)
+    names = ", ".join(f'"{mermaid_text(agent)}"' for agent in agents)
+    rates = [round(100 * rows[a]["passed"] / rows[a]["trials"]) for a in agents]
+    charts = [
+        bar_chart(
+            names,
+            rates,
+            "Pass rate (%)",
+            "Pass rate by agent on the tasks that an agent passed",
+            top=100,
+        )
+    ]
+    for name, axis, _ in NORMALIZED:
+        if name == "run_ms" or name == "tool_calls":
+            continue
+        kept = [(a, rows[a][name]) for a in agents if rows[a][name] is not None]
+        if kept:
+            charts.append(
+                bar_chart(
+                    ", ".join(f'"{mermaid_text(a)}"' for a, _ in kept),
+                    [round(v, 2) for _, v in kept],
+                    f"{axis} (1 = task median)",
+                    f"{axis} by agent on the tasks that two or more agents passed",
+                )
+            )
+    cached = [(a, rows[a]["cache"]) for a in agents if rows[a]["cache"] is not None]
+    if cached:
+        charts.append(
+            bar_chart(
+                ", ".join(f'"{mermaid_text(a)}"' for a, _ in cached),
+                [v for _, v in cached],
+                "Cached share of input (%)",
+                "Cache hit rate by agent on the tasks that two or more agents passed",
+                top=100,
+            )
+        )
+    head = [
+        th("Agent", "text"),
+        th("Trials"),
+        th("Passed"),
+        th("Pass rate"),
+        th("Compared tasks"),
+        *(th(axis) for _, axis, _ in NORMALIZED),
+        th("Cache hit rate"),
+    ]
+    body = []
+    for agent in agents:
+        row = rows[agent]
+        body.append(
+            f'<tr><th scope="row" data-v="{esc(agent)}">{esc(agent)}</th>'
+            + td(number(row["trials"]), row["trials"])
+            + td(number(row["passed"]), row["passed"])
+            + td(percent(row["passed"], row["trials"]), row["passed"] / row["trials"])
+            + td(number(row["tasks"]), row["tasks"])
+            + "".join(
+                td(ratio(row[name]), -1 if row[name] is None else row[name])
+                for name, _, _ in NORMALIZED
+            )
+            + td(
+                None if row["cache"] is None else f"{row['cache']}%",
+                -1 if row["cache"] is None else row["cache"],
+            )
+            + "</tr>"
+        )
+    hint = (
+        f"Pass rate on the {len(solvable)} tasks that an agent passed. Relative values compare "
+        f"the passed attempts on the {len(compared)} tasks that two or more agents passed: for "
+        "each task, an agent's value is divided by the median of the agents, and each task has "
+        "equal weight. 1.00× is the typical value; 0.80× is 20% less."
+        if compared
+        else f"Pass rate on the {len(solvable)} tasks that an agent passed. No task was passed "
+        "by two or more agents, so there are no relative values."
+    )
+    return f'<p class="hint">{esc(hint)}</p><div class="charts">{"".join(charts)}</div>' + table(
+        head, body, cls="sortable", empty="No trials were found."
+    )
 
 
 def agent_view(trials: list[dict], prefix: str = "") -> str:
-    """One agent table in two tabs: all attempts, and only the tasks that every agent passed.
+    """One agent table in two tabs: all attempts, and the task-normalized values.
 
     `prefix` keeps the element ids unique when a page shows this view once for each round."""
     head = [
@@ -419,20 +563,19 @@ def agent_view(trials: list[dict], prefix: str = "") -> str:
     general = agent_charts(trials) + table(
         head, agent_rows(trials), cls="sortable", empty="No trials were found."
     )
-    shared, tasks = normalized(trials)
-    if tasks:
-        names = ", ".join(task_name(t) for t in tasks)
-        normal = (
-            f'<p class="hint">Tasks passed by every agent, one attempt each: {esc(names)}.</p>'
-            + agent_charts(shared, shared=True)
-            + table(head, agent_rows(shared), cls="sortable", empty="No trials were found.")
-        )
-    else:
-        normal = '<p class="empty">No task was passed by every agent.</p>'
+    return normal_tabs(general, normalized_view(trials), prefix)
+
+
+def normal_tabs(general: str, normal: str, prefix: str) -> str:
     return tabs(
         [
             ("general", "General", "All attempts, failures included", general),
-            ("normalized", "Normalized", "Only the tasks that every agent passed", normal),
+            (
+                "normalized",
+                "Normalized",
+                "Each task has equal weight, against the task median",
+                normal,
+            ),
         ],
         "Agent view",
         prefix=prefix,
@@ -514,8 +657,9 @@ def count(value: float) -> str:
     return f"{value:,.1f}"
 
 
-def mean_view(trials: list[dict]) -> str:
-    """The values of each agent per round, as mean ± standard deviation, and its passes per task."""
+def mean_view(trials: list[dict], prefix: str = "") -> str:
+    """The values of each agent per round, as mean ± standard deviation, and its passes per task,
+    next to the task-normalized values over all rounds."""
     by_agent: dict[str, list[dict]] = defaultdict(list)
     for trial in trials:
         by_agent[trial["agent"]].append(trial)
@@ -563,9 +707,6 @@ def mean_view(trials: list[dict]) -> str:
             )
             + "</tr>"
         )
-    names = ", ".join(f'"{mermaid_text(agent)}"' for agent in agents)
-    rates = [round(100 * sum(t["passed"] for t in by_agent[a]) / len(by_agent[a])) for a in agents]
-    chart = bar_chart(names, rates, "Pass rate (%)", "Pass rate by agent over all rounds", top=100)
     task_rows = []
     for task in sorted({t["task"] for t in trials}, key=task_name):
         cells = ""
@@ -577,8 +718,8 @@ def mean_view(trials: list[dict]) -> str:
             f'<tr><th scope="row" data-v="{esc(task_name(task))}" title="{esc(task)}">'
             f"{esc(task_name(task))}</th>{cells}</tr>"
         )
-    return (
-        f'<div class="charts">{chart}</div>'
+    general = (
+        agent_charts(trials, rounds=True)
         + table(head, rows, cls="sortable", empty="No trials were found.")
         + '<h3 class="view-heading">Passes per task</h3>'
         + table(
@@ -588,6 +729,7 @@ def mean_view(trials: list[dict]) -> str:
             empty="No trials were found.",
         )
     )
+    return normal_tabs(general, normalized_view(trials), prefix)
 
 
 def scopes(trials: list[dict]) -> list[tuple[str, str, str, list[dict]]]:
@@ -709,7 +851,7 @@ def scope_readings(trials: list[dict], kind: str) -> str:
 
 
 def agents_block(trials: list[dict], kind: str, prefix: str) -> str:
-    return mean_view(trials) if kind == "mean" else agent_view(trials, prefix)
+    return mean_view(trials, prefix) if kind == "mean" else agent_view(trials, prefix)
 
 
 def table(head: list[str], rows: list[str], *, cls: str = "", empty: str, attrs: str = "") -> str:

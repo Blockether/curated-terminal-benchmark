@@ -117,9 +117,9 @@ def test_build_writes_the_index_and_one_page_per_trial(tmp_path):
     assert "<script>x</script>" not in index and "<script>x</script>" not in page
     assert "&lt;script&gt;x&lt;/script&gt;" in index
     assert f'href="trial/{trial["id"]}.html"' in index
-    # One agent table in two tabs; with one agent, no task is shared by every agent.
+    # One agent table in two tabs; with one agent, no task has relative values.
     assert 'aria-label="Agent view"' in index and 'data-tab-panel="normalized"' in index
-    assert "No task was passed by every agent." in index and "data-compare-picker" not in index
+    assert "no relative values" in index and "data-compare-picker" not in index
     # Every harness gets the same call facts; run totals fill tokens that no call records.
     calls = page[page.index('id="provider"') : page.index('id="tools"')]
     labels = re.findall(r"<dt>([^<]+)</dt>", calls)
@@ -435,7 +435,8 @@ def test_diagrams_hold_mermaid_source_that_pele_draws(tmp_path):
     trials = render.build(jobs, out, workers=1)
     index = (out / "index.html").read_text()
     page = (out / "trial" / f"{trials[0]['id']}.html").read_text()
-    assert index.count('<pre class="mermaid"') == 2
+    # The pass rate of all attempts and the pass rate of the Normalized tab, which a passed task has.
+    assert index.count('<pre class="mermaid"') == 3
     assert 'x-axis ["vis-native"]' in index and "bar [100]" in index
     assert "pele.global.js" in index and (out / "pele.global.js").is_file()
     # Phase times are absolute UTC dates, so the chart does not move with the reader's zone.

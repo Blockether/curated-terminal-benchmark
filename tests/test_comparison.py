@@ -73,26 +73,43 @@ def test_unknown_provenance_and_extreme_ratios():
     assert group["rows"]["b"]["cost_ratio"] is None
 
 
-def test_normalized_view_keeps_only_tasks_that_every_agent_passed_once():
+def test_normalized_values_compare_each_agent_with_the_task_median_of_the_agents():
     from ctb.report.render import normalized
 
+    def attempt(agent, task, cost, passed=True):
+        return trial(agent, task, passed=passed, cost=cost) | {
+            "events": [],
+            "harbor": {"input": 100 * cost, "cache": 50 * cost, "output": 10 * cost},
+            "summary": {"tool_calls": cost},
+        }
+
     data = [
-        trial("a", "x"),
-        trial("b", "x"),
-        trial("c", "x"),
-        trial("a", "y"),
-        trial("b", "y", passed=False),
-        trial("c", "y"),
-        trial("a", "z"),
-        trial("b", "z"),
-        trial("c", "z"),
-        trial("c", "z"),
-        trial("a", "extra"),
+        # x: a passes twice (geometric mean 2), b 2, c 8: the median agent value is 2.
+        attempt("a", "x", 1),
+        attempt("a", "x", 4),
+        attempt("b", "x", 2),
+        attempt("c", "x", 8),
+        # y: only a passes, so y counts for the pass rate but has no comparison.
+        attempt("a", "y", 9),
+        attempt("b", "y", 1, passed=False),
+        attempt("c", "y", 1, passed=False),
+        # z: nobody passes, so z is in no value.
+        attempt("a", "z", 1, passed=False),
+        attempt("c", "z", 1, passed=False),
     ]
-    keep, tasks = normalized(data)
-    assert tasks == ["x"]
-    assert sorted(t["agent"] for t in keep) == ["a", "b", "c"]
-    assert normalized([trial("a", "x"), trial("b", "x", passed=False)]) == ([], [])
+    rows, solvable, compared = normalized(data)
+    assert (solvable, compared) == (["x", "y"], ["x"])
+    assert [(r["trials"], r["passed"], r["tasks"]) for r in rows.values()] == [
+        (3, 3, 1),
+        (2, 1, 1),
+        (2, 1, 1),
+    ]
+    assert [round(rows[a]["cost"], 6) for a in "abc"] == [1.0, 1.0, 4.0]
+    assert [round(rows["c"][k], 6) for k in ("input", "output", "tool_calls")] == [4.0] * 3
+    assert rows["a"]["cache"] == 50
+    # One agent alone has no comparison, but its pass rate stays.
+    rows, solvable, compared = normalized([attempt("a", "x", 1)])
+    assert (solvable, compared, rows["a"]["passed"], rows["a"]["cost"]) == (["x"], [], 1, None)
 
 
 def test_selection_requires_every_selected_agent_in_the_same_setup():
