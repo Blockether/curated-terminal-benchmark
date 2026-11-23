@@ -79,7 +79,9 @@ class Samizdat(CuratedAgent):
         return (
             "root=$PWD; "
             f"printf %s {shlex.quote(instruction)} > $HOME/problem.txt; "
-            "export SAMIZDAT_CONFIG_FILE=$HOME/samizdat.edn HARNESS_ROOT=$root "
+            # jolt caps its heap at 25% of the container: 1 GiB in a 4 GB task ran out of memory
+            # in round samizdat-5f7010e/r1; 2 GiB, the cap of the 8 GB tasks, did not.
+            "export JOLT_MAX_HEAP=2g SAMIZDAT_CONFIG_FILE=$HOME/samizdat.edn HARNESS_ROOT=$root "
             "HARNESS_DB=/logs/agent/samizdat.sqlite3 CTB_PROBLEM_FILE=$HOME/problem.txt; "
             f"{SAMIZDAT} --headless > /logs/agent/samizdat-server.log 2>&1 & server=$!; "
             "python3 /installed-agent/samizdat_drive.py > /logs/agent/samizdat-drive.log 2>&1; code=$?; "

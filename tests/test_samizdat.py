@@ -37,6 +37,8 @@ def test_samizdat_command_runs_one_run_in_the_task_directory(proxy_vars):
     assert "HARNESS_ROOT=$root" in command and "samizdat_drive.py" in command
     assert "--headless" in command
     assert "HARNESS_DB=/logs/agent/samizdat.sqlite3" in command
+    # The same heap in every task; 25% of a 4 GB container ran out of memory.
+    assert "export JOLT_MAX_HEAP=2g " in command
     assert "printf %s 'say '\"'\"'hi'\"'\"'' > $HOME/problem.txt" in command
     assert command.endswith('rm -rf "$root/.samizdat"; exit $code')
 
