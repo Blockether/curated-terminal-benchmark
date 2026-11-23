@@ -1,0 +1,135 @@
+{
+  "round": "xi-retry-93f57e6/r3",
+  "sealed_at": "2026-11-23T09:56:08Z",
+  "runs": [
+    {
+      "started_at": "2026-11-23T08:50:58Z",
+      "commit": "93f57e6ff33853fb407cc33db6c0683ce1690a20",
+      "dirty": false,
+      "pins": {
+        "python_toolkit": {
+          "cpython": "3.14.7+20260825",
+          "requirements_sha256": "b2206a0ac8af1e701d37fa5e4d55d7ee1d99afc809573e14f431a249e756925d",
+          "setup_note_sha256": "151ac2d2977186178456ed690b2f827311001fd654d61f27634166f5ccb6757c",
+          "inventory_schema": 1
+        },
+        "kmet": "b52aa1186c5f6e3968b15f2bfc23ea59e5851f07",
+        "samizdat": "9411f00c87d5ddb725f46eb8794e0d93a479835f",
+        "jolt": "v0.8.23",
+        "wisp": "9cddabcdd3cbff0b461d5026482658fdaba6e3c4",
+        "harbor": "0.24.0",
+        "harnesses": {
+          "codex": "0.166.0",
+          "opencode": "2.2.5",
+          "pi": "1.5.0",
+          "xi": "0.6.0"
+        },
+        "models": {
+          "openai": "openai/gpt-6.1-sol"
+        },
+        "effort": "medium",
+        "task_fixes": [
+          "bun-sourcemap-leak/instruction.md",
+          "interleaved-vigenere/environment/Dockerfile",
+          "interleaved-vigenere/task.toml",
+          "interleaved-vigenere/tests/Dockerfile",
+          "interleaved-vigenere/tests/data/english_bigrams.json",
+          "interleaved-vigenere/tests/data/english_unigrams.json",
+          "interleaved-vigenere/tests/data/sample_ciphertext.txt",
+          "interleaved-vigenere/tests/data/sample_plaintext.txt",
+          "interleaved-vigenere/tests/data/words.txt",
+          "interleaved-vigenere/tests/test.sh",
+          "photonic-waveguide-routing/tests/test.sh",
+          "react-lead-form/tests/test_outputs.mjs"
+        ]
+      },
+      "artifacts": {
+        "cpython-3.14.7+20260825-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz": "7f0b801b0ba2c74531cd2e66ee898569cdf1f323a24383576f2a6761001e01f1",
+        "cpython-3.14.7+20260825-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz": "a0f39e822fd3b96a2605f30f954acf9a2cdf91faa1385a13e24bc407a41e05ea",
+        "ctb-python-3.14.7-arm64-b2206a0ac8af.tar.gz": "48dfa67eb4f4283926752ac654e665e2ce6aaaa9a8c860cbf5528c7b5b7b055d",
+        "ctb-python-3.14.7-b2206a0ac8af.tar.gz": "b689f13d6a863cbf1c611c9595330a92b49e5a0443786f09a729b86d7b2ed8f8",
+        "dirge-45377633-tools-v4-x86_64-unknown-linux-musl.tar.gz": "31d1b8e1e6f62d64b8f45b3b75093444e9e7da4adaf34808abab1783129f30ef",
+        "dirge-45377633-usage-v3-x86_64-unknown-linux-musl.tar.gz": "7942a1cb39fd3250d287bfc2d59f3dc8db83ff0429438adb9358a81a63f2d8ee",
+        "jolt-v0.8.20-x86_64-linux.tar.gz": "5400ed3c46d704ce30693b68edaa7998c248023f07b9df727447883343fcd050",
+        "kmet-6221f8dd-linux-aarch64.tar.gz": "eb94e746f67c94f2cd6bea585b309e362b0d2b805d1780558e39e1ab423a8be9",
+        "kmet-6221f8dd-linux-amd64.tar.gz": "a143596b607760fc529a10c0e3407cdd1b16b3364c041a26c7bc001cd8167a2b",
+        "kmet-b52aa118-a3629ead-linux-aarch64.tar.gz": "6fa029af192a979d2dde78c8069d19b191a2283e62a887cf917cd1ed3aac56de",
+        "kmet-d7e1c024-linux-amd64.tar.gz": "678eddb6502977fd562f1cbb4f6cb796142b30b85fde207e75b47bd860b5bfed",
+        "kmet-e159cfce-linux-aarch64.tar.gz": "d75b2efb977ad7364b5e922f5309c8abc4f49d3b1f3db2cd04bebc64dc83829c",
+        "kmet-e2f9684f-linux-amd64.tar.gz": "c9f0df050bff5b84c3fa34fadc49201b97fe8867dc4b008f86c7e3f48afbe43f",
+        "kmet-f07fa90e-aaa6afd8-linux-aarch64.tar.gz": "317b77f5a0c32bb5d2b83757dddfa60bbfd4c679cb292e02dd2e1fc130d64121",
+        "kmet-f07fa90e-linux-aarch64.tar.gz": "bdcdf9ca96cedcbb15b1b2ed08d5d19a998f0b7b8618f0b51d45a4bad0c0816e",
+        "kmet-f249f0bf-linux-amd64.tar.gz": "58d499443706baa30b3309d6a9b2c29ded3c4759c93a0caf21fbe65aa1669b0e",
+        "samizdat-9411f00c-x86_64-linux.tar.gz": "78e59342c1f21d9fc07b9bf4e55f5fa1514c8489ccd10df2360fa6c1e59614a2",
+        "samizdat-97727796-x86_64-linux.tar.gz": "20d6c3456eef2ed291cb710b0f7273bab1d857f9580533abdcc6c95f6a398679",
+        "samizdat-daf7a373-aarch64-linux.tar.gz": "ed90d94e7c9618d904e5b8c5fbf51c953e8eebdce419f3d05a438f12491f1e89",
+        "samizdat-v0.1.0-x86_64-linux.tar.gz": "20b3f392489cd6f729194a220bf34f49ea29ca8154a75b9c860eea5de4950a80",
+        "wisp-13e25529-18f3f123.tar.gz": "33e17d0ff0c4afd62758e271b0a1b359b9c44f5adb5c108038070faf4f5bce73",
+        "wisp-9cddabcd-18f3f123.tar.gz": "a2e27bc72b113373df0f042f41a44ffae5520909fdb79639f1cbc1ed390b4fdd",
+        "wisp-e0d468f7-18f3f123.tar.gz": "8aa0e1b3cdb8f983dbaa7e434f913edfd7893358e8665ddcb0a212cd2b0078db",
+        "xi-0.6.0-0d8f4020.tar.gz": "652ff4ef565c54c70da9327b21e00675210f01999c74b2aa2e06e8c4fbe09265",
+        "xi-0.6.0-f072211f.tar.gz": "94b70428f990fd679a00bc21d5d03a12c91a79f508a6771f264400be35402645"
+      },
+      "agents": "xi",
+      "models": "openai",
+      "tasks": "react-lead-form,vf2-speedup-networkx,kv-live-surgery",
+      "parallel": 1,
+      "timeout_multiplier": 0.25,
+      "engine": {
+        "arch": "arm64",
+        "emulated": false
+      }
+    }
+  ],
+  "rows": [
+    {
+      "agent": "xi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/kv-live-surgery",
+      "reward": 1.0,
+      "error": null,
+      "input": 3399805,
+      "cache": 1423360,
+      "output": 17019,
+      "agent_version": "0.6.0",
+      "task_checksum": "aa8908ef4bda241ef495fbd1dd49c04f9eaa544c17d04698d9a9f43c7569edf4",
+      "started_at": "2026-11-23T09:13:35.211949Z",
+      "finished_at": "2026-11-23T09:29:36.841600Z",
+      "result": "jobs/xi-retry-93f57e6/r3/xi__openai__kv-live-surgery/kv-live-surgery__mBzBEKJ/result.json",
+      "result_sha256": "3800dbddb107848914fbec829d7616bd840888caada71c9c864857e5bd0cbad1"
+    },
+    {
+      "agent": "xi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/react-lead-form",
+      "reward": 1.0,
+      "error": null,
+      "input": 911974,
+      "cache": 404480,
+      "output": 14592,
+      "agent_version": "0.6.0",
+      "task_checksum": "fea940cc2c3abc1851d98af83b1a723745210d4753d0900045e5473881bf3e1d",
+      "started_at": "2026-11-23T08:51:10.615526Z",
+      "finished_at": "2026-11-23T09:01:05.461039Z",
+      "result": "jobs/xi-retry-93f57e6/r3/xi__openai__react-lead-form/react-lead-form__zsasp7W/result.json",
+      "result_sha256": "ecd0c6dc64952298688a26f2c2fd8e5b3554ad1fc6952e0d60634d4f9ab25d71"
+    },
+    {
+      "agent": "xi",
+      "model": "openai/gpt-6.1-sol",
+      "task": "terminal-bench/vf2-speedup-networkx",
+      "reward": 1.0,
+      "error": "NonZeroAgentExitCodeError",
+      "input": 443582,
+      "cache": 242944,
+      "output": 14113,
+      "agent_version": "0.6.0",
+      "task_checksum": "fc4009eaae2be6e65a25c587640952adcfb7996429b7ba5ac3e3332cd3a980d7",
+      "started_at": "2026-11-23T09:01:07.328647Z",
+      "finished_at": "2026-11-23T09:12:50.496366Z",
+      "result": "jobs/xi-retry-93f57e6/r3/xi__openai__vf2-speedup-networkx/vf2-speedup-networkx__FfBLbkB/result.json",
+      "result_sha256": "a21a45c63d0cc68b172745386a92632f0ab600a92452b0e6820120c3de7b9a52"
+    }
+  ],
+  "digest": "005ae51666af46cb933a3e5a9f26cd1ea34a715ca42f5fad6bed3a5c7f85f222"
+}
