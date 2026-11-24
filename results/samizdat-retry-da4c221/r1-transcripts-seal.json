@@ -1,0 +1,156 @@
+{
+  "files": [
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/ctb-runs.json",
+      "bytes": 4736,
+      "sha256": "75c7513888f1cf7314fd73279189f5ca7897d74b86d55aae70f6891ae85be106"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/ctb-runs.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/config.json",
+      "bytes": 766,
+      "sha256": "7e9b241605436fb411522b455aa690c42036eb89f1544acf40c69610574dd6e1"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/job.log",
+      "bytes": 10144,
+      "sha256": "cdb47832ecf63a8a91085ba1f4d8fb4fcb5796f055d0113e7b93c99c50005e56"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/lock.json",
+      "bytes": 2304,
+      "sha256": "3daf304e193340d5f015f8f1e07d298597eb0a579d08f7bd1722184bf5419ac8"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "6e00158d38ae39c571de0ef8503db61a43a37233f83ee14c214a971e3de2752f"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/resources.jsonl",
+      "bytes": 51644,
+      "sha256": "e29b6381c39010a235f39712910a94c432d2103a5f9adc4f2f733afdd5becaa7"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat-drive.log",
+      "bytes": 52,
+      "sha256": "159552fa9e73972ccf47203d65a0748f8750c51ed125b3f77b59fd89b87b3420"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat-run.json",
+      "bytes": 3811,
+      "sha256": "ddc4790cd1ce8cde9ddf91841762d36b8c8eacf49d428ed89cff49dcf637080e"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat-server.log",
+      "bytes": 1183,
+      "sha256": "2754e690f8772c0bd2602653aaae778a0e07d4b44df4dd4c87f49a729b7fc861"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat-transcript.json",
+      "bytes": 108853,
+      "sha256": "e7567d65601f7946d5e9980eb0e1ddb0063f014b4f92442174bd63543bb78bb6"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat.sqlite3",
+      "bytes": 2203648,
+      "sha256": "ef1771e0d4f4c18f1c04c3b64f873c757c0f18bf625220a58a5ac4f6fd6ba8c7"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat.sqlite3-shm",
+      "bytes": 32768,
+      "sha256": "a1e208070b5d7e3968453befbb7fc4432f4e0df59b8c66fa49b67331c4e33521"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/samizdat.sqlite3-wal",
+      "bytes": 4136512,
+      "sha256": "bbc5337258b295af0bddffb0d60c7f6a9b8ab25d1442a83bb3a93b89a58d08ad"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/artifacts/app/harmony.mxl",
+      "bytes": 1912,
+      "sha256": "857c753dfc590dfec81f1d1cb330f83dadb2bfa1da8322b85286a8f26aa52391"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/artifacts/manifest.json",
+      "bytes": 348,
+      "sha256": "402f4e74ed39302c0c382a5503356c481442c744180dcbe7be820282696903f1"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/config.json",
+      "bytes": 735,
+      "sha256": "e0aa630b035ba9f007d03cd64c80f6009436d25a245e13331c97999c5ade224f"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/images-environment.json",
+      "bytes": 276,
+      "sha256": "b1ff1da3536ca628bee85ee36f8487e2c365a2bc046a3591bdcadfd2f9035885"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/images-tests.json",
+      "bytes": 276,
+      "sha256": "b1ff1da3536ca628bee85ee36f8487e2c365a2bc046a3591bdcadfd2f9035885"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/lock.json",
+      "bytes": 1254,
+      "sha256": "769795767c712357ce1645e3bf10e493625f88af6feed01df09ece29d60fb5f6"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/result.json",
+      "bytes": 4334,
+      "sha256": "778cdff027d2e7ea0cbd61353cc5317b3deb69583db5f63a8fa46b448e96b01a"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/trial.log",
+      "bytes": 10064,
+      "sha256": "d0525fb6d54f1edd916efa2d2b015263f97545cd9b7d613b8fa46da6da84c339"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/verifier/test-stdout.txt",
+      "bytes": 1302,
+      "sha256": "ed421caefdf6e4232f5e34f9c9a6b04857eaf5b95962b57fd603f37d6c3b27a9"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "be52e8f2d4104cae8cebe310d7b6533317a43e1f46625e52cddb95c2ae9935ff"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/music-harmony__mejjGjw/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/samizdat-retry-da4c221/r1/samizdat__openai__music-harmony/result.json",
+      "bytes": 1132,
+      "sha256": "ff4e06b2c8035252b423b46eb16768f0099998c004e944b97e753e008f436135"
+    },
+    {
+      "path": "results/samizdat-retry-da4c221/r1.json",
+      "bytes": 5752,
+      "sha256": "51868e9e2df8b15152374db2642572296f6950db0fc5a7cc847128e0b35be259"
+    }
+  ],
+  "seals": [
+    {
+      "round": "samizdat-retry-da4c221/r1",
+      "digest": "1db4da980b6574d3bb595a0e4d9cc4778ead12640ca12a6b4e2703c110ca57e4"
+    }
+  ],
+  "digest": "0860aea95d19bf8d8ae9a2509ba180ca37d424b2a1e8e979b71c307fc01f9530"
+}
