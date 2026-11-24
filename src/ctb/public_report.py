@@ -26,6 +26,7 @@ SELECTION = {
         "gpt-23a3a92/r5",
     ),
     "pi": tuple(f"gpt-23a3a92/r{n}" for n in range(1, 6)),
+    "samizdat": tuple(f"samizdat-da4c221/r{n}" for n in range(1, 6)),
     "vis-solo": ("gpt-vis-solo-057-43a8048",),
     "wisp": tuple(f"gpt-wisp-5818f6d/r{n}" for n in range(1, 6)),
     "xi": tuple(f"xi-93f57e6/r{n}" for n in range(1, 6)),
@@ -43,6 +44,8 @@ REPLACED = {
     ("xi", "xi-93f57e6/r5", "bun-sourcemap-leak"): "xi-retry-93f57e6/r1",
     ("xi", "xi-93f57e6/r5", "kv-live-surgery"): "xi-retry-93f57e6/r3",
     ("xi", "xi-93f57e6/r5", "vf2-speedup-networkx"): "xi-retry-93f57e6/r6",
+    # The verifier of the task timed out after its 60 s limit and wrote no result.
+    ("samizdat", "samizdat-da4c221/r1", "music-harmony"): "samizdat-retry-da4c221/r1",
 }
 TASKS = (
     "bun-sourcemap-leak",

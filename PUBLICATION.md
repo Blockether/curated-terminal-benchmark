@@ -54,8 +54,8 @@ more than one round, the page shows a Mean tab first: the mean ± the sample sta
 the values per round, and the passes per task. Then it shows one tab for each round. The URL keeps
 the selected tab (`view=round-2`) and the General or Normalized tab (`tab=normalized`).
 
-The comparison selects 12 tasks for each of seven agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
-Wisp, Kmet and Xi. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
+The comparison selects 12 tasks for each of eight agents: Vis (solo, v0.5.7), Codex, OpenCode, Pi,
+Wisp, Kmet, Xi and Samizdat. Codex, OpenCode and Pi have the five rounds of run `gpt-23a3a92` (`gpt-23a3a92/r1` to
 `r5`), natively on arm64. Wisp (pin `9cddabc`) has the five rounds of run `gpt-wisp-5818f6d`
 (`gpt-wisp-5818f6d/r1` to `r5`), natively on arm64. In round 3 the OpenCode trial of kv-live-surgery is a repeat on harness
 `3cafc66`, which changed only the report and the Kmet arms: the first attempt exited with an error and
@@ -80,6 +80,13 @@ provider failure, in the repeat rounds `xi-retry-93f57e6/r1` to `r6`. A round ha
 failed again stay sealed but are not selected. In the five main rounds, 7 of 1958 model requests failed,
 and Xi ends a session on the first failed request. The comparison thus measures how Xi
 solves the tasks over a working connection, not how it handles provider failures.
+Samizdat (commit `daf7a373`, jolt v0.8.28) has the five rounds of run `samizdat-da4c221`, natively on
+arm64, on the Responses wire. jolt limits its heap to 25% of the container memory by default. In the
+4 GB tasks of the first run, `samizdat-5f7010e/r1`, this 1 GiB limit ran out in the model call of turn 4
+to 7. That round is not sealed. The adapter now sets `JOLT_MAX_HEAP=2g` in every task, the limit that
+the 8 GB tasks had. In one trial, music-harmony in round 1, the verifier timed out after its 60 s limit
+and wrote no result. It was repeated at the same harness commit in the repeat round
+`samizdat-retry-da4c221/r1`.
 The Wisp rounds `gpt-wisp-5818f6d` replace the single rounds `gpt-wisp-ab49003` and `gpt-wisp-62106d1`.
 In `gpt-wisp-62106d1`, the proxy did not send `load_image` images to the model, and the `wisp` command for
 subagents was not on PATH. Subagent tokens are part of the Wisp cost.

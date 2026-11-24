@@ -372,6 +372,64 @@
         "replaced": []
       }
     ],
+    "samizdat": [
+      {
+        "round": "samizdat-da4c221/r1",
+        "seal_sha256": "47576793c192c8a5d1a7c42547c7b1402500c1ad71a36a6f8ed5740148f72a2c",
+        "harness_commits": [
+          "da4c2212913d6ec4baa9bfd4b1f8a9c49c76aac4"
+        ],
+        "agent_version": "daf7a373",
+        "emulated": false,
+        "replaced": [
+          {
+            "task": "music-harmony",
+            "round": "samizdat-retry-da4c221/r1",
+            "seal_sha256": "1db4da980b6574d3bb595a0e4d9cc4778ead12640ca12a6b4e2703c110ca57e4"
+          }
+        ]
+      },
+      {
+        "round": "samizdat-da4c221/r2",
+        "seal_sha256": "76ee2919efad14dad06e656e1dd33e2926973f3462db1ec95b5d4635fa5c37f1",
+        "harness_commits": [
+          "da4c2212913d6ec4baa9bfd4b1f8a9c49c76aac4"
+        ],
+        "agent_version": "daf7a373",
+        "emulated": false,
+        "replaced": []
+      },
+      {
+        "round": "samizdat-da4c221/r3",
+        "seal_sha256": "1583611f18b1908c8df817de24952b37106c91d94ef78a937e4cf489fa37779a",
+        "harness_commits": [
+          "da4c2212913d6ec4baa9bfd4b1f8a9c49c76aac4"
+        ],
+        "agent_version": "daf7a373",
+        "emulated": false,
+        "replaced": []
+      },
+      {
+        "round": "samizdat-da4c221/r4",
+        "seal_sha256": "b2dd2838974a9647f057abe8288f413fecdf4e240d0c0344b654c484294bc4e9",
+        "harness_commits": [
+          "da4c2212913d6ec4baa9bfd4b1f8a9c49c76aac4"
+        ],
+        "agent_version": "daf7a373",
+        "emulated": false,
+        "replaced": []
+      },
+      {
+        "round": "samizdat-da4c221/r5",
+        "seal_sha256": "87c85de925cabebfa1ff9c6f1d999199207c184eaab7f1fd4d85aa6a3bb2ca42",
+        "harness_commits": [
+          "da4c2212913d6ec4baa9bfd4b1f8a9c49c76aac4"
+        ],
+        "agent_version": "daf7a373",
+        "emulated": false,
+        "replaced": []
+      }
+    ],
     "vis-solo": [
       {
         "round": "gpt-vis-solo-057-43a8048",
@@ -3887,6 +3945,486 @@
       "passed": true,
       "error": null,
       "result_sha256": "5f3b8e20ca67c03a61b49ae5b27dfb40dc65e5c94a01da96044c006a495843ed"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "6c401dc51ebef513e29c65b93a012784aa88de80c4b53ed903f778e9d1b72785"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "e83ff9751b07ad42cac8156cc2699312c5ea00239ed5ceb56fbb5e052bd283e6"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "788a5efa560830705fbdad1294ea74035f79699ffca757e7b02f1a31b4e07bde"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "4ac101af95c85497b2017b192645ac9f6af3da6260082637b5d488bc3d180cb1"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "778cdff027d2e7ea0cbd61353cc5317b3deb69583db5f63a8fa46b448e96b01a"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "aa31768b5914410c0bc602b2e6f6676afac3d6545dfa96ee85155e9e75c3b1f2"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "793fa53c32b007b4f19a659aa48e2fbe8b6dc55059e1c87519775590bba8c7c6"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "8a88db85ff67ae82c0fdb977dfb22cde2c43edd53f8a03178ec66198324ef44e"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "131197aa2f8ceead238f837e9b035122b5048deeafd86bf10ab7c097020d8810"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "session-window-debug",
+      "passed": true,
+      "error": null,
+      "result_sha256": "a9d90919d8565d142f17b22d8cb8cf5bf20515bd368c4d17dc60fc76fbf025c4"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "296c484822aaef48245250895d2ba2908893cf99400792e8810316600881afec"
+    },
+    {
+      "agent": "samizdat",
+      "run": 1,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "132f80c5f1481b6410b4bae9a7c53ad27890636882f23a26a6bedd7e850bf173"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "b2042474ea3d3875712d87ce25997571bf5e9971f31aa72239fc07e97f46895f"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "html-js-filter",
+      "passed": true,
+      "error": null,
+      "result_sha256": "fe989520e9406d67d790c215d751b834973b776950a4923bf881d26c2f0a0e76"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "965d849268dfb323d822688283f4226de9be2b16982baa5b7a9903540d6ecc48"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "c7841d1326703b4e3ce1453b3fbd04ae91296d6c07275f26ef15914e1dedb014"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "c27c522696a9b5ac2e1567a7f22dfd5d8d8434a121eabfac180bf83ef25f7986"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "a037773b63ff6eff8724a2e0badc16077d4f3c6121f7041212c25c7933fb0243"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "30a1e4945d168ac7de05b265758a59aca7d2d2480e92856ae831203f98cf3940"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "5f45f356fb8f696b2e27546ab0465ca493dd8fd508a1b66188dfe96b6d076905"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "4199b3626c43e1606302fa07c58f775d29c9b1a552de52a95e18bd971b8845ca"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "session-window-debug",
+      "passed": true,
+      "error": null,
+      "result_sha256": "950a07c09abe5ca0cea4c43a3899a7dd98e9a3557934690c7bdb737a2923ec9d"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "ed715d19d9a4619d75e0c2a79ba77e56bcc5987912539fc26939eb0308cfd3d0"
+    },
+    {
+      "agent": "samizdat",
+      "run": 2,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "90b9c0205fceaeea3bac07f145ba2ccfd489aac7bf32cf21eaa2007740788617"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "f151017898d417d5c33fec6ec674dfa1ca6ff45703640317cd1a93b8975c05e5"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "c766607e67228c939b777bf56e858d2b2862113a65d37926eef1096ad81c0d3c"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "0aacee17e00e6a96c21a95c8f41d7b8192492e5eadd614120db777dacd9d662e"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "51522bb8b44d79432bed8936d70424eb4ae2a76edad95334a06618b3525f7b88"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "0ddee2c2521c31d0c787efcd4787338c6c3ca8929498442c8691ab6ff613d225"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "6040bbbe61b7b7701c991c2e4118656856f0e9b1dbb390bfc63dc6626d01bfb7"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "payments-pipeline-fix",
+      "passed": false,
+      "error": null,
+      "result_sha256": "cc806f31692930f1eb6cb3265e5742584882aada4cbde46a7655e27a564b773a"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "5c1b191949b864f081876988e42c928f4066895c29c577953bfc5bdb4a42eb1f"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "react-lead-form",
+      "passed": true,
+      "error": null,
+      "result_sha256": "34afadc0f460d30d09fe7e1da3edead842a8d1f98822ae567e8e103ec8765797"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "3a9abea92da54e0a3465e1d3f1af911826afcca78ce1995ec14ad1a1880dce09"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "c4a1fac32bc1b0c1be28c4b9d1e383090555f47e74e58a731664cb84b4a27fcf"
+    },
+    {
+      "agent": "samizdat",
+      "run": 3,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "6b89064cac6bc9be56c3190271b49365972bfb81377d61a855b08247210bd435"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "362ad34b48aeb14c229e74eb2b94e0f4818374a4390baefab7430a4ae057cc37"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "65b19b7f8b2d86dc8e03d4ebb524c63c42f2adc18d2862f1a5ac24a403028a29"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "cd2d17ed8d102aa1fa81e9a06722a995811a03b3038c062e4a96d3c016477911"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "b55e0bca000a066e63f66e2aa646d14af7f7ed5b9ebce58316ec7511587aa5e6"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "3c0cefa3225194e0a7b538c23644c2a8952454b2d9d48eb4ff83c329cd6c84ab"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "ecec8f176db7840f1175c1a3e54e27ea8fdfca54b4a8905831405c5030496dbd"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "payments-pipeline-fix",
+      "passed": true,
+      "error": null,
+      "result_sha256": "bcac313aea9613b5947839b17d0c933b0657e73d763029d01829bae72eedd8d0"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "photonic-waveguide-routing",
+      "passed": false,
+      "error": null,
+      "result_sha256": "2586e4d8dffa356afebc713e26556fe1f45ed3ef443625a0002955f408ccda51"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "react-lead-form",
+      "passed": true,
+      "error": null,
+      "result_sha256": "a6a13adc9382872bb8ea86696f9060b4155e65e3b625fa83cf815ec780f030da"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "session-window-debug",
+      "passed": true,
+      "error": null,
+      "result_sha256": "71f1fe2276d8638dad6d14ee37b390cdc00eeaa47046b3b42391c4eeb200f286"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "f54bc766ece9ca27b958d54f6c5d64df3a2ccea5d9e044f42c1491ae81c3b935"
+    },
+    {
+      "agent": "samizdat",
+      "run": 4,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "0b4a4a0790bdd34f4998a201089c86d8707fbf97f59e177a41380de242db08ed"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "bun-sourcemap-leak",
+      "passed": false,
+      "error": null,
+      "result_sha256": "0764166505f6f5530fe8b3e786c042e9807bc1dc3bd105595cb366805185a073"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "html-js-filter",
+      "passed": false,
+      "error": null,
+      "result_sha256": "1dff3e154faede3888ed62c68c2a2484b9f91288583a92a8474cf48b2a6d5102"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "interleaved-vigenere",
+      "passed": true,
+      "error": null,
+      "result_sha256": "14bf5dcc2885efa4dbc6c667347c304fb3c51023e48363f6fa1fb068aed7184b"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "kv-live-surgery",
+      "passed": false,
+      "error": null,
+      "result_sha256": "980711cfd777f49801a8f825fdc7d823a27cae8ba12101626e8912a6cc816cb6"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "music-harmony",
+      "passed": false,
+      "error": null,
+      "result_sha256": "4e27ebe8238eea7927ef377977d6923e407f5e5010941f89c777bee585814e71"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "mvcc-lsm-compaction",
+      "passed": false,
+      "error": null,
+      "result_sha256": "a1e7f4315c5fb8c5ca37e8c19347a75568920dbb0534858d9a1aed8b26593db6"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "payments-pipeline-fix",
+      "passed": true,
+      "error": null,
+      "result_sha256": "fe33dc5bd497fd150fa41fc1c428a657b7b0f2fd6d0719278d27158f0a5b0e85"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "photonic-waveguide-routing",
+      "passed": true,
+      "error": null,
+      "result_sha256": "5a76d4bfb29d4d2f67900069d60ba5403c4d5a6576aa197db17745edb24b229d"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "react-lead-form",
+      "passed": false,
+      "error": null,
+      "result_sha256": "791bc1e15c0bc38e961ec0b0c8853cafc658aaf5cdfc5e0e8302fca9b23ea873"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "session-window-debug",
+      "passed": false,
+      "error": null,
+      "result_sha256": "34502db469f5c48d5ef671cd58e5a19b1c35b81bedf22931e57d6f4d78d3265e"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "vf2-speedup-networkx",
+      "passed": false,
+      "error": null,
+      "result_sha256": "47a27ee009958b8a5fe1b1e3a591d68b7669e102160aef7caf979f31bb797fb9"
+    },
+    {
+      "agent": "samizdat",
+      "run": 5,
+      "task": "wal-recovery-ordering",
+      "passed": false,
+      "error": null,
+      "result_sha256": "0ebfedfe1926795f3baebe6ed2d871fc6587e51666fef119d0456f42cb75104d"
     },
     {
       "agent": "vis-solo",
