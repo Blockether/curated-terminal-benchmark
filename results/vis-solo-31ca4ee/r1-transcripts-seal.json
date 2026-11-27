@@ -1,0 +1,2641 @@
+{
+  "files": [
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/ctb-runs.json",
+      "bytes": 5574,
+      "sha256": "966ce19322116a4113dc6efbab2b16115d87e73f60f149f9fc39c1c9a658bcc7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/ctb-runs.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "6576d5314fadcc3903596be0b01320a0e6f879ae5a0ff35b6d8c888452dce12e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/resources.jsonl",
+      "bytes": 83720,
+      "sha256": "72b66b18f807ba5de40e368238734117bb48bd40df81deeaae7661247818e968"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/trajectory.json",
+      "bytes": 85812,
+      "sha256": "a044067e8ff5c2a884deaf32096e1d4d43e9f50817370237e17e273c8ae85236"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-10.log",
+      "bytes": 509,
+      "sha256": "8a8c75f52203cf7d8c52aec261fb257c0912c3821e39503f8af8dbb82ae80f64"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-11.log",
+      "bytes": 98,
+      "sha256": "a7ba1a4b17f4b581cd21233e278688f254aec23c452e43de26ae3c32e5a0f307"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-2.log",
+      "bytes": 8,
+      "sha256": "be9633b999e746f3eb5927e1ae972c86d00df847b4d67012596b281715ae7658"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-3.log",
+      "bytes": 68,
+      "sha256": "546dff9640c227ee84af6cffd20844194eaaf46c06505613cb9ebcbbf476722f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-4.log",
+      "bytes": 1347,
+      "sha256": "01b4d1dce650c726f23f6dd724fdcc40ae6e06e1c4d5c1a712cec4f8065c05a8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-5.log",
+      "bytes": 1233,
+      "sha256": "f058f3fa94997b6d75b2441de7d7f526784d9b58aa673958c0f41e56860e1157"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-6.log",
+      "bytes": 1021,
+      "sha256": "57f2f5a9c3d0810b05dd15faafa25fbd4083c11c242b2d0212d4df07d7ab7a6a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-7.log",
+      "bytes": 1325,
+      "sha256": "3cccb0ea4d8d314a0d0afc1cf36a007edaedc977f8b154ea7f512c96956b7fbf"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-8.log",
+      "bytes": 1325,
+      "sha256": "a8d91e070d5aed58490cf44d70c66fbd8115311dea103655be9172cf8c075315"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun-9.log",
+      "bytes": 55,
+      "sha256": "3a46f27de01ddb4fc1e18b4c034b9a1ead63f8a32ef12ef71684b6d722156745"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/bun.log",
+      "bytes": 98,
+      "sha256": "a7ba1a4b17f4b581cd21233e278688f254aec23c452e43de26ae3c32e5a0f307"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/shell/777a508f-4804-434b-b7d1-cacba9a4434c/command.log",
+      "bytes": 20,
+      "sha256": "08a9220867658a63ef22bd35952c4f6fa92f68e427a2fddc76cb9717b1ab31d6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/vis-20261127T163842Z-pid2807.log",
+      "bytes": 72455,
+      "sha256": "06d9e7643e573468dc2021a006fb22ef8e9609b93d0ee65ee5ed1798b0219dab"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-logs/2026-11-27/vis-20261127T163842Z-pid2807.problems.jsonl",
+      "bytes": 383,
+      "sha256": "5418f758069c51d6fc6fb6e1a5b5f6865f536761c22e5ab865811632d0a84389"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/agent/vis-trace.jsonl",
+      "bytes": 1091985,
+      "sha256": "c3fa5514b7f57280729cc7a24b377b8feb8c73d20aeba1d9f6b09d4e36d519c0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/package.json",
+      "bytes": 211,
+      "sha256": "dfefc86ee050eab9b3c0324d719b51fbd29f06702dbbae71ff4dab1314a95751"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/scripts/release.ts",
+      "bytes": 6138,
+      "sha256": "4b0a080dfbeed5191c964999b8d87481171d80653d828453c8032ac7b290480a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/client/format.ts",
+      "bytes": 96,
+      "sha256": "f05db67381710f8024c7c7baca0f3af3ef60e2dcb192bc47a10212e072fcaa25"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/client/render.ts",
+      "bytes": 221,
+      "sha256": "60eb0f1a90dbdd7cde4a403eb92746d9bb1b0e636b83ed6bf86a8f74a755e3d3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/client-entry.ts",
+      "bytes": 179,
+      "sha256": "db036eddd423e72170d47b511f782174c07a1ec2716212a0dd852a458f0a0a48"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/generated/prompt-template.ts",
+      "bytes": 147,
+      "sha256": "5aae8dc45c2a89c0e6ba20464dc859728712fc998cc387cf70dda2b6cfd39ef8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/server/handler.ts",
+      "bytes": 749,
+      "sha256": "c454d40b2487ff04e73f56b6cc971ffe025976237bd120e9d55a7d611353dfa3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/server/secret.ts",
+      "bytes": 73,
+      "sha256": "2ee24f65d3c87cf0584fa00b7b3f54985ee489463f4a5e7b085ddb335122acd2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/src/server-entry.ts",
+      "bytes": 86,
+      "sha256": "b9d0ad869b1a5849b887413470bb853b455f94cf7dba5c64055e52c66449a437"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/tsconfig.json",
+      "bytes": 159,
+      "sha256": "41e35842771a18524b665799342173e2939ffe85dc33d13610f2fe2eb33b4b39"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/app/visibility.json",
+      "bytes": 261,
+      "sha256": "280fd52cc97291de640b59c2b17dbd1da4820b378586186b7ea78fd3faff17ef"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/artifacts/manifest.json",
+      "bytes": 1030,
+      "sha256": "10c5074fd75e8d7637fb8e2aba2590270b8b3d68149b4ce0caa66b2cfe0db83c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/config.json",
+      "bytes": 738,
+      "sha256": "e426629d5235934cf80d8873c62a2f7ae40eb3456a0ef200441e24c04704ad45"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/images-environment.json",
+      "bytes": 282,
+      "sha256": "34a138a35932e9b8b3b72514318fdad686adbfd55e0ffd164a4534e7ed74c8a2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/images-tests.json",
+      "bytes": 282,
+      "sha256": "34a138a35932e9b8b3b72514318fdad686adbfd55e0ffd164a4534e7ed74c8a2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/lock.json",
+      "bytes": 1258,
+      "sha256": "52491ce9f0fd680236afc3c4995918007c13c66923adeb98e0bea3cfb086837e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/result.json",
+      "bytes": 17544,
+      "sha256": "6ee7ab8ba1dc9a883bce84a9a95a82b4a74e1804eb1427911668886bc4710c40"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/trial.log",
+      "bytes": 14580,
+      "sha256": "ddc92792c195f283d95144bf7010449f29233e4a1ac9872abfc14c41f2df8d35"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/verifier/ctrf.json",
+      "bytes": 35826,
+      "sha256": "1f1dc36986dfff271b77eb92d175093ae03cb3d430df81bcc0256cfae80ca328"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/verifier/test-stdout.txt",
+      "bytes": 28821,
+      "sha256": "750d8f27e0a2a7e372ae07cdb225bf62c4e84ee5f1ad7e188e28362f9c018427"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "1077ae785b81ae1b82097d086b2da76298a2a41b7f67703510f69edab345af50"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/bun-sourcemap-leak__oLkHwEh/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/config.json",
+      "bytes": 764,
+      "sha256": "4aa08c43debe6b99dd2dcb1337266dedc45239439ad7b1a7251e8f593ab012b4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/job.log",
+      "bytes": 14660,
+      "sha256": "34b8cdf8a1246e0aca07563f17f3032a96f1f1246d1c1a0e2fd3dd07388c685c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/lock.json",
+      "bytes": 2308,
+      "sha256": "960bba14309299893fd467eb250574e85703975e7aaebacf9b1d58304a8ddfd3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__bun-sourcemap-leak/result.json",
+      "bytes": 1138,
+      "sha256": "44052a7f31f953be7c0924879812a13cedb9adabe02569acce98ef4f8c03d781"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/config.json",
+      "bytes": 756,
+      "sha256": "f1046776edf050fb8e194527fc301434b534bd6216086c99bc79cfaf28e1abe6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "0460fc8d24a0888097f3f6fc9d7ea43c23721b23f941f4e9109dfdbaf33c2ee0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/resources.jsonl",
+      "bytes": 116648,
+      "sha256": "2eb0ad4bfecd53bc0c3e8486d7facaf48dcb3f84718e6f60a5a2d17ada334417"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/trajectory.json",
+      "bytes": 130299,
+      "sha256": "f247a648e626f4fc6c409364983fb2a3f1226c8add2541e68e6136ee52c95c15"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python-2.log",
+      "bytes": 53,
+      "sha256": "82897cfb0c5d393e94fe0e9d64c6fdca2d1ea7cd4baa44a609e3539970dea548"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python.log",
+      "bytes": 78,
+      "sha256": "6e6f3c9bd5e2456aa102675ddac3c9defc618f4ba72ed68dda349aa6929124bb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-10.log",
+      "bytes": 1124,
+      "sha256": "87f7be6580f71678f960ed04093f3152b062cbba773f55732715fc1b6df8171b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-2.log",
+      "bytes": 76,
+      "sha256": "b592e128e5e11c95f24b648243192961e28bc5afa168d6b4a1863695e07f0371"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-3.log",
+      "bytes": 898,
+      "sha256": "2c7f12d318c1666ae912a12a131135160bf36924879d8fb36f406758ace992d5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-4.log",
+      "bytes": 2057,
+      "sha256": "e3db0acb95a5e294a5638b314ff6b8bee24080be4b86ce99467cc7e960584188"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-5.log",
+      "bytes": 1737,
+      "sha256": "1b235e6719503ec3e57c39bc3687b73bc6b6ab8e7eec2d9ce7a59081ffd71c1f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-6.log",
+      "bytes": 8071,
+      "sha256": "85f7c6347e4c728be3285518a05edb62889446f86ce8cb33356196f2a2e40249"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-7.log",
+      "bytes": 128,
+      "sha256": "0b2d67e9e21aa8c87370585ce31f62d8aa82f3a0f10be96e96eb9bd372fa4269"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-8.log",
+      "bytes": 927,
+      "sha256": "143b13830c1d6a43998a759f8db97af9f21e660346443621b73ef1d8cf3a7084"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3-9.log",
+      "bytes": 1011,
+      "sha256": "025476e99aa47fd03bd19204c97f05885528945f2f2b3e4abe6e776a9484af5d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/shell/a16b22a0-c386-4b67-be42-596e534241c9/python3.log",
+      "bytes": 67,
+      "sha256": "ef98485957b3a6aa10cd5a4425b340b01ebc511e6abc5f2e25ec49f164903172"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/vis-20261127T160418Z-pid172.log",
+      "bytes": 99818,
+      "sha256": "12ee28013b70f145c484cfb02e43150a517f9e761444587645e3a2a26c451d6b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-logs/2026-11-27/vis-20261127T160418Z-pid172.problems.jsonl",
+      "bytes": 383,
+      "sha256": "06d24d9878332ec65619173c07566ea37a610ec3056af2353de1486d85858ccf"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/agent/vis-trace.jsonl",
+      "bytes": 2826962,
+      "sha256": "ff93ded8bca2b8725a2416bb1bfdcc1a0910d3b03b08ba7976e99f692f68bd80"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/artifacts/app/filter.py",
+      "bytes": 16311,
+      "sha256": "436e9b3c490b9f87eb557d4b8726fab3fa911f4fa7d22abfc3fb9f9ac70e37a5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/artifacts/manifest.json",
+      "bytes": 344,
+      "sha256": "0a313c3c1f3dde61b9a53d134a2dfd1d34269aaa42ef2d142511bb5516c94c2b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/config.json",
+      "bytes": 726,
+      "sha256": "fd4433172ad122348483c228690e7e5f48af0791e71e64916603c29125f05d7a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/images-environment.json",
+      "bytes": 285,
+      "sha256": "0468ea398dc722e628cd6282b91d9def12ff948b7f5f817db369e9d050eed1f4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/images-tests.json",
+      "bytes": 309,
+      "sha256": "04f3f71047c445a6ce49fc1c7c391d01a8d6eb64dc8846be05a47dc5a5f5494e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/lock.json",
+      "bytes": 1250,
+      "sha256": "6068b3bf16399dfd8a65e2d0b3d0a78a276f3cf602d990341958404a3964bece"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/result.json",
+      "bytes": 23150,
+      "sha256": "52b2612bdc95a5d29b7b120a5515921fbb075a9b947f0572ece6b737bad979d5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/trial.log",
+      "bytes": 12587,
+      "sha256": "25a93ef41a00b4c8172083cb971db94ce1bcd0a626439ac31ff2a867692fee9e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/verifier/ctrf.json",
+      "bytes": 28498,
+      "sha256": "ac0751568b2afd289730465481d0d2debd03663247acfa5bc968145bbdef9915"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/verifier/test-stdout.txt",
+      "bytes": 29746,
+      "sha256": "5a8f7b946445340f418b8ce308ae5f4f321954480dcfcdb0c2cbbc3536ff521f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "29801e17f810f51c4af9d2ea92ec351baf148a69df3c4becd9386da5c213eb41"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/html-js-filter__4wyJtPH/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/job.log",
+      "bytes": 12667,
+      "sha256": "e2e83f905ed7ac195ad05c4cb5c9f0e703ec4df0d49b372310e63b42fdd1c643"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/lock.json",
+      "bytes": 2300,
+      "sha256": "818069ae9b3e1cd315342a84a3f95ac95a31ac6c244a1b4d94a8075f52eb3585"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__html-js-filter/result.json",
+      "bytes": 1134,
+      "sha256": "c38433ab040d032da68ac7ed8a5f89e9e8d7ba276536ea3a370d29b25afdc578"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/config.json",
+      "bytes": 768,
+      "sha256": "c577a9a2d9e82563d4c3698a7bb2bee22da9236ad698e21af94340a6a9e1a95e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "28470c2eb1314a3f8ed03ff7e0ce7b535ba4d82f5fceb02fc95a7b237c65f6bc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/resources.jsonl",
+      "bytes": 50257,
+      "sha256": "dbffff8c5e101a61197bc6f12e22b1c1d18a29820d6b38a38007c209c1978a12"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/trajectory.json",
+      "bytes": 81915,
+      "sha256": "37355cd5a5aa210b0ddaff99ee600712edcbe2e465fa8f6d844028902c9d9c7f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-logs/2026-11-27/shell/c2fcb055-4641-413a-a3eb-3d153dc28322/python-2.log",
+      "bytes": 44,
+      "sha256": "839561c505f3cb21c188a8768ebf31a9ecd3cc1b8ee91a029313f6063008a11c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-logs/2026-11-27/shell/c2fcb055-4641-413a-a3eb-3d153dc28322/python-3.log",
+      "bytes": 69,
+      "sha256": "bfc625d695aba5c17d8d54a0bf37ab2fa9f1d2dbd5ef913d471d34e9e21d98b7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-logs/2026-11-27/shell/c2fcb055-4641-413a-a3eb-3d153dc28322/python.log",
+      "bytes": 3081,
+      "sha256": "f17dce07acd85272f21ab0e804f71438aa6b2e6291548f2931ebe973bd136f05"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-logs/2026-11-27/vis-20261127T164713Z-pid172.log",
+      "bytes": 84168,
+      "sha256": "d4d948b8dc58e6bdc225dbcb19374d1c0ca486f05c5796b81ac7ffa0c07c8666"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-logs/2026-11-27/vis-20261127T164713Z-pid172.problems.jsonl",
+      "bytes": 383,
+      "sha256": "2fcb2d8013f66c275e7e9405522c2e515a6b018d546c672fa95f8624369d8d9f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/agent/vis-trace.jsonl",
+      "bytes": 1277542,
+      "sha256": "140b8cbc9a9ee4817205a249135317971b3b231377fa62afd8526b955f256747"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/artifacts/app/cracker.py",
+      "bytes": 6572,
+      "sha256": "4fdfed526021e4564c26a16cf2fe8da5dc7c8619c4834550817a1db165ce6f87"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/artifacts/app/requirements.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/artifacts/manifest.json",
+      "bytes": 526,
+      "sha256": "fe7f0615211badf36d1fb9923649470cf62e4877443e93a4843237e6cdc7bd25"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/config.json",
+      "bytes": 744,
+      "sha256": "3deca11240bc9371f0f73f5b00b4259668d96c803017cc05fbee2c1a7c57f7d6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/images-environment.json",
+      "bytes": 360,
+      "sha256": "ef504df68e36a006c7e1f082c53e24a784afca1a13ce99d625d86668b5709082"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/images-tests.json",
+      "bytes": 360,
+      "sha256": "ef504df68e36a006c7e1f082c53e24a784afca1a13ce99d625d86668b5709082"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/lock.json",
+      "bytes": 1262,
+      "sha256": "baf78d9b4a122bd85039a7089b022df1e0d79b8298f6fba38f24258d0bc6444c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/result.json",
+      "bytes": 19996,
+      "sha256": "7be9422dd62206388e5f07b1fea81d31eb2f35ef23a852d0f9d200dfa637ea41"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/trial.log",
+      "bytes": 13893,
+      "sha256": "4ab1dbed8aa15dd000986e0b843398c398ea2b8888325558219d229520b35c62"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/verifier/ctrf.json",
+      "bytes": 2641,
+      "sha256": "d6b7d063d4f5105bf278deb13aec26be3ad00de66b2809498bf1a64b4db7c3bc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/verifier/test-stdout.txt",
+      "bytes": 364,
+      "sha256": "9d4dfd8b368a64d285f1338d5ac13f3c97a29bb385613e4b9e2327237f23c65d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "47d93111be040d764fd53737da04df8dd4a5f5b4ffc304fca95be885456f7626"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/interleaved-vigenere__8nBecTk/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/job.log",
+      "bytes": 13973,
+      "sha256": "a9173a68d5c6385ea663dbef4d4f09a57c7dec2e421884475f37dd5a5fdb0016"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/lock.json",
+      "bytes": 2312,
+      "sha256": "4f3061fa9fba76dff0618a467a073674c03c55b352e39fed3e66b58e77b2545a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__interleaved-vigenere/result.json",
+      "bytes": 1139,
+      "sha256": "bee02d4f957ca9b4487aa7361424c13ebe8663cdefcf3f37610964758b1ee2f7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/config.json",
+      "bytes": 758,
+      "sha256": "ae63ed76bb36081851612f478c79e916f805611aae11ebb6044e3ab0dc0b4fab"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/job.log",
+      "bytes": 13303,
+      "sha256": "30fbba7c98d3f382973fcf48d72cf1ae28f2df71d7872e44e5b1228275685aad"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/resources.jsonl",
+      "bytes": 132595,
+      "sha256": "dd398b0780485c0c4cd062ceface33e7ec60dbb3e7e9edd091cdfc8252841646"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/trajectory.json",
+      "bytes": 314626,
+      "sha256": "f8bd0c9b81bbf1dbe22f1924b2cbda36b4af73c39517f9fb543efc6666e50542"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/cat.log",
+      "bytes": 260,
+      "sha256": "f1959c723629e751b37995ee83693d17c91e7ff5b3c39e3ddf21ced8d2722bc8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/file.log",
+      "bytes": 121,
+      "sha256": "55a429f5743dd749555978b6fafb69a9afa2c9b3329aa99ada1d533d0a52ba77"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc-2.log",
+      "bytes": 2441,
+      "sha256": "9289068511e2ef2f0f7218f0eef97c9bd27306d362adcaa1e9dc0e1c8bb4a947"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc-3.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc-4.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc-5.log",
+      "bytes": 317,
+      "sha256": "d6eb8801bd05cc1dc39c0aa887b49500addcf5328e5091e40122e85050a97061"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc-6.log",
+      "bytes": 288,
+      "sha256": "c507c5351af408e0e5a1a0060ee528142a4b0f01f65af306ca5ba9e7be28bdfd"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/gcc.log",
+      "bytes": 1811,
+      "sha256": "f05106ae2178cebb00acbd5abe2872f6683bf2408295034c1cebd3c128940414"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/objdump-2.log",
+      "bytes": 19893,
+      "sha256": "65a5b22036fc922466e528a6220f37560f858a28744cb97072e3e1ae94225733"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/objdump-3.log",
+      "bytes": 32204,
+      "sha256": "c3ef727b04a470fe57b27a14278b949e720b884c712485bd34b6bacccafcc029"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/objdump-4.log",
+      "bytes": 26956,
+      "sha256": "38fdfdccfc1850b77689f199c0ec8b05b743981947d9c288f16c859ecbe38860"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/objdump.log",
+      "bytes": 111068,
+      "sha256": "e91db944529d097f3c9f215e3237a1001838b2e0a0d1a14bf64704cb46a4aca4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/ps-2.log",
+      "bytes": 4256,
+      "sha256": "40ae499748b94d135502d6b92f6f5af96e41e384c616e20a1982c81afbee3f94"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/ps-3.log",
+      "bytes": 1066,
+      "sha256": "b6b80b39ce204fbae1d8cc1c53e1e4585ec9e5ff24a88d4f9b9acf4fe49e05d2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/ps.log",
+      "bytes": 1322,
+      "sha256": "aee5e7d8abb72fe2a91a003b7acb40721c4f5beef0b497fdc2d118f023911a3c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-2.log",
+      "bytes": 45,
+      "sha256": "a1952508454b78cf5c8d52f21c4a316318be163f140d9a0680fa93e1a9852ee8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-3.log",
+      "bytes": 57,
+      "sha256": "717d289458dc5e61e9feaa92ebda53c68e6d80c35990595e12c9f5a60c9c4117"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-4.log",
+      "bytes": 51,
+      "sha256": "f6d946578c459a42265c4d4946ac681bf052df3ac333b9bdaf68223521aec023"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-5.log",
+      "bytes": 24,
+      "sha256": "6565e169c9d79c175e3bd286f9cd90a16c070da4b91f1089cf5bbf26ea75aff6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-6.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-7.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3-8.log",
+      "bytes": 7,
+      "sha256": "310bdbd4aa0eec93135cd2f4123059e8d859d560312acf08f07da55f4192b7b4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/python3.log",
+      "bytes": 58,
+      "sha256": "170d734910f94521e530101f6d2dc3e34400355eaac56998f48bc914e9dc2e29"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/readelf.log",
+      "bytes": 4040663,
+      "sha256": "2336aa5ec930f8d5ac3728b90b2e7799feb1822c9a64ff0e5bedb228b349ec83"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/ss-2.log",
+      "bytes": 122,
+      "sha256": "7a66cc289ff57ce4b49e170bd2648f61e7c483d3bca75f37b788f786bd2ee003"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/ss.log",
+      "bytes": 366,
+      "sha256": "435e2f1ce16dae628ec7f804e771188d65e7968f7a42bb461b2e0902282e2431"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/uname.log",
+      "bytes": 263,
+      "sha256": "3f58c2c8880a7ee29074bec269e130253437d14fd8494e8d3c01fab216b257c2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/shell/9155527a-d0f5-49ee-93ba-8252850af9d0/which.log",
+      "bytes": 305,
+      "sha256": "01597063abaae4ce12168d893df4111d689885b1e50f5196cfb00bb56225f07c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/vis-20261127T171529Z-pid320.log",
+      "bytes": 186012,
+      "sha256": "9e3cf38a6b093f72b0c35e09f715d4c6c04dfdf0eec8117e95b711c6d20c438c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-logs/2026-11-27/vis-20261127T171529Z-pid320.problems.jsonl",
+      "bytes": 743,
+      "sha256": "4229e2c314cbd0cbc539cb8445e03fdb36ec2f231f408ab139c89e2b73a1466a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/agent/vis-trace.jsonl",
+      "bytes": 3318880,
+      "sha256": "08d51bd580f538afe376e19d9994963da48fe18321499dfa26c403655e5eef26"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/artifacts/manifest.json",
+      "bytes": 729,
+      "sha256": "38f2f4c156ebcd133fbcf9815d12f4f1dbd96beabfa258f0a06d0dc9ebc2ed8a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/artifacts/results/loadgen.log",
+      "bytes": 1568,
+      "sha256": "a902054c9b00257ff65f1ae8b7235afb3b6dd75ed7cfda51ef889e16acc36347"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/artifacts/results/measure.log",
+      "bytes": 731,
+      "sha256": "f6ff998d49204ddb07e299d4587f57bde4211942e478dc4e4699fc0344a2a157"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/artifacts/results/results.json",
+      "bytes": 625,
+      "sha256": "7f1baf9a4c82b533e0de7894b235eb4b6d4d5430096a230e34a5daf2fb400a33"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/config.json",
+      "bytes": 729,
+      "sha256": "9025e9671c0849c241021acff1cb7aa9b3f76be902f33979ee7640eb53df75e9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/images-environment.json",
+      "bytes": 816,
+      "sha256": "f26113709495be0dfb50ffd3025c8476d66b789611ee34535424f58ecc7b7072"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/images-tests.json",
+      "bytes": 276,
+      "sha256": "0ff8d25be730251408f7ecb5892cf4899c029a8222bcd348905d70b6de453193"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/lock.json",
+      "bytes": 1252,
+      "sha256": "fb3f88b0dfd049b597608ee2bb08719cb68f09bd70f0537339eb66dff64ac860"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/result.json",
+      "bytes": 40889,
+      "sha256": "73b56505c154919fa098eacf6a523a8b82dc5a9d2364f5653479b2ef4df44101"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/trial.log",
+      "bytes": 13223,
+      "sha256": "6c980ea1ca41f911fe1f274d52d0ecd873e17710519245665f16ada9d3f9c659"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/verifier/ctrf.json",
+      "bytes": 1172,
+      "sha256": "ecb34f511f1be96a8ca87c98d02f8f914bf29f4d6b63d300e38d222f88eefb59"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/verifier/reward.txt",
+      "bytes": 4,
+      "sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/verifier/test-stdout.txt",
+      "bytes": 1448,
+      "sha256": "150c83424c0c09603622eecf41c598aa73589228c2c3b48fa5d3ff2607080a8b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/verifier/toolkit-install.json",
+      "bytes": 18,
+      "sha256": "fb06ca220e6069f58dc0e03f62f8e09452f1432f9544f4b1765b004614db6770"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/kv-live-surgery__GQtzqtf/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/lock.json",
+      "bytes": 2302,
+      "sha256": "fe7d4873bcae50bdfb5f41fd7fdffac9b276f2f5392cfb66feb6d0b594c3e7ff"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__kv-live-surgery/result.json",
+      "bytes": 1137,
+      "sha256": "efba818aa0b66f39c3c1fbc920c5faa996b19d3d31545fd3a9ef8bd83802371f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/config.json",
+      "bytes": 754,
+      "sha256": "f2f1a34dd453fcd12e65060e99135e79dc486050c8fd5b0a1e326b9ea9986e85"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/job.log",
+      "bytes": 12580,
+      "sha256": "b9237ef5151c7a968e80d6093b08afad2298330441cc1925edc934fd0c30bb5a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/lock.json",
+      "bytes": 2298,
+      "sha256": "0fab9574b344605141506b39c72ae909e72f7aae65e606d79bc79b7072510cf5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "6e00158d38ae39c571de0ef8503db61a43a37233f83ee14c214a971e3de2752f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/resources.jsonl",
+      "bytes": 52194,
+      "sha256": "04e85d380df80713938a15e7da532acf70eeda99d1be0ab3480f55b9f39852ae"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/trajectory.json",
+      "bytes": 76296,
+      "sha256": "ad7e39da2e091aa92c097aadc8155000fbc24c3a2622ee8b3be9af65c7d46194"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/pdftoppm.log",
+      "bytes": 43,
+      "sha256": "2be9af657fa3ad9fb16aef495a2151292c71b5e29eb528d8a6d17e2129aed340"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-10.log",
+      "bytes": 233527,
+      "sha256": "59a3893bfb67fcce203f5d4419bdf127ca274b578b09194d139ad43e880e5b32"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-11.log",
+      "bytes": 195,
+      "sha256": "7d04cd896a910c1334440ca96188f75af71abd0934bcc13512cd10af856d9beb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-2.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-3.log",
+      "bytes": 734,
+      "sha256": "4a838289bd7de6c918d488abbd3105a9b5d22ad29252630d2976db05c5cbc8fe"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-4.log",
+      "bytes": 732,
+      "sha256": "7eacfeb43a95b91634998055453ec1737c1218051283a43fea1f8e9da77fb6e7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-5.log",
+      "bytes": 731,
+      "sha256": "0d4da5c0bee2cc165925895346498cf7097d73179fa2e4b3689141fd0fa7e7e5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-6.log",
+      "bytes": 738,
+      "sha256": "1333d407d1e734bb76fa3f436d27df116dbd1fcdb1c9675bfce2cded6f8aa811"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-7.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-8.log",
+      "bytes": 24,
+      "sha256": "86f19eedc5bde39125c40314804bcb4734a459f76ba56e73c98a42b1b397bb0a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python-9.log",
+      "bytes": 305,
+      "sha256": "b601b15db109d54e4ae8d6eb42d479cabeff580b625fe19e68e8a3990e0d7789"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/shell/b40728fd-c699-4d5e-aa05-db278068733f/python.log",
+      "bytes": 279,
+      "sha256": "88d2a1946845d21f2b989fdee219163a880b2df01fd86723d8c7c99b5c174296"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/vis-20261127T163301Z-pid98.log",
+      "bytes": 81832,
+      "sha256": "53195c59e2f3041d6ab6166fa26f49edaf01bad4277eff7bb129f169eb57f153"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-logs/2026-11-27/vis-20261127T163301Z-pid98.problems.jsonl",
+      "bytes": 383,
+      "sha256": "0c13daa5fad57e16f87854355d2cc2474e6ce7b8380e92b472df814d8d9eacef"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/agent/vis-trace.jsonl",
+      "bytes": 1419042,
+      "sha256": "555f1b976cdccdb722666b3cec9dcb42d586f03e609472188a879fff698c1846"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/artifacts/app/harmony.mxl",
+      "bytes": 1893,
+      "sha256": "5333e6d3a88490f2ca04a4883486b38f1ec46ac741d4f72566c80e62a28bf831"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/artifacts/manifest.json",
+      "bytes": 348,
+      "sha256": "402f4e74ed39302c0c382a5503356c481442c744180dcbe7be820282696903f1"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/config.json",
+      "bytes": 723,
+      "sha256": "42c89e8fd79e87bcecb8343fc7f3c12678e2f7754dc7ec5595b4ce5d3fa2da7b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/images-environment.json",
+      "bytes": 275,
+      "sha256": "980aeffd7d9cca653cd057177e7c515485d29972e291595771cb8e9e98f33252"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/images-tests.json",
+      "bytes": 275,
+      "sha256": "980aeffd7d9cca653cd057177e7c515485d29972e291595771cb8e9e98f33252"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/lock.json",
+      "bytes": 1248,
+      "sha256": "1447c524621321212a82e95f2d1669d9d67aeae7ad20554e9d00a0113cfe56da"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/result.json",
+      "bytes": 19136,
+      "sha256": "bf2c77950cfaed00f4024271e3b27ae7c34e2402671b5a0fa38506fc2b5c254b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/trial.log",
+      "bytes": 12500,
+      "sha256": "d94a2bb637a5c403816f289d0f18344cd18db9f6e39efbd137092e0040464940"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/verifier/test-stdout.txt",
+      "bytes": 1323,
+      "sha256": "9f380494d4cadad3482a0bdd33dc17b9e4c06a0bc221096adb12dc5fa395f4df"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "a3c3886b2cb990678bf9949611a9248e513210bdb6ac30489cd4151fa70cea18"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/music-harmony__cNFPm3s/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__music-harmony/result.json",
+      "bytes": 1133,
+      "sha256": "609337860351bf04b098f76ec2b14dd34b7fcbe18c8a07160c7baf539738e467"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/config.json",
+      "bytes": 766,
+      "sha256": "89ae25e20156906f80a448c69222453916d2b0c7cdd60c1d67e93b09bf1822f5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/job.log",
+      "bytes": 12598,
+      "sha256": "04adf3d852bfcb3a2652262d75660377f56b5eaf0bc2534e84c5c34577daf5bc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/lock.json",
+      "bytes": 2310,
+      "sha256": "d891815632dd998f172a219af0332a37661bfdc2a0dc4a45178036461b0413ea"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/resources.jsonl",
+      "bytes": 19375,
+      "sha256": "08d85b48b1448bf55b4202c7cb8363df50a67146347ec3efaa6cf0185f669f06"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/trajectory.json",
+      "bytes": 54482,
+      "sha256": "f70dda091dbc3f29daa8191d61b84d87c66c719804a05c91d4e070030b258e69"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-logs/2026-11-27/shell/5ee07308-622e-4bb5-a084-3d170b1c6d3f/make-2.log",
+      "bytes": 565,
+      "sha256": "96b2bcc54abe7717f457881ce4dbf0ea76ccb4a8ca3fcd10de6984e6d87a16e2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-logs/2026-11-27/shell/5ee07308-622e-4bb5-a084-3d170b1c6d3f/make.log",
+      "bytes": 650,
+      "sha256": "ba078f51afdfe740ddd97859f6e6be6f927760a0b279153f545748573b43b717"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-logs/2026-11-27/vis-20261127T170845Z-pid207.log",
+      "bytes": 37397,
+      "sha256": "731a9e6570eeb5c35736673935944ad530c3bcefa9cbac595e569eb1f691cb4f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-logs/2026-11-27/vis-20261127T170845Z-pid207.problems.jsonl",
+      "bytes": 383,
+      "sha256": "e98755953d75bde75fba23e21a107fe727599a3925094890b5eecc43697769e7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/agent/vis-trace.jsonl",
+      "bytes": 531731,
+      "sha256": "6ff2cf30c6468b2c89100e75f228c4eb1729f36f3d6a60b4ca3ddfd750b8ec58"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/Makefile",
+      "bytes": 693,
+      "sha256": "f23385d475bb28bf6e5b3c977171625d74f6aadedb1b487c69aca1317dd7051e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/crash_report.txt",
+      "bytes": 2312,
+      "sha256": "8d9fba1ff100806f0a13e48de94c147dedd9ea4e901434ae0002efa1503e297f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/flush_builder.h",
+      "bytes": 696,
+      "sha256": "d1f15cb061010cfaaf707e66508617ae88a4de3add058ddf6a829a1934a323e8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/lsm_db.h",
+      "bytes": 1596,
+      "sha256": "00d67ee4b1d9f4a9dc1e63218d15ad0dc2afd359a887aa3abb73003e2136a469"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/snapshot_context.h",
+      "bytes": 808,
+      "sha256": "98688fdd20fa40f5f7596a8665a5781312145e248dd4a6b91664b39b483d74fa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/types.h",
+      "bytes": 434,
+      "sha256": "8e0cf474081f67d46e8a33443d28aef02ea0b7a21496caa332c74d499880e5b9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/version.h",
+      "bytes": 343,
+      "sha256": "c40a6fe3019b233e7e4a9cad6ac6f8d9ad7c5f8322bea293e0338b8e357c6829"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/include/mvcc_lsm/version_store.h",
+      "bytes": 760,
+      "sha256": "802bfb6e22195022e1c298756e499ebe3b7371eb825c97938c47c227101da7d6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/src/flush_builder.cc",
+      "bytes": 1869,
+      "sha256": "0230011a936403b6fb4a01e25a4aec04ebb9f4f731832760966323d2dac46fb9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/src/lsm_db.cc",
+      "bytes": 3296,
+      "sha256": "e3d4838768ae1857394224a28edb4958001d57654de61e66004ab27e200ef584"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/src/snapshot_context.cc",
+      "bytes": 976,
+      "sha256": "8debde61de20d0ab6a82d15627a6c0e6709b5d1837d7e1ce3621d6a35ca0d18f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/src/version_store.cc",
+      "bytes": 1779,
+      "sha256": "56ad9e10cf0e7c8e3f9e52d0a62b9a754467d653acbb0c2d0071939283f5ee38"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/tests/regression_test.cc",
+      "bytes": 6562,
+      "sha256": "dfc1d592c6076c8852c8431a162949badd167d27afcab2186c2700cc80b39ad0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/app/tests/stress_repro.cc",
+      "bytes": 1844,
+      "sha256": "0750a0c2d746c713a26b1792df231e6685d9f928770d78a1231f46b0e7eb3a76"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/artifacts/manifest.json",
+      "bytes": 2888,
+      "sha256": "457dd6cac19d5385222016a7cc9d5da80d9f1badc004fe027c33c4f8acbf45b5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/config.json",
+      "bytes": 741,
+      "sha256": "a356627d161794daf18402c03aad436f9b8611297591b04caba19f16d7cb1709"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/images-environment.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/images-tests.json",
+      "bytes": 285,
+      "sha256": "0468ea398dc722e628cd6282b91d9def12ff948b7f5f817db369e9d050eed1f4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/lock.json",
+      "bytes": 1260,
+      "sha256": "d2692a35c64557685f01db05612243f255e99b61984f6668d94f46defe8427d3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/result.json",
+      "bytes": 10305,
+      "sha256": "eda843cd9d574eaa8ab4ca2ab5cf14c1f5bbb449df13b429c1b5862b49c4335e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/trial.log",
+      "bytes": 12518,
+      "sha256": "81bee26f3902618a325a4c62aea06065772f7205225720497fda43fe256eb858"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/verifier/ctrf.json",
+      "bytes": 7613,
+      "sha256": "f20bf8ef9983be5ed25a68e8a11380f44a95d6e9db5212f639dfa586d91ac47b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/verifier/test-stdout.txt",
+      "bytes": 1948,
+      "sha256": "c1fa200f14f5dcda6abfbde914e81166c7e319cc01ae918ccf1eea94ea4208b1"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "bbb3596b5ce572792ee6c6598151af171fad21e9ccd03b37e023965effa88e0a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/mvcc-lsm-compaction__cESBFke/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__mvcc-lsm-compaction/result.json",
+      "bytes": 1136,
+      "sha256": "7c9ebcd9940c77785573456b2b94ea2c9d1204fe21e001add25464b223c728ed"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/config.json",
+      "bytes": 770,
+      "sha256": "3dfe152bb29f71663052abecbcd4128aaa8b5d2cfa8c86dbbb2bd2649fdaa4d4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/job.log",
+      "bytes": 12664,
+      "sha256": "e50ede58615e3df8c9c9a9dc2b549c952544401340871b2d25577f35a4dc7fe6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/lock.json",
+      "bytes": 2314,
+      "sha256": "dde246c1feee39e8bec26fb195922a812b3a66bde3966734b5dfc18c7632e790"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "0460fc8d24a0888097f3f6fc9d7ea43c23721b23f941f4e9109dfdbaf33c2ee0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/resources.jsonl",
+      "bytes": 175499,
+      "sha256": "da8d903e1ae647edfdc2b8c5a9ee8786bf1fe9fc2428c9845b017d14787f7630"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/trajectory.json",
+      "bytes": 193849,
+      "sha256": "06354d4087e3de23abef379b8ac2cbee8985df5e7a611d7a5dc26570c00cd93c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/date-2.log",
+      "bytes": 482,
+      "sha256": "48734fa897f975bde923748514fb65feac9a88f35e2fb428c731f538ae5e69de"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/date-3.log",
+      "bytes": 640,
+      "sha256": "81dda59eddd3d8ab29269ab751b403f9aa4acd660cd62e3a1942be4352dd2e56"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/date-4.log",
+      "bytes": 879,
+      "sha256": "19b1fe39dc3dbeb23a9a45bfeefd37f0bed6a5b328eae161a842cb6e85553471"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/date.log",
+      "bytes": 464,
+      "sha256": "b8b7a597ad73e3d7b34e6f84df54dad562be7d235a617db9643d6ee5415ebd3c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/ps.log",
+      "bytes": 296,
+      "sha256": "bc1df1a35d1937d743b16ac3bbb9f3dc1d245aa84b81c951ca0f8e490b890c3e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-10.log",
+      "bytes": 257,
+      "sha256": "cb7fde717f94ff7d1aa3204fe2a6b1ca20c11f2fdc285ca08b8c622d62fe3aee"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-11.log",
+      "bytes": 259,
+      "sha256": "b5d23e5c74fe0013ec29a648adf56e6f9950535cccff260eada55dcaff61f803"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-12.log",
+      "bytes": 312,
+      "sha256": "c020e5ad33aadc09a026a40cff5d5daeb96ed3c0a8fc718bdb47f64ad8b12983"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-2.log",
+      "bytes": 1001,
+      "sha256": "856d7bf358aafbde073a9ea65524f227821526f4e156f06149edc25adcd6e822"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-3.log",
+      "bytes": 1440,
+      "sha256": "e5885a1a3a1c53804a25f68fda712b68f46e9fe7aad2424038d8120a5047eeb5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-4.log",
+      "bytes": 187,
+      "sha256": "7f16de51f875785b245b3306072f0a0f7f15c1bcf615a01bdaf79fb86be4e9a8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-5.log",
+      "bytes": 18,
+      "sha256": "0f0203f2bccccbb27ce0743e34c464aa04122f42a702946263f05b6f7fca3179"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-6.log",
+      "bytes": 123,
+      "sha256": "d90d1d4a46f7714fa3ef082e75b04834907f54df66e123fc02a0836a8edb08de"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-7.log",
+      "bytes": 3171,
+      "sha256": "593197bf6cf2975363ca9717b1d598f759d55078c186127fe68519f873afd8b4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-8.log",
+      "bytes": 236,
+      "sha256": "d5ee36c61ad54d0b3b79966c7eb54a2ed71ba28c927bb7fff58afa8f0dad320c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3-9.log",
+      "bytes": 234,
+      "sha256": "bbd9f8c1feceda5c4196ad44cf9f81ae099f62e4ed0d9d076fba3f0516f9318a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/python3.log",
+      "bytes": 122,
+      "sha256": "584e5d5a54761e10ca1d27c12feeafba4fa3730919d51dfec7c33dfd00c3b4b4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/sleep-2.log",
+      "bytes": 1354,
+      "sha256": "3403ff1e3da4f4dc07b921d247da3e356e5b5d1c8662d08ae2ddcda4d98ba223"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/sleep-3.log",
+      "bytes": 757,
+      "sha256": "9b5484924933957ed85fed062a5abbe0f10cb0d1aaf2295b9d0ce00f69ba488f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/sleep.log",
+      "bytes": 791,
+      "sha256": "bba4119c5971ddf6b13e6c79efffedf2f7b09dd652f20ebea47d8488626a488f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/supervisorctl-2.log",
+      "bytes": 1059,
+      "sha256": "ce0fa6869778b09d558d11be67cdf22db33ccae4d7a278eec71cc0d117013bb9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/supervisorctl-3.log",
+      "bytes": 819,
+      "sha256": "8df97126c7005b554530e9df0fcba035d04cfca1ce5aacbe2929092679210ee7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/supervisorctl.log",
+      "bytes": 577,
+      "sha256": "62d85e69527ae31c816b41e2baa3b3c2095c608ef13c342656d2fdb2c04309b3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/shell/7c972b84-9850-421c-9380-2c26a9e5866a/tail.log",
+      "bytes": 1511,
+      "sha256": "cb60c3839e18715c2f3dfd29dcc08f0e6f07e9397b2db53ce3bfb633d6fc5887"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/vis-20261127T165320Z-pid196.log",
+      "bytes": 165964,
+      "sha256": "3a07a8fd91be80398aa0531e847b00f6988d140c623ab7610095e5a0bb78955e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-logs/2026-11-27/vis-20261127T165320Z-pid196.problems.jsonl",
+      "bytes": 383,
+      "sha256": "5165db0c40b2e55c646aa2cfce9f27339fb0d1dd7afeabd3ea5be4bc87a9ebe4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/agent/vis-trace.jsonl",
+      "bytes": 2630551,
+      "sha256": "48749d4ae1a08e64bfe1ab3207a5dd81addbadee3d6f7be5cc0424339d57568b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/__init__.py",
+      "bytes": 58,
+      "sha256": "63b800abbf1b909111eb7bd75d9c117c981a068f28156699752ad5f896521e0f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 124,
+      "sha256": "5027bd1c14f5a3e5c8535cf3af48a0cb39a69dbfb44c2b0b5ea263695832e46d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/__pycache__/checkpoint.cpython-312.pyc",
+      "bytes": 10631,
+      "sha256": "ee9bf2679d758da488d1001e571cb44af6a66e84d2f78946b3b516eb52f5515d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/__pycache__/config.cpython-312.pyc",
+      "bytes": 617,
+      "sha256": "01b7a368d75ac8f4cce52646ec6978d4f4a24caf429f3d9b367cfbc8ae818f85"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/__pycache__/worker.cpython-312.pyc",
+      "bytes": 18268,
+      "sha256": "f8143f4aef4a831a2971d983241f641f813301e68d73f5bc5c93fc77f365d343"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/checkpoint.py",
+      "bytes": 6793,
+      "sha256": "705e75884c9d6ca2f3fb073c912ba5969ff7f0d3ffe071965d84964cd0a0b2b2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/config.py",
+      "bytes": 350,
+      "sha256": "f3d12cbd9875819e42a2dae1c4fee49dd0064fbec01afc41c83d350e34e98840"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/requirements.txt",
+      "bytes": 129,
+      "sha256": "118fe458a920d98cf6d05c36336048179b7dfdc3e6492784e9e99a5477b039ee"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/app/src/worker/worker.py",
+      "bytes": 13174,
+      "sha256": "f9912bbbcf0b6175540798bf6ce0f5659b12d0cfa5936ad40262ab703191cb1d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/manifest.json",
+      "bytes": 525,
+      "sha256": "94d9227b93a74467260933a4598e34001211470c65d7125d9de000852fbf23e7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/artifacts/tmp/kafka-snapshot.tgz",
+      "bytes": 95757215,
+      "sha256": "77c32527d242683b91c96e471bc9bd030699a109f4b711d4b9d9462ae93e7818"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/config.json",
+      "bytes": 747,
+      "sha256": "2b7d6b60a3001171179eaea234f1e398aef59eb84e03efaa932e8000faea8259"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/images-environment.json",
+      "bytes": 567,
+      "sha256": "b1721b567d047f71502e1766a3c6b4548fb96ae16691344e56ea1324a3ed5c6a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/images-tests.json",
+      "bytes": 567,
+      "sha256": "b1721b567d047f71502e1766a3c6b4548fb96ae16691344e56ea1324a3ed5c6a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/lock.json",
+      "bytes": 1264,
+      "sha256": "651dd21db7de411a3f7333c3a05deb808d88fdd1d82a36d241a07a82b3c80845"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/result.json",
+      "bytes": 36911,
+      "sha256": "25e2ad9626a37fda56dda54c9ddac3bfe1ff334c5ae35d693b2c4faffcab1b35"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/trial.log",
+      "bytes": 12584,
+      "sha256": "e1e01fabcf4dd081bcc0488020dd02e5f9ca1b75239fdae23105c55010e3e445"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/verifier/ctrf.json",
+      "bytes": 3334,
+      "sha256": "581f9e4f697a90eed1c7ae2e51bd80add06ae83a963f5c597e974aaca8f71731"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/verifier/test-stdout.txt",
+      "bytes": 6392,
+      "sha256": "af5fe40c3d6448b45836521362c8c47f9bd81783077ddf3a4e019c5a28392bba"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/verifier/toolkit-install.json",
+      "bytes": 18,
+      "sha256": "ce0f91a06d8eeeb41ba5957d899c802e79bf55e1b2bc1aaeaedf40ea9d7d78cf"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/payments-pipeline-fix__tMDBfxh/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__payments-pipeline-fix/result.json",
+      "bytes": 1141,
+      "sha256": "491776e104377f71e2d3168ceb0eaf17f500e254242965b95321dec05168f9a7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/config.json",
+      "bytes": 780,
+      "sha256": "09ab25d49ab15ceee0d965e573a5fe0d12bdedf0c8225211687ce0b367405c58"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/job.log",
+      "bytes": 13789,
+      "sha256": "54ac36f30466412fda94a206c88f497c610e3f35c88f024224a7fde836b05cba"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/lock.json",
+      "bytes": 2324,
+      "sha256": "ea9c209f453c6f907dbec32bdea4dcea9f0d0bb97f7392dbace6562f16ded68d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "10de33b53c6bf1c4702880a5b0d67795c77c4310a67fcd11b3a1d33399a5a701"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/resources.jsonl",
+      "bytes": 138697,
+      "sha256": "270b64dd0d7b69ca96d48b1c28046f62a2a5a978b9d9897d9e1b0a8e5c133e63"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/trajectory.json",
+      "bytes": 85609,
+      "sha256": "c2d79431cbb78a460d71b25b3f27199907882798242b305789f0c34db15a46a2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/shell/8108fb10-3236-403a-b06b-0323b3bab5d6/python-2.log",
+      "bytes": 61,
+      "sha256": "895a616058c1a554e362975b1455fd06d3e0358855dc12c91d1cd79a9722a3f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/shell/8108fb10-3236-403a-b06b-0323b3bab5d6/python-3.log",
+      "bytes": 99,
+      "sha256": "02368605041577dc0ca78e1a11736dc3187e29e15548560f9d50c12b57bc42c3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/shell/8108fb10-3236-403a-b06b-0323b3bab5d6/python.log",
+      "bytes": 14,
+      "sha256": "fd0cf6072ef4b2fa8bfca4e191706667d17db6874c1457af89e60a9d9b5b9020"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/shell/8108fb10-3236-403a-b06b-0323b3bab5d6/python3.log",
+      "bytes": 879,
+      "sha256": "680d3058fb6329474197902c6eae25e0744a59e290ec7c6dc96c5426b48428e5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/shell/8108fb10-3236-403a-b06b-0323b3bab5d6/which.log",
+      "bytes": 68,
+      "sha256": "a9b333d3e6079f15ff899b9e4db86373ce213b3cdf8aca6552701cc26c524142"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/vis-20261127T161931Z-pid172.log",
+      "bytes": 57019,
+      "sha256": "9d5e63312172195473b6651ec7f4d29ec63d0555964f18573bde5777b64c3181"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-logs/2026-11-27/vis-20261127T161931Z-pid172.problems.jsonl",
+      "bytes": 383,
+      "sha256": "beff2379ab32ac663498d289b67e8b5c62d899f2ad4389a381bafb4878c1760e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/agent/vis-trace.jsonl",
+      "bytes": 807328,
+      "sha256": "f9a5f3fefe603b7fc6a5f8baa01a74b58759b6349ec08282d12b0315ec19f39f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/artifacts/app/routing_result_1.json",
+      "bytes": 4174,
+      "sha256": "11064fd3445f518551b2848ac3fe079bcb5676e7f02a062a8dfdbc820a07f100"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/artifacts/manifest.json",
+      "bytes": 368,
+      "sha256": "e0131984b48866984f43ac7e0064f7611025dbdb675c65b5ad0416c8154941fa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/config.json",
+      "bytes": 762,
+      "sha256": "59627c47cd80341022adbf3381a2979ac80573b231b5ffda7bbeb8e38bf5df2b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/images-environment.json",
+      "bytes": 285,
+      "sha256": "da7f43898c249b829127b1cc7babb3e9a3fc56d859757cada9ec1626a7266eda"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/images-tests.json",
+      "bytes": 285,
+      "sha256": "da7f43898c249b829127b1cc7babb3e9a3fc56d859757cada9ec1626a7266eda"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/lock.json",
+      "bytes": 1274,
+      "sha256": "419488f2401766f4805d9fd9d37aa97b265d1da3664aa1935c4eb9b5a47e1f60"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/result.json",
+      "bytes": 14411,
+      "sha256": "fb6cb55e646c40d8e41f89f81375e157a8219fb55b06193a97bf6ece19c80820"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/trial.log",
+      "bytes": 13709,
+      "sha256": "3834f486d8226dcdab3e322160ed836e5f664f344a5f3bfebf6ec233b0468e15"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/verifier/ctrf.json",
+      "bytes": 5690,
+      "sha256": "9304da2ddd4a76dee18f0429dc03dfad681834afd57081a9ed45df9f8f843fb9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/verifier/test-stdout.txt",
+      "bytes": 1705,
+      "sha256": "9e58aca4db511d9617f2642d27343f6fa3c74c59cbaf8e241941f91ce7b27b49"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "db613c7bc5e75a7ed66b78eb9b136374f69aa41f34fbfbe5377e3b9a805ce605"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/photonic-waveguide-routing__3m3QokK/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__photonic-waveguide-routing/result.json",
+      "bytes": 1146,
+      "sha256": "82787623ef9626472c6b3464a62d3e371c215dd927d96c6fc511176c12f2ba47"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/config.json",
+      "bytes": 758,
+      "sha256": "e44a69889decfe66a3195c9bee570a47e2b9850841c2e84367991628d78ede85"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/job.log",
+      "bytes": 15223,
+      "sha256": "ed0480dbc3d0f2b885c5fafc64341454fa4bff9ca089418137b0a493bba32594"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/lock.json",
+      "bytes": 2302,
+      "sha256": "2d981510a734ab80871788eb17a7fb00286b3150a2f06f1721f2e56dd07fe491"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/python-resolution.txt",
+      "bytes": 111,
+      "sha256": "702cead70789db9acf399c9a14b63bc36f2ce2373f3ac8f460cac43493a9132b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/resources.jsonl",
+      "bytes": 106006,
+      "sha256": "598429e3a91744ba6bfa9e7ba758fba3cdee084e8be42228ed0a81327ecd5071"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/trajectory.json",
+      "bytes": 138834,
+      "sha256": "93b2b36f43a0fcf193614948eb3e89f1ade31af609549f066d1ed4c5cd2cb272"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/node.log",
+      "bytes": 660,
+      "sha256": "e99707f55ab7368a6cfa2d9314cbb15ba6e6b10c0b304fd3672c53e0d1ef2ce0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-2.log",
+      "bytes": 1313,
+      "sha256": "2fd05bce69b9238297074eca58b86b9c13c533f2b9a624ceff8615eaf84c7dad"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-3.log",
+      "bytes": 1648,
+      "sha256": "d5e928a2650387c2c1ed1ebe4f2eb63331b795f1200c45e327e660935384994f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-4.log",
+      "bytes": 10046,
+      "sha256": "5d6195017a276061e69db21c6ad16e6f6a868291e07eb17fcf25f23675157a53"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-5.log",
+      "bytes": 2158,
+      "sha256": "a6f126b71f66bcdb17fcc43b4bd24a30861937636ff007167a48539d4a5f63e4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-6.log",
+      "bytes": 2179,
+      "sha256": "41ee68a9968893d265a66a8b96b9e26c000182c8024f05f79d28909e935758a6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-7.log",
+      "bytes": 2281,
+      "sha256": "741a50c868e197386fb34d8189173f1cd5f29c4f1e437c6d514ba21e28c9b6b2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm-8.log",
+      "bytes": 5585,
+      "sha256": "0b5ebf4aaed24b25fd44fd26a6ac7086b3e3d9e0c80e93cb2fcd565135313708"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/npm.log",
+      "bytes": 579,
+      "sha256": "84d4f8a65c91957fec59947a5d2026dcb7bd3c9626dc042b371aafe6ad5895e7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/shell/e9f55621-24a5-4933-800b-bc68e8af399f/tsx.log",
+      "bytes": 341,
+      "sha256": "2eaecd8b7e4630c2e8acc94e8f024692e2f711676bd1731915fa9c17f5aca820"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/vis-20261127T174120Z-pid2820.log",
+      "bytes": 84169,
+      "sha256": "2907695a482e21f04f83f8654db15233c3fec9b7e46373a6934c84695d048998"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-logs/2026-11-27/vis-20261127T174120Z-pid2820.problems.jsonl",
+      "bytes": 383,
+      "sha256": "ecbe49db83439d7193f175f31dc022b3735bcbcee1a7aa7f93d5856aea48571b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/agent/vis-trace.jsonl",
+      "bytes": 2740417,
+      "sha256": "892754ca43975ef21caa46b0573ef1714d7ab69bf02d8b255d7e3d6cc1638ded"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/index.html",
+      "bytes": 368,
+      "sha256": "829542e81e6d36fd980d73973b7d4a173706f557e0ab00ee36dac9c65e173ffc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/package-lock.json",
+      "bytes": 133576,
+      "sha256": "66340f1e802211c9152061e2206320a8bbe5a92edb96a66f405a5de520caa930"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/package.json",
+      "bytes": 663,
+      "sha256": "57432cb0e2b3940a313c0226fdfd36d0351279e454d4ab980da98f13815efd15"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/App.tsx",
+      "bytes": 168,
+      "sha256": "f377425996a178336b5fa542fb39f8fb2a137fba8422eb1e6b75affe7bdba657"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/components/LeadForm.tsx",
+      "bytes": 2895,
+      "sha256": "6c157b3971defb07c3c6338021919df66299a9d85588a1985acff202ea1cb624"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/data/lead_input.json",
+      "bytes": 408,
+      "sha256": "9c00c3a6238836ae761d9939b6de038800f362bd084cd02e357b8d8014296616"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/lib/leadStore.ts",
+      "bytes": 9033,
+      "sha256": "bc60519617290dae37823ef622456a1a9272cbe81dfcbfa03d6b55f65dfc8d22"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/lib/payload.ts",
+      "bytes": 831,
+      "sha256": "f0ac249b4e36efdfb44d4488a08001c1c26b3be3c50482a34b40e3ebf865f3c8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/lib/submitLead.ts",
+      "bytes": 7233,
+      "sha256": "fd6750071fa53b8f659edf6f8b0cbcce85685cc060ed652e354a2e1a6f2bf7f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/lib/tracking.ts",
+      "bytes": 262,
+      "sha256": "c0a807a1b44bd232d4e803108e3dcc526ae2440f1f32311d20f1bde90a605b8b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/lib/validation.ts",
+      "bytes": 435,
+      "sha256": "d211a80161aa3c52d7bcf67daaea5b2f0701b99ecfdc9186c4e425c2c3055ecb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/main.tsx",
+      "bytes": 214,
+      "sha256": "f96692b15fd17b25a79a925b563c5c360c02a3bda2d3ceb55792f7876c60c690"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/scripts/submit.ts",
+      "bytes": 522,
+      "sha256": "ec554b4dffba64f69d53de3489f1924848ace5bd073ad7db34e2ce021318a964"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/spec/business_calendar.json",
+      "bytes": 302,
+      "sha256": "8e85f0606d70bcaeac9b79122c1a5794ab5761085f785d5c928485c51ef19bc5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/spec/lead_policy.json",
+      "bytes": 800,
+      "sha256": "1328fc8690c637bfd244c8d6e908a70efcee4e23fa35fc215154e809683eaeb5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/src/spec/lead_schema.json",
+      "bytes": 8423,
+      "sha256": "d0a9aaf654f3d1c038cbb4cba61dc74669d738216e37a95917dca04042918049"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/tsconfig.json",
+      "bytes": 309,
+      "sha256": "f8d0e8c75c805a90a9a83af7671b7b12e1669dd2eeee363efb7f7db0b00d1529"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/app/vite.config.ts",
+      "bytes": 1258,
+      "sha256": "cf2063f324af6b8310096feec94f73185246cea1993148dd80f01ce8a24b19dc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/artifacts/manifest.json",
+      "bytes": 1209,
+      "sha256": "9e3af49d69bb9a608c7e2632607214574cb16347f28024471f877fe128e021d5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/config.json",
+      "bytes": 729,
+      "sha256": "c3ca32fd5e077408872ee46a8b478a1a049885bd37faf1bc52e3917d26cba8cf"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/images-environment.json",
+      "bytes": 344,
+      "sha256": "a181a02536e79bbdbf3c7c0119a34b03b9752594f5c765be5fac9b5cd3cfc0d6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/images-tests.json",
+      "bytes": 344,
+      "sha256": "a181a02536e79bbdbf3c7c0119a34b03b9752594f5c765be5fac9b5cd3cfc0d6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/lock.json",
+      "bytes": 1252,
+      "sha256": "ad08ce79898e5e1a261fb85b631384023f2da7dc5a76e3b6af704a4fb59007a6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/result.json",
+      "bytes": 19937,
+      "sha256": "ec00c2eb8a510676706c8a2d74b6f91b9f3c201dfaa7b6395df30fd3fe264f3f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/trial.log",
+      "bytes": 15143,
+      "sha256": "dc7c4ca91317b3bc0872d64b2566384e955aabb7f6b724114b3ebd5ca42644bc"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/verifier/test-stdout.txt",
+      "bytes": 2299,
+      "sha256": "ffad7fcb4a3df6445eb1d22d1d1f220a2de19f93407854c899a0cf72e804ec86"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "f1df0a330a3786f87d6601fe5534fde67a1b9f293c647777eaa669c8f2e95924"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/react-lead-form__ZZ7hwB4/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__react-lead-form/result.json",
+      "bytes": 1135,
+      "sha256": "629c3ea221dfb634792da73236883fd74f6726e1d69dc0c320bb8a0231b20219"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/config.json",
+      "bytes": 768,
+      "sha256": "1a9c93ab58984af2d8847341311900257a151bbc79b948b7d608cb52ee8c3ddb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/job.log",
+      "bytes": 12759,
+      "sha256": "8fea1a06291a1e99b0ae3592f3d59c279b89f961f5e0de47da90b9506f6929a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/lock.json",
+      "bytes": 2312,
+      "sha256": "48299f9f184ee0cf427333e831de33615c4b8999f35ac0e7e6c7722aa086893a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/result.json",
+      "bytes": 1137,
+      "sha256": "2a6397de3494032fe24231f730c3ef9c4a320826ae7ca66e11bb41b499cfb9af"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "0460fc8d24a0888097f3f6fc9d7ea43c23721b23f941f4e9109dfdbaf33c2ee0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/resources.jsonl",
+      "bytes": 23488,
+      "sha256": "9eaaba339fba08bb740bf962014b2ed65b3cbefff2e42df28e58bc851af9c4fb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/trajectory.json",
+      "bytes": 61179,
+      "sha256": "f4dd1e8bdb18f062f49af4fdc154ff8933f3b6259a640156403583cd44142fc7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-logs/2026-11-27/shell/04113433-f888-42d3-905f-bf2731e61a34/python3-2.log",
+      "bytes": 90,
+      "sha256": "04a48fca8a2dd5b5d59c159298967f5952a27646f92b32a121421f7ca5b48c26"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-logs/2026-11-27/shell/04113433-f888-42d3-905f-bf2731e61a34/python3.log",
+      "bytes": 105,
+      "sha256": "79f6f2a26e1a6085e1bf59fe5175f40de388c5316258702e6ab874c5f7609f74"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-logs/2026-11-27/vis-20261127T175310Z-pid98.log",
+      "bytes": 56847,
+      "sha256": "5ddbd0de9cd917cf657b46bf497c415ba6f5ae2cb0b08f5f36f05134cec1f332"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-logs/2026-11-27/vis-20261127T175310Z-pid98.problems.jsonl",
+      "bytes": 383,
+      "sha256": "78834437f2c7a5f12062b3241a65a9aede688f3c2776b5b400e871368db03fc1"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/agent/vis-trace.jsonl",
+      "bytes": 663389,
+      "sha256": "ffa6289be4301510aee21a4b9a50c6eb923f4b56a5a15a62fa4f63bdd5aae0e5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/DESIGN.md",
+      "bytes": 451,
+      "sha256": "b6568e4d497b4cc80abb21f4dc079c28402869d799117c39ff41a1999dff0b2a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__init__.py",
+      "bytes": 58,
+      "sha256": "63b800abbf1b909111eb7bd75d9c117c981a068f28156699752ad5f896521e0f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 117,
+      "sha256": "aeeb1895a269950b27c89ec748e6c7285a838d8331f58f2fca6ae8ae736386b4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/emitter.cpython-312.pyc",
+      "bytes": 1821,
+      "sha256": "743eb3ffe239d53dba029176f39b6c60c1c2cffba3829b44c53959068609b618"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/events.cpython-312.pyc",
+      "bytes": 3114,
+      "sha256": "b54f55d03948b4166f24f26ad00ee4e7782f6a6585b078a756a44e4f820bc53c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/gc.cpython-312.pyc",
+      "bytes": 2136,
+      "sha256": "ed1e6f977a1ece57c4ebca0b5a9c32a00cc662a9313ce92581904e574f3bad6f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/merger.cpython-312.pyc",
+      "bytes": 1337,
+      "sha256": "bd82521534e86800d33224d29bcab224c10d06aa69c2087d51a5b092af0c550d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/sessions.cpython-312.pyc",
+      "bytes": 5163,
+      "sha256": "625af575f4b107f93bf31a6f98b79b8d3b8f167026db21a3e6b500b74717ac21"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/__pycache__/types.cpython-312.pyc",
+      "bytes": 3967,
+      "sha256": "a8c3fcee0bd96f8ed75e8ee061962dbbbc69695f8f7f2f2d7b6e243a4f65a17f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/emitter.py",
+      "bytes": 1318,
+      "sha256": "d47c4b1220de623dd1df798e9a4a47c498096ea45a795f08a5e8d8ac94dcc644"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/events.py",
+      "bytes": 1890,
+      "sha256": "5cb7803002277e0d1e6487d7ba38c8077bbc38f39d3fbf47843ee49bccffca01"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/gc.py",
+      "bytes": 1364,
+      "sha256": "2f47619c28c3c9c293e2383d1fd1355e4756f5ae7e7a559c89e095106e03c36f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/merger.py",
+      "bytes": 836,
+      "sha256": "43caf202205eaf63cb04ee162fa5849642247e073ecaa7e29b62a47506ea51ce"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/sessions.py",
+      "bytes": 3042,
+      "sha256": "731e769ad72fc142877bf28c48f1f500f50d465db3266991474668b76592259b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/app/app/types.py",
+      "bytes": 1683,
+      "sha256": "650194a651a37c4be79a544b7ecd79b7b319109e2f17b8dc375eb38252542392"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/artifacts/manifest.json",
+      "bytes": 338,
+      "sha256": "bedc1de996be4485d211cecca02bd686e69360af39738bc80883410c45788912"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/config.json",
+      "bytes": 744,
+      "sha256": "e56064ddb725e9d385807dfd9fadb440e7cb8d75d1d23d023fc4bcbe25b92fa0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/images-environment.json",
+      "bytes": 276,
+      "sha256": "0ff8d25be730251408f7ecb5892cf4899c029a8222bcd348905d70b6de453193"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/images-tests.json",
+      "bytes": 276,
+      "sha256": "0ff8d25be730251408f7ecb5892cf4899c029a8222bcd348905d70b6de453193"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/lock.json",
+      "bytes": 1262,
+      "sha256": "30ae2a42e0bcd225ebe2a486dd41c340760e928c67c75aaa60d55407d121b8ad"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/result.json",
+      "bytes": 14335,
+      "sha256": "51fee37a7dc7eea07103dcf5fa058d8f490254731342af09ce207fbb5706717b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/trial.log",
+      "bytes": 12679,
+      "sha256": "27a1128e47f1ba067964690d35687697d6a59db0a2247a643c5dcfc5cbf38825"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/verifier/ctrf.json",
+      "bytes": 2840,
+      "sha256": "825517b1ebbc7650adc05789cdcd783b385af9e31bfc3a35bac97eb88d0c33ac"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/verifier/test-stdout.txt",
+      "bytes": 991,
+      "sha256": "5f297e242cb696739193191ccf78f992afdf9d7b1dfca50d2f9d4d7e66b0edb0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "039418f99d217633a9af38ed4a2f2f982df0b5bbb6b5804e3169ae3380a5315c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__session-window-debug/session-window-debug__z62gVEe/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/config.json",
+      "bytes": 768,
+      "sha256": "719b468c7c0ad419936715a2b21ff09213ae335aafb725c8c35708dd28bc7c26"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/job.log",
+      "bytes": 13960,
+      "sha256": "016c0f202b73c66de96e2149f9e939d215d13267dbb5ed46fda92c8d847df74c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/lock.json",
+      "bytes": 2312,
+      "sha256": "3d5473687b9df40c98e8133a84117dad69b3b3300d310504d13ca685e6bfa3f4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/result.json",
+      "bytes": 1140,
+      "sha256": "4c24c151279b9b6c440565fe71e91769f597220b43e4428a416ab269ae319459"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/python-resolution.txt",
+      "bytes": 88,
+      "sha256": "a829c416387759c488109f31f088ece1a3578925dd5d71e55812fd8d3d81d4ef"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/resources.jsonl",
+      "bytes": 125173,
+      "sha256": "2126bc428f543ec8213ff6cdc24608ba2c8e1326f7bdee28958f93f154d25581"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/trajectory.json",
+      "bytes": 155936,
+      "sha256": "b6ac82bb3cba23582cc7f3ff9fafeb27d62f97b385155b6edbaeeeb274ebf29e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/g-2.log",
+      "bytes": 1509,
+      "sha256": "913102976d417a4e3520e38fa22958fb56a5f28426c224ec8753c79ca5dc90f6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/g-3.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/g.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python-2.log",
+      "bytes": 1502,
+      "sha256": "9e881e2d59f51716131ea3c10ea85e44589cd57b528307d9fc5588bfc58bd433"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python-3.log",
+      "bytes": 14,
+      "sha256": "b1c6d260858761f7e324610c096b1bb2ad22f7fa08f9b4b5ad2bdc6663bfdbc1"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python.log",
+      "bytes": 676,
+      "sha256": "6fe38a986edd5cdda3c0dbaaff6cf94b6401b79bf454d216b38eec11c8457213"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-10.log",
+      "bytes": 277,
+      "sha256": "3a663c6800eb97cae03eabd99b7ada2aa3864bb6448cfb3e2312a9b983fa87d0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-2.log",
+      "bytes": 217,
+      "sha256": "8b7de3b9971348fff8fe9de4100ffcd9927246354d49148d8bbd7c3fa7abe771"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-3.log",
+      "bytes": 110,
+      "sha256": "5f40fca01b6f30f64a6e4ac960289d3d2f39a73df0aa882bc1077d190695a2db"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-4.log",
+      "bytes": 291,
+      "sha256": "1db35a4526a8789545deacedc3803c2af1987d3a202c6ff91727c7257c8410a7"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-5.log",
+      "bytes": 911,
+      "sha256": "05b776ac1e5ca777318790238c0e288be395af600f2551dc25f2642cf7f44b9b"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-6.log",
+      "bytes": 1506,
+      "sha256": "af3049947fc081a18c2abf3bb04ad85e94ac449cee7b06c4539acd4dcc6b4daa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-7.log",
+      "bytes": 165,
+      "sha256": "8cfbb7c06bf68d9c6201c1ef58fb0278348e72f5c4316034676df541840ec43c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-8.log",
+      "bytes": 1511,
+      "sha256": "72ed78024e72b4590aadd1ef2cbbd6d5fdb69b81fc27d1c754fde057f3abfb5a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-9.log",
+      "bytes": 112,
+      "sha256": "6a05f4eccc11a35b2db7db01521d191908bca00f872dddebc93c4a9f9517747d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3-config.log",
+      "bytes": 87,
+      "sha256": "3c83fbb2e982f9fce04a3ad8afbd67130d135dbde8593e6b0fa966447830dc5d"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/shell/bfe24976-731e-4cbe-b19f-1b141673c2fd/python3.log",
+      "bytes": 453,
+      "sha256": "35959547ac6dd465037cd71acf8c74f3d755c47a6eb094aff8561eb98408c580"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/vis-20261127T172906Z-pid227.log",
+      "bytes": 165697,
+      "sha256": "1178a2c10a4fbda1b464bea3e9edc31f98944729cb11e379968d4bb7def7c660"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-logs/2026-11-27/vis-20261127T172906Z-pid227.problems.jsonl",
+      "bytes": 42026,
+      "sha256": "e0ecac7622ff546e2c1b9e37b5d3927c92cd9d0a26536c50aa846f7da60602ab"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/agent/vis-trace.jsonl",
+      "bytes": 3442314,
+      "sha256": "6e093ac473921d6cde5a6679dc13ee933a65eabd891a8cc7f1eaabc1c9f7b248"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/artifacts/app/README.md",
+      "bytes": 1434,
+      "sha256": "03baf7303250d699f5c59cba7c82bd099e34adf0090bea8c231ad564be98f47c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/artifacts/app/fast_networkx/__init__.py",
+      "bytes": 16066,
+      "sha256": "967499b9df835871d7363f7da63972078e067a8745d72d66e23a91df819e7585"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/artifacts/app/fast_networkx/_core.abi3.so",
+      "bytes": 75208,
+      "sha256": "7f8045baf519f71f7578d7435834944a7a34d797e82ff74bac4a31c3b51d82f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/artifacts/app/fast_networkx/_core.cpp",
+      "bytes": 10019,
+      "sha256": "a748f7858d1272c6ad12a9e9ce71693af08aa944a93aae83a12cf8bfc4b63564"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/artifacts/manifest.json",
+      "bytes": 330,
+      "sha256": "1afafd686d4de2d45122d91307a9b1e2241784dd975216626329982504ac53f2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/config.json",
+      "bytes": 744,
+      "sha256": "60a99718c1658873da69475d3e804f89c3401135fbfbf72c3a9050e48096dcab"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/images-environment.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/images-tests.json",
+      "bytes": 272,
+      "sha256": "08e7b67d6ec9b52cbe1043ef9fd19d0036a0f0995a992c8aebe32ddd8fdd74f8"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/lock.json",
+      "bytes": 1262,
+      "sha256": "cf1e98297da19ebbfa6a472f580aa2f1a531bd9d40968fc318a53d74c47cdd18"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/result.json",
+      "bytes": 29656,
+      "sha256": "4f3586093edb85640cf5fa982bf2813b980ee4b249b27b97d1889cb54eaabd12"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/trial.log",
+      "bytes": 13880,
+      "sha256": "31de1dc061d193799a607c154f6043dba77f734750193d4461702421691616f4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/verifier/ctrf.json",
+      "bytes": 19656,
+      "sha256": "b3883c9e93af800c70d37ab472121af0469393be511a0d4adc290b05f4f06646"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/verifier/test-stdout.txt",
+      "bytes": 2188,
+      "sha256": "ea1fca3944016ec355455843286c9c4bf0d4501f35d7bc0814cf62e0be0d409f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/verifier/toolkit-install.json",
+      "bytes": 19,
+      "sha256": "a306decdaf146bda2f507067b9a88892881f40d4b0b2db467027d638ee7c25f6"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__vf2-speedup-networkx/vf2-speedup-networkx__2mpct2d/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/config.json",
+      "bytes": 770,
+      "sha256": "727868f05e56bbddd1ec4ae3f60e8f6325c8ec54cb0b9c0899734ef5326ae35a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/job.log",
+      "bytes": 15117,
+      "sha256": "e1ea4fd7fb1acb1fe9cad817d97d381ceab94edc339a1d5c34e232abb2ef7fc3"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/lock.json",
+      "bytes": 2314,
+      "sha256": "89d10c5f1f59817834ea9fa219478d92ef2b78a1db1adca35b80f935fadf81e4"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/result.json",
+      "bytes": 1140,
+      "sha256": "c268aa4d6efdf41231c4dbc25b6baac40ad09e741eb67f33bbee00d739f8577c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/footprint.json",
+      "bytes": 1960,
+      "sha256": "ead7b5edead02e7654fe275756d00b0f2d618bdd384a1288e1f189e52a394974"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/python-resolution.txt",
+      "bytes": 95,
+      "sha256": "81a083dae1c15701a3741a50bd3554526b91952bf4a3d1f7df8042539601d647"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/resources.jsonl",
+      "bytes": 29262,
+      "sha256": "ad38b9d120f7aeeb607c5fbe7928f9aa7448370f24a5777875e81ffe1896aad0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/trajectory.json",
+      "bytes": 89960,
+      "sha256": "fb02e26a03ae62228fbc7ffeedb89dac3befb6349be7eaf1980e1e8cbb55605a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-logs/2026-11-27/shell/226a36b7-102e-4421-bfcd-c795d41d4734/python3-2.log",
+      "bytes": 223,
+      "sha256": "3b964556d5e9e226cdfbc007840f324594730f4d84c63c24cc70c80842759cb1"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-logs/2026-11-27/shell/226a36b7-102e-4421-bfcd-c795d41d4734/python3.log",
+      "bytes": 431,
+      "sha256": "519546df8b999211a45f9c4eb1af4369a7109f95f6c59ce12aba6d93b382747e"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-logs/2026-11-27/vis-20261127T174905Z-pid5013.log",
+      "bytes": 56854,
+      "sha256": "3714c81127047c815a958f68b7b48dee211c82f54f2d5a31179af2ec93dec0a5"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-logs/2026-11-27/vis-20261127T174905Z-pid5013.problems.jsonl",
+      "bytes": 383,
+      "sha256": "6435e2c0737cfb9ba7f9a861626b67fa2d330374f2f38fb80468fc0febe5dfd0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/agent/vis-trace.jsonl",
+      "bytes": 1044021,
+      "sha256": "69e7295666060cbdba44ed733446818e44a6fd1b133f3f8ee1778b02be0554cb"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/_stage_a.py",
+      "bytes": 656,
+      "sha256": "c72e64115bc57fcaff3c53292978ad5bb29fb4f4831feebf25ed213a6325f99a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/_stage_b.py",
+      "bytes": 553,
+      "sha256": "b8ec29cd9c7889630e924c6136f6761e0f5922f8bdcf73508615fef6608613e2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/_stage_c.py",
+      "bytes": 408,
+      "sha256": "c9dcb8f9f7e785ec78812d88cc3fc5f5a794670b7be43271375dd5397889ac2a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/_stage_d.py",
+      "bytes": 637,
+      "sha256": "852017433f72940333c4ad2f9de36310748b7c1bf4b8dc9cdfae046bc0261342"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/_stage_e.py",
+      "bytes": 1182,
+      "sha256": "5fdc1f5550bfb082053027bcb57f84022f5bda0fd1c581d54b71153d43c32401"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/app.py",
+      "bytes": 507,
+      "sha256": "392dbe188db4ecfe5c89c6d9a6d4a81e56084e80db7f0bb678111c7804db4fdd"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/checkpoint.py",
+      "bytes": 1654,
+      "sha256": "e7d4ab3aeaaa872312971e902a9b80fd38b5bbc08eacb717aaee943ff450f0e2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/config.py",
+      "bytes": 1908,
+      "sha256": "85429dd0430288290f2adf4403df0412e99025327aabc8d35f6c39c62690e74a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/log_writer.py",
+      "bytes": 3162,
+      "sha256": "10cd65033f13132195f28c957082c205f89b8379d24640f3884bb9c2be81da13"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/metrics.py",
+      "bytes": 1960,
+      "sha256": "2ee6e72e18c8581822bdb121112413ff11318d8da394959b3390ae86adddfe7a"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/recovery.py",
+      "bytes": 756,
+      "sha256": "7172f965e5cf363a7cc0a41421537c8af9117359493eb7e4fcb389c367b46814"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/segment_manager.py",
+      "bytes": 3853,
+      "sha256": "f6b19f6947c818eac1dc1ae0ede9123531b014be9589aeaffdbd0db90fe731e9"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/serializer.py",
+      "bytes": 1983,
+      "sha256": "5bce5a1e26b9f0810835cca7f0922cd5cd12e69ac34b2274b538bbad910ec299"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/wal.py",
+      "bytes": 2407,
+      "sha256": "3051c29a170043942665feabed668f08618e8eeea1ab6e7389057e2605b85d48"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/app/wal_index.py",
+      "bytes": 1783,
+      "sha256": "38d11fbc49b3028c1b66e4bd294f333a2098e48cc8a63ee89a122f368f5c3245"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/artifacts/manifest.json",
+      "bytes": 330,
+      "sha256": "1afafd686d4de2d45122d91307a9b1e2241784dd975216626329982504ac53f2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/config.json",
+      "bytes": 747,
+      "sha256": "95d7be3b1ed9980f7f4cc808077a4def9e8e18b2d3cb8b2fba0f02b9d2e98b1c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/images-environment.json",
+      "bytes": 357,
+      "sha256": "53fcb347aea6d2bb8b93e7f54f2fcced417593053691fce20f8eae9ecf762329"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/images-tests.json",
+      "bytes": 357,
+      "sha256": "53fcb347aea6d2bb8b93e7f54f2fcced417593053691fce20f8eae9ecf762329"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/lock.json",
+      "bytes": 1264,
+      "sha256": "c1c22e3ba33c0e42968b5f8d4849c2a9ddfce9c96061d0ae6d9c339e83802de2"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/result.json",
+      "bytes": 14369,
+      "sha256": "953f501d4030c37ab6ac1d33b8a97b8d36c189c65beab8c8a88b88607efdf87f"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/trial.log",
+      "bytes": 15037,
+      "sha256": "784c9440cde3478fa8992ca0bfb87ad78686878888533f5a319806a39de8bc29"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/ctrf.json",
+      "bytes": 31404,
+      "sha256": "c5ae95b3197b95c440110c56f5a950198249dfda6c53bf899dedf9c7d5e0c9b0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/ctrf_1.json",
+      "bytes": 31404,
+      "sha256": "c5ae95b3197b95c440110c56f5a950198249dfda6c53bf899dedf9c7d5e0c9b0"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/reward.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/test-stdout.txt",
+      "bytes": 8749,
+      "sha256": "264f1cc3191fc74cb212235e84e483c4e81e1503794d937bced6ee736a173619"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/toolkit-install.json",
+      "bytes": 20,
+      "sha256": "d2c1373d50901b6dd86305a01bced135ce6926f88ce8a6c37b96606124f05c8c"
+    },
+    {
+      "path": "jobs/vis-solo-31ca4ee/r1/vis-solo__openai__wal-recovery-ordering/wal-recovery-ordering__ToSeUvg/verifier/toolkit-inventory.json",
+      "bytes": 1433,
+      "sha256": "aa30ad1890e2bd4b2b46383bf1877586e9bc0bae0c985e7f934a492d438398a9"
+    },
+    {
+      "path": "results/vis-solo-31ca4ee/r1.json",
+      "bytes": 14235,
+      "sha256": "e3e136541439778f4db173bff092e7c7cd89380ececbb414513d42dfcee149bc"
+    }
+  ],
+  "seals": [
+    {
+      "round": "vis-solo-31ca4ee/r1",
+      "digest": "faa9f981aab3f71dad19fc79ae6fbcf80b67d2b4881eba469cf80a72b28ba089"
+    }
+  ],
+  "digest": "63b1f8b8c5f9d25c023975c06d97132c8dbc0eeac7e065c609a9825eed237085"
+}
