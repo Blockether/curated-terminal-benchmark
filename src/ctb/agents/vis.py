@@ -40,7 +40,7 @@ TRACE = f"{LOGS}/vis-trace.jsonl"
 TRAJECTORY = f"{LOGS}/trajectory.json"
 STAMP = "vis-agent-native.build"
 #: The extensions of every profile, from the Extension Center. Each build gets its own archive.
-EXTENSIONS = {"Blockether/vis-lang-python": "1.16.10"}
+EXTENSIONS = {"Blockether/vis-lang-python": "1.18.10"}
 #: The extensions archive. Setup unpacks it into the agent home, outside the timed agent run.
 EXTRAS = "/installed-agent/extras"
 EXTENSIONS_UPLOAD = f"{EXTRAS}/vis-extensions.tar.gz"
@@ -121,8 +121,12 @@ def check(path: Path, build: dict) -> None:
 
 
 def extensions_archive(build: dict) -> Path:
-    """The local extensions archive of one build and its bundle. `fetch` makes it next to the bundle."""
-    return archive(build).with_name(build["asset"].replace("vis-agent", "vis-extensions", 1))
+    """The local extensions archive of one build, its bundle and EXTENSIONS. `fetch` makes it next to the bundle.
+
+    The name digests EXTENSIONS, so a new extension pin builds a new archive.
+    """
+    pins = hashlib.sha256(json.dumps(EXTENSIONS, sort_keys=True).encode()).hexdigest()[:12]
+    return archive(build).with_name(build["asset"].replace("vis-agent", f"vis-extensions-{pins}", 1))
 
 
 def build_extensions(build: dict) -> Path:

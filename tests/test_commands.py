@@ -271,10 +271,15 @@ def test_vis_fetch_checks_the_commit_of_the_build(pinned, monkeypatch, release):
     assert path.read_bytes() == data
     if not release:
         assert calls[-2][:4] == ["gh", "run", "download", "7"]
-    assert calls[-1][0] == "podman" and "EXTENSIONS=Blockether/vis-lang-python@1.16.10" in calls[-1]
+    specs = " ".join(f"{name}@{version}" for name, version in vis.EXTENSIONS.items())
+    assert calls[-1][0] == "podman" and f"EXTENSIONS={specs}" in calls[-1]
     assert vis.extensions_archive(build).read_bytes() == b"extensions"
     vis.fetch(build)
     assert len(calls) == 3
+    # A new extension pin builds a new archive; the archive of the old pin is not used.
+    monkeypatch.setitem(vis.EXTENSIONS, "Blockether/vis-lang-python", "0.0.1")
+    vis.fetch(build)
+    assert len(calls) == 4 and "EXTENSIONS=Blockether/vis-lang-python@0.0.1" in calls[-1]
 
 
 def test_vis_metrics_come_from_the_result_frame(pinned, tmp_path):
