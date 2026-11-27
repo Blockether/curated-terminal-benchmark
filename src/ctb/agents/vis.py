@@ -56,7 +56,7 @@ mkdir -p "$VIS_HOME"
 for spec in $EXTENSIONS; do
   /installed-agent/vis-agent extension install "${spec%@*}" --version "${spec#*@}" --global --trust
 done
-prepare() { timeout 300 /installed-agent/vis-agent --db :memory -- x >/dev/null 2>&1 || true; }
+prepare() { timeout 300 /installed-agent/vis-agent --db :memory -p -- x >/dev/null 2>&1 || true; }
 prepare
 # The stamp of each environment digests the site-packages mtime in milliseconds, but a tar member
 # keeps whole seconds. Round the mtime down and prepare again, so the unpacked stamp still matches.
@@ -336,7 +336,8 @@ class VisSolo(CuratedAgent):
             f"> $HOME/.vis/config.yml && export VIS_HOME=$HOME/.vis && {setup}"
             f"{VIS} {' '.join(flags)} --model {provider}/{self.model} "
             f"--reasoning-effort {shlex.quote(effort)} --trajectory {TRAJECTORY} "
-            f"--full-trace-json-stream -- {shlex.quote(self.task_text(instruction))} "
+            # Vis runs a one-shot prompt only after -p: a bare prompt is an unknown command.
+            f"--full-trace-json-stream -p -- {shlex.quote(self.task_text(instruction))} "
             f"> {TRACE} 2> {LOGS}/vis-stderr.log; status=$?; "
             # clean() removes the Vis home, so keep its logs and stall reports for diagnosis.
             f"cp -R $HOME/.vis/logs {LOGS}/vis-logs 2>/dev/null; exit $status"

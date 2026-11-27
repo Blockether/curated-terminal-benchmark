@@ -30,14 +30,14 @@ sha256 = "3512f2fc48361d32d223c38447f6483b5d3198890b55758eec0a2348cdeecf1a"
 # One Vis agent, Council off. `python.environment: shared` with vis-agent on PATH gives
 # py.run_tests the pytest of the toolkit.
 [profiles.solo]
-toggles = { council = false, draft_backend = "off" }
+toggles = { council = false }
 effort = "medium"
 persist = false
 config = { python = { environment = "shared" } }
 path = ["/installed-agent"]
 
 [profiles.team]
-toggles = { council = true, subagents = true, draft_backend = "off" }
+toggles = { council = true, subagents = true }
 effort = "medium"
 persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.

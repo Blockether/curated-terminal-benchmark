@@ -43,7 +43,7 @@ def test_vis_team_uses_the_gateway_path_with_council_on():
     team = agent(VisTeam, "openai/gpt-6.1-sol").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
     assert (
-        "--name team --persist --toggles verbosity=low,council=true,subagents=true,draft_backend=off"
+        "--name team --persist --toggles verbosity=low,council=true,subagents=true"
         in team
     )
     assert "--db :memory" not in team
@@ -143,8 +143,8 @@ def test_vis_arms_share_python_and_keep_the_task_text():
     # Subagents resolve toggles from the configuration, not from --toggles.
     team_config = json.loads(team.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
     assert team_config["toggles"]["subagents"] is True
-    # Profiles without a note keep the task text as it is.
-    assert "-- x >" in solo
+    # Profiles without a note keep the task text as it is, after -p.
+    assert "-p -- x >" in solo
     names = [AGENTS[name].harbor.rpartition(":")[2] for name in vis.AGENT_PROFILES]
     assert names == ["VisSolo", "VisTeam"]
     assert set(vis.AGENT_PROFILES.values()) <= set(vis.settings()["profiles"])
