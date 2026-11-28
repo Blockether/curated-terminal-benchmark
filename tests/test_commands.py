@@ -139,6 +139,8 @@ def test_vis_arms_share_python_and_keep_the_task_text():
     for command in (team, solo):
         config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
         assert config["python"]["environment"] == "shared"
+        # A py tool must not install packages into the task container.
+        assert config["python"]["dependency_sync"] == "never"
         assert 'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent' in command
     # Subagents resolve toggles from the configuration, not from --toggles.
     team_config = json.loads(team.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))

@@ -8,10 +8,10 @@
 # GitHub keeps the workflow artifact for 7 days. Keep the local copy until the round is sealed.
 [build]
 repo = "Blockether/vis"
-run_id = 46018679623
-commit = "b692ea3eaf8a780010471eb795ad468a8ca65b6c"
+run_id = 46079032876
+commit = "62ab967f5f38187b5e7a90b67f03259e200b082c"
 asset = "vis-agent-linux-arm64.tar.gz"
-sha256 = "3512f2fc48361d32d223c38447f6483b5d3198890b55758eec0a2348cdeecf1a"
+sha256 = "dff34574c65ca2c0be5965edff02a457e5213c8306cd1118712d81e44c27a190"
 
 # A profile sets each switch of one Vis agent:
 #   toggles     engine toggles for --toggles; council.run needs subagents = true (default off)
@@ -28,12 +28,13 @@ sha256 = "3512f2fc48361d32d223c38447f6483b5d3198890b55758eec0a2348cdeecf1a"
 # vis-solo uses `solo` and vis-team uses `team`. The Harbor kwarg `profile` selects another one.
 
 # One Vis agent, Council off. `python.environment: shared` with vis-agent on PATH gives
-# py.run_tests the pytest of the toolkit.
+# py.run_tests the pytest of the toolkit. `python.dependency_sync: never` keeps the task container
+# as it is: no py tool installs packages.
 [profiles.solo]
 toggles = { council = false }
 effort = "medium"
 persist = false
-config = { python = { environment = "shared" } }
+config = { python = { environment = "shared", dependency_sync = "never" } }
 path = ["/installed-agent"]
 
 [profiles.team]
@@ -41,5 +42,5 @@ toggles = { council = true, subagents = true }
 effort = "medium"
 persist = true
 # Subagents of a one-shot run read the configuration, not --toggles: set both.
-config = { toggles = { council = true, subagents = true }, python = { environment = "shared" } }
+config = { toggles = { council = true, subagents = true }, python = { environment = "shared", dependency_sync = "never" } }
 path = ["/installed-agent"]
