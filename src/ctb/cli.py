@@ -685,7 +685,8 @@ def metrics(args: argparse.Namespace) -> None:
         )
     print(
         f"\n{'agent':15} {'sampled':>7} {'rss_min':>8} {'rss_max':>8} {'median':>8} "
-        f"{'cpu%':>6} {'box_cpu%':>8} {'package':>8} {'runtime':>8}   (MiB; % of one core)"
+        f"{'cpu%':>6} {'box_cpu%':>8} {'package':>8} {'runtime':>8} {'stalled':>8}"
+        "   (MiB; % of one core; seconds that the host did not run the container)"
     )
     for t in body["agents"]:
         mib = {
@@ -702,7 +703,8 @@ def metrics(args: argparse.Namespace) -> None:
         print(
             f"{t['agent']:15} {t['resource_trials']:>2}/{t['trials']:<4} {mib['agent_rss_min']:>8} "
             f"{mib['agent_rss_max']:>8} {mib['median_agent_rss_max']:>8} {pct['agent_cpu_pct']:>6} "
-            f"{pct['container_cpu_pct']:>8} {mib['package_bytes']:>8} {mib['runtime_bytes']:>8}"
+            f"{pct['container_cpu_pct']:>8} {mib['package_bytes']:>8} {mib['runtime_bytes']:>8} "
+            f"{t['stalled_s']:>8}"
         )
     print(f"wrote {out.relative_to(ROOT)}")
 

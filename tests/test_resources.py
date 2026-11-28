@@ -117,6 +117,21 @@ def test_summary_counts_a_script_agent_on_a_shared_interpreter(tmp_path):
     assert out["agent_cpu_s"] == 0.3
 
 
+# vis-solo-58b9058/r1, wal-recovery-ordering: CI ran on the benchmark host, a test run of 1 s took
+# 62 s, and nothing in the results showed that the host had stopped the container.
+def test_summary_counts_the_seconds_that_samples_came_late(tmp_path):
+    times = [0, 1.0, 2.01, 6.21, 7.2, 9.7, 10.7]
+    write(
+        tmp_path / "resources.jsonl",
+        [
+            {"kind": "start", "epoch": 0, "interval": 1.0, "tick": 100},
+            *[{"kind": "sample", "t": t, "cpu_usec": 0, "mem": 0, "procs": []} for t in times],
+        ],
+    )
+    # 4.2 s and 2.5 s between samples of a 1 s interval: 3.2 s + 1.5 s late.
+    assert resources.summary(tmp_path)["stalled_s"] == 4.7
+
+
 def test_summary_without_samples_keeps_only_the_sizes(tmp_path):
     assert resources.summary(tmp_path) == {
         "package_bytes": None,

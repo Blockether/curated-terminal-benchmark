@@ -1,6 +1,7 @@
 """Measure the RAM, the CPU time and the install size of each agent in its task container."""
 
 import contextlib
+import itertools
 import json
 import os
 import shlex
@@ -210,7 +211,7 @@ def summary(agent_dir: Path) -> dict:
     paths = [p for kind in ("package", "runtime") for p in (foot.get(kind) or {}).get("paths", [])]
     records, kinds, ticks, last, samples = [], {}, {}, {}, []
     current: dict[int, int] = {}
-    tick = 100
+    tick, interval = 100, INTERVAL
 
     def kind_of(index):
         if index in kinds:
@@ -239,7 +240,7 @@ def summary(agent_dir: Path) -> dict:
             # The sampler stopped while it wrote a line.
             continue
         if row["kind"] == "start":
-            tick = row["tick"]
+            tick, interval = row["tick"], row.get("interval") or INTERVAL
         elif row["kind"] == "proc":
             records.append(row)
             current[row["pid"]] = len(records) - 1
@@ -265,9 +266,14 @@ def summary(agent_dir: Path) -> dict:
     usec = [s[1] for s in samples if s[1] is not None]
     mem = [s[2] for s in samples if s[2] is not None]
     container_cpu = (usec[-1] - usec[0]) / 1e6 if len(usec) > 1 else None
+    # The sampler sleeps one interval. A sample that comes much later shows that the host did
+    # not run the container: a process then counts the wait as its own run time.
+    waits = [b[0] - a[0] for a, b in itertools.pairwise(samples)]
+    stalled = sum(wait - interval for wait in waits if wait > 1.5 * interval)
     out.update(
         {
             "seconds_sampled": round(span, 1),
+            "stalled_s": round(stalled, 1),
             "agent_rss_min": min(agent_rss) if agent_rss else None,
             "agent_rss_max": max(agent_rss) if agent_rss else None,
             "agent_cpu_s": round(agent_cpu, 2),

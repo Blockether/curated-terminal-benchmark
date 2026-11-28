@@ -192,6 +192,7 @@ def totals(rows: list[dict]) -> list[dict]:
                 "median_agent_rss_max": statistics.median(rss_max) if rss_max else None,
                 "agent_cpu_pct": share(items, "agent_cpu_s"),
                 "container_cpu_pct": share(items, "container_cpu_s"),
+                "stalled_s": round(sum(known(items, "stalled_s")), 1),
                 **{k: max(v) if v else None for k, v in sizes.items()},
             }
         )
