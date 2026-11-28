@@ -133,12 +133,12 @@ def test_vis_profile_build_pins_its_own_build(pinned):
     assert [pin["run_id"] for pin in vis.builds()] == [build["run_id"], 43]
 
 
-def test_vis_arms_share_python_and_keep_the_task_text():
+def test_vis_arms_use_the_task_python_and_keep_the_task_text():
     team = agent(VisTeam, "openai/gpt-6.1-sol").command("do 'it'")
     solo = agent(VisSolo, "openai/gpt-6.1-sol").command("x")
     for command in (team, solo):
         config = json.loads(command.split("printf %s ", 1)[1].split(" > ", 1)[0].strip("'"))
-        assert config["python"]["environment"] == "shared"
+        assert config["python"]["environment"] == "project"
         # A py tool must not install packages into the task container.
         assert config["python"]["dependency_sync"] == "never"
         assert 'export PATH=/installed-agent:"$PATH" && /installed-agent/vis-agent' in command
