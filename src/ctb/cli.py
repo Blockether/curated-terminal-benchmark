@@ -500,13 +500,19 @@ def run(args: argparse.Namespace) -> None:
     record_run(jobs, args, {"arch": host, "emulated": host != arch.ARCH})
     # Only proxy agents need it; its log has token counts and errors, never content.
     proxy = Proxy(logs / "proxy.jsonl").start() if any(t.agent.proxy for t in selected) else None
+    # A task that measures wall-clock time on the host runs when no other trial runs.
+    alone = {t["name"] for t in load_tasks() if t.get("alone")}
+
+    def job(trial: Trial) -> str:
+        return run_trial(trial, jobs, logs, args.timeout_multiplier, proxy)
+
     try:
         with ThreadPoolExecutor(args.parallel) as pool:
-            lines = pool.map(
-                lambda t: run_trial(t, jobs, logs, args.timeout_multiplier, proxy), selected
-            )
-            for line in lines:
+            for line in pool.map(job, [t for t in selected if t.task not in alone]):
                 print(line, flush=True)
+        for trial in selected:
+            if trial.task in alone:
+                print(job(trial), flush=True)
     except PodmanDown as error:
         raise SystemExit(str(error)) from error
     finally:
@@ -728,7 +734,8 @@ def stats(args: argparse.Namespace) -> None:
         return f"{s['mean']:.{digits}f} ± {sd}"
 
     print(
-        f"{'agent':15} {'rounds':>6} {'pass':>12} {'min–max':>7} {'cost_usd':>13} "
+        f"{'agent':15} {'rounds':>6} {'pass':>12} {'min–max':>7} {'every':>6} {'any':>6} "
+        f"{'cost_usd':>13} "
         f"{'agent_min':>13} {'input_M':>11} {'output_k':>13}"
     )
     for g in groups:
@@ -744,8 +751,11 @@ def stats(args: argparse.Namespace) -> None:
             "mean": s["output"]["mean"] / 1e3,
             "sd": None if s["output"]["sd"] is None else s["output"]["sd"] / 1e3,
         }
+        r = g["reliability"]
+        every, some = f"{r['every_round']}/{r['tasks']}", f"{r['any_round']}/{r['tasks']}"
         print(
             f"{g['agent']:15} {len(g['rounds']):>6} {cell(s['passed']):>12} {passes:>7} "
+            f"{every:>6} {some:>6} "
             f"{cell(s['cost_usd'], 2):>13} {cell(s['agent_minutes']):>13} {cell(mega, 2):>11} "
             f"{cell(kilo):>13}"
         )

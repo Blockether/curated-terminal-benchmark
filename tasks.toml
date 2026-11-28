@@ -40,6 +40,9 @@ hours = 4.0
 name = "kv-live-surgery"
 level = "hard"
 hours = 4.0
+# The load generator measures a 2 s reply limit on the host: the reference solution fails it
+# when one other trial runs. `ctb run` runs this task after the others, one trial at a time.
+alone = true
 
 [[task]]
 name = "vf2-speedup-networkx"

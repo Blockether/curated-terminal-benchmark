@@ -216,6 +216,15 @@ def spread(values: list) -> dict | None:
     }
 
 
+def reliability(tasks: dict[str, dict], rounds: int) -> dict:
+    """The tasks that passed in every round, and in one or more; a task needs a trial in each round."""
+    return {
+        "tasks": len(tasks),
+        "every_round": sum(t["passed"] == t["trials"] == rounds for t in tasks.values()),
+        "any_round": sum(t["passed"] > 0 for t in tasks.values()),
+    }
+
+
 def repeated(bodies: list[dict]) -> list[dict]:
     """Each agent and model over repeated rounds: totals per round, their spread and passes per task."""
     groups: dict[tuple[str, str], dict] = {}
@@ -237,6 +246,7 @@ def repeated(bodies: list[dict]) -> list[dict]:
             **{key: [t[key] for t in group["totals"]] for key in REPEATED},
             "spread": {key: spread([t[key] for t in group["totals"]]) for key in REPEATED},
             "tasks": dict(sorted(group["tasks"].items())),
+            "reliability": reliability(group["tasks"], len(group["totals"])),
         }
         for (agent, model), group in sorted(groups.items())
     ]

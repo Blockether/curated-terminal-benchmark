@@ -59,6 +59,31 @@ def test_a_short_vis_token_blocks_a_kmet_trial_before_harbor(monkeypatch, tmp_pa
     assert not (tmp_path / "jobs" / trial.job).exists()
 
 
+def test_a_task_marked_alone_runs_with_no_other_trial(root, monkeypatch):
+    # Oracle run of 2026-11: the reference solution of kv-live-surgery passed alone (617 ms) and
+    # failed its 2 s limit (2367 ms) when one other trial ran on the host.
+    import threading
+    import time
+
+    active, seen, lock = set(), {}, threading.Lock()
+
+    def trial(t, *_a):
+        with lock:
+            active.add(t.task)
+            for task in active:
+                seen.setdefault(task, set()).update(active)
+        time.sleep(0.05)
+        with lock:
+            active.discard(t.task)
+        return f"done {t.task}"
+
+    monkeypatch.setattr(cli, "run_trial", trial)
+    tasks = "html-js-filter,kv-live-surgery,photonic-waveguide-routing"
+    cli.run(run_args(tasks=tasks, parallel=3))
+    assert seen["kv-live-surgery"] == {"kv-live-surgery"}
+    assert len(seen) == 3
+
+
 def test_run_records_each_trial_once(root, monkeypatch, capsys):
     calls = []
     monkeypatch.setattr(cli, "run_trial", lambda *a: calls.append(a) or "done kmet: reward=1.0")

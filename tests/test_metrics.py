@@ -4,6 +4,7 @@ import json
 import pytest
 
 from ctb.metrics import (
+    REPEATED,
     list_price,
     repeated,
     round_metrics,
@@ -161,6 +162,22 @@ def test_repeated_rounds_give_the_spread_and_the_passes_per_task():
     }
     (single,) = repeated([body("r1", 2, 1.0)])
     assert single["spread"]["passed"]["sd"] is None
+
+
+def test_a_task_is_reliable_only_when_it_passes_in_every_round():
+    # Report: the mean of 8 of 12 hid that one round does not show which tasks an agent can repeat.
+    def body(name, rewards):
+        rows = [{"agent": "a", "model": "m", "task": t, "reward": r} for t, r in rewards.items()]
+        total = {"agent": "a", "model": "m", "trials": len(rows), **dict.fromkeys(REPEATED, 1)}
+        return {"round": name, "rows": rows, "agents": [total]}
+
+    bodies = [
+        body("r1", {"always": 1.0, "flaky": 1.0, "errored": 1.0, "never": 0.0, "late": 1.0}),
+        body("r2", {"always": 1.0, "flaky": 0.0, "errored": None, "never": 0.0}),
+    ]
+    (group,) = repeated(bodies)
+    # `late` passed its one trial, but it has no trial in r2.
+    assert group["reliability"] == {"tasks": 5, "every_round": 1, "any_round": 4}
 
 
 def test_an_unknown_model_has_no_list_price():

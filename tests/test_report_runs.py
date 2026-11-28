@@ -37,6 +37,8 @@ def fake_trial(name, run, agent="a", task="t", passed=True, errors=0, started="2
         "passed": passed,
         "reward": 1.0 if passed else 0.0,
         "started_at": started,
+        "events": [],
+        "harbor": {},
         "facts": {"outcome": "passed" if passed else "failed", "run_ms": 1000, "cost": 0.5},
         "summary": {
             "provider_calls": 2,
@@ -112,6 +114,17 @@ def test_a_round_still_running_stays_out_of_the_mean():
     trials.append(fake_trial("gpt", 3, task="t"))
     assert render.per_round(trials, lambda t: int(t["passed"])) == [2, 2]
     assert render.rounds_text(trials) == "2 (+1 incomplete)"
+
+
+def test_reliability_counts_the_tasks_passed_in_every_complete_round():
+    trials = [fake_trial("gpt", 1, task="t"), fake_trial("gpt", 1, task="u")]
+    trials += [fake_trial("gpt", 2, task="t"), fake_trial("gpt", 2, task="u", passed=False)]
+    # Round 3 still runs: its failed trial of t does not change the result.
+    trials.append(fake_trial("gpt", 3, task="t", passed=False))
+    assert render.reliability(trials) == (1, 2, 2)
+    # A third task that never passes: the agent row shows 1 of 3, which no task row can show.
+    trials += [fake_trial("gpt", r, task="v", passed=False) for r in (1, 2)]
+    assert ">1/3</td>" in render.mean_view(trials)
 
 
 def test_agents_with_different_rounds_have_no_incomplete_rounds():

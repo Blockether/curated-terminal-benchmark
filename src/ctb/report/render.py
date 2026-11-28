@@ -591,6 +591,18 @@ def complete_rounds(group: list[dict]) -> list:
     return sorted((run for run, size in sizes.items() if size == most), key=str)
 
 
+def reliability(group: list[dict]) -> tuple[int, int, int]:
+    """The tasks passed in every complete round, in one or more, and all tasks of those rounds.
+    A task with no trial in one of the rounds does not count as passed in every round."""
+    rounds = set(complete_rounds(group))
+    wins: dict[str, list[bool]] = defaultdict(list)
+    for trial in group:
+        if trial["run"] in rounds:
+            wins[trial["task"]].append(bool(trial["passed"]))
+    every = sum(len(w) == len(rounds) and all(w) for w in wins.values())
+    return every, sum(any(w) for w in wins.values()), len(wins)
+
+
 def rounds_text(group: list[dict]) -> str:
     """The number of complete rounds, and of incomplete rounds when there are some."""
     done, every = len(complete_rounds(group)), len({t["run"] for t in group})
@@ -671,6 +683,8 @@ def mean_view(trials: list[dict], prefix: str = "") -> str:
         th("Rounds"),
         th("Passed per round"),
         th("Pass rate"),
+        th("Passed every round"),
+        th("Passed any round"),
         th("Cost per round"),
         th("Run time per round"),
         th("Calls per round"),
@@ -685,6 +699,7 @@ def mean_view(trials: list[dict], prefix: str = "") -> str:
         group = by_agent[agent]
         passed = sum(t["passed"] for t in group)
         tool_errors, marked_calls = marked_errors(group)
+        every, some, tasks = reliability(group)
         rows.append(
             "<tr>"
             f'<th scope="row" data-v="{esc(agent)}"><a href="?agent={esc(agent)}#trials">'
@@ -692,6 +707,8 @@ def mean_view(trials: list[dict], prefix: str = "") -> str:
             + td(rounds_text(group), len(complete_rounds(group)))
             + spread_td(per_round(group, lambda t: int(t["passed"])), count)
             + td(percent(passed, len(group)), passed / len(group))
+            + td(f"{every}/{tasks}", every / tasks)
+            + td(f"{some}/{tasks}", some / tasks)
             + spread_td(per_round(group, lambda t: t["facts"]["cost"]), money)
             + spread_td(per_round(group, lambda t: t["facts"]["run_ms"]), duration)
             + spread_td(per_round(group, lambda t: t["summary"]["provider_calls"]), number)
