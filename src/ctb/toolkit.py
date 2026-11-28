@@ -67,6 +67,8 @@ py=/installed-agent/ctb-python/bin/python3
 "$py" -m pip install -q --no-cache-dir --disable-pip-version-check --root-user-action=ignore \
   -r /s/requirements.txt
 "$py" -c 'import numpy, scipy, pandas, networkx, pytest, matplotlib, sympy, lxml, PIL'
+# The packages that a task image also has, at the pin of that image.
+"$py" -c 'import bs4, shapely, rtree, music21, confluent_kafka, httpx, hypothesis'
 tar -czf "/x/$OUT" -C /installed-agent ctb-python
 """
 

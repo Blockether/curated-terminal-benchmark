@@ -30,6 +30,7 @@ Every agent gets the same Python toolkit in `/installed-agent/ctb-python`:
 
 - The CPython of the Vis runtime (3.14.7, python-build-standalone).
 - The packages of `src/ctb/toolkit-requirements.txt`: numpy, scipy, pandas, pytest and others.
+  A package that a task image also has is at the pin of that image.
 
 `ctb fetch` builds the toolkit once for the CPU of `src/ctb/arch.py` (linux/arm64) in Podman. Each agent setup unpacks it.
 Each agent command adds `ctb-python/bin` to the end of `PATH`. A Python of the task image still comes first.
